@@ -1,0 +1,19 @@
+<policies>
+  <inbound>
+    <set-header name="apimurl">
+      <value>@(String.Format(@"{0}://{1}{2}", context.Request.OriginalUrl.Scheme, context.Request.OriginalUrl.Host, context.Request.OriginalUrl.Path))</value>
+    </set-header>
+    <base />
+  </inbound>
+  <backend>
+    <base />
+  </backend>
+  <outbound>
+    <set-header name="X-Powered-By" exists-action="delete" />
+    <set-header name="X-ASPnet-Version" exists-action="delete" />
+    <base />
+  </outbound>
+  <on-error>
+    <base />
+  </on-error>
+</policies>
