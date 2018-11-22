@@ -14,16 +14,20 @@ Describe "Key Vault Deployment Tests" -Tag "Acceptance" {
   
     Context "When KeyVault deployed with parameters" {
       $params = @{ keyVaultName = "dfc-foo-bar-kv" }
-      $output = Test-AzureRmResourceGroupDeployment `
+      try {
+        $output = Test-AzureRmResourceGroupDeployment `
                   -ResourceGroupName $ResourceGroupName `
                   -TemplateFile $TemplateFile `
                   -TemplateParameterObject $params `
-                  -ErrorAction Stop `
-                  5>&1
-      $result = (($output[32] -split "Body:")[1] | ConvertFrom-Json).properties
+                  -ErrorAction Stop #`
+                  #5>&1
+      } catch {
+        $ex = $_.Exception
+      }
+      #$result = (($output[32] -split "Body:")[1] | ConvertFrom-Json).properties
   
       It "Should be deployed successfully" {
-        $result.provisioningState | Should -Be "Succeeded"
+        $ex | Should -Be $null
       }
   
       <#
