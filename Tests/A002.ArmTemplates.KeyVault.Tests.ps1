@@ -13,7 +13,7 @@ Describe "Key Vault Deployment Tests" -Tag "Acceptance" {
                   -TemplateParameterObject $params
   
       It "Should be deployed successfully" {
-        $output | Should -Be $null -Because $output
+        $output | Should -Be $null
       }
   
       <#
