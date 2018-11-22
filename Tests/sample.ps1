@@ -11,8 +11,8 @@ $output = Test-AzureRmResourceGroupDeployment `
 
 Write-Output $output
 
-Write-Output ($output | Get-Member)
 
 if ($output) {
     Write-Output "$$output is true"
+    Write-Output ($output | Get-Member)
 }
