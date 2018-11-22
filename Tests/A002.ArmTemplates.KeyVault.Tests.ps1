@@ -14,6 +14,10 @@ Describe "Key Vault Deployment Tests" -Tag "Acceptance" {
   
       It "Should be deployed successfully" {
         $output | Should -Be $null
+        if ($output) {
+          # return some useful info to the user
+          Write-Debug $output
+        }
       }
   
       <#
