@@ -1,0 +1,2 @@
+# ignore Pester results files
+Tests/TEST-Acceptance.xml
