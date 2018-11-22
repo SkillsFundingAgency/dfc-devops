@@ -67,5 +67,7 @@ select-xml "//report/counter" $CodeCoverage | ForEach-Object {
 
 $codecovered = $covered / $total * 100
 if ($codecovered -lt $CoveragePercent) {
-    Write-Error "Code coverage $codecovered"
+    Write-Error "Code coverage $codecovered - below minimum threshold"
+} else {
+    Write-Output "Code coverage $codecovered"
 }

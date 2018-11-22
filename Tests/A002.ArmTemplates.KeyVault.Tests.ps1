@@ -35,4 +35,4 @@ Describe "Key Vault Deployment Tests" -Tag "Acceptance" {
       #>
 
     }
-  }
+}
