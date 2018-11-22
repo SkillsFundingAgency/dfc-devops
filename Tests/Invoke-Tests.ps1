@@ -43,9 +43,6 @@ if ($CodeCoveragePath) {
 Remove-Item "$PSScriptRoot\TEST-*.xml"
 Remove-Item "$PSScriptRoot\CODECOVERAGE-*.xml"
 
-# Supress logging
-$null = New-Item -Name SUPPRESSLOGGING -value $true -ItemType Variable -Path Env: -Force
-
 # Invoke tests
 $Result = Invoke-Pester @TestParameters
 
