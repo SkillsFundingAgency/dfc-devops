@@ -3,24 +3,15 @@ $ResourceGroupName = "dfc-test-template-rg"
 $TemplateFile = "$PSScriptRoot\..\ArmTemplates\keyvault.json"
 
 Describe "Key Vault Deployment Tests" -Tag "Acceptance" {
-
-    BeforeAll {
-      $DebugPreference = "Continue"
-    }
   
-    AfterAll {
-      $DebugPreference = "SilentlyContinue"
-    }
-  
-    Context "When KeyVault deployed with parameters" {
+    Context "When KeyVault deployed with just key vault name" {
       $params = @{ keyVaultName = "dfc-foo-bar-kv" }
+
       try {
         $output = Test-AzureRmResourceGroupDeployment `
                   -ResourceGroupName $ResourceGroupName `
                   -TemplateFile $TemplateFile `
-                  -TemplateParameterObject $params `
-                  -ErrorAction Stop #`
-                  #5>&1
+                  -TemplateParameterObject $params
       } catch {
         $ex = $_.Exception
       }
