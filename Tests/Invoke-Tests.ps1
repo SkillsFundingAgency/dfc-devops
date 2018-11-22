@@ -9,10 +9,10 @@ Test wrapper that invokes
 [Optional] The type of test that will be executed. The parameter value can be either All (default), Acceptance, Quality or Unit
 
 .EXAMPLE
-Invoke-AcceptanceTests.ps1 -Type ASM
+Invoke-AcceptanceTests.ps1
 
 .EXAMPLE
-Invoke-AcceptanceTests.ps1 -Type ARM
+Invoke-AcceptanceTests.ps1 -TestType Quality
 
 #>
 

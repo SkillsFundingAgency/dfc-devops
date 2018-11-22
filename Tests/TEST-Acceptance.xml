@@ -1,0 +1,48 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<test-results xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="nunit_schema_2.5.xsd" name="Pester" total="2" errors="0" failures="1" not-run="0" inconclusive="0" ignored="0" skipped="0" invalid="0" date="2018-11-22" time="14:34:32">
+  <environment user="dicci" machine-name="DICCIL10" cwd="C:\repos\dfc-devops\PSScripts" user-domain="DICCIL10" platform="Microsoft Windows 10 Home|C:\WINDOWS|\Device\Harddisk0\Partition3" nunit-version="2.5.8.0" os-version="10.0.17134" clr-version="4.0.30319.42000" />
+  <culture-info current-culture="en-GB" current-uiculture="en-GB" />
+  <test-suite type="TestFixture" name="Pester" executed="True" result="Failure" success="False" time="1.6762" asserts="0" description="Pester">
+    <results>
+      <test-suite type="TestFixture" name="C:\repos\dfc-devops\Tests\A001.PSScripts.Test-ARMTemplate.Tests.ps1" executed="True" result="Success" success="True" time="0.0659" asserts="0" description="C:\repos\dfc-devops\Tests\A001.PSScripts.Test-ARMTemplate.Tests.ps1">
+        <results>
+          <test-suite type="TestFixture" name="Test-ARMTemplate acceptance tests" executed="True" result="Success" success="True" time="0.0659" asserts="0" description="Test-ARMTemplate acceptance tests">
+            <results>
+              <test-case description="Should call Test-AzureRmResourceGroupDeployment" name="Test-ARMTemplate acceptance tests.Should call Test-AzureRmResourceGroupDeployment" time="0.0659" asserts="0" success="True" result="Success" executed="True" />
+            </results>
+          </test-suite>
+        </results>
+      </test-suite>
+      <test-suite type="TestFixture" name="C:\repos\dfc-devops\Tests\A002.ArmTemplates.KeyVault.Tests.ps1" executed="True" result="Failure" success="False" time="1.6103" asserts="0" description="C:\repos\dfc-devops\Tests\A002.ArmTemplates.KeyVault.Tests.ps1">
+        <results>
+          <test-suite type="TestFixture" name="Key Vault Deployment Tests" executed="True" result="Failure" success="False" time="1.6103" asserts="0" description="Key Vault Deployment Tests">
+            <results>
+              <test-suite type="TestFixture" name="When KeyVault deployed with parameters" executed="True" result="Failure" success="False" time="1.6103" asserts="0" description="When KeyVault deployed with parameters">
+                <results>
+                  <test-case description="Error occurred in Context block" name="Key Vault Deployment Tests.When KeyVault deployed with parameters.Error occurred in Context block" time="1.6103" asserts="0" success="False" result="Failure" executed="True">
+                    <failure>
+                      <message>The client 'richard.lee@citizenazuresfabisgov.onmicrosoft.com' with object id '6acac059-8276-4855-94bf-c62fac177f11' does not have authorization to perform action 'Microsoft.Resources/deployments/validate/action' over scope '/subscriptions/fa36a013-6437-49f7-b274-b1e72970de7a/resourcegroups/dfc-test-template-rg/providers/Microsoft.Resources/deployments/1319814c-4e75-4474-a3f7-3bcfc4e50af0'.</message>
+                      <stack-trace>At C:\repos\dfc-devops\Tests\A002.ArmTemplates.KeyVault.Tests.ps1:16 char:17</stack-trace>
+                    </failure>
+                  </test-case>
+                </results>
+              </test-suite>
+            </results>
+          </test-suite>
+        </results>
+      </test-suite>
+      <test-suite type="TestFixture" name="C:\repos\dfc-devops\Tests\Q001.PSScripts.Help.Tests.ps1" executed="True" result="Success" success="True" time="0" asserts="0" description="C:\repos\dfc-devops\Tests\Q001.PSScripts.Help.Tests.ps1">
+        <results />
+      </test-suite>
+      <test-suite type="TestFixture" name="C:\repos\dfc-devops\Tests\Q002.PSScripts.Quality.Tests.ps1" executed="True" result="Success" success="True" time="0" asserts="0" description="C:\repos\dfc-devops\Tests\Q002.PSScripts.Quality.Tests.ps1">
+        <results />
+      </test-suite>
+      <test-suite type="TestFixture" name="C:\repos\dfc-devops\Tests\Q003.ApimPolicies.Xml.Tests.ps1" executed="True" result="Success" success="True" time="0" asserts="0" description="C:\repos\dfc-devops\Tests\Q003.ApimPolicies.Xml.Tests.ps1">
+        <results />
+      </test-suite>
+      <test-suite type="TestFixture" name="C:\repos\dfc-devops\Tests\U001.PSScripts.ConvertTo-Variables.Tests.ps1" executed="True" result="Success" success="True" time="0" asserts="0" description="C:\repos\dfc-devops\Tests\U001.PSScripts.ConvertTo-Variables.Tests.ps1">
+        <results />
+      </test-suite>
+    </results>
+  </test-suite>
+</test-results>
