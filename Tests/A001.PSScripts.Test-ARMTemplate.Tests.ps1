@@ -1,6 +1,6 @@
 Push-Location -Path $PSScriptRoot\..\PSScripts\
 
-Mock Test-AzureRmResourceGroupDeployment {}
+Mock Test-AzureRmResourceGroupDeployment { return $null }
 
 Describe "Test-ARMTemplate acceptance tests" -Tag "Acceptance" {
 
