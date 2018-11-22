@@ -16,7 +16,7 @@ Describe "Key Vault Deployment Tests" -Tag "Acceptance" {
         $output | Should -Be $null
         if ($output) {
           # return some useful info to the user
-          Write-Debug $output
+          Write-Host $output
         }
       }
   
