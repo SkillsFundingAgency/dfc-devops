@@ -10,3 +10,9 @@ $output = Test-AzureRmResourceGroupDeployment `
               5>&1
 
 Write-Output $output
+
+Write-Output $output.GetType()
+
+if ($output) {
+    Write-Output "$$output is true"
+}
