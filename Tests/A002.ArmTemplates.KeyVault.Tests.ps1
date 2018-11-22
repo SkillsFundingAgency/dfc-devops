@@ -13,10 +13,11 @@ Describe "Key Vault Deployment Tests" -Tag "Acceptance" {
     }
   
     Context "When KeyVault deployed with parameters" {
+      $params = @{ keyVaultName = "dfc-foo-bar-kv" }
       $output = Test-AzureRmResourceGroupDeployment `
                   -ResourceGroupName $ResourceGroupName `
                   -TemplateFile $TemplateFile `
-                  -keyVaultName "dfc-foo-bar-kv" `
+                  -TemplateParameterObject $params `
                   -ErrorAction Stop `
                   5>&1
       $result = (($output[32] -split "Body:")[1] | ConvertFrom-Json).properties
