@@ -49,10 +49,6 @@ $null = New-Item -Name SUPPRESSLOGGING -value $true -ItemType Variable -Path Env
 # Invoke tests
 $Result = Invoke-Pester @TestParameters
 
-if ($CodeCoveragePath) {
-    Write-Output $Result.CodeCoverage
-}
-
 # report failures
 if ($Result.FailedCount -ne 0) { 
     Write-Error "Pester returned $($result.FailedCount) errors"

@@ -2,7 +2,7 @@
 $ResourceGroupName = "dfc-test-template-rg"
 $TemplateFile = "..\ArmTemplates\keyvault.json"
 
-Describe "Key Vault Deployment Tests" { #-Tag "Acceptance" {
+Describe "Key Vault Deployment Tests" -Tag "Acceptance" {
 
     BeforeAll {
       $DebugPreference = "Continue"
