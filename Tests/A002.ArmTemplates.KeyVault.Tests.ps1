@@ -14,19 +14,7 @@ Describe "Key Vault Deployment Tests" -Tag "Acceptance" {
   
       It "Should be deployed successfully" {
         $output | Should -Be $null
-        if ($output) {
-          # return some useful info to the user
-          Write-Host $output
-        }
       }
-  
-      <#
-      It "Should return" {
-        $resource = $result.validatedResources[0]
-  
-        $resource.name | Should -Be ?
-      }
-      #>
 
     }
 }
