@@ -60,7 +60,7 @@
             "location": "[resourceGroup().location]",
             "copy": {
                 "name": "kvsecrets",
-                "count": "[length(parameters('secretValues'))]"
+                "count": "[if(equals(length(parameters('secretValues')),0),1,length(parameters('secretValues')))]"
             },
             "properties": {
                 "contentType": "[parameters('secretValues')[copyIndex()].type]",

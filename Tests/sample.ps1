@@ -11,9 +11,7 @@ $output = Test-AzureRmResourceGroupDeployment `
 
 Write-Output $output
 
-if ($output.GetType().Name -eq "Microsoft.Azure.Commands.Resources.Models.PSResourceManagerError") {
 Write-Output ($output | Get-Member)
-}
 
 if ($output) {
     Write-Output "$$output is true"
