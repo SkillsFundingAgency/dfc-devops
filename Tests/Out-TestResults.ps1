@@ -30,44 +30,44 @@ Param (
 )
 
 if (-not $TestResultFile) {
-    $findfile = Get-ChildItem "$PSScriptRoot\TEST-*.xml" |
+    $FindRecentFile = Get-ChildItem "$PSScriptRoot\TEST-*.xml" |
         Sort-Object LastWriteTime -Descending |
         Select-Object -First 1
-    $TestResultFile = $findfile.FullName
+    $TestResultFile = $FindRecentFile.FullName
 }
 [xml] $TestResult = Get-Content -Path $TestResultFile
 
 if (-not $CodeCoverageFile) {
-    $findfile = Get-ChildItem "$PSScriptRoot\CODECOVERAGE-*.xml" |
+    $FindRecentFile = Get-ChildItem "$PSScriptRoot\CODECOVERAGE-*.xml" |
         Sort-Object LastWriteTime -Descending |
         Select-Object -First 1
-    $CodeCoverageFile = $findfile.FullName
+    $CodeCoverageFile = $FindRecentFile.FullName
 }
 [xml] $CodeCoverage = Get-Content -Path $CodeCoverageFile
 
-$failures = select-xml "//test-results/test-suite[@success='False']" $TestResult
-if ($failures) {
-    $fails = 0
-    $failures | ForEach-Object {
+$Failures = select-xml "//test-results/test-suite[@success='False']" $TestResult
+if ($Failures) {
+    $NumFailures = 0
+    $Failures | ForEach-Object {
         Select-Xml "//failure" $_.node.results | ForEach-Object {
-            $fails += 1
-            Write-Output "Failure: $fails"
-            Write-Output $_.node.message
+            $NumFailures += 1
+            Write-Output "Failure: $NumFailures"
+            Write-Output $_.Node.Message
         }
     }
-    Write-Error "Pester reported $fails error(s)"
+    Write-Error "Pester reported $NumFailures error(s)"
 }
 
-$total = 0
-$covered = 0
+$TotalLines = 0
+$CoveredLines = 0
 select-xml "//report/counter" $CodeCoverage | ForEach-Object {
-    $total += [int] $_.Node.missed + [int] $_.node.covered
-    $covered += [int] $_.node.covered
+    $TotalLines += [int] $_.Node.missed + [int] $_.Node.covered
+    $CoveredLines += [int] $_.Node.covered
 }
 
-$codecovered = $covered / $total * 100
-if ($codecovered -lt $CoveragePercent) {
-    Write-Error "Code coverage $codecovered - below minimum threshold"
+$CodeCovered = $CoveredLines / $TotalLines * 100
+if ($CodeCovered -lt $CoveragePercent) {
+    Write-Error "Code coverage $CodeCovered - below minimum threshold"
 } else {
-    Write-Output "Code coverage $codecovered"
+    Write-Output "Code coverage $CodeCovered"
 }

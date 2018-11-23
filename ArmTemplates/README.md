@@ -1,6 +1,7 @@
 # ARM Templates
 
-This folder contains ARM deployments that can be used to stand up a specific resource and can be used in the same way as nested templated.
+This folder contains [ARM linked templates](https://docs.microsoft.com/en-us/azure/azure-resource-manager/resource-group-linked-templates) 
+that can be used to stand up a specific resource and can be used in the same way as nested templated.
 A master template should call each template as a separate resource passing in parameters as necessary.
 
 Sample master template snippet
