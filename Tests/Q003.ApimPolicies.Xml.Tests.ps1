@@ -11,10 +11,6 @@ Describe "APIM Policies XML quality tests" -Tag "Quality" {
                 { $xml.Load($xmlfile.FullName) }  | Should not Throw
             }
 
-            It "XML has one root element" {
-                ($xml | Get-Member -MemberType Property) | Should HaveCount 1
-            }
-
         }
     }
 }

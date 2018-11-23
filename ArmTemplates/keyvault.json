@@ -7,13 +7,6 @@
             "metadata": {
                 "description": "Name of the keyvault"
             }
-        },
-        "secretValues": {
-            "type": "array",
-            "defaultValue": [],
-            "metadata": {
-                "description": "Optional array of secrets to add - elements need to be in the form { name: ... , secret: ... , type: ... }"
-            }
         }
     },
     "variables": {},
@@ -47,24 +40,6 @@
                 "enabledForDeployment": false,
                 "enabledForDiskEncryption": false,
                 "enabledForTemplateDeployment": false
-            }
-        },
-        {
-            "type": "Microsoft.KeyVault/vaults/secrets",
-            "name": "[concat(parameters('keyVaultName'), '/', parameters('secretValues')[copyIndex()].name)]",
-            "condition": "[greater(length(parameters('secretValues')), 0)]",
-            "dependsOn": [
-                "[resourceId('Microsoft.KeyVault/vaults', parameters('keyVaultName'))]"
-            ],
-            "apiVersion": "2016-10-01",
-            "location": "[resourceGroup().location]",
-            "copy": {
-                "name": "kvsecrets",
-                "count": "[length(parameters('secretValues'))]"
-            },
-            "properties": {
-                "contentType": "[parameters('secretValues')[copyIndex()].type]",
-                "value": "[parameters('secretValues')[copyIndex()].secret]"
             }
         }
     ],

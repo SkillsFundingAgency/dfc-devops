@@ -9,10 +9,10 @@ Test wrapper that invokes
 [Optional] The type of test that will be executed. The parameter value can be either All (default), Acceptance, Quality or Unit
 
 .EXAMPLE
-Invoke-AcceptanceTests.ps1 -Type ASM
+Invoke-AcceptanceTests.ps1
 
 .EXAMPLE
-Invoke-AcceptanceTests.ps1 -Type ARM
+Invoke-AcceptanceTests.ps1 -TestType Quality
 
 #>
 
@@ -20,7 +20,9 @@ Invoke-AcceptanceTests.ps1 -Type ARM
 Param (
     [Parameter(Mandatory = $false)]
     [ValidateSet("All", "Acceptance", "Quality", "Unit")]
-    [String] $TestType = "All"
+    [String] $TestType = "All",
+    [Parameter(Mandatory = $false)]
+    [String] $CodeCoveragePath
 )
 
 $TestParameters = @{
@@ -32,13 +34,19 @@ $TestParameters = @{
 if ($TestType -ne 'All') {
     $TestParameters['Tag'] = $TestType
 }
+if ($CodeCoveragePath) {
+    $TestParameters['CodeCoverage'] = $CodeCoveragePath
+    $TestParameters['CodeCoverageOutputFile'] = "$PSScriptRoot\CODECOVERAGE-$TestType.xml"
+}
 
-# --- Supress logging
-$null = New-Item -Name SUPPRESSLOGGING -value $true -ItemType Variable -Path Env: -Force
+# Remove previous runs
+Remove-Item "$PSScriptRoot\TEST-*.xml"
+Remove-Item "$PSScriptRoot\CODECOVERAGE-*.xml"
 
-# --- Invoke tests
+# Invoke tests
 $Result = Invoke-Pester @TestParameters
 
+# report failures
 if ($Result.FailedCount -ne 0) { 
     Write-Error "Pester returned $($result.FailedCount) errors"
 }
