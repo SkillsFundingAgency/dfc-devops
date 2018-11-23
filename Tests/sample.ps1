@@ -1,10 +1,5 @@
 $TemplateParameters = @{
     sqlServerName   = "dfc-foo-bar-sql"
-    elasticPoolName    = $null
-    elasticPoolEdition = $null
-    elasticPoolTotalDTU = $null
-    elasticPoolMinDTU   = $null
-    elasticPoolStorage  = $null
 }
 $TestTemplateParams = @{
     ResourceGroupName       = "dfc-test-template-rg"
