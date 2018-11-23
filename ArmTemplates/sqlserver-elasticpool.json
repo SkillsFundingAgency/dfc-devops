@@ -1,0 +1,88 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "sqlServerName": {
+            "type": "string",
+            "metadata": {
+                "description": "Name of the SQL Server"
+            }
+        },
+        "elasticPoolName": {
+            "type": "string",
+            "default": "",
+            "metadata": {
+                "description": "Name of the elastic pool to create (does not create one if no name passed)"
+            }
+        },
+        "elasticPoolEdition": {
+            "type": "string",
+            "default": "Standard",
+            "allowedValues": [
+                "Basic",
+                "Standard",
+                "Premium",
+                "GeneralPurpose",
+                "BusinessCritical"
+            ],
+            "metadata": {
+                "description": "The edition component of the sku (defaults to Standard)"
+            }
+        },
+        "elasticPoolTotalDTU": {
+            "type": "int",
+            "default": 100,
+            "metadata": {
+                "description": "Total DTU assigned to elastic pool"
+            }
+        },
+        "elasticPoolMinDTU": {
+            "type": "int",
+            "default": 1,
+            "metadata": {
+                "description": "Minimum DTU for each databases (reserved)"
+            }
+        },
+        "elasticPoolStorage": {
+            "type": "int",
+            "default": 1024,
+            "metadata": {
+                "description": "Storage limit for the database elastic pool in MB"
+            }
+        }
+    },
+    "variables": {
+        "sqlServerVersion": "12.0"
+    },
+    "resources": [
+        {
+            "type": "Microsoft.Sql/servers",
+            "name": "[parameters('sqlServerName')]",
+            "apiVersion": "2015-05-01-preview",
+            "location": "[resourceGroup().location]",
+            "tags": {},
+            "properties": {
+                "version": "[variables('sqlServerVersion')]"
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/elasticPools",
+            "name": "[concat(parameters('sqlServerName'), '/', parameters('elasticPoolName'))]",
+            "condition": "[not(equals(parameters('elasticPoolName'), ''))]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers', parameters('sqlServerName'))]"
+            ],
+            "apiVersion": "2014-04-01",
+            "location": "[resourceGroup().location]",
+            "tags": {},
+            "properties": {
+                "edition": "[parameters('elasticPoolEdition')]",
+                "dtu": "[parameters('elasticPoolTotalDTU')]",
+                "databaseDtuMin": "[parameters('elasticPoolMinDTU')]",
+                "databaseDtuMax": "[parameters('elasticPoolTotalDTU')]",
+                "storageMB": "[parameters('elasticPoolStorage')]",
+                "zoneRedundant": false
+            }
+        }
+    ]
+}

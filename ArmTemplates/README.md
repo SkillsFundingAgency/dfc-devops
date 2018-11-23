@@ -32,3 +32,4 @@ The following templates are available
 
 * APIM
 * [Keyvault](keyvault.md)
+* [SQLServer-ElasticPool](sqlserver-elasticpool.md)
