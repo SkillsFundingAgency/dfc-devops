@@ -52,7 +52,7 @@
         }
     },
     "variables": {
-        "elasticPoolName": "[if(equals(parameters('elasticPoolName'),''),concat(parameters('elasticPoolName'),'/elastic'),concat(parameters('sqlServerName'), '/', parameters('elasticPoolName')))]",
+        "elasticPoolName": "[if(equals(parameters('elasticPoolName'),''),concat(parameters('sqlServerName'),'/elasticpool'),concat(parameters('sqlServerName'), '/', parameters('elasticPoolName')))]",
         "sqlServerVersion": "12.0"
     },
     "resources": [
