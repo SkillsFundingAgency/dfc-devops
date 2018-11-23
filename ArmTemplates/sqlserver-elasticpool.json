@@ -10,14 +10,14 @@
         },
         "elasticPoolName": {
             "type": "string",
-            "default": "",
+            "defaultValue": "",
             "metadata": {
                 "description": "Name of the elastic pool to create (does not create one if no name passed)"
             }
         },
         "elasticPoolEdition": {
             "type": "string",
-            "default": "Standard",
+            "defaultValue": "Standard",
             "allowedValues": [
                 "Basic",
                 "Standard",
@@ -26,26 +26,26 @@
                 "BusinessCritical"
             ],
             "metadata": {
-                "description": "The edition component of the sku (defaults to Standard)"
+                "description": "The edition component of the sku (defaultValues to Standard)"
             }
         },
         "elasticPoolTotalDTU": {
             "type": "int",
-            "default": 100,
+            "defaultValue": 100,
             "metadata": {
                 "description": "Total DTU assigned to elastic pool"
             }
         },
         "elasticPoolMinDTU": {
             "type": "int",
-            "default": 1,
+            "defaultValue": 1,
             "metadata": {
                 "description": "Minimum DTU for each databases (reserved)"
             }
         },
         "elasticPoolStorage": {
             "type": "int",
-            "default": 1024,
+            "defaultValue": 1024,
             "metadata": {
                 "description": "Storage limit for the database elastic pool in MB"
             }
