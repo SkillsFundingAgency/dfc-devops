@@ -6,7 +6,8 @@ Creates secrets within the key vault
 
 keyVaultName: (required) string
 
-Name of key vault. Will be created in the same resource group as the script is run and in the default location for resource group.
+Name of key vault. This must ALREADY exists before the template is called.
+Please see common usage section for an example of how to create a Keyvault and optionally populate with secrets.
 
 secrets: (required) array of objects
 
