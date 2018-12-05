@@ -1,0 +1,79 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "cosmosDbName": {
+            "type": "string",
+            "metadata": {
+                "description": "The Azure Cosmos DB name"
+            }
+        },
+        "cosmosApiType": {
+            "type": "string",
+            "metadata": {
+                "description": "The Azure Cosmos DB API type: Cassandra, Gremlin, MongoDB, SQL or Table"
+            },
+            "allowedValues": [
+                "Cassandra",
+                "Gremlin",
+                "MongoDB",
+                "SQL",
+                "Table"
+            ]
+        },
+        "defaultConsistencyLevel": {
+            "type": "string",
+            "metadata": {
+                "description": "The Azure Cosmos DB default consistency level and configuration settings of the Cosmos DB account"
+            },
+            "allowedValues": [
+                "Eventual",
+                "Session",
+                "BoundedStaleness",
+                "Strong",
+                "ConsistentPrefix"
+            ]
+        }
+    },
+    "variables": {
+        "capabilityName": "[if(equals(parameters('cosmosApiType'), 'Cassandra'), 'EnableCassandra', if(equals(parameters('cosmosApiType'), 'Gremlin'), 'EnableGremlin', if(equals(parameters('cosmosApiType'), 'Table'), 'EnableTable', '')))]",
+        "emptyCapabilities": [],
+        "enabledCapabilities": [
+            {
+                "name": "[variables('capabilityName')]"
+            }
+        ],
+        "capabilities": "[if(equals(variables('capabilityName'),''), variables('emptyCapabilities'), variables('enabledCapabilities'))]"
+    },
+    "resources": [
+        {
+            "name": "[parameters('cosmosDbName')]",
+            "type": "Microsoft.DocumentDB/databaseAccounts",
+            "apiVersion": "2015-04-08",
+            "location": "[resourceGroup().location]",
+            "kind": "[if(equals(parameters('cosmosApiType'), 'MongoDB'), 'MongoDB', 'GlobalDocumentDB')]",
+            "properties": {
+                "locations": [
+                    {
+                        "locationName": "[resourceGroup().location]",
+                        "failoverPriority": 0
+                    }
+                ],
+                "consistencyPolicy": {
+                    "defaultConsistencyLevel": "[parameters('defaultConsistencyLevel')]"
+                },
+                "capabilities":  "[variables('capabilities')]",
+                "databaseAccountOfferType": "Standard"
+            },
+            "tags": {
+                "defaultExperience": "[if(equals(parameters('cosmosApiType'),'SQL'), 'DocumentDB', parameters('cosmosApiType'))]"
+            }
+        }
+    ],
+    "outputs": {
+        "PrimaryMasterKey": {
+            "type": "string",
+            "value": "[listKeys(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('cosmosDbName')), '2015-04-08').primaryMasterKey]"
+        }
+    }
+}
