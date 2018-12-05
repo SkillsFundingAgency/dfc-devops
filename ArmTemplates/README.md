@@ -31,5 +31,8 @@ Sample master template snippet
 The following templates are available
 
 * APIM
+* [Azure Search](azure-search.md)
+* [Cosmos DB](cosmos-db.md)
 * [Keyvault](keyvault.md)
+* [Keyvault Secrets](keyvault-secrets.md)
 * [SQLServer-ElasticPool](sqlserver-elasticpool.md)
