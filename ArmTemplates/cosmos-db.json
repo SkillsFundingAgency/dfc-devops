@@ -2,6 +2,13 @@
     "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
+        "additionalIpAddresses": {
+            "type": "string",
+            "defaultValue": "",
+            "metadata": {
+                "description": "Any additional IP addresses to add to the IP Range Filter in addition to the default addresses.  If more than 1 address is included they should be seperated by a comma, eg: 11.111.123.134,12.134.114.115"
+            }
+        },
         "cosmosDbName": {
             "type": "string",
             "metadata": {
@@ -36,6 +43,7 @@
         }
     },
     "variables": {
+        "allowedIpAddresses": "[if(equals(parameters('additionalIpAddresses'), ''), concat('0.0.0.0,104.42.195.92,40.76.54.131,52.176.6.30,52.169.50.45,52.187.184.26,', parameters('additionalIpAddresses')), '')]",
         "capabilityName": "[if(equals(parameters('cosmosApiType'), 'Cassandra'), 'EnableCassandra', if(equals(parameters('cosmosApiType'), 'Gremlin'), 'EnableGremlin', if(equals(parameters('cosmosApiType'), 'Table'), 'EnableTable', '')))]",
         "emptyCapabilities": [],
         "enabledCapabilities": [
@@ -63,7 +71,8 @@
                     "defaultConsistencyLevel": "[parameters('defaultConsistencyLevel')]"
                 },
                 "capabilities":  "[variables('capabilities')]",
-                "databaseAccountOfferType": "Standard"
+                "databaseAccountOfferType": "Standard",
+                "ipRangeFilter": "[variables('allowedIpAddresses')]"
             },
             "tags": {
                 "defaultExperience": "[if(equals(parameters('cosmosApiType'),'SQL'), 'DocumentDB', parameters('cosmosApiType'))]"

@@ -4,6 +4,10 @@ Creates a Cosmos DB account
 
 ## Paramaters
 
+additionalIpAddresses: (optional) string
+
+A list of IP addresses to add to the IP Range Filter.  If no addresses are specified the filter is left empty and is not implemented.  If one or more addresses are added then the default addresses will be added to the filter along with the specified addresses.  If more than one address needs to be added to the filter each address should be seperated by a comma (but with no space).  The default addresses that are added to the filter are: 0.0.0.0,104.42.195.92,40.76.54.131,52.176.6.30,52.169.50.45,52.187.184.26.  These allow other Azure resources and the Azure portal to access CosmosDb.
+
 cosmosDbName: (required) string
 
 Name of Cosmos DB account. Will be created in the same resource group as the script is run and in the default location for resource group.

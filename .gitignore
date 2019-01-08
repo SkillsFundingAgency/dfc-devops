@@ -1,3 +1,6 @@
 # ignore Pester results files
 **/TEST-*.xml
 **/CODECOVERAGE-*.xml
+
+# ignore VS folder
+/.vs
