@@ -1,0 +1,86 @@
+{
+    "contentVersion": "1.0.0.0",
+    "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "parameters": {
+        "DataFactoryName": {
+            "type": "string",
+            "metadata": {
+                "description": "Name of the data factory. Must be globally unique."
+            }
+        },
+        "DataFactoryLocation": {
+            "type": "string",
+            "allowedValues": [
+                "East US",
+                "East US 2",
+                "West Europe"
+            ],
+            "defaultValue": "West Europe",
+            "metadata": {
+                "description": "Location of the data factory. Currently, only East US, East US 2, and West Europe are supported. "
+            }
+        },
+        "GitHubAccountName": {
+            "type": "string",
+            "metadata": {
+                "description": "The GitHub repo will first need to be configured from the Data Factory GUI so that Azure Data Factory can be added to the GitHub organisation as an authorized OAuth app."
+            },
+            "defaultValue": ""
+        },
+        "VstsAccountName": {
+            "type": "string",
+            "metadata": {
+                "description": "The Azure DevOps organsation name, can be obtained from Organization settings > Overview.  The Azure DevOps organization will need to be connected to an AAD tenant.  This will remove access for all existing accounts."
+            },
+            "defaultValue": ""
+        },        
+        "VstsProjectName": {
+            "type": "string",
+            "defaultValue": ""
+        },        
+        "RepositoryName": {
+            "type": "string",
+            "metadata": {
+                "description": "The name of the GitHub or Azure DevOps git repo.  The repo will need to already exist and be initialized."
+            },
+            "defaultValue": ""
+        }
+    },
+    "variables": {
+        "dataFactoryProperties" : "[if(and(equals(parameters('VstsAccountName'), ''),equals(parameters('GitHubAccountName'), '')), '', if(equals(parameters('VstsAccountName'), ''), variables('githubRepoConfig'), variables('vstsRepoConfig'))) ]",
+        "githubRepoConfig": {
+            "repoConfiguration": {
+                "accountName": "[parameters('GitHubAccountName')]",
+                "repositoryName": "[parameters('RepositoryName')]",
+                "hostName": "",
+                "collaborationBranch": "master",
+                "rootFolder": "/",
+                "type": "FactoryGitHubConfiguration",
+                "lastCommitId": ""
+              }
+        },
+        "vstsRepoConfig": {
+            "repoConfiguration": {
+                "accountName": "[parameters('VstsAccountName')]",
+                "repositoryName": "[parameters('RepositoryName')]",
+                "projectName": "[parameters('VstsProjectName')]",
+                "collaborationBranch": "master",
+                "rootFolder": "/",
+                "type": "FactoryVSTSConfiguration",
+                "lastCommitId": ""
+              }
+        }
+    },
+    "resources": [
+        {
+            "name": "[parameters('DataFactoryName')]",
+            "apiVersion": "2018-06-01",
+            "type": "Microsoft.DataFactory/factories",
+            "location": "[parameters('DataFactoryLocation')]",
+            "identity": {
+                "type": "SystemAssigned"
+            },
+            "properties": "[variables('dataFactoryProperties')]"
+        }
+    ]
+}

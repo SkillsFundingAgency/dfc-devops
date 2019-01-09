@@ -1,0 +1,41 @@
+{
+    "contentVersion": "1.0.0.0",
+    "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "parameters": {
+        "DataFactoryName": {
+            "type": "string",
+            "metadata": {
+                "description": "Name of the data factory. Must be globally unique."
+            }
+        },
+        "SqlDatabaseName": {
+            "type": "string"
+        },
+        "SqlDatabaseServer": {
+            "type": "string"
+        },
+        "SqlDatabaseUserName": {
+            "type": "string"
+        },
+        "SqlDatabaseUserPassword": {
+            "type": "securestring"
+        }
+    },
+    "resources": [
+        {
+            "type": "Microsoft.DataFactory/factories/linkedservices",
+            "name": "[concat(parameters('DataFactoryName'), '/', 'SqlReadWrite_', parameters('SqlDatabaseName'))]",
+            "apiVersion": "2018-06-01",
+            "properties": {
+                "type": "AzureSqlDatabase",
+                "description": "Azure SQL Database linked service",
+                "typeProperties": {
+                    "connectionString": {
+                        "value": "[concat('integrated security=False;encrypt=True;connection timeout=30;data source=', parameters('SqlDatabaseServer'), ';initial catalog=', parameters('SqlDatabaseName'), ';user id=', parameters('SqlDatabaseUserName'), ';password=', parameters('SqlDatabaseUserPassword'))]",
+                        "type": "SecureString"
+                    }
+                }
+            }
+        }
+    ]
+}
