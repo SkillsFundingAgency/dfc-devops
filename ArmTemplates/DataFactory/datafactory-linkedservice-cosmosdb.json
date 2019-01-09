@@ -6,7 +6,7 @@
             "type": "string"
         },
         "CosmosDbPrimaryKey": {
-            "type": "string"
+            "type": "securestring"
         },
         "CosmosDbDatabases": {
             "type": "array"

@@ -24,22 +24,26 @@
             "type": "string",
             "metadata": {
                 "description": "The GitHub repo will first need to be configured from the Data Factory GUI so that Azure Data Factory can be added to the GitHub organisation as an authorized OAuth app."
-            }
+            },
+            "defaultValue": ""
         },
         "VstsAccountName": {
             "type": "string",
             "metadata": {
                 "description": "The Azure DevOps organsation name, can be obtained from Organization settings > Overview.  The Azure DevOps organization will need to be connected to an AAD tenant.  This will remove access for all existing accounts."
-            }
+            },
+            "defaultValue": ""
         },        
         "VstsProjectName": {
-            "type": "string"
+            "type": "string",
+            "defaultValue": ""
         },        
         "RepositoryName": {
             "type": "string",
             "metadata": {
                 "description": "The name of the GitHub or Azure DevOps git repo.  The repo will need to already exist and be initialized."
-        }
+            },
+            "defaultValue": ""
         }
     },
     "variables": {

@@ -6,7 +6,7 @@ Creates linked services within a Data Factory for one or more databases within a
 
 CosmosDbName: required (string)
 
-CosmosDbPrimaryKey: required (string)
+CosmosDbPrimaryKey: required (securestring)
 
 CosmosDbDatabases: required (array)
 

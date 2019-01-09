@@ -18,7 +18,7 @@
             "type": "string"
         },
         "SqlDatabaseUserPassword": {
-            "type": "string"
+            "type": "securestring"
         }
     },
     "resources": [

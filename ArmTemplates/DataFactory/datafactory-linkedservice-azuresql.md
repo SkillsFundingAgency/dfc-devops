@@ -12,4 +12,4 @@ SqlDatabaseServer: required (string)
 
 SqlDatabaseUserName: required (string)
 
-SqlDatabaseUserPassword: required (string)
+SqlDatabaseUserPassword: required (securestring)
