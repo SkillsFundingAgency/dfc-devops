@@ -30,3 +30,5 @@ Describe "ConvertTo-VSTSVariables unit tests" -Tag "Unit" {
     }
 
 }
+
+Push-Location -Path $PSScriptRoot
