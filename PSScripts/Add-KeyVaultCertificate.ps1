@@ -32,14 +32,14 @@ param(
     [string] $PfxPassword
 )
   
-$collection = New-Object System.Security.Cryptography.X509Certificates.X509Certificate2Collection
-$collection.Import($PfxFilePath, $PfxPassword, [System.Security.Cryptography.X509Certificates.X509KeyStorageFlags]::Exportable)
+$Collection = New-Object System.Security.Cryptography.X509Certificates.X509Certificate2Collection
+$Collection.Import($PfxFilePath, $PfxPassword, [System.Security.Cryptography.X509Certificates.X509KeyStorageFlags]::Exportable)
     
 # create secret variables from cert
-$expdate = $collection.NotAfter | Sort-Object | Select-Object -First 1 # earliest expiring cert in pfx
-$clearBytes = $collection.Export([System.Security.Cryptography.X509Certificates.X509ContentType]::Pkcs12)
-$fileContentEncoded = [System.Convert]::ToBase64String($clearBytes)
-$secret = ConvertTo-SecureString -String $fileContentEncoded -AsPlainText -Force
-$secretContentType = 'application/x-pkcs12'
+$ExpiryDate = $Collection.NotAfter | Sort-Object | Select-Object -First 1 # earliest expiring cert in pfx
+$ClearBytes = $Collection.Export([System.Security.Cryptography.X509Certificates.X509ContentType]::Pkcs12)
+$FileContentEncoded = [System.Convert]::ToBase64String($ClearBytes)
+$SecretValue = ConvertTo-SecureString -String $FileContentEncoded -AsPlainText -Force
+$SecretContentType = 'application/x-pkcs12'
 $SecretName = $SecretName.Replace('.' , '-')
-Set-AzureKeyVaultSecret -VaultName $KeyVaultName -Name $SecretName -SecretValue $Secret -ContentType $secretContentType -Expires $expdate
+Set-AzureKeyVaultSecret -VaultName $KeyVaultName -Name $SecretName -SecretValue $SecretValue -ContentType $SecretContentType -Expires $ExpiryDate
