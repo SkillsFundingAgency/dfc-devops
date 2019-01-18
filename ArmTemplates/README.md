@@ -35,4 +35,4 @@ The following templates are available
 * [Cosmos DB](cosmos-db.md)
 * [Keyvault](keyvault.md)
 * [Keyvault Secrets](keyvault-secrets.md)
-* [SQLServer-ElasticPool](sqlserver-elasticpool.md)
+* [SQL Server](sql-server.md)
