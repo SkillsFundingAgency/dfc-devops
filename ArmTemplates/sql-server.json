@@ -1,0 +1,188 @@
+{
+    "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "sqlServerName": {
+            "type": "string",
+            "metadata": {
+                "description": "Name of the Azure SQL Server  instance"
+            }
+        },
+        "sqlServerAdminUserName": {
+            "type": "string",
+            "defaultValue": "",
+            "metadata": {
+                "description": "The Azure SQL Server Administrator (SA) username. A generated name will be used if not supplied."
+            }
+        },
+        "sqlServerAdminPassword": {
+            "type": "securestring",
+            "metadata": {
+                "description": "The Azure SQL Server Administrator (SA) password"
+            }
+        },
+        "storageAccountName": {
+            "type": "string",
+            "metadata": {
+                "description": "Name of the SQL logs storage account for the environment"
+            }
+        },
+        "sqlServerActiveDirectoryAdminLogin": {
+            "type": "string",
+            "metadata": {
+                "description": "The active directory admin or group name that will be assigned to the SQL server"
+            }
+        },
+        "sqlServerActiveDirectoryAdminObjectId": {
+            "type": "string",
+            "metadata": {
+                "description": "The object id of the active directory admin that will be assigned to the SQL server"
+            }
+        },
+        "threatDetectionEmailAddress": {
+            "type": "array",
+            "defaultValue": [],
+            "metadata": {
+                "description": "The email address that threat alerts will be sent to (no alerts will be configured if no email address provided)"
+            }
+        },
+        "elasticPoolName": {
+            "type": "string",
+            "defaultValue": "",
+            "metadata": {
+                "description": "Name of the elastic pool to create (does not create one if no name passed)"
+            }
+        },
+        "elasticPoolEdition": {
+            "type": "string",
+            "defaultValue": "Standard",
+            "allowedValues": [
+                "Basic",
+                "Standard",
+                "Premium",
+                "GeneralPurpose",
+                "BusinessCritical"
+            ],
+            "metadata": {
+                "description": "The edition component of the sku (defaultValues to Standard)"
+            }
+        },
+        "elasticPoolTotalDTU": {
+            "type": "int",
+            "defaultValue": 100,
+            "metadata": {
+                "description": "Total DTU assigned to elastic pool"
+            }
+        },
+        "elasticPoolMinDTU": {
+            "type": "int",
+            "defaultValue": 0,
+            "metadata": {
+                "description": "Minimum DTU for each databases (reserved)"
+            }
+        },
+        "elasticPoolStorage": {
+            "type": "int",
+            "defaultValue": 51200,
+            "metadata": {
+                "description": "Storage limit for the database elastic pool in MB"
+            }
+        }
+    },
+    "variables": {
+        "elasticPoolName": "[if(equals(parameters('elasticPoolName'), ''), concat(parameters('sqlServerName'), '/', parameters('sqlServerName')), concat(parameters('sqlServerName'), '/', parameters('elasticPoolName')))]",
+        "sqlServerAdminUserName": "[if(equals(parameters('sqlServerAdminUserName'), ''), uniqueString(resourceGroup().id), parameters('sqlServerAdminUserName'))]",
+        "auditPolicyName": "[concat(parameters('sqlServerName'), '-DefaultAuditPolicy')]",
+        "securityAlertPolicyName": "[concat(parameters('sqlServerName'), '-DefaultSecurityAlert')]",
+        "threatDetectionEmailAddress": "[if(equals(length(parameters('elasticPoolName')), 0), array('[\"dummy@example.com]\"]'), parameters('elasticPoolName'))]"
+    },
+    "resources": [
+        {
+            "name": "[parameters('sqlServerName')]",
+            "type": "Microsoft.Sql/servers",
+            "apiVersion": "2015-05-01-preview",
+            "location": "[resourceGroup().location]",
+            "properties": {
+                "administratorLogin": "[variables('sqlServerAdminUserName')]",
+                "administratorLoginPassword": "[parameters('sqlServerAdminPassword')]"
+            },
+            "resources": [
+                {
+                    "name": "[variables('AuditPolicyName')]",
+                    "type": "auditingSettings",
+                    "apiVersion": "2017-03-01-preview",
+                    "dependsOn": [
+                        "[concat('Microsoft.Sql/servers/', parameters('sqlServerName'))]"
+                    ],
+                    "properties": {
+                        "state": "Enabled",
+                        "storageEndpoint": "[concat('https://', parameters('storageAccountName'), '.blob.core.windows.net/')]",
+                        "storageAccountAccessKey": "[listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')), providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).keys[0].value]",
+                        "retentionDays": 90
+                    }
+                },
+                {
+                    "name": "[variables('SecurityAlertPolicyName')]",
+                    "type": "securityAlertPolicies",
+                    "apiVersion": "2017-03-01-preview",
+                    "condition": "[not(equals(length(parameters('elasticPoolName')), 0))]",
+                    "dependsOn": [
+                        "[concat('Microsoft.Sql/servers/', parameters('sqlServerName'))]",
+                        "[concat('Microsoft.Sql/servers/', parameters('sqlServerName'), '/auditingSettings/', variables('AuditPolicyName'))]"
+                    ],
+                    "properties": {
+                        "state": "[if(equals(length(parameters('threatDetectionEmailAddress')), 0), 'Disabled', 'Enabled')]",
+                        "emailAddresses": "[variables('threatDetectionEmailAddress')]",
+                        "emailAccountAdmins": false,
+                        "storageEndpoint": "[concat('https://', parameters('storageAccountName'), '.blob.core.windows.net/')]",
+                        "storageAccountAccessKey": "[listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')), providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).keys[0].value]",
+                        "retentionDays": 90
+                    }
+                },
+                {
+                    "name": "activeDirectory",
+                    "type": "administrators",
+                    "apiVersion": "2014-04-01",
+                    "location": "[resourceGroup().location]",
+                    "dependsOn": [
+                        "[concat('Microsoft.Sql/servers/', parameters('sqlServerName'))]"
+                    ],
+                    "properties": {
+                        "administratorType": "ActiveDirectory",
+                        "login": "[parameters('sqlServerActiveDirectoryAdminLogin')]",
+                        "sid": "[parameters('sqlServerActiveDirectoryAdminObjectId')]",
+                        "tenantId": "[subscription().tenantId]"
+                    }
+                },
+                {
+                    "name": "[variables('elasticPoolName')]",
+                    "type": "Microsoft.Sql/servers/elasticPools",
+                    "apiVersion": "2014-04-01",
+                    "location": "[resourceGroup().location]",
+                    "condition": "[not(equals(parameters('elasticPoolName'), ''))]",
+                    "dependsOn": [
+                        "[concat('Microsoft.Sql/servers/', parameters('sqlServerName'))]"
+                    ],
+                    "properties": {
+                        "edition": "[parameters('elasticPoolEdition')]",
+                        "dtu": "[parameters('elasticPoolTotalDTU')]",
+                        "databaseDtuMin": "[parameters('elasticPoolMinDTU')]",
+                        "databaseDtuMax": "[parameters('elasticPoolTotalDTU')]",
+                        "storageMB": "[parameters('elasticPoolStorage')]",
+                        "zoneRedundant": false
+                    }
+                }        
+            ]
+        }
+    ],
+    "outputs": {
+        "saAdministratorLogin": {
+            "type": "string",
+            "value": "[variables('sqlServerAdminUserName')]"
+        },
+        "sqlServerFqdn": {
+            "type": "string",
+            "value": "[reference(concat('Microsoft.Sql/servers/', parameters('sqlServerName'))).fullyQualifiedDomainName]"
+        }
+    }
+}
