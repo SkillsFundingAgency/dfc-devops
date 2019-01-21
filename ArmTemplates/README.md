@@ -36,3 +36,5 @@ The following templates are available
 * [Keyvault](keyvault.md)
 * [Keyvault Secrets](keyvault-secrets.md)
 * [SQL Server](sql-server.md)
+* [Storage Account](storage-account.md)
+* [Storage Account Container](storage-account-arm-container.md)
