@@ -43,7 +43,7 @@
             "type": "array",
             "defaultValue": [],
             "metadata": {
-                "description": "The email address that threat alerts will be sent to (no alerts will be configured if no email address provided)"
+                "description": "The email address(es) that threat alerts will be sent to (no alerts will be configured if no email address provided)"
             }
         },
         "elasticPoolName": {
@@ -94,7 +94,7 @@
         "sqlServerAdminUserName": "[if(equals(parameters('sqlServerAdminUserName'), ''), uniqueString(resourceGroup().id), parameters('sqlServerAdminUserName'))]",
         "auditPolicyName": "[concat(parameters('sqlServerName'), '-DefaultAuditPolicy')]",
         "securityAlertPolicyName": "[concat(parameters('sqlServerName'), '-DefaultSecurityAlert')]",
-        "threatDetectionEmailAddress": "[if(equals(length(parameters('elasticPoolName')), 0), array('[\"dummy@example.com]\"]'), parameters('elasticPoolName'))]"
+        "threatDetectionEmailAddress": "[array('[\"dummy@example.com]\"]')]"
     },
     "resources": [
         {
@@ -125,14 +125,14 @@
                     "name": "[variables('SecurityAlertPolicyName')]",
                     "type": "securityAlertPolicies",
                     "apiVersion": "2017-03-01-preview",
-                    "condition": "[not(equals(length(parameters('elasticPoolName')), 0))]",
+                    "condition": "[not(equals(parameters('threatDetectionEmailAddress'), ''))]",
                     "dependsOn": [
                         "[concat('Microsoft.Sql/servers/', parameters('sqlServerName'))]",
                         "[concat('Microsoft.Sql/servers/', parameters('sqlServerName'), '/auditingSettings/', variables('AuditPolicyName'))]"
                     ],
                     "properties": {
                         "state": "[if(equals(length(parameters('threatDetectionEmailAddress')), 0), 'Disabled', 'Enabled')]",
-                        "emailAddresses": "[variables('threatDetectionEmailAddress')]",
+                        "emailAddresses": "[if(equals(length(parameters('threatDetectionEmailAddress')), 0),  variables('threatDetectionEmailAddress'), parameters('threatDetectionEmailAddress'))]",
                         "emailAccountAdmins": false,
                         "storageEndpoint": "[concat('https://', parameters('storageAccountName'), '.blob.core.windows.net/')]",
                         "storageAccountAccessKey": "[listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')), providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).keys[0].value]",
