@@ -23,20 +23,6 @@
                     "name": "standard"
                 },
                 "tenantId": "[subscription().tenantId]",
-                "accessPolicies": [
-                    {
-                        "tenantId": "1a92889b-8ea1-4a16-8132-347814051567",
-                        "objectId": "7fa23fd6-537e-4d28-b0ca-54d075cce842",
-                        "permissions": {
-                            "keys": [],
-                            "secrets": [
-                                "get"
-                            ],
-                            "certificates": [],
-                            "storage": []
-                        }
-                    }
-                ],
                 "enabledForDeployment": false,
                 "enabledForDiskEncryption": false,
                 "enabledForTemplateDeployment": false
