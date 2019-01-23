@@ -22,8 +22,21 @@
                     "family": "A",
                     "name": "standard"
                 },
-                "accessPolicies": [],
                 "tenantId": "[subscription().tenantId]",
+                "accessPolicies": [
+                    {
+                        "tenantId": "[subscription().tenantId]",
+                        "objectId": "7fa23fd6-537e-4d28-b0ca-54d075cce842",
+                        "permissions": {
+                            "keys": [],
+                            "secrets": [
+                                "get"
+                            ],
+                            "certificates": [],
+                            "storage": []
+                        }
+                    }
+                ],
                 "enabledForDeployment": false,
                 "enabledForDiskEncryption": false,
                 "enabledForTemplateDeployment": false
