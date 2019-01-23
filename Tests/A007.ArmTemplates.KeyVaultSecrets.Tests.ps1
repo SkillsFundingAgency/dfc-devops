@@ -7,7 +7,7 @@ Describe "Key Vault Secrets Deployment Tests" -Tag "Acceptance" {
   Context "When a single key vault secret added" {
     $TemplateParameters = @{
       keyVaultName = "dfc-foo-bar-kv"
-      secrets      = [Newtonsoft.Json.JsonConvert]::DeserializeObject('[{ "name": "foo", "secret":" "bar", "type":" "" }]')
+      secrets      = [Newtonsoft.Json.JsonConvert]::DeserializeObject('[{ "name": "foo", "secret": "bar", "type":" "" }]')
     }
     $TestTemplateParams = @{
       ResourceGroupName       = $ResourceGroupName
@@ -26,8 +26,8 @@ Describe "Key Vault Secrets Deployment Tests" -Tag "Acceptance" {
   Context "When a multiple secrets added" {
     $TemplateParameters = @{
       keyVaultName = "dfc-foo-bar-kv"
-      secrets      = ConvertFrom-Json '[{ "name": "foo", "secret":" "bar", "type":" "" },
-                      { "name": "foo2", "secret":" "another secret", "type":" "text/plain" }]'
+      secrets      = ConvertFrom-Json '[{ "name": "foo", "secret": "bar", "type":" "" },
+                      { "name": "foo2", "secret": "another secret", "type":" "text/plain" }]'
     }
     $TestTemplateParams = @{
       ResourceGroupName       = $ResourceGroupName
