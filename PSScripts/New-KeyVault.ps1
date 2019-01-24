@@ -31,7 +31,8 @@ else {
     Write-Host "Creating key vault $KeyVaultName"
     $ResourceGroup = Get-AzureRmResourceGroup -Name $ResourceGroupName
 
-    if ((((Get-Module AzureRM -ListAvailable | Sort-Object { $_.Version.Major } -Descending).Version.Major))[0] -gt 5) {
+    $AzureRmVersion = Get-Module AzureRM -ListAvailable | Sort-Object { $_.Version.Major } -Descending | Select-Object -First 1
+    if ($AzureRmVersion.Version.Major -gt 5) {
         $NewKeyVault   = New-AzureRmKeyVault -Name $KeyVaultName -ResourceGroupName $ResourceGroup.ResourceGroupName -Location $ResourceGroup.Location
     }
     else {
