@@ -13,6 +13,8 @@ A sample master template and links to individual deployment documentation can be
 
 ## PowerShell Scripts
 
+The PowerShell scripts directory contains scripts that can be used either in build and release definitions or from the command line.
+
 ## Tests
 
 All PowerShell scripts and ARM templates should be covered by Pester tests.

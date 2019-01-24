@@ -1,6 +1,8 @@
 # KeyVault
 
-Creates a key vault with App Service access
+Creates a key vault.
+If ran on an existing key vault it will wipe out all existing access policies.
+For an alternative which only creates the key vault if one does not exist, see PSScript/New-KeyVault.ps1
 
 ## Paramaters
 
