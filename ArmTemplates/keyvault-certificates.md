@@ -74,7 +74,7 @@ The following template is a guide on how to achieve this.
           "value": "[parameters('keyVaultName')]"
         },
         "certificates": {
-          "value": "[parameters('secrets')]"
+          "value": "[parameters('certificates')]"
         }
       }
     }
