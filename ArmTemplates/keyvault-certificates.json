@@ -1,0 +1,46 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "keyVaultName": {
+            "type": "string",
+            "metadata": {
+                "description": "Name of the keyvault with the certificates"
+            }
+        },
+        "certificates": {
+            "type": "array",
+            "metadata": {
+                "description": "Array of certificate names as they appear in the keyvault secret"
+            }
+        },
+        "serverFarmId": {
+            "type": "string",
+            "defaultValue": "",
+            "metadata": {
+                "description": "Resource ID of the associated App Service plan"
+            }
+        }
+    },
+    "variables": {
+        "keyVaultId": "[resourceId('Microsoft.KeyVault/vaults', parameters('keyVaultName'))]"
+    },
+    "resources": [
+        {
+            "name": "[parameters('certificates')[copyIndex()]]",
+            "type": "Microsoft.Web/certificates",
+            "apiVersion": "2018-02-01",
+            "location": "[resourceGroup().location]",
+            "copy": { 
+                "name": "certcopy", 
+                "count": "[length(parameters('certificates'))]" 
+            },
+            "properties": {
+                "keyVaultId": "[variables('keyVaultId')]",
+                "keyVaultSecretName": "[parameters('certificates')[copyIndex()]]",
+                "serverFarmId": "[if(greater(length(parameters('serverFarmId')), 0), parameters('serverFarmId'), json('null'))]"
+            }
+        }
+    ],
+    "outputs": {}
+}
