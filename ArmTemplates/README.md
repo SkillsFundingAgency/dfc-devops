@@ -31,6 +31,8 @@ Sample master template snippet
 The following templates are available
 
 * APIM
+* [App Service Plan](app-service-plan.md)
+* [App Service](app-service.md)
 * [Azure Search](azure-search.md)
 * [Cosmos DB](cosmos-db.md)
 * [Keyvault](keyvault.md)
