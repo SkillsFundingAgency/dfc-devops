@@ -36,6 +36,7 @@ The following templates are available
 * [Azure Search](azure-search.md)
 * [Cosmos DB](cosmos-db.md)
 * [Keyvault](keyvault.md)
+* [Keyvault Certificates](keyvault-certificates.md)
 * [Keyvault Secrets](keyvault-secrets.md)
 * [SQL Server](sql-server.md)
 * [Storage Account](storage-account.md)
