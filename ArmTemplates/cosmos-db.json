@@ -2,13 +2,6 @@
     "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-        "additionalIpAddresses": {
-            "type": "string",
-            "defaultValue": "",
-            "metadata": {
-                "description": "Any additional IP addresses to add to the IP Range Filter in addition to the default addresses.  If more than 1 address is included they should be seperated by a comma, eg: 11.111.123.134,12.134.114.115"
-            }
-        },
         "cosmosDbName": {
             "type": "string",
             "metadata": {
@@ -40,10 +33,17 @@
                 "Strong",
                 "ConsistentPrefix"
             ]
+        },
+        "additionalIpAddresses": {
+            "type": "string",
+            "defaultValue": "",
+            "metadata": {
+                "description": "Any additional IP addresses to add to the IP Range Filter in addition to the default addresses.  If more than 1 address is included they should be seperated by a comma, eg: 11.111.123.134,12.134.114.115"
+            }
         }
     },
     "variables": {
-        "allowedIpAddresses": "[if(equals(parameters('additionalIpAddresses'), ''), concat('0.0.0.0,104.42.195.92,40.76.54.131,52.176.6.30,52.169.50.45,52.187.184.26,', parameters('additionalIpAddresses')), '')]",
+        "allowedIpAddresses": "[if(equals(parameters('additionalIpAddresses'), ''), concat('0.0.0.0,104.42.195.92,40.76.54.131,52.176.6.30,52.169.50.45,52.187.184.26,', parameters('additionalIpAddresses')), json('null'))]",
         "capabilityName": "[if(equals(parameters('cosmosApiType'), 'Cassandra'), 'EnableCassandra', if(equals(parameters('cosmosApiType'), 'Gremlin'), 'EnableGremlin', if(equals(parameters('cosmosApiType'), 'Table'), 'EnableTable', '')))]",
         "emptyCapabilities": [],
         "enabledCapabilities": [
@@ -51,16 +51,8 @@
                 "name": "[variables('capabilityName')]"
             }
         ],
-        "capabilities": "[if(equals(variables('capabilityName'),''), variables('emptyCapabilities'), variables('enabledCapabilities'))]"
-    },
-    "resources": [
-        {
-            "name": "[parameters('cosmosDbName')]",
-            "type": "Microsoft.DocumentDB/databaseAccounts",
-            "apiVersion": "2015-04-08",
-            "location": "[resourceGroup().location]",
-            "kind": "[if(equals(parameters('cosmosApiType'), 'MongoDB'), 'MongoDB', 'GlobalDocumentDB')]",
-            "properties": {
+        "cosmosResourceProperties": {
+            "WithIpFilter": {
                 "locations": [
                     {
                         "locationName": "[resourceGroup().location]",
@@ -70,10 +62,33 @@
                 "consistencyPolicy": {
                     "defaultConsistencyLevel": "[parameters('defaultConsistencyLevel')]"
                 },
-                "capabilities":  "[variables('capabilities')]",
+                "capabilities": "[if(equals(variables('capabilityName'),''), variables('emptyCapabilities'), variables('enabledCapabilities'))]",
                 "databaseAccountOfferType": "Standard",
                 "ipRangeFilter": "[variables('allowedIpAddresses')]"
             },
+            "WithoutIpFilter": {
+                "locations": [
+                    {
+                        "locationName": "[resourceGroup().location]",
+                        "failoverPriority": 0
+                    }
+                ],
+                "consistencyPolicy": {
+                    "defaultConsistencyLevel": "[parameters('defaultConsistencyLevel')]"
+                },
+                "capabilities": "[if(equals(variables('capabilityName'),''), variables('emptyCapabilities'), variables('enabledCapabilities'))]",
+                "databaseAccountOfferType": "Standard"
+            }
+        }
+    },
+    "resources": [
+        {
+            "name": "[parameters('cosmosDbName')]",
+            "type": "Microsoft.DocumentDB/databaseAccounts",
+            "apiVersion": "2015-04-08",
+            "location": "[resourceGroup().location]",
+            "kind": "[if(equals(parameters('cosmosApiType'), 'MongoDB'), 'MongoDB', 'GlobalDocumentDB')]",
+            "properties": "[if(equals(parameters('additionalIpAddresses'), ''), variables('cosmosResourceProperties').WithoutIpFilter, variables('cosmosResourceProperties').WithIpFilter)]",
             "tags": {
                 "defaultExperience": "[if(equals(parameters('cosmosApiType'),'SQL'), 'DocumentDB', parameters('cosmosApiType'))]"
             }
