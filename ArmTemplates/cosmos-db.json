@@ -43,7 +43,6 @@
         }
     },
     "variables": {
-        "allowedIpAddresses": "[if(equals(parameters('additionalIpAddresses'), ''), concat('0.0.0.0,104.42.195.92,40.76.54.131,52.176.6.30,52.169.50.45,52.187.184.26,', parameters('additionalIpAddresses')), json('null'))]",
         "capabilityName": "[if(equals(parameters('cosmosApiType'), 'Cassandra'), 'EnableCassandra', if(equals(parameters('cosmosApiType'), 'Gremlin'), 'EnableGremlin', if(equals(parameters('cosmosApiType'), 'Table'), 'EnableTable', '')))]",
         "emptyCapabilities": [],
         "enabledCapabilities": [
@@ -64,7 +63,7 @@
                 },
                 "capabilities": "[if(equals(variables('capabilityName'),''), variables('emptyCapabilities'), variables('enabledCapabilities'))]",
                 "databaseAccountOfferType": "Standard",
-                "ipRangeFilter": "[variables('allowedIpAddresses')]"
+                "ipRangeFilter": "[concat('0.0.0.0,104.42.195.92,40.76.54.131,52.176.6.30,52.169.50.45,52.187.184.26,', parameters('additionalIpAddresses'))]"
             },
             "WithoutIpFilter": {
                 "locations": [
