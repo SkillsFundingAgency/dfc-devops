@@ -82,7 +82,7 @@
                 "optimizationType": "[parameters('optimizationType')]",
                 "origins": [
                     {
-                        "name": "[replace(parameters('originHostname'), '.', '-')]",
+                        "name": "[replace(variables('originHostName'), '.', '-')]",
                         "properties": {
                             "hostName": "[variables('originHostName')]",
                             "httpPort": 80,
