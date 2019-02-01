@@ -33,6 +33,7 @@ The following templates are available
 * APIM
 * [App Service Plan](app-service-plan.md)
 * [App Service](app-service.md)
+* [App Insights](application-insights.json)
 * [Azure Search](azure-search.md)
 * [Cosmos DB](cosmos-db.md)
 * [Keyvault](keyvault.md)
