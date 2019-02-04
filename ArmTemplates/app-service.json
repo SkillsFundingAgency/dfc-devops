@@ -21,6 +21,17 @@
                 "description": "Resource group the App Service Plan is within"
             }
         },
+        "appServiceType": {
+            "type": "string",
+            "allowedValues": [
+                "app",
+                "functionapp"
+            ],
+            "defaultValue": "app",
+            "metadata": {
+                "description": "Type of site, either (web)app or functionapp"
+            }
+        },
         "appServiceAppSettings": {
             "type": "array",
             "defaultValue": [],
@@ -60,6 +71,7 @@
             "name": "[parameters('appServiceName')]",
             "type": "Microsoft.Web/sites",
             "apiVersion": "2016-08-01",
+            "kind": "[parameters('appServiceType')]",
             "location": "[resourceGroup().location]",
             "properties": {
                 "serverFarmId": "[variables('appServicePlanId')]",

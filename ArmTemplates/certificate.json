@@ -1,0 +1,61 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "keyVaultName": {
+            "type": "string",
+            "metadata": {
+                "description": "Name of the keyvault with the certificates"
+            }
+        },
+        "keyVaultCertificateName": {
+            "type": "string",
+            "metadata": {
+                "description": "Name of secret which contains the certificate"
+            }
+        },
+        "keyVaultResourceGroup": {
+            "type": "string",
+            "defaultValue": "[resourceGroup().name]",
+            "metadata": {
+                "description": "Resource group the App Service Plan is within"
+            }
+        },
+        "serverFarmId": {
+            "type": "string",
+            "defaultValue": "",
+            "metadata": {
+                "description": "Resource ID of the associated App Service plan"
+            }
+        }       
+    },
+    "variables": {
+        "includeServerFarmId": "[greater(length(parameters('serverFarmId')), 0)]",
+        "certificateResourceProperties": {
+            "withServerFarmId": {
+                "keyVaultId": "[resourceId(parameters('keyVaultResourceGroup'), 'Microsoft.KeyVault/vaults', parameters('keyVaultName'))]",
+                "keyVaultSecretName": "[parameters('keyVaultCertificateName')]",
+                "serverFarmId": "[parameters('serverFarmId')]"                
+            },
+            "withoutServerFarmId": {
+                "keyVaultId": "[resourceId(parameters('keyVaultResourceGroup'), 'Microsoft.KeyVault/vaults', parameters('keyVaultName'))]",
+                "keyVaultSecretName": "[parameters('keyVaultCertificateName')]"
+            }
+        }
+    },
+    "resources": [
+        {
+            "type": "Microsoft.Web/certificates",
+            "name": "[parameters('keyVaultCertificateName')]",
+            "location": "[resourceGroup().location]",
+            "apiVersion": "2016-03-01",
+            "properties": "[if(variables('includeServerFarmId'), variables('certificateResourceProperties').withServerFarmId, variables('certificateResourceProperties').withoutServerFarmId)]"
+        }
+    ],
+    "outputs": {
+        "certificateThumbprint": {
+            "type": "string",
+            "value": "[reference(resourceId('Microsoft.Web/certificates', parameters('keyVaultCertificateName')), '2016-03-01').Thumbprint]"
+        }
+    }
+}

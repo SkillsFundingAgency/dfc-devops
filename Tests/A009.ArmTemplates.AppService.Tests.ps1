@@ -22,4 +22,25 @@ Describe "App Service Deployment Tests" -Tag "Acceptance" {
     }
 
   }
+
+  Context "When app service is deployed as a function app" {
+    $TemplateParameters = @{
+      appServiceName     = "dfc-foo-bar-fa"
+      appServicePlanName = "dfc-foo-bar-asp"
+      appServiceType     = "functionapp"
+    }
+    $TestTemplateParams = @{
+      ResourceGroupName       = $ResourceGroupName
+      TemplateFile            = $TemplateFile
+      TemplateParameterObject = $TemplateParameters
+    }
+
+    $output = Test-AzureRmResourceGroupDeployment @TestTemplateParams
+  
+    It "Should be deployed successfully" {
+      $output | Should -Be $null
+    }
+
+  }
+
 }
