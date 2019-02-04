@@ -35,6 +35,7 @@ The following templates are available
 * [App Service](app-service.md)
 * [App Insights](application-insights.json)
 * [Azure Search](azure-search.md)
+* [Certificate](certificate.md)
 * [Cosmos DB](cosmos-db.md)
 * [Keyvault](keyvault.md)
 * [Keyvault Certificates](keyvault-certificates.md)

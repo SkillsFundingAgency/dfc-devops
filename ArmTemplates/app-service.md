@@ -17,6 +17,11 @@ appServicePlanResourceGroup: (optional) string
 Resource group the App Service Plan resides in.
 Will default to Standard if not supplied.
 
+appServiceType: (optional) string
+
+Determines whether a web app (app) or a function app (functionapp) is created.
+Creates a web app if not specified.
+
 appServiceAppSettings: (optional) array of object
 
 Array of app settings to be created.
