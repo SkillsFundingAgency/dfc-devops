@@ -48,7 +48,7 @@
         },
         "originPath": {
             "type": "string",
-            "defaultValue": "[json('null')]"
+            "defaultValue": null
         }
     },
     "variables": {
