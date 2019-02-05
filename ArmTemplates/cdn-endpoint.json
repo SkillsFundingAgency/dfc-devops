@@ -48,7 +48,7 @@
         },
         "originPath": {
             "type": "string",
-            "defaultValue": null
+            "defaultValue": ""
         }
     },
     "variables": {
@@ -64,7 +64,6 @@
             "location": "[resourceGroup().location]",
             "properties": {
                 "originHostHeader": "[variables('originHostName')]",
-                "originPath": "[parameters('originPath')]",
                 "contentTypesToCompress": [
                     "application/eot",
                     "application/font",
