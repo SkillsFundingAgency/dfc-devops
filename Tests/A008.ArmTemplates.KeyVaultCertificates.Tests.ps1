@@ -1,6 +1,6 @@
 # common variables
 $ResourceGroupName = "dfc-test-template-rg"
-$TemplateFile = "$PSScriptRoot\..\ArmTemplates\keyvault-certificates.json"
+$TemplateFile = "$PSScriptRoot\..\ArmTemplates\KeyVault\keyvault-certificates.json"
 
 Describe "Key Vault Secrets Deployment Tests" -Tag "Acceptance" {
   
