@@ -35,8 +35,10 @@ The following templates are available
 * APIM
 * [App Service Plan](app-service-plan.md)
 * [App Service](app-service.md)
+* [App Insights](application-insights.json)
 * [Azure Search](azure-search.md)
 * [CDN](CDN/cdn-endpoint.md)
+* [Certificate](certificate.md)
 * [Cosmos DB](cosmos-db.md)
 * [DataFactory](datafactory.md)
 * [DataFactory Linked Service Azure SQL](DataFactory/datafactory-linkedservice-azuresql.md)

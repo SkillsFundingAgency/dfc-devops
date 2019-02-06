@@ -1,0 +1,48 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "appInsightsName": {
+            "type": "string",
+            "metadata": {
+                "description": "Name of the application insights resource"
+            }
+        },
+        "attachedService": {
+            "defaultValue": "",
+            "type": "string",
+            "metadata": {
+                "description": "Name of the app service the resource monitors (tag only)"
+            }
+        }
+    },
+    "variables": {
+        "withoutAttachedService": {},
+        "withAttachedService": {
+            "[concat('hidden-link:', resourceId('Microsoft.Web/sites', parameters('attachedService')))]": "Resource"
+        }
+    },
+    "resources": [
+        {
+            "apiVersion": "2015-05-01",
+            "name": "[parameters('appInsightsName')]",
+            "type": "Microsoft.Insights/components",
+            "location": "[resourceGroup().location]",
+            "kind": "web",
+            "tags": "[if(equals(parameters('attachedService'),''), variables('withoutAttachedService'), variables('withAttachedService'))]",
+            "properties": {
+                "Application_Type": "web"
+            }
+        }
+    ],
+    "outputs": {
+        "InstrumentationKey": {
+            "type": "string",
+            "value": "[reference(concat('microsoft.insights/components/', parameters('appInsightsName'))).InstrumentationKey]"
+        },
+        "AppId": {
+            "type": "string",
+            "value": "[reference(concat('microsoft.insights/components/', parameters('appInsightsName'))).AppId]"
+        }
+    }
+}
