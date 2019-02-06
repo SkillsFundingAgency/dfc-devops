@@ -1,0 +1,162 @@
+{
+    "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "cdnProfileName": {
+            "type": "string",
+            "metadata": {
+                "description": "Name of Content Delivery Network profile"
+            }
+        },
+        "cdnEndPointName": {
+            "type": "string",
+            "metadata": {
+                "description": "Name of the endpoint has to be unique"
+            }
+        },
+        "originHostName": {
+            "type": "string"
+        },
+        "optimizationType": {
+            "type": "string",
+            "defaultValue": "GeneralWebDelivery",
+            "allowedValues": [
+                "GeneralWebDelivery",
+                "GeneralMediaStreaming",
+                "VideoOnDemandMediaStreaming",
+                "LargeFileDownload",
+                "DynamicSiteAcceleration"
+            ]
+        },
+        "customDomainName": {
+            "type": "string",
+            "defaultValue": ""
+        },
+        "isHttpAllowed": {
+            "type": "bool",
+            "defaultValue": false
+        },
+        "queryStringCachingBehavior": {
+            "type": "string",
+            "defaultValue": "IgnoreQueryString",
+            "allowedValues": [
+                "NotSet",
+                "IgnoreQueryString",
+                "UseQueryString",
+                "BypassCaching"
+            ]
+        },
+        "originPath": {
+            "type": "string",
+            "defaultValue": ""
+        }
+    },
+    "variables": {
+        "contentTypesToCompress": [
+            "application/eot",
+            "application/font",
+            "application/font-sfnt",
+            "application/javascript",
+            "application/json",
+            "application/opentype",
+            "application/otf",
+            "application/pkcs7-mime",
+            "application/truetype",
+            "application/ttf",
+            "application/vnd.ms-fontobject",
+            "application/xhtml+xml",
+            "application/xml",
+            "application/xml+rss",
+            "application/x-font-opentype",
+            "application/x-font-truetype",
+            "application/x-font-ttf",
+            "application/x-httpd-cgi",
+            "application/x-javascript",
+            "application/x-mpegurl",
+            "application/x-opentype",
+            "application/x-otf",
+            "application/x-perl",
+            "application/x-ttf",
+            "font/eot",
+            "font/ttf",
+            "font/otf",
+            "font/opentype",
+            "image/svg+xml",
+            "text/css",
+            "text/csv",
+            "text/html",
+            "text/javascript",
+            "text/js",
+            "text/plain",
+            "text/richtext",
+            "text/tab-separated-values",
+            "text/xml",
+            "text/x-script",
+            "text/x-component",
+            "text/x-java-source"
+        ],
+        "customDomainEnabled": "[greater(length(parameters('customDomainName')), 0)]",
+        "fullEndpointName": "[concat(parameters('cdnProfileName'), '/', parameters('cdnEndpointName'))]",
+        "origin": [
+            {
+                "name": "[replace(variables('originHostName'), '.', '-')]",
+                "properties": {
+                    "hostName": "[variables('originHostName')]",
+                    "httpPort": 80,
+                    "httpsPort": 443
+                }
+            }
+        ],
+        "originHostName": "[replace(replace(parameters('originHostName'),'https://',''),'/','')]",
+        "endpointProperties": {
+            "withOriginPath": {
+                "originHostHeader": "[variables('originHostName')]",
+                "originPath": "[parameters('originPath')]",
+                "contentTypesToCompress": "[variables('contentTypesToCompress')]",
+                "isCompressionEnabled": true,
+                "isHttpAllowed": "[parameters('isHttpAllowed')]",
+                "isHttpsAllowed": true,
+                "queryStringCachingBehavior": "[parameters('queryStringCachingBehavior')]",
+                "optimizationType": "[parameters('optimizationType')]",
+                "origins": "[variables('origin')]"
+            },
+            "withoutOriginPath": {
+                "originHostHeader": "[variables('originHostName')]",
+                "contentTypesToCompress": "[variables('contentTypesToCompress')]",
+                "isCompressionEnabled": true,
+                "isHttpAllowed": "[parameters('isHttpAllowed')]",
+                "isHttpsAllowed": true,
+                "queryStringCachingBehavior": "[parameters('queryStringCachingBehavior')]",
+                "optimizationType": "[parameters('optimizationType')]",
+                "origins": "[variables('origin')]"
+            }
+        }
+    },
+    "resources": [
+        {
+            "name": "[variables('fullEndpointName')]",
+            "type": "Microsoft.Cdn/profiles/endpoints",
+            "apiVersion": "2017-10-12",
+            "location": "[resourceGroup().location]",
+            "properties": "[if(equals(parameters('originPath'), ''), variables('endpointProperties').withoutOriginPath, variables('endpointProperties').withOriginPath)]"
+        },
+        {
+            "apiVersion": "2017-10-12",
+            "condition": "[variables('customDomainEnabled')]",
+            "type": "Microsoft.Cdn/profiles/endpoints/customDomains",
+            "name": "[concat(variables('fullEndpointName'), '/', if(variables('customDomainEnabled'), replace(parameters('customDomainName'), '.', '-'), 'placeholder'))]",
+            "properties": {
+                "hostName": "[parameters('customDomainName')]"
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Cdn/profiles/endpoints',parameters('cdnProfileName') , parameters('cdnEndPointName'))]"
+            ]
+        }
+    ],
+    "outputs": {
+        "endpointHostName": {
+            "type": "string",
+            "value": "[reference(parameters('cdnEndPointName')).hostname]"
+        }
+    }
+}

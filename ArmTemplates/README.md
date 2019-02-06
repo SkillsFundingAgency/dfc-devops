@@ -28,6 +28,8 @@ Sample master template snippet
 ]
 ```
 
+Templates for root resources (ie resources that appear at the root of the Microsoft ARM reference documentation) are stored in the root folder.  Any templates for child resources are stored in subfolders named after the root resource.
+
 The following templates are available
 
 * APIM
@@ -35,11 +37,16 @@ The following templates are available
 * [App Service](app-service.md)
 * [App Insights](application-insights.json)
 * [Azure Search](azure-search.md)
+* [CDN](CDN/cdn-endpoint.md)
 * [Certificate](certificate.md)
 * [Cosmos DB](cosmos-db.md)
+* [DataFactory](datafactory.md)
+* [DataFactory Linked Service Azure SQL](DataFactory/datafactory-linkedservice-azuresql.md)
+* [DataFactory Linked Service CosmosDb](DataFactory/datafactory-linkedservice-cosmosdb.md)
 * [Keyvault](keyvault.md)
-* [Keyvault Certificates](keyvault-certificates.md)
-* [Keyvault Secrets](keyvault-secrets.md)
+* [Keyvault Access Policy](KeyVault/keyvault-access-policy.md)
+* [Keyvault Certificates](KeyVault/keyvault-certificates.md)
+* [Keyvault Secrets](KeyVault/keyvault-secrets.md)
 * [SQL Server](sql-server.md)
 * [Storage Account](storage-account.md)
-* [Storage Account Container](storage-account-arm-container.md)
+* [Storage Account Container](Storage/storage-account-arm-container.md)
