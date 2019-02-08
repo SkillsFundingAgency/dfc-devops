@@ -1,0 +1,56 @@
+<#
+.SYNOPSIS
+Converts the Git tags to 
+
+.DESCRIPTION
+Imports pfx certificate to a keyvault for use in Azure
+
+.PARAMETER RepositoryPath
+Path to the git root directory (the one with the .git directory in)
+
+.PARAMETER RenameFilter
+[Optional] Allows you to change the tag created
+Takes a dictionary where the key is the tag to create if the git tab matches the value. The value accepts wildcards
+
+.EXAMPLE
+Get-GitTags -RepositoryPath $(Build.Repository.LocalPath)
+
+.EXAMPLE
+Get-GitTags -RepositoryPath $GitPath -RenameFilter @{ lab = "lab-*" }
+
+#>
+param(
+    [Parameter(Mandatory=$true)]
+    [string] $RepositoryPath,
+    [Parameter(Mandatory=$false)]
+    [hashtable] $RenameFilter
+)
+
+function Invoke-GitTag {
+    param (
+        [Parameter(Mandatory=$true)] [string] $RepositoryPath
+    )
+    git --git-dir="$RepositoryPath\.git" tag -l --points-at HEAD
+}
+
+Write-Output "Repository Path is $RepositoryPath"
+$GitTags = Invoke-GitTag -RepositoryPath $RepositoryPath
+
+if ($GitTags) {
+    foreach ($Tag in $GitTags) {
+        Write-Output "Processing tag: $Tag"
+        if ($RenameFilter) {
+            # Rename filter passed in, loop through values to see if any like the tag
+            foreach ($Rename in $RenameFilter.Keys) {
+                if ($Tag -like $RenameFilter[$Rename]) {
+                    $Tag = $Rename
+                    break
+                }
+            }
+        }
+        Write-Output "##vso[build.addbuildtag]$Tag"
+    }
+}
+else {
+    Write-Output "No tags present"
+}
