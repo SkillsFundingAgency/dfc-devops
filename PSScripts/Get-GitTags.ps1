@@ -18,12 +18,17 @@ Get-GitTags -RepositoryPath $(Build.Repository.LocalPath)
 .EXAMPLE
 Get-GitTags -RepositoryPath $GitPath -RenameFilter @{ lab = "lab-*" }
 
+.EXAMPLE
+Get-GitTags -RepositoryPath $GitPath -AdditionalTag $(BUILD_SOURCEBRANCHNAME)
+
 #>
 param(
     [Parameter(Mandatory=$true)]
     [string] $RepositoryPath,
     [Parameter(Mandatory=$false)]
-    [hashtable] $RenameFilter
+    [hashtable] $RenameFilter,
+    [Parameter(Mandatory=$false)]
+    [string] $AdditionalTag
 )
 
 function Invoke-GitTag {
@@ -38,12 +43,13 @@ $GitTags = Invoke-GitTag -RepositoryPath $RepositoryPath
 
 if ($GitTags) {
     foreach ($Tag in $GitTags) {
-        Write-Output "Processing tag: $Tag"
+        Write-Output "Processing Git tag: $Tag"
         if ($RenameFilter) {
             # Rename filter passed in, loop through values to see if any like the tag
             foreach ($Rename in $RenameFilter.Keys) {
                 if ($Tag -like $RenameFilter[$Rename]) {
                     $Tag = $Rename
+                    Write-Output "Renamed by filter to $Tag"
                     break
                 }
             }
@@ -52,5 +58,10 @@ if ($GitTags) {
     }
 }
 else {
-    Write-Output "No tags present"
+    Write-Output "No tags present in git branch"
+}
+
+if ($AdditionalTag) {
+    Write-Output "Adding tag $AdditionalTag"
+    Write-Output "##vso[build.addbuildtag]$AdditionalTag"
 }
