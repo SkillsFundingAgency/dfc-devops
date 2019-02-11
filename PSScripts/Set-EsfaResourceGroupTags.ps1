@@ -63,23 +63,23 @@ else {
 
     foreach ($Key in $Tags.Keys) {
 
-        Write-Verbose "Current value of Resource Group Tag $Key is $($ResourceGroup.Tags["$Key"])"
-        if ($($ResourceGroup.Tags["$Key"]) -eq $($Tags["$Key"])) {
+        Write-Verbose "Current value of Resource Group Tag $Key is $($ResourceGroup.Tags[$Key])"
+        if ($($ResourceGroup.Tags[$Key]) -eq $($Tags[$Key])) {
 
-            Write-Verbose -Message "Current value of tag ($($ResourceGroup.Tags["$Key"])) matches parameter ($($Tags["$Key"]))"
+            Write-Verbose -Message "Current value of tag ($($ResourceGroup.Tags[$Key])) matches parameter ($($Tags[$Key]))"
 
         }
-        elseif ($null -eq $($ResourceGroup.Tags["$Key"])){
+        elseif ($null -eq $($ResourceGroup.Tags[$Key])){
 
-            Write-Verbose -Message ("Tag value is not set, adding tag {0} with value {1}" -f $Key, $Tags["$Key"])
-            $UpdatedTags["$Key"] = $Tags["$Key"]
+            Write-Verbose -Message ("Tag value is not set, adding tag {0} with value {1}" -f $Key, $Tags[$Key])
+            $UpdatedTags[$Key] = $Tags[$Key]
             $UpdateTags = $true
 
         }
         else {
 
-            Write-Verbose -Message ("Tag value is incorrect, setting tag {0} with value {1}" -f $Key, $Tags["$Key"])
-            $UpdatedTags["$Key"] = $Tags["$Key"]
+            Write-Verbose -Message ("Tag value is incorrect, setting tag {0} with value {1}" -f $Key, $Tags[$Key])
+            $UpdatedTags[$Key] = $Tags[$Key]
             $UpdateTags = $true
             
         }
