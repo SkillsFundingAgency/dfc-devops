@@ -13,7 +13,7 @@ Describe "Get-GitTags unit tests" -Tag "Unit" {
         $output -contains "No tags present in git branch" | Should be $true
     }
 
-    It "Should create one tag if git returns a " {
+    It "Should create one tag if git returns a single tag" {
         Mock Invoke-GitTag { return "onetag" }
 
         $output = .\Get-GitTags -RepositoryPath $gitpath
