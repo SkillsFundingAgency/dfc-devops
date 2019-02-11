@@ -1,3 +1,13 @@
+<#
+.SYNOPSIS
+Sets standard tags on a resource group required by the ESFA.
+
+.DESCRIPTION
+Checks if a resource group exists, if it doesn't creates with specified tags.  If it does validates that the tags are match those specified in the parameters and updates them if necessary.
+
+.EXAMPLE
+Set-EsfaResourceGroupTags -ResourceGroupName "dfc-dev-foobar-rg" -Environment "Dev/Test" -ParentBusiness "National Careers Service" -ServiceOffering "Course Directory"
+#>
 [CmdletBinding()]
 param(
     [Parameter(Mandatory=$true)]
