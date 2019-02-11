@@ -47,7 +47,7 @@ $Tags = @{
 }
 
 Write-Verbose -Message "Attempting to retrieve existing resource group $ResourceGroupName"
-$ResourceGroup = Get-AzureRmResourceGroup -Name $ResourceGroupName
+$ResourceGroup = Get-AzureRmResourceGroup -Name $ResourceGroupName -ErrorAction SilentlyContinue
 
 if(!$ResourceGroup) {
 
