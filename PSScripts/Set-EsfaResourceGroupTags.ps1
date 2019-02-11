@@ -5,6 +5,21 @@ Sets standard tags on a resource group required by the ESFA.
 .DESCRIPTION
 Checks if a resource group exists, if it doesn't creates with specified tags.  If it does validates that the tags are match those specified in the parameters and updates them if necessary.
 
+.PARAMETER ResourceGroupName
+Name of the resource group to be created and \ or have tags applied
+
+.PARAMETER Location
+[Optional]Location of the resource group, defaults to West Europe
+
+.PARAMETER Environment
+Name of the environment, select from a valid ESFA environment name tag: Production, PreProduction or Dev/Test
+
+.PARAMETER ParentBusiness
+Name of the business to which the resources belong, select from either National Careers Service or National Careers Service (PP)
+
+.PARAMETER ServiceOffering
+Name of the service offering to which the resources belong, select from Course Directory, Course Directory (PP), Data Sharing Service, Data Sharing Service (PP), Digital First Career Service (DFCS) Website, Digital First Career Service (DFCS) Website (PP), NCS Website or NCS Website (PP)
+
 .EXAMPLE
 Set-EsfaResourceGroupTags -ResourceGroupName "dfc-dev-foobar-rg" -Environment "Dev/Test" -ParentBusiness "National Careers Service" -ServiceOffering "Course Directory"
 #>
