@@ -1,9 +1,9 @@
 <#
 .SYNOPSIS
-Converts the Git tags to 
+Renames config.template files to config
 
 .DESCRIPTION
-Imports pfx certificate to a keyvault for use in Azure
+Renames config.template files to config
 
 .PARAMETER RootPath
 Path to the root directory to start the rename from
