@@ -30,7 +30,7 @@ param(
     [Parameter(Mandatory=$false)]
     [string]$Location = "West Europe",
     [Parameter(Mandatory=$true)]
-    [ValidateSet("Production", "PreProduction", "Dev/Test")]
+    [ValidateSet("Production", "Pre-Production", "Dev/Test")]
     [string]$Environment,
     [Parameter(Mandatory=$true)]
     [ValidateSet("National Careers Service", "National Careers Service (PP)")]
