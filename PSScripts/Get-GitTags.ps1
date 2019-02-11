@@ -1,9 +1,10 @@
 <#
 .SYNOPSIS
-Converts the Git tags to 
+Converts the Git tags to VSTS tags
 
 .DESCRIPTION
-Imports pfx certificate to a keyvault for use in Azure
+Checks if the branch has any tags in git and add these tags to VSTS.
+Also allows an optional additional tag to be added in VSTS. 
 
 .PARAMETER RepositoryPath
 Path to the git root directory (the one with the .git directory in)
@@ -11,6 +12,9 @@ Path to the git root directory (the one with the .git directory in)
 .PARAMETER RenameFilter
 [Optional] Allows you to change the tag created
 Takes a dictionary where the key is the tag to create if the git tab matches the value. The value accepts wildcards
+
+.PARAMETER AdditionalTag
+[Optional] Add an additional tag to VSTS
 
 .EXAMPLE
 Get-GitTags -RepositoryPath $(Build.Repository.LocalPath)
