@@ -1,0 +1,28 @@
+## Naming convention - businessArea-(project)-technology-action-(additionalInfo)
+## eg dfc-dotnetframework-build
+## eg dfc-findacourse-dotnetframework-build-version
+
+parameters:
+  SolutionBaseName: ''
+  BuildPlatform: 'any cpu'
+  BuildConfiguration: 'release'
+
+steps:
+ - task: gittools.gitversion.gitversion-task.GitVersion@4
+   displayName: GitVersion
+   inputs:
+     preferBundledVersion: false
+ - task: NuGetToolInstaller@0
+   displayName: 'Use NuGet 4.3.0'
+ - task: NuGetCommand@2
+   displayName: 'NuGet restore ${{ parameters.SolutionBaseName }}.sln'
+   inputs:
+     restoreSolution: '${{ parameters.SolutionBaseName }}.sln'
+ - task: VSBuild@1
+   displayName: 'Build solution ${{ parameters.SolutionBaseName }}.sln'
+   inputs:
+     solution: '${{ parameters.SolutionBaseName }}.sln'
+     vsVersion: 15.0
+     msbuildArgs: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:PackageLocation="$(build.artifactstagingdirectory)\DeploymentPackages\\" /p:VersionPrefix="$(GitVersion.MajorMinorPatch)"'
+     platform: '${{ parameters.BuildPlatform }}'
+     configuration: '${{ parameters.BuildConfiguration }}'
