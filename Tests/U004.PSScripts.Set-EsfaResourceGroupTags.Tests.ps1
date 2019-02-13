@@ -34,6 +34,18 @@ Describe "Set-EsfaResourceGroupTags unit tests" -Tag "Unit" {
 
     It "Should create new resource group if group doesn't exists" {
 
+        Mock Get-AzureRmResourceGroup
+
+        .\Set-EsfaResourceGroupTags -ResourceGroupName "dfc-barfoo-rg" -Environment "Dev/Test" -ParentBusiness "National Careers Service" -ServiceOffering "Digital First Career Service (DFCS) Website (PP)"
+
+        Assert-MockCalled Get-AzureRmResourceGroup -Exactly 1 -Scope It
+        Assert-MockCalled New-AzureRmResourceGroup -Exactly 1 -Scope It
+        Assert-MockCalled Set-AzureRmResourceGroup -Exactly 0 -Scope It
+
+    }
+
+    It "Should add tags to the group it not tags exist" {
+
         Mock Get-AzureRmResourceGroup { [PsCustomObject]
             @{
                 ResourceGroupName = "dfc-foobar-rg"
@@ -46,18 +58,6 @@ Describe "Set-EsfaResourceGroupTags unit tests" -Tag "Unit" {
         Assert-MockCalled Get-AzureRmResourceGroup -Exactly 1 -Scope It
         Assert-MockCalled New-AzureRmResourceGroup -Exactly 0 -Scope It
         Assert-MockCalled Set-AzureRmResourceGroup -Exactly 1 -Scope It
-
-    }
-
-    It "Should add tags to the group it not tags exist" {
-
-        Mock Get-AzureRmResourceGroup
-
-        .\Set-EsfaResourceGroupTags -ResourceGroupName "dfc-barfoo-rg" -Environment "Dev/Test" -ParentBusiness "National Careers Service" -ServiceOffering "Digital First Career Service (DFCS) Website (PP)"
-
-        Assert-MockCalled Get-AzureRmResourceGroup -Exactly 1 -Scope It
-        Assert-MockCalled New-AzureRmResourceGroup -Exactly 1 -Scope It
-        Assert-MockCalled Set-AzureRmResourceGroup -Exactly 0 -Scope It
 
     }
 
