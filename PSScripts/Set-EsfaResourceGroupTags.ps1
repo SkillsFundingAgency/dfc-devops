@@ -58,31 +58,42 @@ if(!$ResourceGroup) {
 else {
 
     Write-Verbose -Message "Resource group $ResourceGroupName exists, validating tags"
-    $UpdatedTags = $ResourceGroup.Tags
     $UpdateTags = $false
 
-    foreach ($Key in $Tags.Keys) {
+    if ($ResourceGroup.Tags) {
 
-        Write-Verbose "Current value of Resource Group Tag $Key is $($ResourceGroup.Tags[$Key])"
-        if ($($ResourceGroup.Tags[$Key]) -eq $($Tags[$Key])) {
+        # Check existing tags and update if necessary
+        $UpdatedTags = $ResourceGroup.Tags
+        foreach ($Key in $Tags.Keys) {
 
-            Write-Verbose -Message "Current value of tag ($($ResourceGroup.Tags[$Key])) matches parameter ($($Tags[$Key]))"
+            Write-Verbose "Current value of Resource Group Tag $Key is $($ResourceGroup.Tags[$Key])"
+            if ($($ResourceGroup.Tags[$Key]) -eq $($Tags[$Key])) {
 
-        }
-        elseif ($null -eq $($ResourceGroup.Tags[$Key])){
+                Write-Verbose -Message "Current value of tag ($($ResourceGroup.Tags[$Key])) matches parameter ($($Tags[$Key]))"
 
-            Write-Verbose -Message ("Tag value is not set, adding tag {0} with value {1}" -f $Key, $Tags[$Key])
-            $UpdatedTags[$Key] = $Tags[$Key]
-            $UpdateTags = $true
+            }
+            elseif ($null -eq $($ResourceGroup.Tags[$Key])) {
 
-        }
-        else {
+                Write-Verbose -Message ("Tag value is not set, adding tag {0} with value {1}" -f $Key, $Tags[$Key])
+                $UpdatedTags[$Key] = $Tags[$Key]
+                $UpdateTags = $true
 
-            Write-Verbose -Message ("Tag value is incorrect, setting tag {0} with value {1}" -f $Key, $Tags[$Key])
-            $UpdatedTags[$Key] = $Tags[$Key]
-            $UpdateTags = $true
+            }
+            else {
+
+                Write-Verbose -Message ("Tag value is incorrect, setting tag {0} with value {1}" -f $Key, $Tags[$Key])
+                $UpdatedTags[$Key] = $Tags[$Key]
+                $UpdateTags = $true
             
-        }
+            } 
+        } 
+
+    }
+    else {
+
+        # No tags to check, just update with the passed in tags
+        $UpdatedTags = $Tags
+        $UpdateTags = $true
 
     }
 
