@@ -44,6 +44,23 @@ Describe "Set-EsfaResourceGroupTags unit tests" -Tag "Unit" {
 
     }
 
+    It "Should add tags to the group it not tags exist" {
+
+        Mock Get-AzureRmResourceGroup { [PsCustomObject]
+            @{
+                ResourceGroupName = "dfc-foobar-rg"
+                Location = "westeurope"
+            }
+        }
+    
+        .\Set-EsfaResourceGroupTags -ResourceGroupName "dfc-barfoo-rg" -Environment "Dev/Test" -ParentBusiness "National Careers Service" -ServiceOffering "Digital First Career Service (DFCS) Website (PP)"
+
+        Assert-MockCalled Get-AzureRmResourceGroup -Exactly 1 -Scope It
+        Assert-MockCalled New-AzureRmResourceGroup -Exactly 0 -Scope It
+        Assert-MockCalled Set-AzureRmResourceGroup -Exactly 1 -Scope It
+
+    }
+
 }
 
 Push-Location -Path $PSScriptRoot
