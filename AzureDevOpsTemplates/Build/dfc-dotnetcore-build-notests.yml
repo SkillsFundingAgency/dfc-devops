@@ -1,0 +1,33 @@
+parameters:
+  SolutionBaseName: ''
+  BuildPlatform: 'any cpu'
+  BuildConfiguration: 'release'
+
+steps:
+ - task: gittools.gitversion.gitversion-task.GitVersion@4
+   displayName: GitVersion
+   inputs:
+     preferBundledVersion: false
+ - task: NuGetToolInstaller@0
+   displayName: 'Use NuGet 4.3.0'
+ - task: NuGetCommand@2
+   displayName: 'NuGet restore ${{ parameters.SolutionBaseName }}.sln'
+   inputs:
+     restoreSolution: '${{ parameters.SolutionBaseName }}.sln'
+ - task: DotNetCoreCLI@2
+   displayName: 'dotnet build'
+   inputs:
+     command: 'build'
+     arguments: '-o "$(build.artifactstagingdirectory)\DeploymentPackages\\"'
+ - task: CopyFiles@2
+   displayName: 'Copy Files to: $(build.artifactstagingdirectory)/Azure'
+   inputs:
+     sourceFolder: 'Resources'
+     contents: '**'
+     targetFolder: '$(build.artifactstagingdirectory)/Azure'
+ - task: PublishBuildArtifacts@1
+   displayName: 'Publish Artifact: ${{ parameters.SolutionBaseName }}'
+   inputs:
+     pathtoPublish: $(build.artifactstagingdirectory)
+     artifactName: ${{ parameters.SolutionBaseName }}
+     publishLocation: container
