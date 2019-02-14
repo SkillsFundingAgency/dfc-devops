@@ -1,7 +1,3 @@
-## Naming convention - businessArea-(project)-technology-action-(additionalInfo)
-## eg dfc-dotnetframework-build
-## eg dfc-findacourse-dotnetframework-build-version
-
 parameters:
   SolutionBaseName: ''
   BuildPlatform: 'any cpu'
@@ -26,3 +22,30 @@ steps:
      msbuildArgs: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:PackageLocation="$(build.artifactstagingdirectory)\DeploymentPackages\\" /p:VersionPrefix="$(GitVersion.MajorMinorPatch)"'
      platform: '${{ parameters.BuildPlatform }}'
      configuration: '${{ parameters.BuildConfiguration }}'
+ - task: CopyFiles@2
+   displayName: 'Copy Files to: $(build.artifactstagingdirectory)/UnitTests'
+   inputs:
+     sourceFolder: '$(System.DefaultWorkingDirectory)'
+     contents: '**\bin\Release\**'
+     targetFolder: '$(build.artifactstagingdirectory)/UnitTests'
+ - task: VSTest@2
+   displayName: 'VsTest - testAssemblies'
+   inputs:
+     testSelector: 'testAssemblies'
+     testAssemblyVer2: '**\${{ parameters.SolutionBaseName }}.Tests.dll'
+     searchFolder: '$(build.artifactstagingdirectory)/UnitTests'
+     codeCoverageEnabled: true
+     platform: ${{ parameters.BuildPlatform }}
+     configuration: ${{ parameters.BuildConfiguration }}
+ - task: CopyFiles@2
+   displayName: 'Copy Files to: $(build.artifactstagingdirectory)/Azure'
+   inputs:
+     sourceFolder: 'Resources'
+     contents: '**'
+     targetFolder: '$(build.artifactstagingdirectory)/Azure'
+ - task: PublishBuildArtifacts@1
+   displayName: 'Publish Artifact: ${{ parameters.SolutionBaseName }}'
+   inputs:
+     pathtoPublish: $(build.artifactstagingdirectory)
+     artifactName: ${{ parameters.SolutionBaseName }}
+     publishLocation: container
