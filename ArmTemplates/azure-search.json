@@ -67,7 +67,7 @@
     "outputs": {
         "redisConnectionString": {
             "type": "securestring",
-            "value": "[listkeys(resourceId('Microsoft.Search/searchServices', parameters('azureSearchName')), '2015-08-19').PrimaryKey]"
+            "value": "[listAdminKeys(resourceId('Microsoft.Search/searchServices', parameters('azureSearchName')), '2015-08-19').PrimaryKey]"
         }
     }
 }

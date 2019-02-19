@@ -18,7 +18,3 @@ redisCapacity: (optional) int
 
 Redis cache capacity. Basic and standard can be between 0 and 6. Premium is between 0 and 5.
 See see https://azure.microsoft.com/en-us/pricing/details/cache/ for details about the size 
-
-## Common usage
-
-This is commonly used to with the app-service linked template to create the certificate for use as a custom host name.
