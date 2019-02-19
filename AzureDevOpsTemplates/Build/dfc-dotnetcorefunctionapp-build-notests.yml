@@ -24,6 +24,7 @@ steps:
    inputs: 
      rootFolderOrFile: $(build.artifactstagingdirectory)\Build\
      archiveFile: $(build.artifactstagingdirectory)\DeploymentPackages\$(SolutionBaseName).zip
+     includeRootFolder: false
  - task: CopyFiles@2
    displayName: 'Copy Files to: $(build.artifactstagingdirectory)/Azure'
    inputs:
