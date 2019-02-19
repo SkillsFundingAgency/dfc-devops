@@ -1,8 +1,6 @@
-# KeyVault
+# Certificate
 
-Creates a key vault.
-If ran on an existing key vault it will wipe out all existing access policies.
-For an alternative which only creates the key vault if one does not exist, see PSScript/New-KeyVault.ps1
+Creates a certificate from a key vault.
 
 ## Paramaters
 
@@ -24,7 +22,3 @@ serverFarmId: (optional) string
 
 App service plan resource ID to associate to the certificate.
 Resource ID needs to be formatted as: "/subscriptions/{subscriptionID}/resourceGroups/{groupName}/providers/Microsoft.Web/serverfarms/{appServicePlanName}".
-
-## Common usage
-
-This is commonly used to with the app-service linked template to create the certificate for use as a custom host name.
