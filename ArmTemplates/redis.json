@@ -1,0 +1,55 @@
+{
+  "$schema": "http://schema.management.azure.com/schemas/2014-04-01-preview/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "redisName": {
+      "type": "string"
+    },
+    "redisSkuName": {
+      "type": "string",
+      "allowedValues": [
+        "Basic",
+        "Standard",
+        "Premium"
+      ],
+      "defaultValue": "Standard",
+      "metadata": {
+        "description": "The pricing tier of the Redis Cache"
+      }
+    },
+    "redisCapacity": {
+      "type": "int",
+      "minValue": 0,
+      "maxValue": 6,
+      "defaultValue": 1,
+      "metadata": {
+        "description": "The size of the new Azure Redis Cache instance"
+      }
+    }
+  },
+  "variables": {
+    "redisSkuFamily": "[if(equals(parameters('redisSkuName'), 'Premium'), 'P', 'C')]"
+  },
+  "resources": [
+    {
+      "name": "[parameters('redisName')]",
+      "type": "Microsoft.Cache/Redis",
+      "apiVersion": "2015-08-01",
+      "location": "[resourceGroup().location]",
+      "properties": {
+        "sku": {
+          "name": "[parameters('redisSkuName')]",
+          "family": "[variables('redisSkuFamily')]",
+          "capacity": "[parameters('redisCapacity')]"
+        },
+        "enableNonSslPort": false
+      }
+    }
+  ],
+  "outputs": {
+    "redisConnectionString": {
+      "type": "securestring",
+      "value": "[concat(reference(resourceId('Microsoft.Cache/redis', parameters('redisName'))).hostName, ':', reference(resourceId('Microsoft.Cache/redis', parameters('redisName'))).sslPort, ',password=', listkeys(resourceId('Microsoft.Cache/redis', parameters('redisName')), providers('Microsoft.Cache', 'redis').apiVersions[0]).primaryKey, ',ssl=True,abortConnect=False,syncTimeout=2000,allowAdmin=true')]"
+    }
+  }
+}

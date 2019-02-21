@@ -47,6 +47,7 @@ The following templates are available
 * [Keyvault Access Policy](KeyVault/keyvault-access-policy.md)
 * [Keyvault Certificates](KeyVault/keyvault-certificates.md)
 * [Keyvault Secrets](KeyVault/keyvault-secrets.md)
+* [Redis Cache](redis.md)
 * [SQL Server](sql-server.md)
 * [Storage Account](storage-account.md)
 * [Storage Account Container](Storage/storage-account-arm-container.md)
