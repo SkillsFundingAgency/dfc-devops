@@ -1,14 +1,23 @@
 # CDN Endpoint
 
-Creates a CDN Endpooint.  A CDN Profile must already exist (see cdn-profile.md).  This template has been tested with the Microsoft SKU, refactoring may be required for it to work with other SKUs.
+Creates a CDN Endpooint.
+A CDN Profile must already exist (see cdn-profile.md) and this must be ran in the same resource group as that resource.
+This template has been tested with the Microsoft SKU, refactoring may be required for it to work with other SKUs.
 
 ## Parameters
 
 cdnProfileName (required) string
 
+Existing CDN profile name
+
 cdnEndPointName (required) string
 
+Name of endpoint to create.
+This must be globally unique and can only consist of letters, numbers or hypens (a hyphen cannot be the first or last character).
+
 originHostName (required) string
+
+URL to get the content from.
 
 optimizationType (optional) string
 
