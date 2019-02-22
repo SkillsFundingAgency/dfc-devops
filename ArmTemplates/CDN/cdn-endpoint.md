@@ -2,7 +2,6 @@
 
 Creates a CDN Endpooint.
 A CDN Profile must already exist (see cdn-profile.md) and this must be ran in the same resource group as that resource.
-This template has been tested with the Microsoft SKU, refactoring may be required for it to work with other SKUs.
 
 ## Parameters
 
