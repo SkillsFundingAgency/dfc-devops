@@ -39,6 +39,7 @@ The following templates are available
 * [Azure Search](azure-search.md)
 * [CDN](CDN/cdn-endpoint.md)
 * [Certificate](certificate.md)
+* [Cognitive Services](cognitive-services.md)
 * [Cosmos DB](cosmos-db.md)
 * [DataFactory](datafactory.md)
 * [DataFactory Linked Service Azure SQL](DataFactory/datafactory-linkedservice-azuresql.md)
