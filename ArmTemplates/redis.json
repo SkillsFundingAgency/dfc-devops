@@ -50,6 +50,10 @@
     "redisConnectionString": {
       "type": "string",
       "value": "[concat(reference(resourceId('Microsoft.Cache/redis', parameters('redisName'))).hostName, ':', reference(resourceId('Microsoft.Cache/redis', parameters('redisName'))).sslPort, ',password=', listkeys(resourceId('Microsoft.Cache/redis', parameters('redisName')), providers('Microsoft.Cache', 'redis').apiVersions[0]).primaryKey, ',ssl=True,abortConnect=False,syncTimeout=2000,allowAdmin=true')]"
+    },
+    "redisAltConnectionString": {
+      "type": "string",
+      "value": "[concat(listkeys(resourceId('Microsoft.Cache/redis', parameters('redisName')), providers('Microsoft.Cache', 'redis').apiVersions[0]).primaryKey, '@', reference(resourceId('Microsoft.Cache/redis', parameters('redisName'))).hostName, ':', reference(resourceId('Microsoft.Cache/redis', parameters('redisName'))).sslPort, '?ssl=True')]"
     }
   }
 }
