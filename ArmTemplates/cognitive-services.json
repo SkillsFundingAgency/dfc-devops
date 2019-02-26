@@ -1,0 +1,74 @@
+{
+    "$schema": "http://schema.management.azure.com/schemas/2014-04-01-preview/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "cognitiveServiceName": {
+            "type": "string",
+            "metadata": {
+                "description": "Name of service"
+            }
+        },
+        "cognitiveServiceType": {
+            "type": "string",
+            "allowedValues": [
+                "Bing.Autosuggest.v7",
+                "Bing.CustomSearch",
+                "Bing.EntitySearch",
+                "Bing.Search.v7",
+                "Bing.SpellCheck.v7",
+                "CognitiveServices",
+                "ComputerVision",
+                "ContentModerator",
+                "CustomVision.Prediction",
+                "CustomVision.Training",
+                "Face",
+                "Internal.AllInOne",
+                "LUIS",
+                "QnAMaker",
+                "SpeakerRecognition",
+                "SpeechServices",
+                "TextAnalytics",
+                "TextTranslation"
+            ],
+            "metadata": {
+                "description": "The type of service you want to create"
+            }
+        },
+        "cognitiveServiceSku": {
+            "type": "string",
+            "metadata": {
+                "description": "SKU for Service"
+            },
+            "defaultValue": "S1",
+            "allowedValues": [
+                "F0",
+                "S1",
+                "S2",
+                "S3",
+                "S4"
+            ]
+        }
+    },
+    "variables": {
+        "location": "[if(or(startsWith(parameters('cognitiveServiceType'), 'Bing'), equals(parameters('cognitiveServiceType'), 'TextTranslation')), 'global', resourceGroup().location)]"
+    },
+    "resources": [
+        {
+            "name": "[parameters('cognitiveServiceName')]",
+            "apiVersion": "2017-04-18",
+            "location": "[variables('location')]",
+            "type": "Microsoft.CognitiveServices/accounts",
+            "kind": "[parameters('cognitiveServiceType')]",
+            "sku": {
+                "name": "[parameters('cognitiveServiceSku')]"
+            },
+            "properties": {}
+        }
+    ],
+    "outputs": {
+        "cognitiveServicePrimaryKey": {
+            "type": "string",
+            "value": "[listKeys(resourceId('Microsoft.CognitiveServices/accounts', parameters('cognitiveServiceName')), '2017-04-18').key1]"
+        }
+    }
+}
