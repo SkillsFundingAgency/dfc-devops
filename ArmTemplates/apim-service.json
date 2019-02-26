@@ -12,7 +12,8 @@
             "type": "string",
             "metadata": {
                 "description": "Abbreviated name for the environment, eg: AT, TEST, PP, PRD"
-            }
+            },
+            "defaultValue": ""
         },
         "hostnameRoot": {
             "type": "string",
@@ -31,7 +32,7 @@
             },
             "defaultValue": ""
         },
-        "ProxyKeyVaultCertificatePath": {
+        "proxyKeyVaultCertificatePath": {
             "type": "string",
             "metadata": {
                 "description": "The certificate identifier, eg https://dss-dev-shared-kv.vault.azure.net/certificates/wildcard-dss-nationalcareersservice-direct-gov-uk/identifierstringabc123"

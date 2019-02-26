@@ -12,7 +12,7 @@ apimServiceName (required) string
 
 The name of the APIM service
 
-environmentName (required) string
+environmentName (optional) string
 
 Used to generate the prefixes for custom hostnames.  Where PRD is used the environment name will not be included in the prefix.
 
