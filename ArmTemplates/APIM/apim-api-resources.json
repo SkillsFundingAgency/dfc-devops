@@ -1,223 +1,154 @@
 {
-  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    "AdminEmail": {
-      "type": "string"
-    },
-    "ApiName": {
-      "type": "string"
-    },
-    "EnvironmentName": {
-      "type": "string",
-      "metadata": {
-        "description": "Abbreviated name for the environment, eg: AT, TEST, PP, PRD"
-      }
-    },
-    "HostnameRoot": {
-      "type": "string",
-      "metadata": {
-        "description": "The hostname used by the API (Proxy) and Developer Portal (Portal)"
-      }
-    },
-    "OauthAuthenticationServer": {
-      "type": "string",
-      "defaultValue": ""
-    },
-    "OauthB2CFunctionAppApplicationId": {
-      "type": "string",
-      "defaultValue": ""
-    },
-    "OauthB2CInstance": {
-      "type": "string",
-      "defaultValue": ""
-    },
-    "OauthB2CPolicy": {
-      "type": "string",
-      "defaultValue": ""
-    },
-    "OrganizationName": {
-      "type": "string",
-      "defaultValue": "National Careers Service"
-    },
-    "PortalKeyVaultCertificatePath": {
-      "type": "string",
-      "metadata": {
-        "description": "The certificate identifier, eg https://dss-dev-shared-kv.vault.azure.net/certificates/wildcard-dss-nationalcareersservice-direct-gov-uk/identifierstringabc123"
-      }
-    },
-    "ProductDisplayName": {
-      "type": "string",
-      "defaultValue": "Data Sharing Service"
-    },
-    "ProxyKeyVaultCertificatePath": {
-      "type": "string",
-      "metadata": {
-        "description": "The certificate identifier, eg https://dss-dev-shared-kv.vault.azure.net/certificates/wildcard-dss-nationalcareersservice-direct-gov-uk/identifierstringabc123"
-      }
-    },
-    "SkuTier": {
-      "type": "string",
-      "allowedValues": [
-        "Developer",
-        "Basic",
-        "Standard",
-        "Premium"
-      ],
-      "defaultValue": "Developer"
-    },
-    "SubnetName": {
-      "type": "string",
-      "defaultValue": ""
-    },
-    "SubnetResourceGroup": {
-      "type": "string",
-      "defaultValue": ""
-    },
-    "VnetName": {
-      "type": "string",
-      "defaultValue": ""
-    }
-  },
-  "variables": {
-    "apimServiceName": "[toLower(concat('dss-',parameters('EnvironmentName'),'-shared-apim'))]",
-    "apimPortalHostname": "[if(equals(parameters('EnvironmentName'), 'PRD'), concat('portal.', parameters('HostnameRoot')), concat(toLower(parameters('EnvironmentName')), '-portal.', parameters('HostnameRoot')))]",
-    "apimProxyHostname": "[if(equals(parameters('EnvironmentName'), 'PRD'), concat(parameters('HostnameRoot')), concat(toLower(parameters('EnvironmentName')), '.', parameters('HostnameRoot')))]",
-    "apimProductInstanceName": "[toLower(replace(parameters('ProductDisplayName'), ' ', '-'))]",
-    "apimVnetId": "[if(equals(parameters('SubnetName'), ''), '', resourceId(parameters('SubnetResourceGroup'), 'Microsoft.Network/virtualNetworks', parameters('VnetName')))]",
-    "apimSubnetId": "[if(equals(parameters('SubnetName'), ''), '',concat(variables('apimVnetId'), '/subnets/', parameters('SubnetName')))]",
-    "apimSubnetConfig": {
-      "withSubnet": {
-        "subnetResourceId": "[variables('apimSubnetId')]"
-      },
-      "withoutSubnet": null
-    },
-    "noAuthenticationProvider": {
-      "oAuth2": null,
-      "openid": null
-    },
-    "oauthAuthenticationProvider": {
-      "oAuth2": {
-        "authorizationServerId": "[parameters('OauthAuthenticationServer')]"
-      }
-    },
-    "authenticationProvider": "[if(equals(parameters('OauthAuthenticationServer'), ''), variables('noAuthenticationProvider'), variables('oauthAuthenticationProvider'))]"
-  },
-  "resources": [
-    {
-      "name": "[variables('apimServiceName')]",
-      "type": "Microsoft.ApiManagement/service",
-      "apiVersion": "2018-01-01",
-      "tags": {},
-      "properties": {
-        "publisherEmail": "[parameters('AdminEmail')]",
-        "publisherName": "[parameters('OrganizationName')]",
-        "hostnameConfigurations": [
-          {
-            "type": "Proxy",
-            "hostName": "[variables('apimProxyHostname')]",
-            "keyVaultId": "[parameters('ProxyKeyVaultCertificatePath')]",
-            "defaultSslBinding": true,
-            "negotiateClientCertificate": false
-          },
-          {
-            "type": "Portal",
-            "hostName": "[variables('apimPortalHostname')]",
-            "keyVaultId": "[parameters('PortalKeyVaultCertificatePath')]",
-            "negotiateClientCertificate": false
-          }
-        ],
-        "virtualNetworkType": "[if(equals(parameters('SubnetName'), ''), 'None' ,'External')]",
-        "virtualNetworkConfiguration": "[if(equals(parameters('SubnetName'), ''), variables('apimSubnetConfig').withoutSubnet ,variables('apimSubnetConfig').withSubnet)]"
-      },
-      "sku": {
-        "name": "[parameters('SkuTier')]",
-        "capacity": 1
-      },
-      "identity": {
-        "type": "SystemAssigned"
-      },
-      "location": "[resourceGroup().location]",
-      "resources": [
-        {
-          "name": "[parameters('ApiName')]",
-          "type": "apis",
-          "apiVersion": "2018-01-01",
-          "properties": {
-            "authenticationSettings": "[variables('authenticationProvider')]",
-            "displayName": "[parameters('ApiName')]",
-            "path": "[parameters('ApiName')]",
-            "protocols": [
-              "https"
-            ]
-          },
-          "resources": [
-            {
-              "name": "applicationinsights",
-              "type": "diagnostics",
-              "apiVersion": "2018-01-01",
-              "properties": {
-                "enabled": true
-              },
-              "resources": [
-                {
-                  "name": "[concat('dss-', toLower(parameters('EnvironmentName')), '-apim-ai', '-logger')]",
-                  "type": "loggers",
-                  "apiVersion": "2018-01-01",
-                  "dependsOn": [
-                    "applicationinsights"
-                  ]
-                }
-              ],
-              "dependsOn": [
-                "[parameters('ApiName')]"
-              ]
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "apiName": {
+            "type": "string"
+        },
+        "apiVersion": {
+            "type":"string",
+            "metadata": {
+              "description": "The version of the API, must be in the format v1, v2 ... v10, etc"
+            },
+            "defaultValue": ""
+        },
+        "environmentName": {
+            "type": "string",
+            "metadata": {
+                "description": "Abbreviated name for the environment, eg: AT, TEST, PP, PRD"
             }
-          ],
-          "dependsOn": [
-            "[variables('apimServiceName')]"
-          ]
+        },
+        "loggerSamplingPercentage": {
+            "type": "int",
+            "defaultValue": 100,
+            "minValue": 0,
+            "maxValue": 100,
+            "metadata": {
+                "description": "The percentage of requests to APIM to be sampled by Application Insights"
+            }
+        },
+        "oauthAuthenticationServer": {
+            "type": "string",
+            "defaultValue": ""
+        },
+        "productDisplayName": {
+            "type": "string",
+            "defaultValue": "Data Sharing Service"
+        }
+    },
+    "variables": {
+        "apimApiVersionName": "[concat(parameters('apiName'), '-', parameters('apiVersion'))]",
+        "apimLoggerName": "[concat('dss-', toLower(parameters('environmentName')), '-apim-ai', '-logger')]",
+        "apimProductInstanceName": "[toLower(replace(parameters('productDisplayName'), ' ', '-'))]",
+        "apimServiceName": "[toLower(concat('dss-',parameters('environmentName'),'-shared-apim'))]",
+        "noAuthenticationProvider": {
+            "oAuth2": null,
+            "openid": null
+        },
+        "oauthAuthenticationProvider": {
+            "oAuth2": {
+                "authorizationServerId": "[parameters('oauthAuthenticationServer')]"
+            }
+        },
+        "authenticationProvider": "[if(equals(parameters('oauthAuthenticationServer'), ''), variables('noAuthenticationProvider'), variables('oauthAuthenticationProvider'))]",
+        "versionSetName": "[concat(parameters('apiName'), '-versionset')]"
+    },
+    "resources": [
+        {
+            "name": "[concat(variables('apimServiceName'), '/', variables('apimApiVersionName'))]",
+            "type": "Microsoft.ApiManagement/service/apis",
+            "apiVersion": "2018-01-01",
+            "properties": {
+                "apiVersion": "[parameters('apiVersion')]",
+                "apiVersionSetId": "[resourceId('Microsoft.ApiManagement/service/api-version-sets', variables('apimServiceName'), variables('versionSetName'))]",
+                "authenticationSettings": "[variables('authenticationProvider')]",
+                "displayName": "[variables('apimApiVersionName')]",
+                "path": "[parameters('apiName')]",
+                "protocols": [
+                    "https"
+                ]
+            },
+            "resources": [
+                {
+                    "name": "applicationinsights",
+                    "type": "diagnostics",
+                    "apiVersion": "2018-06-01-preview",
+                    "properties": {
+                        "alwaysLog": "allErrors",
+                        "loggerId": "[concat('/subscriptions/', subscription().subscriptionId, '/resourceGroups/', resourceGroup().name, '/providers/Microsoft.ApiManagement/service/', variables('apimServiceName'), '/loggers/', variables('apimLoggerName'))]",
+                        "sampling": {
+                            "samplingType": "fixed",
+                            "percentage": "[parameters('loggerSamplingPercentage')]"
+                        },
+                        "enableHttpCorrelationHeaders": true
+                    },
+                    "resources": [
+                        {
+                            "name": "[variables('apimLoggerName')]",
+                            "type": "loggers",
+                            "apiVersion": "2018-01-01",
+                            "dependsOn": [
+                                "applicationinsights"
+                            ]
+                        }
+                    ],
+                    "dependsOn": [
+                        "[variables('apimApiVersionName')]"
+                    ]
+                }
+            ],
+            "dependsOn": [
+                "[concat(parameters('apiName'), '-versionset')]"
+            ]
         },
         {
-          "name": "[variables('apimProductInstanceName')]",
-          "type": "products",
-          "apiVersion": "2018-01-01",
-          "properties": {
-            "description": "string",
-            "terms": "string",
-            "subscriptionRequired": true,
-            "approvalRequired": true,
-            "subscriptionsLimit": 1,
-            "state": "published",
-            "displayName": "[variables('apimProductInstanceName')]"
-          },
-          "resources": [
-            {
-              "name": "Developers",
-              "type": "groups",
-              "apiVersion": "2018-01-01",
-              "dependsOn": [
-                "[variables('apimServiceName')]",
-                "[variables('apimProductInstanceName')]"
-              ]
+            "name": "[concat(variables('apimServiceName'), '/', variables('apimProductInstanceName'))]",
+            "type": "Microsoft.ApiManagement/service/products",
+            "apiVersion": "2018-01-01",
+            "properties": {
+                "description": "string",
+                "terms": "string",
+                "subscriptionRequired": true,
+                "approvalRequired": true,
+                "subscriptionsLimit": 1,
+                "state": "published",
+                "displayName": "[variables('apimProductInstanceName')]"
             },
-            {
-              "name": "[parameters('ApiName')]",
-              "type": "apis",
-              "apiVersion": "2018-01-01",
-              "dependsOn": [
-                "[variables('apimServiceName')]",
-                "[concat('Microsoft.ApiManagement/service/', variables('apimServiceName'), '/apis/', parameters('ApiName'))]",
-                "[concat('Microsoft.ApiManagement/service/', variables('apimServiceName'), '/products/', variables('apimProductInstanceName'))]"
-              ]
-            }
-          ],
-          "dependsOn": [
-            "[variables('apimServiceName')]"
-          ]
-        }
-      ]
-    }
-  ],
-  "outputs": {}
+            "resources": [
+                {
+                    "name": "Developers",
+                    "type": "groups",
+                    "apiVersion": "2018-01-01",
+                    "dependsOn": [
+                        "[variables('apimProductInstanceName')]"
+                    ]
+                },
+                {
+                    "name": "[parameters('apiName')]",
+                    "type": "apis",
+                    "apiVersion": "2018-01-01",
+                    "dependsOn": [
+                        "[concat('Microsoft.ApiManagement/service/', variables('apimServiceName'), '/apis/', variables('apimApiVersionName'))]",
+                        "[concat('Microsoft.ApiManagement/service/', variables('apimServiceName'), '/products/', variables('apimProductInstanceName'))]"
+                    ]
+                }
+            ],
+            "dependsOn": [
+            ]
+        },
+        {
+            "name": "[concat(variables('apimServiceName'), '/', variables('versionSetName'))]",
+            "type": "Microsoft.ApiManagement/service/api-version-sets",
+            "apiVersion": "2018-01-01",
+            "properties": {
+              "description": "[concat('The ', parameters('apiName'), ' API version set')]",
+              "versionHeaderName": "version",
+              "displayName": "[parameters('apiName')]",
+              "versioningScheme": "Header"
+            },
+            "dependsOn": [
+            ]
+          }
+    ],
+    "outputs": {}
 }
