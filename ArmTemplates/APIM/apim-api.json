@@ -9,7 +9,8 @@
             }
         },
         "apimLoggerName": {
-            "type": "string"
+            "type": "string",
+            "defaultValue": ""
         },
         "apimServiceName": {
             "type": "string"

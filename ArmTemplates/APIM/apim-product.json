@@ -49,5 +49,10 @@
             ]
         }
     ],
-    "outputs": {}
+    "outputs": {
+        "ApimProductInstanceName": {
+            "type": "string",
+            "value": "[variables('apimProductInstanceName')]"
+        }
+    }
 }
