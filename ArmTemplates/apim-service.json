@@ -1,0 +1,119 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "adminEmail": {
+            "type": "string"
+        },
+        "apimServiceName": {
+            "type": "string"
+        },
+        "environmentName": {
+            "type": "string",
+            "metadata": {
+                "description": "Abbreviated name for the environment, eg: AT, TEST, PP, PRD"
+            }
+        },
+        "hostnameRoot": {
+            "type": "string",
+            "metadata": {
+                "description": "The hostname used by the API (Proxy) and Developer Portal (Portal)"
+            },
+            "defaultValue": ""
+        },
+        "organizationName": {
+            "type": "string"
+        },
+        "portalKeyVaultCertificatePath": {
+            "type": "string",
+            "metadata": {
+                "description": "The certificate identifier, eg https://dss-dev-shared-kv.vault.azure.net/certificates/wildcard-dss-nationalcareersservice-direct-gov-uk/identifierstringabc123"
+            },
+            "defaultValue": ""
+        },
+        "ProxyKeyVaultCertificatePath": {
+            "type": "string",
+            "metadata": {
+                "description": "The certificate identifier, eg https://dss-dev-shared-kv.vault.azure.net/certificates/wildcard-dss-nationalcareersservice-direct-gov-uk/identifierstringabc123"
+            },
+            "defaultValue": ""
+        },
+        "skuTier": {
+            "type": "string",
+            "allowedValues": [
+                "Developer",
+                "Basic",
+                "Standard",
+                "Premium"
+            ],
+            "defaultValue": "Developer"
+        },
+        "subnetName": {
+            "type": "string",
+            "defaultValue": ""
+        },
+        "vnetResourceGroup": {
+            "type": "string",
+            "defaultValue": ""
+        },
+        "vnetName": {
+            "type": "string",
+            "defaultValue": ""
+        }
+    },
+    "variables": {
+        "apimPortalHostname": "[if(equals(parameters('environmentName'), 'PRD'), concat('portal.', parameters('hostnameRoot')), concat(toLower(parameters('environmentName')), '-portal.', parameters('hostnameRoot')))]",
+        "apimProxyHostname": "[if(equals(parameters('environmentName'), 'PRD'), concat(parameters('hostnameRoot')), concat(toLower(parameters('environmentName')), '.', parameters('hostnameRoot')))]",
+        "apimPortalHostnameProperties": {
+            "type": "Portal",
+            "hostName": "[variables('apimPortalHostname')]",
+            "keyVaultId": "[parameters('portalKeyVaultCertificatePath')]",
+            "negotiateClientCertificate": false
+        },
+        "apimProxyHostnameProperties":  {
+            "type": "Proxy",
+            "hostName": "[variables('apimProxyHostname')]",
+            "keyVaultId": "[parameters('ProxyKeyVaultCertificatePath')]",
+            "defaultSslBinding": true,
+            "negotiateClientCertificate": false
+        },
+        "apimHostnameProperties": "[if(equals(parameters('hostnameRoot'), ''), array(json('[]')), createarray(variables('apimPortalHostnameProperties'), variables('apimProxyHostnameProperties')))]",
+        "apimSubnetId": "[if(equals(parameters('subnetName'), ''), '',concat(variables('apimVnetId'), '/subnets/', parameters('subnetName')))]",
+        "apimSubnetConfig": {
+            "withSubnet": {
+                "subnetResourceId": "[variables('apimSubnetId')]"
+            },
+            "withoutSubnet": null
+        },
+        "apimVnetId": "[if(equals(parameters('subnetName'), ''), '', resourceId(parameters('vnetResourceGroup'), 'Microsoft.Network/virtualNetworks', parameters('vnetName')))]"
+    },
+    "resources": [
+        {
+            "name": "[parameters('apimServiceName')]",
+            "type": "Microsoft.ApiManagement/service",
+            "apiVersion": "2018-01-01",
+            "tags": {},
+            "properties": {
+                "hostnameConfigurations": "[variables('apimHostnameProperties')]",
+                "publisherEmail": "[parameters('adminEmail')]",
+                "publisherName": "[parameters('organizationName')]",
+                "virtualNetworkType": "[if(equals(parameters('subnetName'), ''), 'None' ,'External')]",
+                "virtualNetworkConfiguration": "[if(equals(parameters('subnetName'), ''), variables('apimSubnetConfig').withoutSubnet ,variables('apimSubnetConfig').withSubnet)]"
+            },
+            "sku": {
+                "name": "[parameters('skuTier')]",
+                "capacity": 1
+            },
+            "identity": {
+                "type": "SystemAssigned"
+            },
+            "location": "[resourceGroup().location]"
+        }
+    ],
+    "outputs": {
+        "ApimServiceIdentityPrincipalId": {
+            "type": "string",
+            "value": "[reference(concat(resourceId('Microsoft.ApiManagement/service', parameters('apimServiceName')),'/providers/Microsoft.ManagedIdentity/Identities/default'), '2015-08-31-PREVIEW').principalId]"
+        }
+    }
+}
