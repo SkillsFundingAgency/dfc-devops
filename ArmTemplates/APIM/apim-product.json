@@ -9,11 +9,8 @@
                 "description": "Adds the built in Developers group to the Access Control list of the Product"
             }
         },
-        "environmentName": {
-            "type": "string",
-            "metadata": {
-                "description": "Abbreviated name for the environment, eg: AT, TEST, PP, PRD"
-            }
+        "apimServiceName": {
+            "type": "string"
         },
         "productDisplayName": {
             "type": "string",
@@ -21,12 +18,11 @@
         }
     },
     "variables": {
-        "apimProductInstanceName": "[toLower(replace(parameters('productDisplayName'), ' ', '-'))]",
-        "apimServiceName": "[toLower(concat('dss-',parameters('environmentName'),'-shared-apim'))]"
+        "apimProductInstanceName": "[toLower(replace(parameters('productDisplayName'), ' ', '-'))]"
     },
     "resources": [
         {
-            "name": "[concat(variables('apimServiceName'), '/', variables('apimProductInstanceName'))]",
+            "name": "[concat(parameters('apimServiceName'), '/', variables('apimProductInstanceName'))]",
             "type": "Microsoft.ApiManagement/service/products",
             "apiVersion": "2018-01-01",
             "properties": {

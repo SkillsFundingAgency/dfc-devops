@@ -4,7 +4,6 @@
     "parameters": {
         "apimProductInstanceName": {
             "type": "string",
-            "defaultValue": "Data Sharing Service",
             "metadata": {
                 "description": "The product identifier, this is different to the Display Name (which may contain spaces)."
             }
