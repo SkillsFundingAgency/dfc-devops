@@ -44,7 +44,7 @@ if ($PSCmdlet.ParameterSetName -eq "File") {
     $FileName = "$($FunctionAppName)_swagger-def_$([DateTime]::Now.ToString("yyyyMMdd-hhmmss")).json"
     Write-Verbose -Message "Filename: $FileName"
 
-    $OutputFolder = New-Item -Path $OutputFilePath -ItemType Directory
+    $OutputFolder = New-Item -Path $OutputFilePath -ItemType Directory -Force
     $OutputFile = New-Item -Path "$($OutputFolder.FullName)\$FileName" -ItemType File
     Write-Verbose -Message "OutputFile: $($OutputFile.FullName)"
     Set-Content -Path $OutputFile.FullName -Value ($Swagger | ConvertTo-Json -Depth 20)
