@@ -48,6 +48,7 @@ if ($PSCmdlet.ParameterSetName -eq "File") {
     $OutputFile = New-Item -Path "$($OutputFolder.FullName)\$FileName" -ItemType File
     Write-Verbose -Message "OutputFile: $($OutputFile.FullName)"
     Set-Content -Path $OutputFile.FullName -Value ($Swagger | ConvertTo-Json -Depth 20)
+
 }
 
 try {
@@ -59,19 +60,28 @@ try {
 
     # --- Throw if Api is null
     if (!$Api) {
+
         throw "Could not retrieve Api for API $ApiName"
+
     }
 
     # --- Import swagger definition
     
-    if($PSCmdlet.ParameterSetName -eq "Url") {
-        Write-Host "Updating API $InstanceName\$($Api.ApiId) from definition $SwaggerSpecificationUrl"
-        Import-AzureRmApiManagementApi -Context $Context -SpecificationFormat "Swagger" -SpecificationUrl $SwaggerSpecificationUrl -ApiId $($Api.ApiId) -Path $($Api.Path) -ErrorAction Stop -Verbose:$VerbosePreference
-    }
-    elseif ($PSCmdlet.ParameterSetName -eq "File") {
+
+    if ($PSCmdlet.ParameterSetName -eq "File") {
+
         Write-Host "Updating API $InstanceName\$($Api.ApiId) from definition $($OutputFile.FullName)"
         Import-AzureRmApiManagementApi -Context $Context -SpecificationFormat "Swagger" -SpecificationPath $($OutputFile.FullName) -ApiId $($Api.ApiId) -Path $($Api.Path) -ErrorAction Stop -Verbose:$VerbosePreference
+
     }
-} catch {
+    else {
+
+        Write-Host "Updating API $InstanceName\$($Api.ApiId) from definition $SwaggerSpecificationUrl"
+        Import-AzureRmApiManagementApi -Context $Context -SpecificationFormat "Swagger" -SpecificationUrl $SwaggerSpecificationUrl -ApiId $($Api.ApiId) -Path $($Api.Path) -ErrorAction Stop -Verbose:$VerbosePreference
+
+    }
+
+} 
+catch {
    throw $_
 }
