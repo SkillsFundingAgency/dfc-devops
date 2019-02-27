@@ -40,7 +40,7 @@
         }
     },
     "variables": {
-        "apimApiVersionName": "[concat(parameters('apiName'), '-', parameters('apiVersion'))]",
+        "apimApiVersionName": "[if(equals(parameters('apiVersion'), ''), concat(parameters('apiName'), '-', parameters('apiVersion')), parameters('apiName'))]",
         "authenticationProvider": "[if(equals(parameters('oauthAuthenticationServer'), ''), variables('noAuthenticationProvider'), variables('oauthAuthenticationProvider'))]",
         "noAuthenticationProvider": {
             "oAuth2": null,
