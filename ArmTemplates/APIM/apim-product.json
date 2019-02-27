@@ -9,6 +9,13 @@
                 "description": "Adds the built in Developers group to the Access Control list of the Product"
             }
         },
+        "allowAnonymousAccess": {
+            "type": "bool",
+            "defaultValue": false,
+            "metadata": {
+                "description": "Adds the built in Guests group to the Access Control list.  This allows unauthenticated access to the APIs in this Product."
+            }
+        },
         "apimServiceName": {
             "type": "string"
         },
@@ -39,6 +46,15 @@
                     "name": "Developers",
                     "type": "groups",
                     "condition": "[parameters('addDevelopers')]",
+                    "apiVersion": "2018-01-01",
+                    "dependsOn": [
+                        "[variables('apimProductInstanceName')]"
+                    ]
+                },
+                {
+                    "name": "Guests",
+                    "type": "groups",
+                    "condition": "[parameters('allowAnonymousAccess')]",
                     "apiVersion": "2018-01-01",
                     "dependsOn": [
                         "[variables('apimProductInstanceName')]"
