@@ -41,16 +41,6 @@
     },
     "variables": {
         "apimApiVersionName": "[if(equals(parameters('apiVersion'), ''), parameters('apiName'), concat(parameters('apiName'), '-', parameters('apiVersion')))]",
-        "authenticationProvider": "[if(equals(parameters('oauthAuthenticationServer'), ''), variables('noAuthenticationProvider'), variables('oauthAuthenticationProvider'))]",
-        "noAuthenticationProvider": {
-            "oAuth2": null,
-            "openid": null
-        },
-        "oauthAuthenticationProvider": {
-            "oAuth2": {
-                "authorizationServerId": "[parameters('oauthAuthenticationServer')]"
-            }
-        },
         "apiProperties": {
             "noversion": {
                 "authenticationSettings": "[variables('authenticationProvider')]",
@@ -69,6 +59,17 @@
                 "protocols": [
                     "https"
                 ]
+            }
+        },
+        "authenticationProvider": "[if(equals(parameters('oauthAuthenticationServer'), ''), variables('noAuthenticationProvider'), variables('oauthAuthenticationProvider'))]",
+        "loggerName": "[if(equals(parameters('apimLoggerName'), ''), 'no-logger', parameters('apimLoggerName'))]",
+        "noAuthenticationProvider": {
+            "oAuth2": null,
+            "openid": null
+        },
+        "oauthAuthenticationProvider": {
+            "oAuth2": {
+                "authorizationServerId": "[parameters('oauthAuthenticationServer')]"
             }
         },
         "versionSetName": "[concat(parameters('apiName'), '-versionset')]"
@@ -96,7 +97,7 @@
                     },
                     "resources": [
                         {
-                            "name": "[parameters('apimLoggerName')]",
+                            "name": "[variables('loggerName')]",
                             "type": "loggers",
                             "apiVersion": "2018-01-01",
                             "dependsOn": [
