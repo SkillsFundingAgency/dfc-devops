@@ -84,7 +84,7 @@
                 {
                     "name": "applicationinsights",
                     "type": "diagnostics",
-                    "condition": "[equals(parameters('apimLoggerName'), '')]",
+                    "condition": "[not(equals(parameters('apimLoggerName'), ''))]",
                     "apiVersion": "2018-06-01-preview",
                     "properties": {
                         "alwaysLog": "allErrors",
