@@ -40,7 +40,7 @@
         }
     },
     "variables": {
-        "apimApiVersionName": "[if(equals(parameters('apiVersion'), ''), concat(parameters('apiName'), '-', parameters('apiVersion')), parameters('apiName'))]",
+        "apimApiVersionName": "[if(equals(parameters('apiVersion'), ''), parameters('apiName'), concat(parameters('apiName'), '-', parameters('apiVersion')))]",
         "authenticationProvider": "[if(equals(parameters('oauthAuthenticationServer'), ''), variables('noAuthenticationProvider'), variables('oauthAuthenticationProvider'))]",
         "noAuthenticationProvider": {
             "oAuth2": null,
@@ -109,21 +109,6 @@
                     ]
                 }
             ],
-            "dependsOn": [
-                "[concat(parameters('apimServiceName'), '/', variables('versionSetName'))]"
-            ]
-        },
-        {
-            "name": "[concat(parameters('apimServiceName'), '/', variables('versionSetName'))]",
-            "type": "Microsoft.ApiManagement/service/api-version-sets",
-            "condition": "[not(equals(parameters('apiVersion'), ''))]",
-            "apiVersion": "2018-01-01",
-            "properties": {
-              "description": "[concat('The ', parameters('apiName'), ' API version set')]",
-              "versionHeaderName": "version",
-              "displayName": "[parameters('apiName')]",
-              "versioningScheme": "Header"
-            },
             "dependsOn": [
             ]
         },
