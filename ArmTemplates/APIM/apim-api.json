@@ -99,6 +99,7 @@
                         {
                             "name": "[variables('loggerName')]",
                             "type": "loggers",
+                            "condition": "[not(equals(parameters('apimLoggerName'), ''))]",
                             "apiVersion": "2018-01-01",
                             "dependsOn": [
                                 "applicationinsights"
