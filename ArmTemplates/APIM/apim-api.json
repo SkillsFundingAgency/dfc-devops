@@ -1,0 +1,129 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "apimServiceName": {
+            "type": "string"
+        },
+        "apiName": {
+            "type": "string"
+        },
+        "apimProductInstanceName": {
+            "type": "string",
+            "metadata": {
+                "description": "The product identifier, this is different to the Display Name (which may contain spaces)."
+            },
+            "defaultValue": ""
+        },
+        "apimLoggerName": {
+            "type": "string",
+            "defaultValue": ""
+        },
+        "apiVersion": {
+            "type":"string",
+            "metadata": {
+              "description": "The version of the API, must be in the format v1, v2 ... v10, etc"
+            },
+            "defaultValue": ""
+        },
+        "loggerSamplingPercentage": {
+            "type": "int",
+            "defaultValue": 100,
+            "minValue": 0,
+            "maxValue": 100,
+            "metadata": {
+                "description": "The percentage of requests to APIM to be sampled by Application Insights"
+            }
+        },
+        "oauthAuthenticationServer": {
+            "type": "string",
+            "defaultValue": ""
+        }
+    },
+    "variables": {
+        "apimApiVersionName": "[if(equals(parameters('apiVersion'), ''), parameters('apiName'), concat(parameters('apiName'), '-', parameters('apiVersion')))]",
+        "apiProperties": {
+            "noversion": {
+                "authenticationSettings": "[variables('authenticationProvider')]",
+                "displayName": "[variables('apimApiVersionName')]",
+                "path": "[parameters('apiName')]",
+                "protocols": [
+                    "https"
+                ]
+            },
+            "versioned": {
+                "apiVersion": "[parameters('apiVersion')]",
+                "apiVersionSetId": "[resourceId('Microsoft.ApiManagement/service/api-version-sets', parameters('apimServiceName'), variables('versionSetName'))]",
+                "authenticationSettings": "[variables('authenticationProvider')]",
+                "displayName": "[variables('apimApiVersionName')]",
+                "path": "[parameters('apiName')]",
+                "protocols": [
+                    "https"
+                ]
+            }
+        },
+        "authenticationProvider": "[if(equals(parameters('oauthAuthenticationServer'), ''), variables('noAuthenticationProvider'), variables('oauthAuthenticationProvider'))]",
+        "loggerName": "[if(equals(parameters('apimLoggerName'), ''), 'no-logger', parameters('apimLoggerName'))]",
+        "noAuthenticationProvider": {
+            "oAuth2": null,
+            "openid": null
+        },
+        "oauthAuthenticationProvider": {
+            "oAuth2": {
+                "authorizationServerId": "[parameters('oauthAuthenticationServer')]"
+            }
+        },
+        "versionSetName": "[concat(parameters('apiName'), '-versionset')]"
+    },
+    "resources": [
+        {
+            "name": "[concat(parameters('apimServiceName'), '/', variables('apimApiVersionName'))]",
+            "type": "Microsoft.ApiManagement/service/apis",
+            "apiVersion": "2018-01-01",
+            "properties": "[if(equals(parameters('apiVersion'), ''), variables('apiProperties').noversion, variables('apiProperties').versioned)]",
+            "resources": [
+                {
+                    "name": "applicationinsights",
+                    "type": "diagnostics",
+                    "condition": "[not(equals(parameters('apimLoggerName'), ''))]",
+                    "apiVersion": "2018-06-01-preview",
+                    "properties": {
+                        "alwaysLog": "allErrors",
+                        "loggerId": "[concat('/subscriptions/', subscription().subscriptionId, '/resourceGroups/', resourceGroup().name, '/providers/Microsoft.ApiManagement/service/', parameters('apimServiceName'), '/loggers/', parameters('apimLoggerName'))]",
+                        "sampling": {
+                            "samplingType": "fixed",
+                            "percentage": "[parameters('loggerSamplingPercentage')]"
+                        },
+                        "enableHttpCorrelationHeaders": true
+                    },
+                    "resources": [
+                        {
+                            "name": "[variables('loggerName')]",
+                            "type": "loggers",
+                            "condition": "[not(equals(parameters('apimLoggerName'), ''))]",
+                            "apiVersion": "2018-01-01",
+                            "dependsOn": [
+                                "applicationinsights"
+                            ]
+                        }
+                    ],
+                    "dependsOn": [
+                        "[variables('apimApiVersionName')]"
+                    ]
+                }
+            ],
+            "dependsOn": [
+            ]
+        },
+        {
+            "name": "[concat(parameters('apimServiceName'), '/', parameters('apimProductInstanceName'), '/', parameters('apiName'))]",
+            "type": "Microsoft.ApiManagement/service/products/apis",
+            "condition": "[not(equals(parameters('apimProductInstanceName'), ''))]",
+            "apiVersion": "2018-01-01",
+            "dependsOn": [
+                "[concat('Microsoft.ApiManagement/service/', parameters('apimServiceName'), '/apis/', variables('apimApiVersionName'))]"
+            ]
+        }
+    ],
+    "outputs": {}
+}
