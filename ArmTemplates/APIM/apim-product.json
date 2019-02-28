@@ -34,8 +34,8 @@
             "properties": {
                 "description": "string",
                 "terms": "string",
-                "subscriptionRequired": true,
-                "approvalRequired": true,
+                "subscriptionRequired": "[parameters('allowAnonymousAccess')]",
+                "approvalRequired": "[not(parameters('addDevelopers'))]",
                 "subscriptionsLimit": 1,
                 "state": "published",
                 "displayName": "[variables('apimProductInstanceName')]"
