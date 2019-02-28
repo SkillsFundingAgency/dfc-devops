@@ -15,7 +15,7 @@ steps:
   displayName: 'Show npm version'
   inputs:
     command: custom
-    workingDir: '${{ npmfolder }}'
+    workingDir: '${{ parameters.npmfolder }}'
     verbose: false
     customCommand: version
 
@@ -24,20 +24,20 @@ steps:
   displayName: 'npm install'
   inputs:
     command: install
-    workingDir: '${{ npmfolder }}'
+    workingDir: '${{ parameters.npmfolder }}'
 
 # run grunt
 - task: Grunt@0
   displayName: 'grunt'
   inputs:
-    gruntFile: '${{ npmfolder }}/${{ gruntfile }}'
-    workingDirectory: '${{ npmfolder }}/node_modules/grunt/'
+    gruntFile: '${{ parameters.npmfolder }}/${{ parameters.gruntfile }}'
+    workingDirectory: '${{ parameters.npmfolder }}/node_modules/grunt/'
 
 # Publish step only if a publish path has been provided
 - ${{ if parameters.publishpath }}:
   # publish
   - task: PublishBuildArtifacts@1
-    displayName: 'Publish Artifact: ${{ publishname }}'
+    displayName: 'Publish Artifact: ${{ parameters.publishname }}'
     inputs:
-      pathtoPublish: '${{ npmfolder }}/${{ publishpath }}'
-      artifactName: '${{ publishname }}'
+      pathtoPublish: '${{ parameters.npmfolder }}/${{ parameters.publishpath }}'
+      artifactName: '${{ parameters.publishname }}'
