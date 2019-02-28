@@ -1,10 +1,10 @@
 <#
 
 .SYNOPSIS
-Adds the CORS header to storage account responses
+Sets CORS rules on storage account
 
 .DESCRIPTION
-Adds the CORS header to storage account responses
+Sets (replaces existing) CORS rules on a storage account if the origins being set doesn't already exist
 
 .PARAMETER StorageAccountName
 Name of storage account
@@ -19,7 +19,7 @@ Array of allowed origins
 Optionally set the max age to cache requests in seconds (defaults to 1 hours)
 
 .EXAMPLE
-Set-CorsOnStorageAccount -StorageAccountName dfcfoobarstr -StorageAccountKey not-a-real-key= -AllowedOrigins
+Set-CorsOnStorageAccount -StorageAccountName dfcfoobarstr -StorageAccountKey not-a-real-key= -AllowedOrigins foo.example.org
 
 #>
     
@@ -38,13 +38,13 @@ param(
 Write-Verbose "Setting Storage Context on $StorageAccountName"
 $StorageContext = New-AzureStorageContext -StorageAccountName $StorageAccountName.ToLower() -StorageAccountKey $StorageAccountKey
 $ExistingCorsRules = Get-AzureStorageCORSRule -ServiceType Blob -Context $StorageContext
-Write-Verbose "Existing: $ExistingCorsRules"
+
 $CORSRules = @()
 $CORSChanged = $false
 
 # Create CORS object
 foreach ($AllowedOrigin in $AllowedOrigins) {
-    Write-Verbose "Adding origin $AllowedOrigin"
+    Write-Verbose "Checking origin $AllowedOrigin"
 
     $CORSRules += @{
         AllowedHeaders  = @( "*" )
