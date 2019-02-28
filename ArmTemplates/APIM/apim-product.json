@@ -2,6 +2,12 @@
     "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
+        "apimServiceName": {
+            "type": "string"
+        },
+        "productDisplayName": {
+            "type": "string"
+        },
         "addDevelopers": {
             "type": "bool",
             "defaultValue":true,
@@ -15,13 +21,6 @@
             "metadata": {
                 "description": "Adds the built in Guests group to the Access Control list.  This allows unauthenticated access to the APIs in this Product."
             }
-        },
-        "apimServiceName": {
-            "type": "string"
-        },
-        "productDisplayName": {
-            "type": "string",
-            "defaultValue": "Data Sharing Service"
         }
     },
     "variables": {

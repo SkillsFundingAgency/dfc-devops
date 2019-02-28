@@ -2,21 +2,22 @@
     "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-        "apimProductInstanceName": {
-            "type": "string",
-            "metadata": {
-                "description": "The product identifier, this is different to the Display Name (which may contain spaces)."
-            }
-        },
-        "apimLoggerName": {
-            "type": "string",
-            "defaultValue": ""
-        },
         "apimServiceName": {
             "type": "string"
         },
         "apiName": {
             "type": "string"
+        },
+        "apimProductInstanceName": {
+            "type": "string",
+            "metadata": {
+                "description": "The product identifier, this is different to the Display Name (which may contain spaces)."
+            },
+            "defaultValue": ""
+        },
+        "apimLoggerName": {
+            "type": "string",
+            "defaultValue": ""
         },
         "apiVersion": {
             "type":"string",
