@@ -2,11 +2,14 @@
 .SYNOPSIS
 Update an APIM API with a swagger definition
 
-.PARAMETER ApimResourceGroupName
+.DESCRIPTION
+Update an APIM API with a swagger definition
+
+.PARAMETER ApimResourceGroup
 The name of the resource group that contains the APIM instnace
 
 .PARAMETER InstanceName
-The name of the APIM instnace
+The name of the APIM instance
 
 .PARAMETER ApiName
 The name of the API to update
