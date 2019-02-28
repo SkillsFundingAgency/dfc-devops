@@ -2,7 +2,7 @@
 .SYNOPSIS
 Update an APIM API with a swagger definition
 
-.PARAMETER ResourceGroupName
+.PARAMETER ApimResourceGroupName
 The name of the resource group that contains the APIM instnace
 
 .PARAMETER InstanceName
@@ -14,8 +14,14 @@ The name of the API to update
 .PARAMETER SwaggerSpecificationUrl
 The full path to the swagger defintion
 
-For example:
-https://sit-manage-vacancy.apprenticeships.sfa.bis.gov.uk/swagger/docs/v1
+.PARAMETER SwaggerSpecificationFile
+(optional)  Switch, specifies whether the swagger file should be saved to a local directory before importing in APIM.
+
+.PARAMETER OutputFilePath
+(optional)  The path to save the swagger file to if SwaggerSpecificationFile switch is used.
+
+.EXAMPLE
+Import-ApimSwaggerApiDefinition -ApimResourceGroup dfc-foo-bar-rg -InstanceName dfc-foo-bar-apim -ApiName bar -SwaggerSpecificationUrl "https://dfc-foo-bar-fa.azurewebsites.net/api/bar/api-definition" -SwaggerSpecificationFile -OutputFilePath $(System.DefaultWorkingDirectory)/SwaggerFile -Verbose
 
 #>
 [CmdletBinding()]
