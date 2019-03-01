@@ -9,6 +9,9 @@ Creates Cosmos DB Account collections with stored procedures within a CosmosDb A
 .PARAMETER ResourceGroupName
 The name of the Resource Group for the CosmosDb Account
 
+.PARAMETER CosmosDbAccountName
+Cosmos Db Account to configure
+
 .PARAMETER CosmosDbConfigurationString
 CosmosDb JSON configuration in string format
 
