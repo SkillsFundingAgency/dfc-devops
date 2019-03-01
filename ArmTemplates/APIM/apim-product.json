@@ -24,22 +24,28 @@
         }
     },
     "variables": {
-        "apimProductInstanceName": "[toLower(replace(parameters('productDisplayName'), ' ', '-'))]"
+        "apimProductInstanceName": "[toLower(replace(parameters('productDisplayName'), ' ', '-'))]",
+        "properties": {
+            "anonAccess": {
+                "subscriptionRequired": false,
+                "state": "published",
+                "displayName": "[parameters('productDisplayName')]"
+            },
+            "controlledAccess": {
+                "subscriptionRequired": true,
+                "approvalRequired": "[not(parameters('addDevelopers'))]",
+                "subscriptionsLimit": 1,
+                "state": "published",
+                "displayName": "[parameters('productDisplayName')]"
+            }
+        }
     },
     "resources": [
         {
             "name": "[concat(parameters('apimServiceName'), '/', variables('apimProductInstanceName'))]",
             "type": "Microsoft.ApiManagement/service/products",
             "apiVersion": "2018-01-01",
-            "properties": {
-                "description": "string",
-                "terms": "string",
-                "subscriptionRequired": "[not(parameters('allowAnonymousAccess'))]",
-                "approvalRequired": "[not(parameters('addDevelopers'))]",
-                "subscriptionsLimit": 1,
-                "state": "published",
-                "displayName": "[variables('apimProductInstanceName')]"
-            },
+            "properties": "[if(parameters('allowAnonymousAccess'), variables('properties').anonAccess, variables('properties').controlledAccess)]",
             "resources": [
                 {
                     "name": "Developers",
