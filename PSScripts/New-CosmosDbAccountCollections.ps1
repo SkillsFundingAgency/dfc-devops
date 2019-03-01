@@ -4,7 +4,7 @@
 Creates Cosmos DB Account collections
 
 .DESCRIPTION
-Creates Cosmos DB Account collections with stored procedures within a CosmosDb Account
+Creates Cosmos DB Account collections within a given CosmosDb Account
 
 .PARAMETER ResourceGroupName
 The name of the Resource Group for the CosmosDb Account
