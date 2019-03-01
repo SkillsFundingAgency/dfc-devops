@@ -1,0 +1,1 @@
+# Unable to create test for New-CosmosDbAccountCollections
