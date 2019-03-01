@@ -34,7 +34,7 @@
             "properties": {
                 "description": "string",
                 "terms": "string",
-                "subscriptionRequired": "[parameters('allowAnonymousAccess')]",
+                "subscriptionRequired": "[not(parameters('allowAnonymousAccess'))]",
                 "approvalRequired": "[not(parameters('addDevelopers'))]",
                 "subscriptionsLimit": 1,
                 "state": "published",
