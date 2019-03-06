@@ -87,3 +87,7 @@ if ($ElasticPool) {
     # If an elastic pool has been specified, move db into pool
     Set-AzureRmSqlDatabase -ResourceGroupName $ResourceGroupName -ServerName $SQLServerName -DatabaseName $SQLDatabase -ElasticPoolName $ElasticPool
 }
+else {
+    # display the database info
+    Get-AzureRmSqlDatabase -ResourceGroupName $ResourceGroupName -ServerName $SQLServerName -DatabaseName $SQLDatabase
+}

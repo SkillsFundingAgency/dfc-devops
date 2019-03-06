@@ -10,11 +10,14 @@ $params = @{
     StorageUrl        = "https://dfcfoobarstr.blob.core.windows.net/backup/db.bacpac"
 }
 
+function New-AzureRmSqlDatabaseImport {}
+
 Describe "New-DatabaseFromBlobFile unit tests" -Tag "Unit" {
 
     Mock New-AzureRmSqlDatabaseImport { return ConvertFrom-Json '{ "OperationStatusLink": "https://management.azure.com/subscriptions/blah/guid?apiversion=1-2-3" }' }
     Mock Get-AzureRmSqlDatabaseImportExportStatus { return ConvertFrom-Json '{ "Status": "Succeeded", "StatusMessage": "" }' }
     Mock Set-AzureRmSqlDatabase
+    Mock Get-AzureRmSqlDatabase
 
     It "Should create a database" {
         .\New-DatabaseFromBlobFile @params
@@ -22,6 +25,7 @@ Describe "New-DatabaseFromBlobFile unit tests" -Tag "Unit" {
         Assert-MockCalled New-AzureRmSqlDatabaseImport -Exactly 1 -Scope It
         Assert-MockCalled Get-AzureRmSqlDatabaseImportExportStatus -Exactly 1 -Scope It
         Assert-MockCalled Set-AzureRmSqlDatabase -Exactly 0 -Scope It
+        Assert-MockCalled Get-AzureRmSqlDatabase -Exactly 1 -Scope It
     }
 
     It "Should add database to elastic pool if one is specified" {
@@ -32,6 +36,7 @@ Describe "New-DatabaseFromBlobFile unit tests" -Tag "Unit" {
         Assert-MockCalled New-AzureRmSqlDatabaseImport -Exactly 1 -Scope It
         Assert-MockCalled Get-AzureRmSqlDatabaseImportExportStatus -Exactly 1 -Scope It
         Assert-MockCalled Set-AzureRmSqlDatabase -Exactly 1 -Scope It
+        Assert-MockCalled Get-AzureRmSqlDatabase -Exactly 0 -Scope It
     }
 
 }
