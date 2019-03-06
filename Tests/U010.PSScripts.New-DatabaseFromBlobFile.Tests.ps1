@@ -10,6 +10,7 @@ $params = @{
     StorageUrl        = "https://dfcfoobarstr.blob.core.windows.net/backup/db.bacpac"
 }
 
+# solves CommandNotFoundException
 function New-AzureRmSqlDatabaseImport {}
 function Get-AzureRmSqlDatabaseImportExportStatus {}
 function Set-AzureRmSqlDatabase {}

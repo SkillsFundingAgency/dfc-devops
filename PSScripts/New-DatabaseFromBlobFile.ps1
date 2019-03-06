@@ -7,7 +7,7 @@ Creates a SQL database from a bacpac file in Azure storage
 Creates a SQL database from a bacpac file in Azure storage
 
 .PARAMETER ResourceGroupName
-The name of the Resource Group for the Azure SQL Server
+Optional - The name of the Resource Group for the Azure SQL Server. Will read in from environment variable if not passed.
 
 .PARAMETER SQLServerName
 Azure SQL Server name
@@ -28,16 +28,16 @@ Url to bacpac file in the storage account
 Storage account key to access storage url
 
 .PARAMETER DatabaseTier
-Optional - sets the database tier to use (eg S2)
+Optional - sets the database tier to use. Defaults to an S2 if not specified.
 
 .PARAMETER DatabaseMaxSize
-Optional - the max size the databse can grow to (in bytes)
+Optional - the max size the databse can grow to (in bytes). Defaults to 25000000 if not specified.
 
 .PARAMETER ElasticPool
 Optional - moves the database into the elastic pool if specified
 
 .EXAMPLE
-New-CosmosDbAccountCollections -CosmosDbAccountName "dfc-foo-bar-cdb" -CosmosDbConfigurationFilePath C:\path\to\config.json
+New-DatabaseFromBlobFile -SQLServerName dfc-foo-bar-sql -SQLDatabase dfc-foo-bar-db -SQLAdminUsername sa -SQLAdminPassword password1 -StorageUrl https://dfcfoobarstr.blob.core.windows.net/backup/db.bacpac -StorageAccountKey letmein==
 
 #>
 
@@ -68,10 +68,20 @@ param (
 
 $SecureAdminPassword = ConvertTo-SecureString $SQLAdminPassword -AsPlainText -Force
 
-$Database = New-AzureRmSqlDatabaseImport -ResourceGroupName $ResourceGroupName -ServerName $SQLServerName -DatabaseName $SQLDatabase `
-                            -StorageKeyType "StorageAccessKey" -StorageKey $StorageAccountKey -StorageUri $StorageUrl `
-                            -AdministratorLogin $SQLAdminUsername -AdministratorLoginPassword $SecureAdminPassword `
-                            -Edition Standard -ServiceObjectiveName $DatabaseTier -DatabaseMaxSizeBytes $DatabaseMaxSize
+$DatabaseImportParams = @{
+    ResourceGroupName          = $ResourceGroupName
+    ServerName                 = $SQLServerName
+    DatabaseName               = $SQLDatabase
+    StorageKeyType             = "StorageAccessKey"
+    StorageKey                 = $StorageAccountKey
+    StorageUri                 = $StorageUrl
+    AdministratorLogin         = $SQLAdminUsername
+    AdministratorLoginPassword = $SecureAdminPassword
+    Edition                    = "Standard"
+    ServiceObjectiveName       = $DatabaseTier
+    DatabaseMaxSizeBytes       = $DatabaseMaxSize
+}
+$Database = New-AzureRmSqlDatabaseImport @DatabaseImportParams
 
 $RestoreInProgress = $true
 
