@@ -11,6 +11,9 @@ $params = @{
 }
 
 function New-AzureRmSqlDatabaseImport {}
+function Get-AzureRmSqlDatabaseImportExportStatus {}
+function Set-AzureRmSqlDatabase {}
+function Get-AzureRmSqlDatabase {}
 
 Describe "New-DatabaseFromBlobFile unit tests" -Tag "Unit" {
 
