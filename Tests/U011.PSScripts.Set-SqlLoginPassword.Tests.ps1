@@ -12,6 +12,9 @@ $params = @{
     SQLLoginPassword  = $SQLLoginPassword
 }
 
+# solves CommandNotFoundException
+function Invoke-Sqlcmd {}
+
 Describe "Set-SqlLoginPassword unit tests" -Tag "Unit" {
 
     $SQLScript = "$TestDrive\Mock.sql"
