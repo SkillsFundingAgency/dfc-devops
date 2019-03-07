@@ -31,7 +31,7 @@ Describe "Invoke-SqlScript unit tests" -Tag "Unit" {
 
         .\Invoke-SqlScript @params
 
-        Assert-MockCalled Invoke-Sqlcmd
+        Assert-MockCalled Invoke-Sqlcmd -Exactly 1 -Scope It
 
     }
 
