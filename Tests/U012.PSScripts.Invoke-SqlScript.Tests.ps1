@@ -15,7 +15,7 @@ Describe "Invoke-SqlScript unit tests" -Tag "Unit" {
     
     Mock Invoke-Sqlcmd
 
-    It "Should error if optional SQL script passed but does not exist" {
+    It "Should error if SQL script does not exist" {
 
         Mock Write-Error
 
