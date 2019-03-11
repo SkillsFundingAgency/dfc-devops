@@ -59,6 +59,8 @@ $SQLParams = @{
     EncryptConnection = $true
 }
 
+Write-Verbose "Using SQL credentials: $SQLAdminUsername - $SQLAdminPassword"
+Write-Verbose "Running: ALTER USER [$SQLLogin] WITH PASSWORD = '$SQLLoginPassword';"
 $ResetPasswordQuery = "ALTER USER [$SQLLogin] WITH PASSWORD = '$SQLLoginPassword';"
 Invoke-Sqlcmd -Query $ResetPasswordQuery @SQLParams
 
