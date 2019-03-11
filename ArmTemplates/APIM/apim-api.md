@@ -24,6 +24,12 @@ apiVersion (optional) string
 
 The version of the API.  A version set will need to be created separartely.
 
+apiSuffix (optional) string
+
+Relative URL uniquely identifying this API and all of its resource paths within the API Management service instance.
+It is appended to the API base URL and appears before the path for the API.
+Defaults to the apiName if not specified.
+
 loggerSamplingPercentage (optional) string
 
 Defaults to 100, only applied if apimLoggerName is set.

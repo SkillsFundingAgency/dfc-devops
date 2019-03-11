@@ -26,6 +26,13 @@
             },
             "defaultValue": ""
         },
+        "apiSuffix": {
+            "type":"string",
+            "metadata": {
+              "description": "Relative URL uniquely identifying this API and all of its resource paths within the API Management service instance, defaults to apiName"
+            },
+            "defaultValue": ""
+        },
         "loggerSamplingPercentage": {
             "type": "int",
             "defaultValue": 100,
@@ -42,11 +49,12 @@
     },
     "variables": {
         "apimApiVersionName": "[if(equals(parameters('apiVersion'), ''), parameters('apiName'), concat(parameters('apiName'), '-', parameters('apiVersion')))]",
+        "apiSuffixPath": "[if(equals(parameters('apiSuffix'), ''), parameters('apiName'), parameters('apiSuffix'))]",
         "apiProperties": {
             "noversion": {
                 "authenticationSettings": "[variables('authenticationProvider')]",
                 "displayName": "[variables('apimApiVersionName')]",
-                "path": "[parameters('apiName')]",
+                "path": "[variables('apiSuffixPath')]",
                 "protocols": [
                     "https"
                 ]
@@ -56,7 +64,7 @@
                 "apiVersionSetId": "[resourceId('Microsoft.ApiManagement/service/api-version-sets', parameters('apimServiceName'), variables('versionSetName'))]",
                 "authenticationSettings": "[variables('authenticationProvider')]",
                 "displayName": "[variables('apimApiVersionName')]",
-                "path": "[parameters('apiName')]",
+                "path": "[variables('apiSuffixPath')]",
                 "protocols": [
                     "https"
                 ]
