@@ -59,9 +59,8 @@ $SQLParams = @{
     EncryptConnection = $true
 }
 
-Write-Output "Using SQL credentials: $SQLAdminUsername - Password length $($SQLAdminPassword.length)"
 $ResetPasswordQuery = "ALTER USER [$SQLLogin] WITH PASSWORD = '$SQLLoginPassword';"
-Write-Output $ResetPasswordQuery 
+Write-Verbose $ResetPasswordQuery 
 Invoke-Sqlcmd -Query $ResetPasswordQuery @SQLParams
 
 if ($UserScript) {
