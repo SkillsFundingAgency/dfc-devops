@@ -14,8 +14,8 @@ Describe "Switch-SqlDatabases unit tests" -Tag "Unit" {
     Mock Set-AzureRmSqlDatabase
 
     It "Should do a single rename if the existing database doesnt exist" {
-        Mock Get-AzureRmResource { returm $null }
-        Mock Find-AzureRmResource { returm $null }
+        Mock Get-AzureRmResource { return $null }
+        Mock Find-AzureRmResource { return $null }
 
         .\Switch-SqlDatabases -ResourceGroupName dfc-foo-bar-rg -SQLServerName dfc-foo-bar-sql -ExistingDatabaseName foobar-db -ReplacementDatabaseName foobar-new
 
@@ -23,8 +23,8 @@ Describe "Switch-SqlDatabases unit tests" -Tag "Unit" {
     }
 
     It "Should do a two renames if the existing database exists" {
-        Mock Get-AzureRmResource { returm mock-resource }
-        Mock Find-AzureRmResource { returm mock-resource }
+        Mock Get-AzureRmResource { return mock-resource }
+        Mock Find-AzureRmResource { return mock-resource }
 
         .\Switch-SqlDatabases -ResourceGroupName dfc-foo-bar-rg -SQLServerName dfc-foo-bar-sql -ExistingDatabaseName foobar-db -ReplacementDatabaseName foobar-new
 
