@@ -69,12 +69,12 @@ if ($ExistingDatabaseDetails) {
         Write-Verbose "Checking if $TryName is available"
         if ($AzureRmVersion.Version.Major -gt 5) {
             $BackupDatabaseDetails = Get-AzureRmResource -Name $TryName -ResourceType Microsoft.Sql/servers/databases -ResourceGroupName $ResourceGroupName
-        
+
         }
         else {
             $BackupDatabaseDetails = Find-AzureRmResource -ResourceNameEquals $TryName -ResourceType Microsoft.Sql/servers/databases -ResourceGroupNameEquals $ResourceGroupName
         }
-        
+
         if ($BackupDatabaseDetails) {
             # Name already in use
             $NameLoop += 1
@@ -84,7 +84,7 @@ if ($ExistingDatabaseDetails) {
             $LookingForName = $false
             $BackupName     = $TryName
         }
-    
+
     }
 
     Write-Output "Renaming $ExistingDatabaseName to $BackupName"

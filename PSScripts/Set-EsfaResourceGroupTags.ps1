@@ -23,6 +23,7 @@ Name of the service offering to which the resources belong, select from Course D
 .EXAMPLE
 Set-EsfaResourceGroupTags -ResourceGroupName "dfc-dev-foobar-rg" -Environment "Dev/Test" -ParentBusiness "National Careers Service" -ServiceOffering "Course Directory"
 #>
+
 [CmdletBinding()]
 param(
     [Parameter(Mandatory=$true)]
@@ -84,9 +85,9 @@ else {
                 Write-Verbose -Message ("Tag value is incorrect, setting tag {0} with value {1}" -f $Key, $Tags[$Key])
                 $UpdatedTags[$Key] = $Tags[$Key]
                 $UpdateTags = $true
-            
-            } 
-        } 
+
+            }
+        }
 
     }
     else {
@@ -105,8 +106,4 @@ else {
 
     }
 
-
 }
-
-
-
