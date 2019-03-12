@@ -5,10 +5,6 @@ function Get-AzureRmResource {}
 function Find-AzureRmResource {}
 function Set-AzureRmSqlDatabase {}
 
-function mock-resource {
-    $mock = '{ "SiteConfig": { "AppSettings": [ { "name": "foo", "value": "bar"}, { "name": "this", "value": "that" } ] } }'
-    return ConvertFrom-Json $mock
-}
 Describe "Switch-SqlDatabases unit tests" -Tag "Unit" {
 
     Mock Set-AzureRmSqlDatabase
@@ -22,14 +18,9 @@ Describe "Switch-SqlDatabases unit tests" -Tag "Unit" {
         Assert-MockCalled Set-AzureRmSqlDatabase -Exactly 1 -Scope It
     }
 
-    It "Should do a two renames if the existing database exists" {
-        Mock Get-AzureRmResource { return mock-resource }
-        Mock Find-AzureRmResource { return mock-resource }
+    # TODO: Mock the existing database existing
 
-        .\Switch-SqlDatabases -ResourceGroupName dfc-foo-bar-rg -SQLServerName dfc-foo-bar-sql -ExistingDatabaseName foobar-db -ReplacementDatabaseName foobar-new
-
-        Assert-MockCalled Set-AzureRmSqlDatabase -Exactly 2 -Scope It
-    }
+    # TODO: Mock existing databas existing and at least $backup-old existing
 
 }
 
