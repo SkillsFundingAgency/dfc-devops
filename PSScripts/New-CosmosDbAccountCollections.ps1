@@ -36,13 +36,13 @@ param(
     [string]$CosmosDbConfigurationFilePath
 )
 
-$MinCosmosDBModuleVersion = "2.1.3.528"
+$MinCosmosDBModuleVersion = "2.1.15.239"
 $CosmosDBModuleVersion = Get-Module CosmosDB | Where-Object { $_.Version.ToString() -eq $MinCosmosDBModuleVersion }
 if (!$CosmosDBModuleVersion) {
     Write-Verbose "Minimum module version is not imported."
     if (!(Get-InstalledModule CosmosDB -MinimumVersion $MinCosmosDBModuleVersion -ErrorAction SilentlyContinue)) {
         Write-Verbose "Minimum module version is not installed."
-        Install-Module CosmosDB -MinimumVersion $MinCosmosDBModuleVersion -Scope CurrentUser -Force
+        Install-Module CosmosDB -RequiredVersion $MinCosmosDBModuleVersion -Scope CurrentUser -Force
     }
     Import-Module CosmosDB -MinimumVersion $MinCosmosDBModuleVersion
 }
@@ -111,7 +111,7 @@ catch {
     throw "$_"
 }
 
-# create database if one does not exist 
+# create database if one does not exist
 Write-Verbose "Checking for Database $($CosmosDbConfiguration.DatabaseName)"
 $CosmosDbContext = New-CosmosDbContext -Account $CosmosDbAccountName -ResourceGroup $ResourceGroupName -MasterKeyType 'PrimaryMasterKey'
 $ExistingDatabase = Get-CosmosDbDatabase -Context $CosmosDbContext -Id $CosmosDbConfiguration.DatabaseName -ErrorAction SilentlyContinue

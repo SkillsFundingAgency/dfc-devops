@@ -9,7 +9,7 @@ Imports pfx certificate to a keyvault for use in Azure
 Keyvault to add the secret to
 
 .PARAMETER SecretName
-Name of the 
+Name of the secret to create
 
 .PARAMETER PfxFilePath
  Full path to the pfx file including file name
@@ -31,10 +31,10 @@ param(
     [Parameter(Mandatory=$true)]
     [string] $PfxPassword
 )
-  
+
 $Collection = New-Object System.Security.Cryptography.X509Certificates.X509Certificate2Collection
 $Collection.Import($PfxFilePath, $PfxPassword, [System.Security.Cryptography.X509Certificates.X509KeyStorageFlags]::Exportable)
-    
+
 # create secret variables from cert
 $ExpiryDate = $Collection.NotAfter | Sort-Object | Select-Object -First 1 # earliest expiring cert in pfx
 $ClearBytes = $Collection.Export([System.Security.Cryptography.X509Certificates.X509ContentType]::Pkcs12)

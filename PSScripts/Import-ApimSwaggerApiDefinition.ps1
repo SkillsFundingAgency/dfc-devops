@@ -41,7 +41,6 @@ Param(
     [Switch]$SwaggerSpecificationFile,
 	[Parameter(Mandatory=$false, ParameterSetName="File")]
 	[string]$OutputFilePath
-
 )
 
 if ($PSCmdlet.ParameterSetName -eq "File") {
@@ -75,7 +74,6 @@ try {
     }
 
     # --- Import swagger definition
-    
 
     if ($PSCmdlet.ParameterSetName -eq "File") {
 
@@ -90,7 +88,7 @@ try {
 
     }
 
-} 
+}
 catch {
    throw $_
 }

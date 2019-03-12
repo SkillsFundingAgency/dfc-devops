@@ -60,6 +60,7 @@ $SQLParams = @{
 }
 
 $ResetPasswordQuery = "ALTER USER [$SQLLogin] WITH PASSWORD = '$SQLLoginPassword';"
+Write-Verbose $ResetPasswordQuery
 Invoke-Sqlcmd -Query $ResetPasswordQuery @SQLParams
 
 if ($UserScript) {

@@ -4,7 +4,7 @@ Converts the Git tags to VSTS tags
 
 .DESCRIPTION
 Checks if the branch has any tags in git and add these tags to VSTS.
-Also allows an optional additional tag to be added in VSTS. 
+Also allows an optional additional tag to be added in VSTS.
 
 .PARAMETER RepositoryPath
 Path to the git root directory (the one with the .git directory in)

@@ -42,10 +42,55 @@ param (
     [string] $ReplacementDatabaseName
 )
 
-$BackupName = "$ExistingDatabaseName-old"
-Write-Output "Renaming $ExistingDatabaseName to $BackupName"
-Set-AzureRmSqlDatabase -ResourceGroupName $ResourceGroupName -ServerName $SQLServerName -DatabaseName $ExistingDatabaseName -NewName $BackupName
+$AzureRmVersion = Get-Module AzureRM -ListAvailable | Sort-Object { $_.Version.Major } -Descending | Select-Object -First 1
 
-Start-Sleep 1
+# Check if existing database already exists
+if ($AzureRmVersion.Version.Major -gt 5) {
+    $ExistingDatabaseDetails = Get-AzureRmResource -Name $ExistingDatabaseName -ResourceType Microsoft.Sql/servers/databases -ResourceGroupName $ResourceGroupName
+}
+else {
+    $ExistingDatabaseDetails = Find-AzureRmResource -ResourceNameEquals $ExistingDatabaseName -ResourceType Microsoft.Sql/servers/databases -ResourceGroupNameEquals $ResourceGroupName
+}
+
+if ($ExistingDatabaseDetails) {
+    # Check if backup already exists
+    $BackupNameRoot = "$ExistingDatabaseName-old"
+    $NameLoop       = 0
+    $LookingForName = $true
+
+    While ($LookingForName) {
+        if ($NameLoop -gt 0) {
+            $TryName = "$BackupNameRoot$NameLoop"
+        }
+        else {
+            $TryName = $BackupNameRoot
+        }
+
+        Write-Verbose "Checking if $TryName is available"
+        if ($AzureRmVersion.Version.Major -gt 5) {
+            $BackupDatabaseDetails = Get-AzureRmResource -Name $TryName -ResourceType Microsoft.Sql/servers/databases -ResourceGroupName $ResourceGroupName
+
+        }
+        else {
+            $BackupDatabaseDetails = Find-AzureRmResource -ResourceNameEquals $TryName -ResourceType Microsoft.Sql/servers/databases -ResourceGroupNameEquals $ResourceGroupName
+        }
+
+        if ($BackupDatabaseDetails) {
+            # Name already in use
+            $NameLoop += 1
+        }
+        else {
+            # Name free
+            $LookingForName = $false
+            $BackupName     = $TryName
+        }
+
+    }
+
+    Write-Output "Renaming $ExistingDatabaseName to $BackupName"
+    Set-AzureRmSqlDatabase -ResourceGroupName $ResourceGroupName -ServerName $SQLServerName -DatabaseName $ExistingDatabaseName -NewName $BackupName
+    Start-Sleep 1
+}
+
 Write-Output "Renaming $ReplacementDatabaseName to $ExistingDatabaseName"
 Set-AzureRmSqlDatabase -ResourceGroupName $ResourceGroupName -ServerName $SQLServerName -DatabaseName $ReplacementDatabaseName -NewName $ExistingDatabaseName
