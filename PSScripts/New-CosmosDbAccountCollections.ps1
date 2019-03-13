@@ -36,15 +36,19 @@ param(
     [string]$CosmosDbConfigurationFilePath
 )
 
-$MinCosmosDBModuleVersion = "2.1.15.239"
-$CosmosDBModuleVersion = Get-Module CosmosDB | Where-Object { $_.Version.ToString() -eq $MinCosmosDBModuleVersion }
-if (!$CosmosDBModuleVersion) {
-    Write-Verbose "Minimum module version is not imported."
-    if (!(Get-InstalledModule CosmosDB -MinimumVersion $MinCosmosDBModuleVersion -ErrorAction SilentlyContinue)) {
-        Write-Verbose "Minimum module version is not installed."
-        Install-Module CosmosDB -RequiredVersion $MinCosmosDBModuleVersion -Scope CurrentUser -Force
+$MinCosmosDBModuleVersion = "2.1.3.528"
+$MaxCosmosDBModuleVersion = "2.1.15.239"
+$CosmosDBModuleVersion = Get-Module CosmosDB | Where-Object { ([System.Version] $_.Version.ToString() -ge [System.Version] $MinCosmosDBModuleVersion) -and ([System.Version] $_.Version.ToString() -le [System.Version] $MaxCosmosDBModuleVersion) }
+if ($CosmosDBModuleVersion) {
+    Write-Verbose "Cosmos DB module $($CosmosDBModuleVersion.Version.ToString()) installed"
+}
+else {
+    Write-Verbose "No Cosmos DB module version between $MinCosmosDBModuleVersion and $MaxCosmosDBModuleVersion found"
+    if (!(Get-InstalledModule CosmosDB -MinimumVersion $MinCosmosDBModuleVersion -MaximumVersion $MaxCosmosDBModuleVersion -ErrorAction SilentlyContinue)) {
+        Write-Verbose "No module meeting this version requirement is installed ... installing locally"
+        Install-Module CosmosDB -MinimumVersion $MinCosmosDBModuleVersion -MaximumVersion $MaxCosmosDBModuleVersion -Scope CurrentUser -Force
     }
-    Import-Module CosmosDB -MinimumVersion $MinCosmosDBModuleVersion
+    Import-Module CosmosDB -MinimumVersion $MinCosmosDBModuleVersion -MaximumVersion $MaxCosmosDBModuleVersion
 }
 
 # Returns an array with the indexes for a path
@@ -111,10 +115,21 @@ catch {
     throw "$_"
 }
 
+$CosmosDbContext = New-CosmosDbContext -Account $CosmosDbAccountName -ResourceGroup $ResourceGroupName -MasterKeyType 'PrimaryMasterKey'
+
 # create database if one does not exist
 Write-Verbose "Checking for Database $($CosmosDbConfiguration.DatabaseName)"
-$CosmosDbContext = New-CosmosDbContext -Account $CosmosDbAccountName -ResourceGroup $ResourceGroupName -MasterKeyType 'PrimaryMasterKey'
-$ExistingDatabase = Get-CosmosDbDatabase -Context $CosmosDbContext -Id $CosmosDbConfiguration.DatabaseName -ErrorAction SilentlyContinue
+try {
+    $ExistingDatabase = Get-CosmosDbDatabase -Context $CosmosDbContext -Id $CosmosDbConfiguration.DatabaseName -ErrorAction SilentlyContinue
+}
+catch [System.Net.WebException],[Microsoft.PowerShell.Commands.HttpResponseException] {
+    if ($_.Exception.Response.StatusCode -eq 404) {
+        # database doesnt exist (should silently continue)
+    }
+    else {
+        throw $_
+    }
+}
 
 if (!$ExistingDatabase) {
     Write-Output "Creating Database: $($CosmosDbConfiguration.DatabaseName)"
@@ -124,7 +139,17 @@ if (!$ExistingDatabase) {
 # loop through collections
 foreach ($Collection in $CosmosDbConfiguration.Collections) {
     Write-Verbose "Checking for $($Collection.CollectionName)"
-    $ExistingCollection = Get-CosmosDbCollection -Context $CosmosDbContext -Database $CosmosDbConfiguration.DatabaseName -Id $Collection.CollectionName -ErrorAction SilentlyContinue
+    try {
+        $ExistingCollection = Get-CosmosDbCollection -Context $CosmosDbContext -Database $CosmosDbConfiguration.DatabaseName -Id $Collection.CollectionName -ErrorAction SilentlyContinue
+    }
+    catch [System.Net.WebException],[Microsoft.PowerShell.Commands.HttpResponseException] {
+        if ($_.Exception.Response.StatusCode -eq 404) {
+            # collection doesnt exist (should silently continue)
+        }
+        else {
+            throw $_
+        }
+    }
 
     $NewCosmosDbCollectionParameters = @{
         Context         = $CosmosDbContext
