@@ -12,6 +12,9 @@
             "type": "string",
             "defaultValue": "West Europe"
         },
+        "networkSecurityGroupAssigned": {
+            "type": "bool"
+        },
         "subnetName": {
             "type": "string"
         },
@@ -30,6 +33,7 @@
         {
             "apiVersion": "2016-09-01",
             "type": "Microsoft.Web/hostingEnvironments",
+            "condition": "[parameters('networkSecurityGroupAssigned')]",
             "name": "[parameters('name')]",
             "kind": "ASEV2",
             "location": "[parameters('location')]",
