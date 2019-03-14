@@ -49,11 +49,5 @@
                 }
             }
         }
-    ],
-    "outputs": {
-        "aseOutputs": {
-            "type": "object",
-            "value": "[reference(parameters('name'))]"
-        }
-    }
+    ]
 }
