@@ -2,32 +2,34 @@
     "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-      "virtualNetworkPrefix": {
-        "type": "string",
-        "metadata": {
-          "description": "The name of new Azure VNet where you can deploy Azure Sql Managed Instances and the resources that use them"
+        "virtualNetworkPrefix": {
+            "type": "string",
+            "metadata": {
+                "description": "The name of new Azure VNet where you can deploy Azure Sql Managed Instances and the resources that use them"
+            }
+        },
+        "virtualNetworkAddressPrefix": {
+            "type": "string",
+            "defaultValue": "10.0",
+            "metadata": {
+                "description": "First 2 octects of VNet Private IP address range (VNet prefix)"
+            }
+        },
+        "virtualNetworkSubnets": {
+            "type": "array",
+            "defaultValue": [],
+            "metadata": {
+                "description": "Array of subnets to create"
+            }
         }
-      },
-      "virtualNetworkAddressPrefix": {
-        "type": "string",
-        "defaultValue": "10.0",
-        "metadata": {
-          "description": "First 2 octects of VNet Private IP address range (VNet prefix)"
-        }
-      },
-      "virtualNetworkSubnets": {
-        "type": "array",
-        "defaultValue": [],
-        "metadata": {
-          "description": "Array of subnets to create"
-        }
-      }
     },
     "variables": {
         "virtualNetworkName": "[concat(parameters('virtualNetworkPrefix'), '-vnet')]",
         "routeTableName": "[concat(parameters('virtualNetworkPrefix'), '-rt')]",
         "localIpAddressRange": "[concat(parameters('virtualNetworkAddressPrefix'),'.0.0/16')]",
-        "defaultSubnets": [ "default" ],
+        "defaultSubnets": [
+            "default"
+        ],
         "allSubnets": "[union(variables('defaultSubnets'), parameters('virtualNetworkSubnets'))]"
     },
     "resources": [
@@ -266,38 +268,48 @@
                 ]
             }
         },
-      {
-        "apiVersion": "2018-02-01",
-        "type": "Microsoft.Network/virtualNetworks",
-        "name": "[variables('virtualNetworkName')]",
-        "location": "[resourceGroup().location]",
-        "dependsOn": [
-            "[resourceId('Microsoft.Network/routeTables', variables('routeTableName'))]"
-        ],
-        "properties": {
-          "addressSpace": {
-            "addressPrefixes": [
-                "[variables('localIpAddressRange')]"
-            ]
-          }
-        }
-      },
-      {
-        "name": "[concat(variables('virtualNetworkName'), '/', variables('allSubnets')[copyIndex()])]",
-        "type": "Microsoft.Network/virtualNetworks/subnets",
-        "apiVersion": "2018-08-01",
-        "dependsOn": [
-            "[variables('virtualNetworkName')]"
-        ],
-        "copy": { 
-            "name": "subnetcopy", 
-            "count": "[length(variables('allSubnets'))]",
-            "mode": "Serial",
-            "batchSize": 1
+        {
+            "apiVersion": "2018-02-01",
+            "type": "Microsoft.Network/virtualNetworks",
+            "name": "[variables('virtualNetworkName')]",
+            "location": "[resourceGroup().location]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/routeTables', variables('routeTableName'))]"
+            ],
+            "properties": {
+                "addressSpace": {
+                    "addressPrefixes": [
+                        "[variables('localIpAddressRange')]"
+                    ]
+                }
+            }
         },
-        "properties": {
-            "addressPrefix": "[concat(parameters('virtualNetworkAddressPrefix'), '.', copyIndex(), '.0/24')]"
+        {
+            "name": "[concat(variables('virtualNetworkName'), '/', variables('allSubnets')[copyIndex()])]",
+            "type": "Microsoft.Network/virtualNetworks/subnets",
+            "apiVersion": "2018-08-01",
+            "dependsOn": [
+                "[variables('virtualNetworkName')]"
+            ],
+            "copy": {
+                "name": "subnetcopy",
+                "count": "[length(variables('allSubnets'))]",
+                "mode": "Serial",
+                "batchSize": 1
+            },
+            "properties": {
+                "addressPrefix": "[concat(parameters('virtualNetworkAddressPrefix'), '.', copyIndex(), '.0/24')]"
+            }
+        }
+    ],
+    "outputs": {
+        "virtualNetworkName": {
+            "type": "string",
+            "value": "[variables('virtualNetworkName')]"
+        },
+        "routeTableName": {
+            "type": "string",
+            "value": "[variables('routeTableName')]"
         }
     }
-  ]
 }
