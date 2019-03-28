@@ -5,7 +5,7 @@
         "sqlServerName": {
             "type": "string",
             "metadata": {
-                "description": "Name of new Azure VNet where you can deploy Azure Sql Managed Instances and the resources that use them"
+                "description": "Name of the SQL Server Managed Instance"
             }
         },
         "sqlSubnetId": {

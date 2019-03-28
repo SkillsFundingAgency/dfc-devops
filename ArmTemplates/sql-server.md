@@ -14,15 +14,15 @@ sqlServerAdminUserName: (optional) string
 
 SQL SA administrator username.
 Only used if the database does not exist and needs creating.
-Does not change settings if the database already exists.
-If not passed in a username will be generated.
+Only used when the server is created.
+Does not change settings if the server already exists (will not change the admin username on an existing server).
 The username is available as an output of the template - saAdministratorLogin
 
 sqlServerAdminPassword: (required) securestring
 
 SQL SA administrator password.
-Only used if the database does not exist and needs creating.
-Does not change settings if the database already exists.
+Only used when the server is created.
+Does not change settings if the server already exists (will not change the admin password on an existing server).
 
 storageAccountName: (required) string
 
