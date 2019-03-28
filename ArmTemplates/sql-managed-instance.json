@@ -1,0 +1,103 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "sqlServerName": {
+            "type": "string",
+            "metadata": {
+                "description": "Name of new Azure VNet where you can deploy Azure Sql Managed Instances and the resources that use them"
+            }
+        },
+        "sqlSubnetId": {
+            "type": "string",
+            "metadata": {
+              "description": "Name of new Azure VNet where you can deploy Azure Sql Managed Instances and the resources that use them"
+            }
+        },  
+        "sqlServerAdminUserName": {
+            "type": "string",
+            "defaultValue": "",
+            "metadata": {
+                "description": "The Azure SQL Server Administrator (SA) username. A generated name will be used if not supplied."
+            }
+        },
+        "sqlServerAdminPassword": {
+            "type": "securestring",
+            "metadata": {
+                "description": "The Azure SQL Server Administrator (SA) password"
+            }
+        },
+        "sqlServerActiveDirectoryAdminLogin": {
+            "type": "string",
+            "metadata": {
+                "description": "The active directory admin or group name that will be assigned to the SQL server"
+            }
+        },
+        "sqlServerActiveDirectoryAdminObjectId": {
+            "type": "string",
+            "metadata": {
+                "description": "The object id of the active directory admin that will be assigned to the SQL server"
+            }
+        },
+        "vCores": {
+            "type": "int",
+            "defaultValue": 8,
+            "metadata": {
+                "description": "Number of vCores"
+            }
+        },
+        "storageSizeGb": {
+            "type": "int",
+            "defaultValue": 32,
+            "metadata": {
+                "description": "Storage limit for the database in GB"
+            }
+        }
+    },
+    "variables": {
+        "sqlServerAdminUserName": "[if(equals(parameters('sqlServerAdminUserName'), ''), uniqueString(resourceGroup().id), parameters('sqlServerAdminUserName'))]"
+    },
+    "resources": [
+      {
+        "name": "[parameters('sqlServerName')]",
+        "type": "Microsoft.Sql/managedInstances",
+        "apiVersion": "2015-05-01-preview",
+        "location": "[resourceGroup().location]",
+        "sku": {
+            "name": "GP_Gen5",
+            "tier": "GeneralPurpose",
+            "family": "Gen5",
+            "capacity": "[parameters('vCores')]"
+        },
+        "properties": {
+            "administratorLogin": "[variables('sqlServerAdminUserName')]",
+            "administratorLoginPassword": "[parameters('sqlServerAdminPassword')]",
+            "subnetId": "[parameters('sqlSubnetId')]",
+            "vCores": "[parameters('vCores')]",
+            "storageSizeInGB": "[parameters('storageSizeGb')]"
+        },
+        "resources": [
+            {
+                "name": "activeDirectory",
+                "type": "administrators",
+                "apiVersion": "2017-03-01-preview",
+                "dependsOn": [
+                    "[parameters('sqlServerName')]"
+                ],
+                "properties": {
+                    "administratorType": "ActiveDirectory",
+                    "login": "[parameters('sqlServerActiveDirectoryAdminLogin')]",
+                    "sid": "[parameters('sqlServerActiveDirectoryAdminObjectId')]",
+                    "tenantId": "[subscription().tenantId]"
+                }
+            }
+        ]
+      }
+    ],
+    "outputs": {
+        "saAdministratorLogin": {
+            "type": "string",
+            "value": "[variables('sqlServerAdminUserName')]"
+        }
+    }
+}

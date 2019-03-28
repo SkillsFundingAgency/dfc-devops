@@ -12,6 +12,7 @@ virtualNetworkAddressPrefix: (optional) string
 
 First 2 octects of VNet Private IP address range (VNet prefix).
 The VNet will always be created with a 16-bit network mask (ie the last two octets will always be 0.0)
+Will default to 10.0 if not supplied.
 
 Must but one of
 * 10.x (class A)

@@ -145,6 +145,7 @@ foreach ($Collection in $CosmosDbConfiguration.Collections) {
     catch [System.Net.WebException],[Microsoft.PowerShell.Commands.HttpResponseException] {
         if ($_.Exception.Response.StatusCode -eq 404) {
             # collection doesnt exist (should silently continue)
+            $ExistingCollection = $null
         }
         else {
             throw $_
@@ -208,6 +209,6 @@ foreach ($Collection in $CosmosDbConfiguration.Collections) {
     }
     else {
         # TODO: Can we check and modify if something changes
-        Write-Verbose "$($Collection.CollectionName) exists"
+        Write-Verbose "$($ExistingCollection.Id) exists"
     }
 }
