@@ -274,7 +274,7 @@
             "name": "[variables('virtualNetworkName')]",
             "location": "[resourceGroup().location]",
             "dependsOn": [
-                "[resourceId('Microsoft.Network/routeTables', variables('routeTableName'))]"
+                "[variables('routeTableName')]"
             ],
             "properties": {
                 "addressSpace": {
@@ -298,7 +298,10 @@
                 "batchSize": 1
             },
             "properties": {
-                "addressPrefix": "[concat(parameters('virtualNetworkAddressPrefix'), '.', copyIndex(), '.0/24')]"
+                "addressPrefix": "[concat(parameters('virtualNetworkAddressPrefix'), '.', copyIndex(), '.0/24')]",
+                "routeTable": {
+                    "id": "[resourceId('Microsoft.Network/routeTables', variables('routeTableName'))]"
+                }
             }
         }
     ],
@@ -310,6 +313,10 @@
         "routeTableName": {
             "type": "string",
             "value": "[variables('routeTableName')]"
+        },
+        "routeTableId": {
+            "type": "string",
+            "value": "[resourceId('Microsoft.Network/routeTables', variables('routeTableName'))]"
         }
     }
 }

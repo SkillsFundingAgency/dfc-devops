@@ -51,6 +51,7 @@ The following templates are available
 * [Keyvault Secrets](KeyVault/keyvault-secrets.md)
 * [Managed Instance Environment](managed-instance-environment.md)
 * [Redis Cache](redis.md)
+* [SQL Server Managed Instance](sql-managed-instance.md)
 * [SQL Server](sql-server.md)
 * [Storage Account](storage-account.md)
 * [Storage Account Container](Storage/storage-account-arm-container.md)
