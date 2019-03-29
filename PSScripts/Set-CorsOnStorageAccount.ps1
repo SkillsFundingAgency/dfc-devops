@@ -22,7 +22,7 @@ Optionally set the max age to cache requests in seconds (defaults to 1 hours)
 Set-CorsOnStorageAccount -StorageAccountName dfcfoobarstr -StorageAccountKey not-a-real-key= -AllowedOrigins foo.example.org
 
 #>
-    
+
 [CmdletBinding()]
 param(
     [Parameter(Mandatory = $true)]

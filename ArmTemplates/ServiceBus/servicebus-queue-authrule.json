@@ -1,0 +1,44 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "authorizationRuleName": {
+            "type": "string",
+            "metadata": {
+                "description": ""
+            }
+        },
+        "queueName": {
+            "type": "string",
+            "metadata": {
+                "description": ""
+            }
+        },
+        "rights": {
+            "type": "array",
+            "metadata": {
+                "description": "Array of rights to be assigned to the rule.  Rights are limited to Manage, Send, Listen"
+            }
+        },
+        "servicebusName": {
+            "type": "string",
+            "metadata": {
+                "description": ""
+            }
+        }
+    },
+    "variables": {},
+    "resources": [
+        {
+            "type": "Microsoft.ServiceBus/namespaces/queues/authorizationRules",
+            "name": "[concat(parameters('servicebusName'),'/',parameters('queueName'), '/', parameters('authorizationRuleName'))]",
+            "apiVersion": "2017-04-01",
+            "location": "[resourceGroup().location]",
+            "tags": {},
+            "properties": {
+                "rights": "[parameters('rights')]"
+            }
+        }
+    ],
+    "outputs": {}
+}
