@@ -1,0 +1,53 @@
+{
+    "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "name": {
+            "type": "string"
+        },
+        "domainName": {
+            "type": "string"
+        },
+        "location": {
+            "type": "string",
+            "defaultValue": "West Europe"
+        },
+        "networkSecurityGroupAssigned": {
+            "type": "bool"
+        },
+        "subnetName": {
+            "type": "string"
+        },
+        "virtualnetworkResourceGroupName": {
+            "type": "string"
+        },
+        "virtualNetworkName": {
+            "type": "string"
+        }
+    },
+    "variables": {
+        "virtualNetworkId": "[resourceId(parameters('virtualnetworkResourceGroupName'), 'Microsoft.Network/virtualNetworks', parameters('virtualNetworkName'))]"
+
+    },
+    "resources": [
+        {
+            "apiVersion": "2016-09-01",
+            "type": "Microsoft.Web/hostingEnvironments",
+            "condition": "[parameters('networkSecurityGroupAssigned')]",
+            "name": "[parameters('name')]",
+            "kind": "ASEV2",
+            "location": "[parameters('location')]",
+            "properties": {
+                "name": "[parameters('name')]",
+                "location": "[parameters('location')]",
+                "dnsSuffix": "[parameters('domainName')]",
+                "ipSslAddressCount": 0,
+                "internalLoadBalancingMode": "Web",
+                "virtualNetwork": {
+                    "id": "[variables('virtualNetworkId')]",
+                    "Subnet": "[parameters('subnetName')]"
+                }
+            }
+        }
+    ]
+}
