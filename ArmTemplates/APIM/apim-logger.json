@@ -11,6 +11,7 @@
         }
     },
     "variables": {
+        "apimLoggerFullName": "[concat(parameters('apimServiceName'), '/', variables('apimProductInstanceName'), '-logger')]",
         "apimProductInstanceName": "[toLower(replace(parameters('productDisplayName'), ' ', '-'))]",
         "appInsightsName": "[concat(parameters('apimServiceName'), '-', variables('apimProductInstanceName'), '-ai')]"
     },
@@ -26,7 +27,7 @@
             }
         },
         {
-            "name": "[concat(parameters('apimServiceName'), '/', variables('apimProductInstanceName'), '-logger')]",
+            "name": "[variables('apimLoggerFullName')]",
             "type": "Microsoft.ApiManagement/service/loggers",
             "apiVersion": "2018-01-01",
             "properties": {
@@ -41,5 +42,14 @@
             ]
           }
     ],
-    "outputs": {}
+    "outputs": {
+        "ApimLoggerName": {
+            "type": "string",
+            "value": "[split(reference(variables('apimLoggerFullName')).resourceId, '/')[4]]"
+        },
+        "ApimLoggerResourceId": {
+            "type": "string",
+            "value": "[reference(variables('apimLoggerFullName')).resourceId]"
+        }
+    }
 }
