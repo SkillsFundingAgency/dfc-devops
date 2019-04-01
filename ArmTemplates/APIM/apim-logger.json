@@ -1,0 +1,45 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "apimServiceName": {
+            "type": "string"
+        },
+        "productDisplayName": {
+            "type": "string",
+            "defaultValue": ""
+        }
+    },
+    "variables": {
+        "apimProductInstanceName": "[toLower(replace(parameters('productDisplayName'), ' ', '-'))]",
+        "appInsightsName": "[concat(parameters('apimServiceName'), '-', variables('apimProductInstanceName'), '-ai')]"
+    },
+    "resources": [
+        {
+            "apiVersion": "2015-05-01",
+            "name": "[variables('appInsightsName')]",
+            "type": "Microsoft.Insights/components",
+            "location": "[resourceGroup().location]",
+            "kind": "web",
+            "properties": {
+                "Application_Type": "web"
+            }
+        },
+        {
+            "name": "[concat(parameters('apimServiceName'), '/', variables('apimProductInstanceName'), '-logger')]",
+            "type": "Microsoft.ApiManagement/service/loggers",
+            "apiVersion": "2018-01-01",
+            "properties": {
+              "loggerType": "applicationInsights",
+              "credentials": {
+                  "instrumentationKey": "[reference(concat('microsoft.insights/components/', variables('appInsightsName'))).InstrumentationKey]"
+              },
+              "isBuffered": true
+            },
+            "dependsOn": [
+              "[variables('appInsightsName')]"
+            ]
+          }
+    ],
+    "outputs": {}
+}
