@@ -11,9 +11,9 @@
         }
     },
     "variables": {
-        "apimLoggerName": "[concat(variables('apimProductInstanceName'), '-logger')]",
+        "apimLoggerName": "[if(greater(length(parameters('productDisplayName')), 0), concat(variables('apimProductInstanceName'), '-logger'), concat(parameters('apimServiceName'), '-logger'))]",
         "apimProductInstanceName": "[toLower(replace(parameters('productDisplayName'), ' ', '-'))]",
-        "appInsightsName": "[concat(parameters('apimServiceName'), '-', variables('apimProductInstanceName'), '-ai')]"
+        "appInsightsName": "[if(greater(length(parameters('productDisplayName')), 0), concat(parameters('apimServiceName'), '-', variables('apimProductInstanceName'), '-ai'), concat(parameters('apimServiceName'), '-ai'))]"
     },
     "resources": [
         {

@@ -8,6 +8,8 @@ The name of the App Insights instance will be formed by concatenating the APIM s
 
 apimServiceName (required) string
 
-The name of the app 
+The name of the API Management instance this logger will be attached to.
 
 productDisplayName (optional) string
+
+If this parameter is included it will be concatenated with the apimServiceName.
