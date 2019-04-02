@@ -39,7 +39,8 @@
             "minValue": 0,
             "maxValue": 100,
             "metadata": {
-                "description": "The percentage of requests to APIM to be sampled by Application Insights"
+                "description": "The percentage of requests to APIM to be sampled by Application Insights",
+                "comment": "Sampling percentage cannot currently be set within an ARM template.  Requires Azure REST API call."
             }
         },
         "oauthAuthenticationServer": {
@@ -93,9 +94,10 @@
                 {
                     "name": "applicationinsights",
                     "type": "diagnostics",
-                    "condition": "[not(equals(parameters('apimLoggerName'), ''))]",
-                    "apiVersion": "2018-06-01-preview",
+                    "condition": "[greater(length(parameters('apimLoggerName')), 0)]",
+                    "apiVersion": "2018-01-01",
                     "properties": {
+                        "enabled": true,
                         "alwaysLog": "allErrors",
                         "loggerId": "[concat('/subscriptions/', subscription().subscriptionId, '/resourceGroups/', resourceGroup().name, '/providers/Microsoft.ApiManagement/service/', parameters('apimServiceName'), '/loggers/', parameters('apimLoggerName'))]",
                         "sampling": {
