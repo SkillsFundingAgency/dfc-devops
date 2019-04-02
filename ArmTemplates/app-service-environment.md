@@ -10,7 +10,7 @@ Name of the App Service Environment
 
 domainName (required) string
 
-Name of the DNS domain that this ASE and it's child apps will be part of.
+Name of the DNS domain that this ASE and it's child apps will be part of.  A wildcard certificate will be required for this domain.  SANs will need to be added to the certificate request for *.scm.<domainName> and scm.<domainName>.  Once the ASE has been deployed the A records will need to be created on the DNS server that hosts this domain.
 
 location (optional) string
 
