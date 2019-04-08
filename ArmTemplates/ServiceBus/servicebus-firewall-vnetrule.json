@@ -8,8 +8,8 @@
                 "description": ""
             }
         },
-        "subnetName" :{
-            "type": "string"
+        "subnetNames" :{
+            "type": "array"
         },
         "vnetName": {
             "type": "string"
@@ -19,25 +19,31 @@
         }
     },
     "variables": {
-        "subnetId": "[concat(resourceId(parameters('vnetResourceGroup'), 'Microsoft.Network/virtualNetworks', parameters('vnetName')), '/subnets/', parameters('subnetName'))]"
+        "namespaceNetworkRuleSetName": "[concat(parameters('servicebusName'), concat('/', 'default'))]"
+        "copy": {
+            "name": "subnetCopy",
+            "count": "[length(parameters('subnetNames'))]",
+            "input": "[concat(resourceId(parameters('vnetResourceGroup'), 'Microsoft.Network/virtualNetworks', parameters('vnetName')), '/subnets/', parameters('subnetNames')[copyIndex('subnetCopy')])]"
+        }
     },
     "resources": [
         {
             "type": "Microsoft.ServiceBus/namespaces/networkruleset",
-            "name": "[concat(parameters('servicebusName'),'/', parameters('subnetName'), '-rule')]",
+            "name": "[variables('namespaceNetworkRuleSetName')]",
             "apiVersion": "2018-01-01-preview",
             "location": "[resourceGroup().location]",
             "tags": {},
             "properties": {
-                "virtualNetworkRules": 
-                [
-                  {
-                    "subnet": {
-                      "id": "[variables('subnetId')]"
-                    },
-                    "ignoreMissingVnetServiceEndpoint": false
-                  }
-                ]
+                "copy": [{
+                    "name": "virtualNetworkRules",
+                    "count": "[length(parameters('subnetCopy'))]",
+                    "input": {
+                        "subnet": {
+                            "id": "[variables('subnetCopy')[copyIndex('subnetCopy')]]"
+                        },
+                        "ignoreMissingVnetServiceEndpoint": false
+                    }
+                }]
             }
         }
     ],
