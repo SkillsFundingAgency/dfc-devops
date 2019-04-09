@@ -5,17 +5,33 @@
         "servicebusName": {
             "type": "string",
             "metadata": {
-                "description": ""
+                "description": "The name of the Service Bus Namespace to ad the VNet rule to."
             }
         },
         "subnetNames" :{
-            "type": "array"
+            "type": "array",
+            "metadata": {
+                "description": "An array of Subnet names to add to the VNet rule."
+            }
         },
         "vnetName": {
-            "type": "string"
+            "type": "string",
+            "metadata": {
+                "description": "Name of the VNet that contains the subnets."
+            }
         },
         "vnetResourceGroup": {
-            "type": "string"
+            "type": "string",
+            "metadata": {
+                "description": "Name of the Vnet's resource group."
+            }
+        },
+        "ipRules": {
+            "type": "array",
+            "defaultValue": [],
+            "metadata": {
+                "description": "An array of IP Addresses."
+            }
         }
     },
     "variables": {
@@ -44,7 +60,7 @@
                         "ignoreMissingVnetServiceEndpoint": false
                     }
                 }],
-                "ipRules":[],
+                "ipRules": "[parameters('ipRules')]",
                 "defaultAction": "Deny"
             }
         }
