@@ -19,7 +19,7 @@
         }
     },
     "variables": {
-        "namespaceNetworkRuleSetName": "[concat(parameters('servicebusName'), concat('/', 'default'))]"
+        "namespaceNetworkRuleSetName": "[concat(parameters('servicebusName'), concat('/', 'default'))]",
         "copy": {
             "name": "subnetCopy",
             "count": "[length(parameters('subnetNames'))]",
