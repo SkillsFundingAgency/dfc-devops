@@ -20,11 +20,11 @@
     },
     "variables": {
         "namespaceNetworkRuleSetName": "[concat(parameters('servicebusName'), concat('/', 'default'))]",
-        "copy": {
+        "copy": [{
             "name": "subnetCopy",
             "count": "[length(parameters('subnetNames'))]",
             "input": "[concat(resourceId(parameters('vnetResourceGroup'), 'Microsoft.Network/virtualNetworks', parameters('vnetName')), '/subnets/', parameters('subnetNames')[copyIndex('subnetCopy')])]"
-        }
+        }]
     },
     "resources": [
         {
@@ -36,10 +36,10 @@
             "properties": {
                 "copy": [{
                     "name": "virtualNetworkRules",
-                    "count": "[length(parameters('subnetCopy'))]",
+                    "count": "[length(variables('subnetCopy'))]",
                     "input": {
                         "subnet": {
-                            "id": "[variables('subnetCopy')[copyIndex('subnetCopy')]]"
+                            "id": "[variables('subnetCopy')[copyIndex('virtualNetworkRules')]]"
                         },
                         "ignoreMissingVnetServiceEndpoint": false
                     }
