@@ -208,7 +208,20 @@ foreach ($Collection in $CosmosDbConfiguration.Collections) {
         New-CosmosDbCollection @NewCosmosDbCollectionParameters
     }
     else {
-        # TODO: Can we check and modify if something changes
+
         Write-Verbose "$($ExistingCollection.Id) exists"
+        $SetCosmosDbCollectionParameters = @{
+            Context         = $CosmosDbContext
+            Database        = $CosmosDbConfiguration.DatabaseName
+            Id              = $Collection.CollectionName
+        }
+
+        if ($Collection.DefaultTtl) {
+            $SetCosmosDbCollectionParameters['DefaultTimeToLive'] = $Collection.DefaultTtl
+            Write-Verbose "Updating Time To Live (TTL) to $($SetCosmosDbCollectionParameters.DefaultTimeToLive)"
+        }
+
+        Set-CosmosDbCollection @SetCosmosDbCollectionParameters
+
     }
 }
