@@ -1,19 +1,19 @@
 <#
 
 .SYNOPSIS
-Creates storage if it doesnt exist
+Creates storage account container if it doesnt exist
 
 .DESCRIPTION
 Checks if the storage container exists and creates it if necessary
 
 .PARAMETER ResourceGroupName
-The name of the Resource Group for the CosmosDb Account
+The name of the Resource Group for the Storage Account
 
 .PARAMETER StorageAccountName
-Azure SQL Server name
+Storage Account name
 
 .PARAMETER ContainerName
-SQL SA administrator username
+Container to create if applicable
 
 .EXAMPLE
 Set-StorageContainer.ps1 -ResourceGroupName dfc-foo-bar-rg -StorageAccountName dfcfoobarstr -ContainerName mycontainer
