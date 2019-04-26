@@ -128,7 +128,7 @@
                 "name": "[if(contains(parameters('appGatewayTier'),'v2'), 'Standard', 'Basic')]"
             },
             "properties": {
-                "publicIPAllocationMethod": "Dynamic"
+                "publicIPAllocationMethod": "[if(contains(parameters('appGatewayTier'),'v2'), 'Static', 'Dynamic')]"
             }
         },
         {
