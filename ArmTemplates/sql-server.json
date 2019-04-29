@@ -146,7 +146,7 @@
                     "location": "[resourceGroup().location]",
                     "dependsOn": [
                         "[concat('Microsoft.Sql/servers/', parameters('sqlServerName'))]",
-                        "[concat('Microsoft.Sql/servers/', parameters('sqlServerName'), '/auditingSettings/', variables('AuditPolicyName'))]"
+                        "[concat('Microsoft.Sql/servers/', parameters('sqlServerName'), '/elasticPools/', parameters('elasticPoolName'))]"
 
                     ],
                     "properties": {
