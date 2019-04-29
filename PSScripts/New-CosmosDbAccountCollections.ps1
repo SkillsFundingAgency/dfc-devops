@@ -250,7 +250,12 @@ foreach ($Collection in $CosmosDbConfiguration.Collections) {
 
         }
 
-        $Result = Set-CosmosDbCollection @SetCosmosDbCollectionParameters
+        if($SetCosmosDbCollectionParameters.Count -gt 3) {
+
+            $Result = Set-CosmosDbCollection @SetCosmosDbCollectionParameters
+
+        }
+
         if ($Result | Get-Member -Name DefaultTtl) {
 
             Write-Verbose "Time To Live (TTL) set to $($Result.DefaultTtl)"
