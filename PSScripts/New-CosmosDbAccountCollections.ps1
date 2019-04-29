@@ -254,21 +254,22 @@ foreach ($Collection in $CosmosDbConfiguration.Collections) {
 
             $Result = Set-CosmosDbCollection @SetCosmosDbCollectionParameters
 
-        }
+            if ($Result | Get-Member -Name DefaultTtl) {
 
-        if ($Result | Get-Member -Name DefaultTtl) {
-
-            Write-Verbose "Time To Live (TTL) set to $($Result.DefaultTtl)"
-
-        }
-        else {
-
-            Write-Verbose "Time To Live (TTL) not set"
-
-        }
-        foreach ($Property in $Result.indexingPolicy | Get-Member -MemberType NoteProperty) {
-
-            Write-Verbose "IndexingPolicy.$($Property.Name) set to $($Result.indexingPolicy | Select-Object -ExpandProperty $Property.Name)"
+                Write-Verbose "Time To Live (TTL) set to $($Result.DefaultTtl)"
+    
+            }
+            else {
+    
+                Write-Verbose "Time To Live (TTL) not set"
+    
+            }
+            
+            foreach ($Property in $Result.indexingPolicy | Get-Member -MemberType NoteProperty) {
+    
+                Write-Verbose "IndexingPolicy.$($Property.Name) set to $($Result.indexingPolicy | Select-Object -ExpandProperty $Property.Name)"
+    
+            }
 
         }
 
