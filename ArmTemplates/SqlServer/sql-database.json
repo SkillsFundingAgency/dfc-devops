@@ -34,9 +34,9 @@
         },
         "databaseTier": {
             "type": "string",
-            "defaultValue": "",
+            "defaultValue": "ElasticPool",
             "allowedValues": [
-                "",
+                "ElasticPool",
                 "Basic",
                 "Standard",
                 "Premium"
