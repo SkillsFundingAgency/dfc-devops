@@ -109,7 +109,7 @@
                 }
             }
         },
-        "databaseSkuName": "[if(equals(parameters('databaseTier'), 'Basic'), parameters('databaseTier'), concat(parameters('databaseTier'), parameters('databaseSize')))]",
+        "databaseSkuName": "[if(equals(parameters('databaseTier'), 'Basic'), parameters('databaseTier'), concat(substring(parameters('databaseTier'), 0, 1), parameters('databaseSize')))]",
         "diagnosticsSettings": [
             "QueryStoreRuntimeStatistics",
             "QueryStoreWaitStatistics",
