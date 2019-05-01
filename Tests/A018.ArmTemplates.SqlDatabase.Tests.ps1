@@ -8,6 +8,23 @@ $TemplateParametersDefault = @{
 
 Describe "Sql Database Deployment Tests" -Tag "Acceptance" {
   
+    Context "When SQL Database is deployed with databaseName, sqlServerName" {
+
+        $TemplateParameters = $TemplateParametersDefault
+        $TestTemplateParams = @{
+            ResourceGroupName       = $ResourceGroupName
+            TemplateFile            = $TemplateFile
+            TemplateParameterObject = $TemplateParameters
+        }
+
+        $output = Test-AzureRmResourceGroupDeployment @TestTemplateParams
+
+        It "Should be deployed successfully" {
+            $output | Should -Be $null
+        }
+
+    }
+
     Context "When SQL Database is deployed with databaseName, sqlServerName and databaseTier of Basic" {
 
         $TemplateParameters = $TemplateParametersDefault
