@@ -5,6 +5,14 @@
         "databaseName": {
             "type": "string"
         },
+        "databaseTier": {
+            "type": "string",
+            "allowedValues": [
+                "Basic",
+                "Standard",
+                "Premium"
+            ]
+        },
         "sqlServerName": {
             "type": "string"
         },
@@ -12,23 +20,25 @@
             "type": "string",
             "defaultValue": ""
         },
-        "databaseSkuName": {
+        "databaseSize": {
             "type": "string",
-            "defaultValue": ""
+            "defaultValue": "1",
+            "allowedValues": [
+                "1",
+                "2",
+                "3",
+                "4",
+                "6",
+                "7",
+                "9",
+                "10",
+                "11",
+                "15"
+            ]
         },
         "databaseSizeBytes": {
             "type": "string",
             "defaultValue": ""
-        },
-        "databaseTier": {
-            "type": "string",
-            "defaultValue": "",
-            "allowedValues": [
-                "",
-                "Basic",
-                "Standard",
-                "Premium"
-            ]
         },
         "dataMaskingExemptPrincipals": {
             "type": "string",
@@ -80,8 +90,9 @@
         "databaseSettings": {
             "nonElasticPool": {
                 "sku": {
-                    "name": "[parameters('databaseSkuName')]",
-                    "tier": "[parameters('databaseTier')]"
+                    "name": "[variables('databaseSkuName')]",
+                    "tier": "[parameters('databaseTier')]",
+                    "size": "[parameters('databaseSize')]"
                 },
                 "properties": {
                     "maxSizeBytes": "[parameters('databaseSizeBytes')]"
@@ -96,6 +107,7 @@
                 }
             }
         },
+        "databaseSkuName": "[if(equals(parameters('databaseTier'), 'Basic'), parameters('databaseTier'), concat(parameters('databaseTier'), parameters('databaseSize')))]",
         "diagnosticsSettings": [
             "QueryStoreRuntimeStatistics",
             "QueryStoreWaitStatistics",
