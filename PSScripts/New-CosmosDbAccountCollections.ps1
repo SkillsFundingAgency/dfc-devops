@@ -36,7 +36,7 @@ param(
     [string]$CosmosDbConfigurationFilePath
 )
 
-$MinCosmosDBModuleVersion = "2.1.3.528"
+$MinCosmosDBModuleVersion = "2.1.9.88"
 $MaxCosmosDBModuleVersion = "2.1.15.239"
 $CosmosDBModuleVersion = Get-Module CosmosDB | Where-Object { ([System.Version] $_.Version.ToString() -ge [System.Version] $MinCosmosDBModuleVersion) -and ([System.Version] $_.Version.ToString() -le [System.Version] $MaxCosmosDBModuleVersion) }
 if ($CosmosDBModuleVersion) {
@@ -208,7 +208,70 @@ foreach ($Collection in $CosmosDbConfiguration.Collections) {
         New-CosmosDbCollection @NewCosmosDbCollectionParameters
     }
     else {
-        # TODO: Can we check and modify if something changes
+
         Write-Verbose "$($ExistingCollection.Id) exists"
+        $SetCosmosDbCollectionParameters = @{
+            Context         = $CosmosDbContext
+            Database        = $CosmosDbConfiguration.DatabaseName
+            Id              = $Collection.CollectionName
+        }
+
+        if ($Collection | Get-Member -Name DefaultTtl) {
+
+            if ($ExistingCollection.defaultTtl -eq $Collection.DefaultTtl) {
+
+                Write-Verbose "Time To Live (TTL) already set to $($ExistingCollection.defaultTtl).  Not updating."
+
+            }
+            elseif ($Collection.DefaultTtl -eq 0) {
+
+                #$SetCosmosDbCollectionParameters['RemoveDefaultTimeToLive'] = $true
+                #Write-Verbose "Removing Time To Live (TTL)."
+                throw "Unable to removing Time To Live (TTL), not currently supported.  Remove manually."
+                ##Bug in CosmosDb PowerShell module - https://github.com/PlagueHO/CosmosDB/issues/287
+
+            }
+            else {
+
+                $SetCosmosDbCollectionParameters['DefaultTimeToLive'] = $Collection.DefaultTtl
+                Write-Verbose "Updating Time To Live (TTL) to $($SetCosmosDbCollectionParameters.DefaultTimeToLive)"  
+                            
+            }
+
+        }
+        else {
+
+            if ($ExistingCollection | Get-Member -Name DefaultTtl) {
+                #$SetCosmosDbCollectionParameters['RemoveDefaultTimeToLive'] = $true
+                #Write-Verbose "Removing Time To Live (TTL)."
+                throw "Unable to removing Time To Live (TTL), not currently supported.  Remove manually."
+                ##Bug in CosmosDb PowerShell module - https://github.com/PlagueHO/CosmosDB/issues/287
+            }
+
+        }
+
+        if($SetCosmosDbCollectionParameters.Count -gt 3) {
+
+            $Result = Set-CosmosDbCollection @SetCosmosDbCollectionParameters
+
+            if ($Result | Get-Member -Name DefaultTtl) {
+
+                Write-Verbose "Time To Live (TTL) set to $($Result.DefaultTtl)"
+    
+            }
+            else {
+    
+                Write-Verbose "Time To Live (TTL) not set"
+    
+            }
+            
+            foreach ($Property in $Result.indexingPolicy | Get-Member -MemberType NoteProperty) {
+    
+                Write-Verbose "IndexingPolicy.$($Property.Name) set to $($Result.indexingPolicy | Select-Object -ExpandProperty $Property.Name)"
+    
+            }
+
+        }
+
     }
 }
