@@ -1,0 +1,28 @@
+  parameters:
+    ArmTemplateRoot: ''
+    AzureSubscription: 'SFA-CDH-Dev/Test (962cae10-2950-412a-93e3-d8ae92b17896)'
+  
+  variables:
+    TestArmTemplateScriptUrl: https://raw.githubusercontent.com/SkillsFundingAgency/dfc-devops/NCSD-628-AddResourcesForTestingArm/PSScripts/Test-ArmTemplate.ps1
+    TestArmTemplateScriptFilePath: $(System.DefaultWorkingDirectory)\Test-ArmTemplate.ps1
+
+  steps:
+  - task: PowerShell@2
+    name: DownloadTestArmTemplateScript
+    displayName: 'Download Test-ArmTemplate script'
+    inputs:
+     targetType: 'inline'
+     script: Invoke-WebRequest -Uri $(TestArmTemplateScriptUrl) -OutFile $(TestArmTemplateScriptFilePath)
+  - task: AzurePowerShell@3
+    displayName: 'Test Arm Template'
+    inputs:
+      azureSubscription: $(AzureSubscription)
+      scriptType: filePath
+      scriptPath: $(TestArmTemplateScriptFilePath)
+      scriptArguments: -ParameterFile "$(ArmTemplateRoot)\parameters.json" -TemplateFile "$(ArmTemplateRoot)\template.json" -Verbose
+      azurePowerShellVersion: LatestVersion
+  - task: CopyFiles@2
+    displayName: 'Copy Arm Templates to Staging'
+    inputs:
+      SourceFolder: '$(ArmTemplateRoot)\'
+      TargetFolder: $(build.artifactstagingdirectory)/ArmTemplates
