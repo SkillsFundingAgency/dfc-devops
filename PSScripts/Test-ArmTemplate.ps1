@@ -21,14 +21,13 @@ Param(
   [string] $ParameterFile ,
   [string] $ResourceGroupName = "dfc-test-template-rg",
   [string] $TemplateFile
-  
 )
 
 $DeploymentParameters = @{
   ResourceGroupName                 = $ResourceGroupName
   TemplateFile                      = $TemplateFile
   TemplateParameterFile             = $ParameterFile
-  $DeploymentParameters['Verbose']  = $true
+  Verbose = $true
 }
 
 Write-Host "- Validating template"
