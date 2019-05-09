@@ -16,13 +16,26 @@ Normally contains dummy values unless it is a dependancy in which case a valid v
 Test-ARMTemplate.ps1 -TemplateFile template.json -ParameterFile paramaters.json
 
 #>
-
+[CmdletBinding()]
 Param(
+  [string] $ParameterFile ,
+  [string] $ResourceGroupName = "dfc-test-template-rg",
   [string] $TemplateFile,
-  [string] $ParameterFile
+  
 )
 
-# common variables
-$ResourceGroupName = "dfc-test-template-rg"
+$DeploymentParameters = @{
+  ResourceGroupName                 = $ResourceGroupName
+  TemplateFile                      = $TemplateFile
+  TemplateParameterFile             = $ParameterFile
+  $DeploymentParameters['Verbose']  = $true
+}
 
-Test-AzureRmResourceGroupDeployment -ResourceGroupName $ResourceGroupName -TemplateFile $TemplateFile -TemplateParameterFile $ParameterFile
+Write-Host "- Validating template"
+if ($PSCmdlet.MyInvocation.BoundParameters["Verbose"].IsPresent) {
+
+    Write-Verbose -Message "Deployment Parameters:"
+    $DeploymentParameters
+
+}
+Test-AzureRmResourceGroupDeployment @DeploymentParameters
