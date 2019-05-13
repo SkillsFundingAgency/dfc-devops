@@ -17,7 +17,7 @@
       azureSubscription: ${{ parameters.AzureSubscription }}
       scriptType: filePath
       scriptPath: ${{ parameters.TestArmTemplateScriptFilePath }}
-      scriptArguments: -ParameterFile '${{ parameters.ArmTemplateRoot }}\parameters.json' -TemplateFile '${{ parameters.ArmTemplateRoot }}\template.json' -Verbose
+      scriptArguments: -ParameterFile '${{ parameters.ArmTemplateRoot }}\test-parameters.json' -TemplateFile '${{ parameters.ArmTemplateRoot }}\template.json' -Verbose
       azurePowerShellVersion: LatestVersion
   - task: CopyFiles@2
     displayName: 'Copy Arm Templates to Staging'
