@@ -21,16 +21,16 @@ Test-ArmTemplate.ps1 -ParameterFile paramaters.json -TemplateFile template.json
 #>
 [CmdletBinding()]
 Param(
-  [string] $ParameterFile ,
-  [string] $TemplateFile,
-  [string] $ResourceGroupName = "dfc-test-template-rg"
+    [string] $ParameterFile,
+    [string] $TemplateFile,
+    [string] $ResourceGroupName = "dfc-test-template-rg"
 )
 
 $DeploymentParameters = @{
-  ResourceGroupName                 = $ResourceGroupName
-  TemplateFile                      = $TemplateFile
-  TemplateParameterFile             = $ParameterFile
-  Verbose = $true
+    ResourceGroupName     = $ResourceGroupName
+    TemplateFile          = $TemplateFile
+    TemplateParameterFile = $ParameterFile
+    Verbose               = $true
 }
 
 Write-Host "- Validating template"
@@ -40,4 +40,10 @@ if ($PSCmdlet.MyInvocation.BoundParameters["Verbose"].IsPresent) {
     $DeploymentParameters
 
 }
-Test-AzureRmResourceGroupDeployment @DeploymentParameters
+$Result = Test-AzureRmResourceGroupDeployment @DeploymentParameters
+if ($Result.Count -gt 0) {
+  
+    $Result
+    throw "Template is invalid"
+    
+}
