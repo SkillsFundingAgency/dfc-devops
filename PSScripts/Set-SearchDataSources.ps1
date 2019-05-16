@@ -12,7 +12,10 @@ Azure Search name
 Resource group the Azure Search belongs to
 
 .PARAMETER IndexFilePath
-Full path to the json file including file name
+Full path to the json file including file name (use either this or IndexConfigurationString)
+
+.PARAMETER IndexConfigurationString
+JSON configuration (use either this or IndexFilePath)
 
 .EXAMPLE
 Set-SearchDataSources -SearchName dfc-foo-sch -ResourceGroupName dfc-foo-rg -IndexFilePath C:\path\to\index.json
@@ -39,10 +42,10 @@ try {
             Write-Error "Configuration File Path can not be found"
             throw "$_"
         }
-        $IndexConfiguration = Get-Content $IndexFilePath | ConvertFrom-Json
+        $DataSourceConfiguration = Get-Content $IndexFilePath | ConvertFrom-Json
     }
     elseif ($PSCmdlet.ParameterSetName -eq "AsString") {
-        $IndexConfiguration = $IndexConfigurationString | ConvertFrom-Json
+        $DataSourceConfiguration = $IndexConfigurationString | ConvertFrom-Json
     }
 }
 catch {
@@ -68,7 +71,7 @@ $SearchParams = @{
 }
 $SearchResourceKeys = Invoke-AzureRmResourceAction @SearchParams
 
-foreach ($DataSource in $IndexConfiguration) {
+foreach ($DataSource in $DataSourceConfiguration) {
     try {
         Write-Verbose "Checking if datasource $($DataSource.name) exists"
         ApiRequest -Method GET -Url "$Url/$($DataSource.name)" -ApiKey $SearchResourceKeys.PrimaryKey

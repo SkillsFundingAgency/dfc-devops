@@ -20,10 +20,10 @@ JSON invoke web request for Azure Search
 Invokes a web request to Azure Search REST API assuming a JSON document
 
 .PARAMETER Url
-Web URL
+API URL including protocol
 
 .PARAMETER ApiKey
-API key to access
+API key for the REST API
 
 .PARAMETER Method
 Optional HTTP method, defaults to GET
@@ -35,7 +35,7 @@ Optional, override the API version, defaults to 2017-11-11
 Optional hash to send as the body
 
 .EXAMPLE
-ApiRequest -SearchName dfc-foo-sch -ResourceGroupName dfc-foo-rg -IndexFilePath C:\path\to\index.json
+ApiRequest -Url "https://api.example.com/endpoint" -ApiKey fookey
 #>
 
     $ApiHeaders = @{
@@ -54,7 +54,7 @@ ApiRequest -SearchName dfc-foo-sch -ResourceGroupName dfc-foo-rg -IndexFilePath 
     }
     
     if ($WebResponse.StatusCode -eq 200) {
-        return $WebResponse.Content | ConvertFrom-Json
+        return ConvertFrom-Json $WebResponse.Content -Depth 10
     }
 }
 

@@ -11,6 +11,13 @@ A master template should call each template as a separate resource passing in pa
 
 A sample master template and links to individual deployment documentation can be [found here](ArmTemplates/README.md).
 
+## PowerShell Modules
+
+The PowerShell modules directory contains helper functions used across multiple scripts.
+Modules can be imported into the scripts where needed.
+
+Module documentation can be [found here](PSModules/README.md).
+
 ## PowerShell Scripts
 
 The PowerShell scripts directory contains scripts that can be used either in build and release definitions or from the command line.

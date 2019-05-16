@@ -19,8 +19,6 @@ Describe "ApiRequest unit tests" -Tag "Unit" {
 
         ApiRequest @RequestParams
 
-        #$result.result | Should Be "Success"
-
         Assert-MockCalled -ModuleName AzureApiFunctions Invoke-WebRequest -ParameterFilter {
             $Headers['Content-Type'] -eq "application/json"
         }

@@ -1,4 +1,5 @@
 Push-Location -Path $PSScriptRoot\..\PSScripts\
+Import-Module $PSScriptRoot\..\PSModules\AzureApiFunctions
 
 # solves CommandNotFoundException
 function Get-AzureRmResource {}
