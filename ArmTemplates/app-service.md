@@ -47,7 +47,8 @@ Objects in the array must be of the format.
 [
     {
         "name": "",
-        "value": ""
+        "connectionString": "",
+        "type": ""
     }
 ]
 ```
