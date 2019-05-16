@@ -23,4 +23,4 @@
     displayName: 'Copy Arm Templates to Staging'
     inputs:
       SourceFolder: '${{ parameters.ArmTemplateRoot }}\'
-      TargetFolder: $(build.artifactstagingdirectory)/ArmTemplates
+      TargetFolder: $(build.artifactstagingdirectory)/Azure/ArmTemplates
