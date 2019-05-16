@@ -1,6 +1,9 @@
 <#
 .SYNOPSIS
-Creates or modifies Azure Search index
+Creates Azure Search index
+
+.DESCRIPTION
+Creates Azure Search index
 
 .PARAMETER SearchName
 Azure Search name
