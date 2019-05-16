@@ -54,7 +54,7 @@ ApiRequest -Url "https://api.example.com/endpoint" -ApiKey fookey
     }
     
     if ($WebResponse.StatusCode -eq 200) {
-        return ConvertFrom-Json $WebResponse.Content -Depth 10
+        return $WebResponse.Content | ConvertFrom-Json  # Depth is only supported in PowerShell 6, consider this if you find deep nested documents to be missing values
     }
 }
 
