@@ -2,9 +2,6 @@
 .SYNOPSIS
 Creates or modifies Azure Search index
 
-.DESCRIPTION
-Ensures an Azure Search index matches the supplied json document.
-
 .PARAMETER SearchName
 Azure Search name
 
@@ -12,7 +9,10 @@ Azure Search name
 Resource group the Azure Search belongs to
 
 .PARAMETER IndexFilePath
-Full path to the json file including file name
+Full path to the json file including file name (use either this or IndexConfigurationString)
+
+.PARAMETER IndexConfigurationString
+JSON configuration (use either this or IndexFilePath)
 
 .EXAMPLE
 Set-SearchIndexers -SearchName dfc-foo-sch -ResourceGroupName dfc-foo-rg -IndexFilePath C:\path\to\index.json
