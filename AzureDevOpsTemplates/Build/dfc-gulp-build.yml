@@ -3,7 +3,7 @@
 # demands: npm & gulp
 
 parameters:
-  npmfolder: '' # folder containing packages.json and gruntfile
+  npmfolder: '' # folder containing packages.json and gulpfile
   gulpfile: 'gulpfile.js'
   publishpath: '' # path to publish (publish step does not run if not specified)
   publishname: 'gulp_artifact'
@@ -30,7 +30,7 @@ steps:
 - task: gulp@1
   displayName: 'gulp'
   inputs:
-    gruntFile: '${{ parameters.npmfolder }}/${{ parameters.gulpfile }}'
+    gulpFile: '${{ parameters.npmfolder }}/${{ parameters.gulpfile }}'
     workingDirectory: '${{ parameters.npmfolder }}/node_modules/gulp/'
 
 # Publish step only if a publish path has been provided
