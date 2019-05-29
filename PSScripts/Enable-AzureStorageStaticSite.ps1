@@ -10,7 +10,7 @@ param(
 
 $Context = New-AzStorageContext -StorageAccountName $StorageAccountName -UseConnectedAccount
 Write-Verbose "Enabling static website on: $StorageAccountName"
-Enable-AzStorageStaticWebsite -Context $Context -IndexDocument index.html -ErrorDocument404Path error404.html
+Enable-AzStorageStaticWebsite -Context $Context -IndexDocument $IndexDocument -ErrorDocument404Path $ErrorDocument404Path
 $SiteAddress = "$StorageAccountName.z6.web.core.windows.net"
 $SiteAddressResolved = $false
 While (!$SiteAddressResolved) { 
