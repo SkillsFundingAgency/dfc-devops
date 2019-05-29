@@ -15,11 +15,21 @@ $SiteAddress = "$StorageAccountName.z6.web.core.windows.net"
 $SiteAddressResolved = $false
 While (!$SiteAddressResolved) { 
 
-    # PowerShell 5.1 syntax as Azure PowerShell task currently doesn't support PowerShell Core
-    if (Test-Connection -ComputerName $SiteAddress -ResolveDestination -TCPPort 80) { 
+    Write-Verbose "Resolving $SiteAddress with PSVerion: $($PSVersionTable.PSVersion.Major)"
+    if ($PSVersionTable.PSVersion.Major -ge 6) {
+
+        $SiteAddressResolved = Test-Connection -TargetName $SiteAddress -ResolveDestination -TCPPort 80 -Quiet
+
+    }
+    else {
+
+        $SiteAddressResolved = Resolve-DnsName -Name $SiteAddress -ErrorAction SilentlyContinue
+
+    }
+
+    if ($SiteAddressResolved) { 
         
         Write-Verbose "Resovled address: $SiteAddress"
-        $SiteAddressResolved = $true 
 
     }
     else {
