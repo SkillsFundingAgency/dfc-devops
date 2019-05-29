@@ -1,10 +1,15 @@
 [CmdletBinding()]
 param(
     [Parameter(Mandatory=$true)]
-    [string]$StorageAccountName
+    [string]$StorageAccountName,
+    [Parameter(Mandatory=$false)]
+    [string]$IndexDocument = "index.html",
+    [Parameter(Mandatory=$false)]
+    [string]$ErrorDocument404Path = "error404.html"
 )
 
 $Context = New-AzStorageContext -StorageAccountName $StorageAccountName -UseConnectedAccount
+Write-Verbose "Enabling static website on: $StorageAccountName"
 Enable-AzStorageStaticWebsite -Context $Context -IndexDocument index.html -ErrorDocument404Path error404.html
 $SiteAddress = "$StorageAccountName.z6.web.core.windows.net"
 $SiteAddressResolved = $false
