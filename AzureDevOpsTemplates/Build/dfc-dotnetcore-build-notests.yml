@@ -23,7 +23,6 @@ steps:
      command: 'publish'
      projects: '${{ parameters.SolutionBaseName }}\${{ parameters.SolutionBaseName }}.csproj'
      arguments: '-o "$(build.artifactstagingdirectory)\Build\"'
-     publishWebProjects: true
  - task: ArchiveFiles@2
    displayName: 'Archive Application'
    inputs: 
