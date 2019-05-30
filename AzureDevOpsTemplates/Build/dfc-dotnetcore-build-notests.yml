@@ -9,12 +9,13 @@ steps:
    inputs:
      preferBundledVersion: false
  - task: DotNetCoreCLI@2
-   displayName: 'dotnet build'
+   displayName: 'dotnet build application'
    inputs:
      command: 'build'
+     projects: '$(build.artifactstagingdirectory)\${{ parameters.SolutionBaseName }}\${{ parameters.SolutionBaseName }}.csproj'
      arguments: '-o "$(build.artifactstagingdirectory)\Build\"'
  - task: ArchiveFiles@2
-   displayName: ArchiveApp
+   displayName: 'Archive Application'
    inputs: 
      rootFolderOrFile: $(build.artifactstagingdirectory)\Build\
      archiveFile: $(build.artifactstagingdirectory)\Artifact\DeploymentPackages\$(SolutionBaseName).zip
