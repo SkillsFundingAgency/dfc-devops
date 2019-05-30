@@ -12,7 +12,7 @@ steps:
    displayName: 'dotnet build application'
    inputs:
      command: 'build'
-     projects: '$(build.artifactstagingdirectory)\${{ parameters.SolutionBaseName }}\${{ parameters.SolutionBaseName }}.csproj'
+     projects: '${{ parameters.SolutionBaseName }}\${{ parameters.SolutionBaseName }}.csproj'
      arguments: '-o "$(build.artifactstagingdirectory)\Build\"'
  - task: ArchiveFiles@2
    displayName: 'Archive Application'
