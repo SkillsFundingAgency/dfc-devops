@@ -2,6 +2,7 @@ parameters:
   SolutionBaseName: ''
   BuildPlatform: 'any cpu'
   BuildConfiguration: 'release'
+  PublishWebApp: 'false'
 
 steps:
  - task: gittools.gitversion.gitversion-task.GitVersion@4
@@ -10,10 +11,19 @@ steps:
      preferBundledVersion: false
  - task: DotNetCoreCLI@2
    displayName: 'dotnet build application'
+   condition: not(${{ parameters.PublishWebApp }})
    inputs:
      command: 'build'
      projects: '${{ parameters.SolutionBaseName }}\${{ parameters.SolutionBaseName }}.csproj'
      arguments: '-o "$(build.artifactstagingdirectory)\Build\"'
+ - task: DotNetCoreCLI@2
+   displayName: 'dotnet publish application'
+   condition: ${{ parameters.PublishWebApp }}
+   inputs:
+     command: 'publish'
+     projects: '${{ parameters.SolutionBaseName }}\${{ parameters.SolutionBaseName }}.csproj'
+     arguments: '-o "$(build.artifactstagingdirectory)\Build\"'
+     publishWebProjects: true
  - task: ArchiveFiles@2
    displayName: 'Archive Application'
    inputs: 
