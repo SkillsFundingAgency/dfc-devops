@@ -9,6 +9,7 @@ steps:
    displayName: GitVersion
    inputs:
      preferBundledVersion: false
+ # tasks to package a function app
  - task: DotNetCoreCLI@2
    displayName: 'dotnet build application'
    condition: not(${{ parameters.PublishWebApp }})
@@ -16,14 +17,6 @@ steps:
      command: 'build'
      projects: '${{ parameters.SolutionBaseName }}\${{ parameters.SolutionBaseName }}.csproj'
      arguments: '-o "$(build.artifactstagingdirectory)\Build\"'
- - task: DotNetCoreCLI@2
-   displayName: 'dotnet publish application'
-   condition: ${{ parameters.PublishWebApp }}
-   inputs:
-     command: 'publish'
-     projects: '${{ parameters.SolutionBaseName }}\${{ parameters.SolutionBaseName }}.csproj'
-     arguments: '-o "$(build.artifactstagingdirectory)\Build\\"'
-     publishWebProjects: false #set to false as this setting (which defaults to true) will parse the entire repo for web projects
  - task: ArchiveFiles@2
    displayName: 'Archive Application'
    condition: not(${{ parameters.PublishWebApp }})
@@ -31,6 +24,15 @@ steps:
      rootFolderOrFile: $(build.artifactstagingdirectory)\Build\
      archiveFile: $(build.artifactstagingdirectory)\Artifact\DeploymentPackages\$(SolutionBaseName).zip
      includeRootFolder: false
+# task to package a web app
+ - task: DotNetCoreCLI@2
+   displayName: 'dotnet publish application'
+   condition: ${{ parameters.PublishWebApp }}
+   inputs:
+     command: 'publish'
+     projects: '${{ parameters.SolutionBaseName }}\${{ parameters.SolutionBaseName }}.csproj'
+     arguments: '-o "$(build.artifactstagingdirectory)\Artifact\DeploymentPackages\\"'
+     publishWebProjects: false #set to false as this setting (which defaults to true) will parse the entire repo for web projects
  - task: CopyFiles@2
    displayName: 'Copy Files to: $(build.artifactstagingdirectory)\Artifact\Azure'
    inputs:
