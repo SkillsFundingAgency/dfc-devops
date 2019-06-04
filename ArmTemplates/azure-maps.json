@@ -1,0 +1,31 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "azureMapName": {
+      "type": "String", 
+      "metadata": {
+      "description": "Name of azure map"
+      }
+    },
+    "azureMapSkuName": {
+      "type": "String",
+      "defaultValue": "S1",
+      "metadata": {
+        "description": "The name of the SKU, in standard format (S0 or S1)."
+      }
+    }
+  },
+  "variables": {},
+  "resources": [
+    {
+      "type": "Microsoft.Maps/accounts",
+      "apiVersion": "2018-05-01",
+      "name": "[parameters('azureMapName')]",
+      "location": "global",
+      "sku": {
+        "name": "[parameters('azureMapSkuName')]"
+      }
+    }
+  ]
+}
