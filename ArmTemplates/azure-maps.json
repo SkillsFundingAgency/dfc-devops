@@ -10,7 +10,7 @@
     },
     "azureMapSkuName": {
       "type": "String",
-      "defaultValue": "S1",
+      "defaultValue": "S0",
       "metadata": {
         "description": "The name of the SKU, in standard format (S0 or S1)."
       }
