@@ -2,32 +2,46 @@ parameters:
   SolutionBaseName: ''
   BuildPlatform: 'any cpu'
   BuildConfiguration: 'release'
+  PublishWebApp: 'false'
 
 steps:
  - task: gittools.gitversion.gitversion-task.GitVersion@4
    displayName: GitVersion
    inputs:
      preferBundledVersion: false
- - task: NuGetToolInstaller@0
-   displayName: 'Use NuGet 4.3.0'
- - task: NuGetCommand@2
-   displayName: 'NuGet restore ${{ parameters.SolutionBaseName }}.sln'
-   inputs:
-     restoreSolution: '${{ parameters.SolutionBaseName }}.sln'
+ # tasks to package a function app
  - task: DotNetCoreCLI@2
-   displayName: 'dotnet build'
+   displayName: 'dotnet build application'
+   condition: not(${{ parameters.PublishWebApp }})
    inputs:
      command: 'build'
-     arguments: '-o "$(build.artifactstagingdirectory)\DeploymentPackages\\"'
+     projects: '${{ parameters.SolutionBaseName }}\${{ parameters.SolutionBaseName }}.csproj'
+     arguments: '-o "$(build.artifactstagingdirectory)\Build\"'
+ - task: ArchiveFiles@2
+   displayName: 'Archive Application'
+   condition: not(${{ parameters.PublishWebApp }})
+   inputs: 
+     rootFolderOrFile: $(build.artifactstagingdirectory)\Build\
+     archiveFile: $(build.artifactstagingdirectory)\Artifact\DeploymentPackages\$(SolutionBaseName).zip
+     includeRootFolder: false
+# task to package a web app
+ - task: DotNetCoreCLI@2
+   displayName: 'dotnet publish application'
+   condition: ${{ parameters.PublishWebApp }}
+   inputs:
+     command: 'publish'
+     projects: '${{ parameters.SolutionBaseName }}\${{ parameters.SolutionBaseName }}.csproj'
+     arguments: '-o "$(build.artifactstagingdirectory)\Artifact\DeploymentPackages\\"'
+     publishWebProjects: false #set to false as this setting (which defaults to true) will parse the entire repo for web projects
  - task: CopyFiles@2
-   displayName: 'Copy Files to: $(build.artifactstagingdirectory)/Azure'
+   displayName: 'Copy Files to: $(build.artifactstagingdirectory)\Artifact\Azure'
    inputs:
      sourceFolder: 'Resources'
      contents: '**'
-     targetFolder: '$(build.artifactstagingdirectory)/Azure'
+     targetFolder: '$(build.artifactstagingdirectory)\Artifact\Azure'
  - task: PublishBuildArtifacts@1
    displayName: 'Publish Artifact: ${{ parameters.SolutionBaseName }}'
    inputs:
-     pathtoPublish: $(build.artifactstagingdirectory)
+     pathtoPublish: $(build.artifactstagingdirectory)\Artifact\
      artifactName: ${{ parameters.SolutionBaseName }}
      publishLocation: container
