@@ -4,9 +4,9 @@ Creates an Azure Maps Account
 
 ## Paramaters
 
-azureMapName: (required) string
+azureMapsName: (required) string
 
-Name of Azure Map. Will be created in the same resource group as the script is run and in the default location for resource group.
+Name of Azure Maps. Will be created in the same resource group as the script is run and in the default location for resource group.
 
 azureMapsSku: (required) string
 
