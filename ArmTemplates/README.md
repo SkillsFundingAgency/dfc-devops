@@ -1,6 +1,6 @@
 # ARM Templates
 
-This folder contains [ARM linked templates](https://docs.microsoft.com/en-us/azure/azure-resource-manager/resource-group-linked-templates) 
+This folder contains [ARM linked templates](https://docs.microsoft.com/en-us/azure/azure-resource-manager/resource-group-linked-templates)
 that can be used to stand up a specific resource and can be used in the same way as nested templated.
 A master template should call each template as a separate resource passing in parameters as necessary.
 
@@ -51,6 +51,9 @@ The following templates are available
 * [Keyvault Secrets](KeyVault/keyvault-secrets.md)
 * [Managed Instance Environment](managed-instance-environment.md)
 * [Redis Cache](redis.md)
+* [Service Bus](ServiceBus/service-bus.md)
+* [Service Bus Firewall vNet Rule](ServiceBus/servicebus-firewall-vnetrule.md)
+* [Service Bus Queue Auth Rule](ServiceBus/servicebus-queue-authrule.md)
 * [SQL Server Managed Instance](sql-managed-instance.md)
 * [SQL Server](sql-server.md)
 * [Storage Account](storage-account.md)
