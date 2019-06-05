@@ -2,15 +2,13 @@
 
 Creates an Azure Maps Account
 
+location must be set as global
+
 ## Paramaters
 
 azureMapsName: (required) string
 
 Name of Azure Maps. Will be created in the same resource group as the script is run and in the default location for resource group.
-
-location: (required) global
-
-location must be set as global
 
 azureMapsSku: (required) string
 
