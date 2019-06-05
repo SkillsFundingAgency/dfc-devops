@@ -22,7 +22,7 @@
       "type": "Microsoft.Maps/accounts",
       "apiVersion": "2018-05-01",
       "name": "[parameters('azureMapsName')]",
-      "location": "West Europe",
+      "location": "global",
       "sku": {
         "name": "[parameters('azureMapsSkuName')]"
       }
