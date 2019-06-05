@@ -2,6 +2,8 @@
 
 Creates an Azure Maps Account
 
+location must be set as global
+
 ## Paramaters
 
 azureMapsName: (required) string
