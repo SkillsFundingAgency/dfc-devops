@@ -34,11 +34,7 @@
         "virtualNetworkName": "[concat(parameters('virtualNetworkPrefix'), '-vnet')]",
         "routeTableName": "[concat(parameters('virtualNetworkPrefix'), '-rt')]",
         "localIpAddressRange": "[concat(parameters('virtualNetworkAddressPrefix'),'.0.0/16')]",
-        "defaultSubnets": [
-            "default"
-        ],
-        "allSubnets": "[union(variables('defaultSubnets'), parameters('virtualNetworkRoutedSubnets'), parameters('virtualNetworkNonRoutedSubnets'))]",
-        "numRoutedSubnets": "[add(length(variables('defaultSubnets')), length(parameters('virtualNetworkRoutedSubnets')))]",
+        "allSubnets": "[union(parameters('virtualNetworkRoutedSubnets'), parameters('virtualNetworkNonRoutedSubnets'))]",
         "routeTable": {
             "id": "[resourceId('Microsoft.Network/routeTables', variables('routeTableName'))]"
         },
@@ -50,7 +46,7 @@
                     "name": "[variables('allSubnets')[copyIndex('subnets')]]",
                     "properties": {
                         "addressPrefix": "[concat(parameters('virtualNetworkAddressPrefix'), '.', copyIndex('subnets'), '.0/24')]",
-                        "routeTable": "[if(less(copyIndex('subnets'), variables('numRoutedSubnets')), variables('routeTable'), json('null'))]"
+                        "routeTable": "[if(less(copyIndex('subnets'), length(parameters('virtualNetworkRoutedSubnets'))), variables('routeTable'), json('null'))]"
                     }
                 }
             }

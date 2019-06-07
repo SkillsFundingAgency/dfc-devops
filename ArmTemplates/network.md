@@ -22,11 +22,15 @@ Must but one of
 virtualNetworkRoutedSubnets: (optional) array of strings
 
 List of additional subnets with require the routing table to create in the VNet.
-One called default with a 0.0/24 will always be created.
-All subnets will have 8-bit network masks, created in the order specified starting with 1.0/24.
+All subnets will have 8-bit network masks, created in the order specified starting with 0.0/24.
 
 virtualNetworkNonRoutedSubnets: (optional) array of strings
 
 List of additional subnets which should not be routed to create in the VNet.
+These will be created in order after the virtualNetworkRoutedSubnets.
 Subnet size and mask will be same as virtualNetworkRoutedSubnets.
+
+### Notes
+
+You must supply at least one subnet, either virtualNetworkRoutedSubnets or virtualNetworkNonRoutedSubnets, or the template will error.
 Total number of routed and non-routed subnets must not exceed 255.
