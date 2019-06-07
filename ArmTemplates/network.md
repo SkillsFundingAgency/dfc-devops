@@ -1,6 +1,6 @@
-# Managed Instance Environment
+# Network
 
-Creates a network environment for one of the managed instances.
+Creates a virtual network with subnets and routing table for use with apps, ase or managed resources.
 
 ## Paramaters
 
@@ -19,8 +19,14 @@ Must but one of
 * 172.16-31 (class B)
 * 192.168 (class C)
 
-virtualNetworkSubnets: (optional) array of strings
+virtualNetworkRoutedSubnets: (optional) array of strings
 
-List of additional subnets to create in the VNet up to a maximum of 255.
+List of additional subnets with require the routing table to create in the VNet.
 One called default with a 0.0/24 will always be created.
 All subnets will have 8-bit network masks, created in the order specified starting with 1.0/24.
+
+virtualNetworkNonRoutedSubnets: (optional) array of strings
+
+List of additional subnets which should not be routed to create in the VNet.
+Subnet size and mask will be same as virtualNetworkRoutedSubnets.
+Total number of routed and non-routed subnets must not exceed 255.

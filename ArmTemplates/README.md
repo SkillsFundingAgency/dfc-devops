@@ -49,7 +49,7 @@ The following templates are available
 * [Keyvault Access Policy](KeyVault/keyvault-access-policy.md)
 * [Keyvault Certificates](KeyVault/keyvault-certificates.md)
 * [Keyvault Secrets](KeyVault/keyvault-secrets.md)
-* [Managed Instance Environment](managed-instance-environment.md)
+* [Network](network.md)
 * [Redis Cache](redis.md)
 * [Service Bus](ServiceBus/service-bus.md)
 * [Service Bus Firewall vNet Rule](ServiceBus/servicebus-firewall-vnetrule.md)
