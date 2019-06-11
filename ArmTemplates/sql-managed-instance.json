@@ -2,18 +2,18 @@
     "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-        "sqlServerName": {
+        "msqlServerName": {
             "type": "string",
             "metadata": {
                 "description": "Name of the SQL Server Managed Instance"
             }
         },
-        "sqlSubnetId": {
+        "msqlSubnetId": {
             "type": "string",
             "metadata": {
               "description": "Name of new Azure VNet where you can deploy Azure Sql Managed Instances and the resources that use them"
             }
-        },  
+        },
         "sqlServerAdminUserName": {
             "type": "string",
             "defaultValue": "",
@@ -59,7 +59,7 @@
     },
     "resources": [
       {
-        "name": "[parameters('sqlServerName')]",
+        "name": "[parameters('msqlServerName')]",
         "type": "Microsoft.Sql/managedInstances",
         "apiVersion": "2015-05-01-preview",
         "location": "[resourceGroup().location]",
@@ -72,7 +72,7 @@
         "properties": {
             "administratorLogin": "[variables('sqlServerAdminUserName')]",
             "administratorLoginPassword": "[parameters('sqlServerAdminPassword')]",
-            "subnetId": "[parameters('sqlSubnetId')]",
+            "subnetId": "[parameters('msqlSubnetId')]",
             "vCores": "[parameters('vCores')]",
             "storageSizeInGB": "[parameters('storageSizeGb')]"
         },
@@ -82,7 +82,7 @@
                 "type": "administrators",
                 "apiVersion": "2017-03-01-preview",
                 "dependsOn": [
-                    "[parameters('sqlServerName')]"
+                    "[parameters('msqlServerName')]"
                 ],
                 "properties": {
                     "administratorType": "ActiveDirectory",
