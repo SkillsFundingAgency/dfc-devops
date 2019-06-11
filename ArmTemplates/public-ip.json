@@ -1,0 +1,72 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "ipAddressName": {
+            "type": "string",
+            "metadata": {
+                "description": "Name of the public IP address resource"
+            }
+        },
+        "ipAddressSku": {
+            "type": "string",
+            "allowedValues": [
+                "Basic",
+                "Standard"
+            ],
+            "defaultValue": "Basic",
+            "metadata": {
+                "description": "Public IP address SKU"
+            }
+        },
+        "allocationMethod": {
+            "type": "string",
+            "allowedValues": [
+                "Static",
+                "Dynamic"
+            ],
+            "defaultValue": "Dynamic",
+            "metadata": {
+                "description": "application gateway back end protocol"
+            }
+        },
+        "publicDnsLabel": {
+            "type": "string",
+            "defaultValue": "",
+            "metadata": {
+                "description": "Optionally set a DNS label on public IP address"
+            }
+        }
+    },
+    "variables": {
+        "publicIPAddressProperties": {
+            "withDnsLabel": {
+                "publicIPAllocationMethod": "[parameters('allocationMethod')]",
+                "dnsSettings": {
+                    "domainNameLabel": "[parameters('publicDnsLabel')]"
+                }
+            },
+            "withoutDnsLabel": {
+                "publicIPAllocationMethod": "[parameters('allocationMethod')]"
+            }
+        }
+    },
+    "resources": [
+        {
+            "name": "[parameters('ipAddressName')]",
+            "apiVersion": "2018-10-01",
+            "type": "Microsoft.Network/publicIPAddresses",
+            "location": "[resourceGroup().location]",
+            "sku":{
+                "name": "[parameters('ipAddressSku')]"
+            },
+            "properties": "[if(equals(length(parameters('publicDnsLabel')),0), variables('publicIPAddressProperties').withoutDnsLabel, variables('publicIPAddressProperties').withDnsLabel)]"
+        }       
+    ],
+    "outputs": {
+        "publicIpAddressId": {
+            "type": "string",
+            "value": "[resourceId('Microsoft.Network/publicIPAddresses', parameters('ipAddressName'))]"
+        }
+    }
+}
