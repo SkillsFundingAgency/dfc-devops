@@ -50,6 +50,7 @@ The following templates are available
 * [Keyvault Certificates](KeyVault/keyvault-certificates.md)
 * [Keyvault Secrets](KeyVault/keyvault-secrets.md)
 * [Network](network.md)
+* [Public IP Address](public-ip.md)
 * [Redis Cache](redis.md)
 * [Service Bus](ServiceBus/service-bus.md)
 * [Service Bus Firewall vNet Rule](ServiceBus/servicebus-firewall-vnetrule.md)
