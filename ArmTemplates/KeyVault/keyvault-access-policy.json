@@ -3,17 +3,32 @@
     "contentVersion": "1.0.0.0",
     "parameters": {
         "keyVaultName": {
-            "type": "string"
+            "type": "string",
+            "metadata": {
+                "description": "Name of keyvault to add permissions to"
+            }
         },
         "servicePrincipalObjectId": {
             "type": "string",
             "metadata": {
-                "description": ""
+                "description": "ObjectId of the ServicePrincipal"
             }
+        },
+        "keyPermissions": {
+            "type": "array",
+            "defaultValue": []
         },
         "secretPermissions": {
             "type": "array",
             "defaultValue": [ "get" ]
+        },
+        "certificatePermissions": {
+            "type": "array",
+            "defaultValue": []
+        },
+        "storagePermissions": {
+            "type": "array",
+            "defaultValue": []
         }
     },
     "variables": {},
@@ -21,14 +36,17 @@
         {
             "type": "Microsoft.KeyVault/vaults/accessPolicies",
             "name": "[concat(parameters('keyVaultName'), '/add')]",
-            "apiVersion": "2015-06-01",
+            "apiVersion": "2018-02-14",
             "properties": {
                 "accessPolicies": [
                     {
                         "tenantId": "[subscription().tenantId]",
                         "objectId": "[parameters('servicePrincipalObjectId')]",
                         "permissions": {
-                            "secrets": "[parameters('secretPermissions')]"
+                            "keys": "[parameters('keyPermissions')]",
+                            "secrets": "[parameters('secretPermissions')]",
+                            "certificates": "[parameters('certificatePermissions')]",
+                            "storage": "[parameters('storagePermissions')]"
                         }
                     }
                 ]
