@@ -27,5 +27,5 @@ To set different permissions pass in a new array that contains permissions from 
 
 storagePermissions (optional) array
 
-Set permissions to secrets.  Defaults to get.
+Set permissions to secrets.  Defaults to no access.
 To set different permissions pass in a new array that contains permissions from the following: get, list, delete, set, update, regeneratekey, recover, purge, backup, restore, setsas, listsas, getsas, deletesas
