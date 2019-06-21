@@ -38,6 +38,8 @@ Optional hash to send as the body
 ApiRequest -Url "https://api.example.com/endpoint" -ApiKey fookey
 #>
 
+    Write-Verbose "API version $ApiVersion"
+    
     $ApiHeaders = @{
         "Content-Type" = "application/json"
         "api-key"      = $ApiKey
@@ -45,8 +47,8 @@ ApiRequest -Url "https://api.example.com/endpoint" -ApiKey fookey
     $FullUrl = "$($Url)?api-version=$ApiVersion"
     
     if ($Body) {
-        $JsonBody = $Body | ConvertTo-Json
-        Write-Verbose "Body - $Body"
+        $JsonBody = $Body | ConvertTo-Json -Depth 10
+        Write-Verbose "Body - $JsonBody"
         $WebResponse = Invoke-WebRequest -Uri $FullUrl -Method $Method -Headers $ApiHeaders -Body $JsonBody -UseBasicParsing
     }
     else {
