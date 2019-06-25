@@ -50,7 +50,7 @@ steps:
      command: test
      projects: '${{ parameters.SolutionBaseName }}.Tests\${{ parameters.SolutionBaseName }}.Tests.csproj'
      arguments: '--configuration ${{ parameters.BuildConfiguration }} --collect "Code coverage"'
- - task: SonarSource.sonarcloud.ce096e50-6155-4de8-8800-4221aaeed4a1.SonarCloudAnalyze@1
+ - task: SonarCloudAnalyze@1
    displayName: 'Run Code Analysis'
    condition: and(succeeded(), or(eq(variables['build.sourceBranch'], 'refs/heads/master'), eq(variables['Build.Reason'], 'PullRequest')))
  - task: CopyFiles@2
