@@ -11,7 +11,7 @@ steps:
      preferBundledVersion: false
  - task: SonarCloudPrepare@1
    displayName: 'Prepare analysis on SonarCloud'
-   condition: and(succeeded(), or(eq(variables['build.sourceBranch'], 'refs/heads/master'), eq(variables['Build.Reason'], 'PullRequest')))
+   condition: and(succeeded(), or(eq(variables['build.sourceBranch'], 'refs/heads/NCSD-888-AddSonarCloudBuild'), eq(variables['Build.Reason'], 'PullRequest')))
    inputs:
     # The Service Endpoint (DFC-SonarCloud) will need to be configured using a GitHub account that has been added to SonarCloud.  
     # That account will need to be granted "Execute Analysis" permission in SonarCloud.  This needs to be granted in the organization where the results will be published.
@@ -52,7 +52,7 @@ steps:
      arguments: '--configuration ${{ parameters.BuildConfiguration }} --collect "Code coverage"'
  - task: SonarCloudAnalyze@1
    displayName: 'Run Code Analysis'
-   condition: and(succeeded(), or(eq(variables['build.sourceBranch'], 'refs/heads/master'), eq(variables['Build.Reason'], 'PullRequest')))
+   condition: and(succeeded(), or(eq(variables['build.sourceBranch'], 'refs/heads/NCSD-888-AddSonarCloudBuild'), eq(variables['Build.Reason'], 'PullRequest')))
  - task: CopyFiles@2
    displayName: 'Copy Files to: $(build.artifactstagingdirectory)\Artifact\Azure'
    inputs:
