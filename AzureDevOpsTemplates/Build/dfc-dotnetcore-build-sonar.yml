@@ -1,0 +1,72 @@
+parameters:
+  SolutionBaseName: ''
+  BuildPlatform: 'any cpu'
+  BuildConfiguration: 'release'
+  DotNetCoreVersion: '2.2.101'
+  PublishWebApp: 'false'
+
+steps:
+ - task: DotNetCoreInstaller@0
+   displayName: 'Use .NET Core sdk ${{ parameters.DotNetCoreVersion }}'
+   inputs:
+     version: ${{ parameters.DotNetCoreVersion }}
+ - task: gittools.gitversion.gitversion-task.GitVersion@4
+   displayName: GitVersion
+   inputs:
+     preferBundledVersion: false
+ - task: SonarCloudPrepare@1
+   displayName: 'Prepare analysis on SonarCloud'
+   condition: and(succeeded(), or(eq(variables['build.sourceBranch'], 'refs/heads/NCSD-888-UseSonarCloudBuildTemplate'), eq(variables['Build.Reason'], 'PullRequest')))
+   inputs:
+    # The Service Endpoint (DFC-SonarCloud) will need to be configured using a GitHub account that has been added to SonarCloud.  
+    # That account will need to be granted "Execute Analysis" permission in SonarCloud.  This needs to be granted in the organization where the results will be published.
+    # It does not need any permissions in GitHub but does need to be a member of the organisation that holds the repos to be scanned (eg SkillsFundingAgency).
+    SonarCloud: 'DFC-SonarCloud'
+    organization: educationandskillsfundingagency
+    projectKey: 'SonarCloud.SkillsFundingAgency.$(Build.DefinitionName)'
+    projectName: $(Build.DefinitionName)
+ # tasks to package a function app
+ - task: DotNetCoreCLI@2
+   displayName: 'dotnet build application'
+   condition: not(${{ parameters.PublishWebApp }})
+   inputs:
+     command: 'build'
+     projects: '${{ parameters.SolutionBaseName }}\${{ parameters.SolutionBaseName }}.csproj'
+     arguments: '-o "$(build.artifactstagingdirectory)\Build\"'
+ - task: ArchiveFiles@2
+   displayName: 'Archive Application'
+   condition: not(${{ parameters.PublishWebApp }})
+   inputs: 
+     rootFolderOrFile: $(build.artifactstagingdirectory)\Build\
+     archiveFile: $(build.artifactstagingdirectory)\Artifact\DeploymentPackages\$(SolutionBaseName).zip
+     includeRootFolder: false
+# task to package a web app
+ - task: DotNetCoreCLI@2
+   displayName: 'dotnet publish application'
+   condition: ${{ parameters.PublishWebApp }}
+   inputs:
+     command: 'publish'
+     projects: '${{ parameters.SolutionBaseName }}\${{ parameters.SolutionBaseName }}.csproj'
+     arguments: '-o "$(build.artifactstagingdirectory)\Artifact\DeploymentPackages\\"'
+     publishWebProjects: false #set to false as this setting (which defaults to true) will parse the entire repo for web projects
+ - task: DotNetCoreCLI@2
+   displayName: Test
+   inputs:
+     command: test
+     projects: '${{ parameters.SolutionBaseName }}.Tests\${{ parameters.SolutionBaseName }}.Tests.csproj'
+     arguments: '--configuration ${{ parameters.BuildConfiguration }} --collect "Code coverage"'
+ - task: SonarCloudAnalyze@1
+   displayName: 'Run Code Analysis'
+   condition: and(succeeded(), or(eq(variables['build.sourceBranch'], 'refs/heads/NCSD-888-UseSonarCloudBuildTemplate'), eq(variables['Build.Reason'], 'PullRequest')))
+ - task: CopyFiles@2
+   displayName: 'Copy Files to: $(build.artifactstagingdirectory)\Artifact\Azure'
+   inputs:
+     sourceFolder: 'Resources'
+     contents: '**'
+     targetFolder: '$(build.artifactstagingdirectory)\Artifact\Azure'
+ - task: PublishBuildArtifacts@1
+   displayName: 'Publish Artifact: ${{ parameters.SolutionBaseName }}'
+   inputs:
+     pathtoPublish: $(build.artifactstagingdirectory)\Artifact\
+     artifactName: ${{ parameters.SolutionBaseName }}
+     publishLocation: container
