@@ -33,7 +33,7 @@
     ],
     "outputs": {
         "registryCredential": {
-            "type": "string",
+            "type": "securestring",
             "value": "[listCredentials(resourceId('Microsoft.ContainerRegistry/registries', parameters('containerRegistryName')), '2017-10-01').passwords[0].value]"
         }
     }
