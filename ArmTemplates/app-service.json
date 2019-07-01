@@ -60,6 +60,10 @@
         "deployStagingSlot": {
             "type": "bool",
             "defaultValue": true
+        },
+        "clientAffinity": {
+            "type": "bool",
+            "defaultValue": false
         }
     },
     "variables": {
@@ -75,7 +79,7 @@
             "location": "[resourceGroup().location]",
             "properties": {
                 "serverFarmId": "[variables('appServicePlanId')]",
-                "clientAffinityEnabled": false,
+                "clientAffinityEnabled": "[parameters('clientAffinity')]",
                 "siteConfig": {
                     "alwaysOn": true,
                     "appSettings": "[parameters('appServiceAppSettings')]",
