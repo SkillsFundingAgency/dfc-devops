@@ -15,7 +15,7 @@
     },
     "variables": {
         "baseProperties": {
-            "groupShortName": "[parameters('actionGroupName')]",
+            "groupShortName": "[take(split(parameters('actionGroupName'), '-')[2], 12)]",
             "enabled": "[variables('enabled')]"
         },
         "enabled": "[equals(toUpper(parameters('Environment')), 'PRD')]",
