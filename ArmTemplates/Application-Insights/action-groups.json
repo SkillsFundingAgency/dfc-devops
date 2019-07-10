@@ -1,0 +1,50 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "alertName": {
+            "type": "string"
+        },
+        "emailAddress": {
+            "type": "string",
+            "defaultValue": "careersdevops@education.gov.uk"
+        },
+        "environment": {
+            "type": "string"
+        }
+    },
+    "variables": {
+        "baseProperties": {
+            "groupShortName": "[parameters('alertName')]",
+            "enabled": "[variables('enabled')]"
+        },
+        "enabled": "[equals(toUpper(parameters('Environment')), 'PRD')]",
+        "emailPropertyArray": {
+            "emailReceivers": [{
+            "name": "[parameters('alertName')]",
+            "emailAddress": "[parameters('EmailAddress')]",
+            "useCommonAlertSchema": true
+        }]},
+        "emailProperties": "[union(variables('baseProperties'), variables('emailPropertyArray'))]"
+    },
+    "resources": [
+        {
+            "name": "[parameters('alertName')]",
+            "type": "microsoft.insights/actionGroups",
+            "apiVersion": "2019-06-01",
+            "location": "global",
+            "tags": {},
+            "properties": "[variables('emailProperties')]"
+          }
+    ],
+    "outputs": {
+        "Enabled": {
+            "type": "bool",
+            "value": "[variables('enabled')]"
+        },
+        "Properties": {
+            "type": "object",
+            "value": "[variables('emailProperties')]"
+        }
+    }
+}
