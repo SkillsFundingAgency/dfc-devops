@@ -1,0 +1,39 @@
+{
+"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+"contentVersion": "1.0.0.0",
+"parameters": {
+    "virtualNetworkPrefix": {
+        "type": "string",
+        "metadata": {
+            "description": "The name of new Azure VNet where you can deploy Azure Sql Managed Instances and the resources that use them"
+        }
+    }
+},
+"variables": {
+    "routeTableName": "[concat(parameters('virtualNetworkPrefix'), '-rt')]"
+},
+"resources": [
+    {
+        "name": "[variables('routeTableName')]",
+        "type": "Microsoft.Network/routeTables",
+        "apiVersion": "2018-11-01",
+        "location": "[resourceGroup().location]",
+        "tags": {},
+        "properties": {
+          "routes": [
+            {
+              "properties": {
+                "addressPrefix": "0.0.0.0/0",
+                "nextHopType": "Internet"
+              },
+              "name": "string"
+            }
+          ],
+          "disableBgpRoutePropagation": false
+        },
+        "resources": []
+      }
+    ],
+"outputs": {}
+}
+
