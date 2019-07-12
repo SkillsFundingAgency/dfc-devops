@@ -74,7 +74,7 @@
         {
             "name": "[parameters('appServiceName')]",
             "type": "Microsoft.Web/sites",
-            "apiVersion": "2016-08-01",
+            "apiVersion": "2018-11-01",
             "kind": "[parameters('appServiceType')]",
             "location": "[resourceGroup().location]",
             "properties": {
@@ -83,7 +83,8 @@
                 "siteConfig": {
                     "alwaysOn": true,
                     "appSettings": "[parameters('appServiceAppSettings')]",
-                    "connectionStrings": "[parameters('appServiceConnectionStrings')]"
+                    "connectionStrings": "[parameters('appServiceConnectionStrings')]",
+                    "phpVersion": "off"
                 },
                 "httpsOnly": true
             },
@@ -92,31 +93,18 @@
                     "condition": "[parameters('deployStagingSlot')]",
                     "name": "staging",
                     "type": "slots",
-                    "apiVersion": "2016-08-01",
+                    "apiVersion": "2018-11-01",
                     "location": "[resourceGroup().location]",
                     "properties": {
                         "clientAffinityEnabled": "[parameters('clientAffinity')]",
                         "siteConfig": {
                             "appSettings": "[parameters('appServiceAppSettings')]",
-                            "connectionStrings": "[parameters('appServiceConnectionStrings')]"
+                            "connectionStrings": "[parameters('appServiceConnectionStrings')]",
+                            "phpVersion": "off"
                         }
                     },
                     "dependsOn": [
                         "[parameters('appServiceName')]"
-                    ]
-                },
-                {
-                    "condition": "[parameters('deployStagingSlot')]",
-                    "name": "[concat(parameters('appServiceName'), '/slots/staging/web')]",
-                    "type": "Microsoft.Web/Sites/slots/config",
-                    "apiVersion": "2016-08-01",
-                    "location": "[resourceGroup().location]",
-                    "properties": {
-                        "phpVersion": "off"
-                    },
-                    "dependsOn": [
-                        "[resourceId('Microsoft.Web/sites/slots', parameters('appServiceName'), 'staging')]",
-                        "[resourceId('Microsoft.Web/sites', parameters('appServiceName'))]"
                     ]
                 }
             ],
@@ -131,18 +119,6 @@
             "properties": {
                 "sslState": "SniEnabled",
                 "thumbprint": "[parameters('certificateThumbprint')]"
-            },
-            "dependsOn": [
-                "[resourceId('Microsoft.Web/sites', parameters('appServiceName'))]"
-            ]
-        },
-        {
-            "name": "[concat(parameters('appServiceName'), '/web')]",
-            "type": "Microsoft.Web/sites/config",
-            "apiVersion": "2016-08-01",
-            "location": "[resourceGroup().location]",
-            "properties": {
-                "phpVersion": "off"
             },
             "dependsOn": [
                 "[resourceId('Microsoft.Web/sites', parameters('appServiceName'))]"
