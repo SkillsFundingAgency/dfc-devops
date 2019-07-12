@@ -104,6 +104,20 @@
                     "dependsOn": [
                         "[parameters('appServiceName')]"
                     ]
+                },
+                {
+                    "condition": "[parameters('deployStagingSlot')]",
+                    "name": "[concat(parameters('appServiceName'), '/slots/staging/web')]",
+                    "type": "Microsoft.Web/Sites/slots/config",
+                    "apiVersion": "2016-08-01",
+                    "location": "[resourceGroup().location]",
+                    "properties": {
+                        "phpVersion": "off"
+                    },
+                    "dependsOn": [
+                        "[resourceId('Microsoft.Web/sites/slots', parameters('appServiceName'), 'staging')]",
+                        "[resourceId('Microsoft.Web/sites', parameters('appServiceName'))]"
+                    ]
                 }
             ],
             "dependsOn": []
@@ -117,6 +131,18 @@
             "properties": {
                 "sslState": "SniEnabled",
                 "thumbprint": "[parameters('certificateThumbprint')]"
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('appServiceName'))]"
+            ]
+        },
+        {
+            "name": "[concat(parameters('appServiceName'), '/web')]",
+            "type": "Microsoft.Web/sites/config",
+            "apiVersion": "2016-08-01",
+            "location": "[resourceGroup().location]",
+            "properties": {
+                "phpVersion": "off"
             },
             "dependsOn": [
                 "[resourceId('Microsoft.Web/sites', parameters('appServiceName'))]"
