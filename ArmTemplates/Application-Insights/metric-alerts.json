@@ -9,7 +9,7 @@
             "type": "string"
         },
         "alertSeverity": {
-            "type": "string",
+            "type": "int",
             "defaultValue": 3,
             "allowedValues": [
                 0,
