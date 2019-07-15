@@ -75,30 +75,29 @@
         "actionGroupName": {
             "type": "string"
         },
-        "resourceName": {
-            "type": "string"
-        },
-        "resourceType": {
-            "type": "string"
+        "resourceId": {
+            "type": "string",
+            "metadata": {
+                "description": "The id of the resource to attach the alert to"
+            }
         }
     },
     "variables": {
-        "groupShortName": "[take(split(parameters('actionGroupName'), '-')[2], 12)]",
         "enabled": "[equals(toUpper(parameters('environment')), 'PRD')]"
     },
     "resources": [
         {
             "name":  "[parameters('alertName')]",
-            "type": "microsoft.insights/metricAlerts",
+            "type": "Microsoft.Insights/metricAlerts",
             "apiVersion": "2018-03-01",
             "location": "global",
             "tags": {},
             "properties": {
-                "description": "Alert for resource [parameters('resourceName')] and metric [parameters('metricName')].",
+                "description": "[concat('Alert for metric ', parameters('metricName'))]",
                 "severity": "[parameters('alertSeverity')]",
                 "enabled": "[variables('enabled')]",
                 "scopes": [
-                    "[resourceId(resourceGroup().name, parameters('resourceType'), parameters('resourceName'))]"
+                    "[parameters('resourceId')]"
                 ],
                 "evaluationFrequency": "[parameters('evaluationFrequency')]",
                 "windowSize": "[parameters('windowSize')]",
@@ -117,7 +116,7 @@
                 },
                 "actions": [
                     {
-                        "actionGroupId": "[resourceId(resourceGroup().name, 'microsoft.insights/actionGroups', variables('groupShortName'))]"
+                        "actionGroupId": "[resourceId(resourceGroup().name, 'microsoft.insights/actionGroups', parameters('actionGroupName'))]"
                     }
                 ]
             }
