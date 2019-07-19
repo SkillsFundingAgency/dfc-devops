@@ -33,11 +33,11 @@
                 "description": "The Azure DevOps organsation name, can be obtained from Organization settings > Overview.  The Azure DevOps organization will need to be connected to an AAD tenant.  This will remove access for all existing accounts."
             },
             "defaultValue": ""
-        },        
+        },
         "VstsProjectName": {
             "type": "string",
             "defaultValue": ""
-        },        
+        },
         "RepositoryName": {
             "type": "string",
             "metadata": {
