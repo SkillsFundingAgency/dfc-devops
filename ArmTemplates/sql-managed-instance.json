@@ -107,7 +107,7 @@
             "type": "string",
             "value": "[variables('sqlServerAdminUserName')]"
         },
-        "managedSQLPublicUri": {
+        "fullyQualifiedDomainName": {
             "type": "string",
             "value": "[reference(parameters('msqlServerName')).fullyQualifiedDomainName]"
         }
