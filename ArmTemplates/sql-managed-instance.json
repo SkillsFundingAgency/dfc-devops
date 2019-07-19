@@ -52,6 +52,13 @@
             "metadata": {
                 "description": "Storage limit for the database in GB"
             }
+        },
+        "publicDataEndpointEnabled": {
+            "type": "bool",
+            "defaultValue": false,
+            "metadata": {
+                "description": "Control whether the public endopint is available or not."
+            }
         }
     },
     "variables": {
@@ -74,7 +81,8 @@
             "administratorLoginPassword": "[parameters('sqlServerAdminPassword')]",
             "subnetId": "[parameters('msqlSubnetId')]",
             "vCores": "[parameters('vCores')]",
-            "storageSizeInGB": "[parameters('storageSizeGb')]"
+            "storageSizeInGB": "[parameters('storageSizeGb')]",
+            "publicDataEndpointEnabled": "[parameters('publicDataEndpointEnabled')]"
         },
         "resources": [
             {
@@ -98,6 +106,10 @@
         "saAdministratorLogin": {
             "type": "string",
             "value": "[variables('sqlServerAdminUserName')]"
+        },
+        "fullyQualifiedDomainName": {
+            "type": "string",
+            "value": "[reference(parameters('msqlServerName')).fullyQualifiedDomainName]"
         }
     }
 }
