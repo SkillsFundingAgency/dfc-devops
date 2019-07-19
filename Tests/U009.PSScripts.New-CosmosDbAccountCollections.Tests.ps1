@@ -10,6 +10,7 @@ function Get-CosmosDbDatabase ($Id) {}
 function New-CosmosDbDatabase {}
 function Get-CosmosDbCollection ($Id) {}
 function New-CosmosDbCollection {}
+function Set-CosmosDbCollection ($DefaultTimeToLive, $OfferThroughput) {}
 
 Describe "New-CosmosDbAccountCollections unit tests" -Tag "Unit" {
 
@@ -47,9 +48,18 @@ Describe "New-CosmosDbAccountCollections unit tests" -Tag "Unit" {
             CollectionName  = "coll"
             OfferThroughput = 400
             PartitionKey    = "/partkey"
-            TTL             = 12345
+            DefaultTtl      = 12345
         }
     } -ParameterFilter { $Id -eq "coll" }
+
+    Mock Set-CosmosDbCollection {
+        $cosmosCollection = New-Object -TypeName PSCustomObject @{
+            DefaultTTL      = $DefaultTimeToLive
+            OfferThroughput = $OfferThroughput
+            indexingPolicy  = New-Object -TypeName PSCustomObject
+        }
+        return $cosmosCollection
+    }
 
     Mock Get-InstalledModule
     Mock Install-Module
@@ -74,7 +84,7 @@ Describe "New-CosmosDbAccountCollections unit tests" -Tag "Unit" {
         "CollectionName": "coll",
         "OfferThroughput": 400,
         "PartitionKey": "/partkey",
-        "TTL": 12345
+        "DefaultTTL": 12345
     } ]
 }
 '@
@@ -130,13 +140,49 @@ Describe "New-CosmosDbAccountCollections unit tests" -Tag "Unit" {
 
     }
 
-    It "Ensure Cosmos collection is not created if it already exists" {
+    It "Cosmos collection should not be created if it already exists" {
 
         $DefaultParams['CosmosDbConfigurationString'] = $CollectionExists
 
         .\New-CosmosDbAccountCollections @DefaultParams
 
         Assert-MockCalled New-CosmosDbCollection -Exactly 0 -Scope It
+
+        $DefaultParams.Remove('CosmosDbConfigurationString') # clean up
+
+    }
+
+    It "Cosmos collection that exists should not update when no changes are made" {
+
+        $DefaultParams['CosmosDbConfigurationString'] = $CollectionExists
+
+        .\New-CosmosDbAccountCollections @DefaultParams
+
+        Assert-MockCalled Set-CosmosDbCollection -Exactly 0 -Scope It
+
+        $DefaultParams.Remove('CosmosDbConfigurationString') # clean up
+
+    }
+
+    It "Cosmos collection is updated when DefaultTtl is changed" {
+
+        $DefaultParams['CosmosDbConfigurationString'] = $CollectionExists.Replace('12345','10000')
+
+        .\New-CosmosDbAccountCollections @DefaultParams
+
+        Assert-MockCalled Set-CosmosDbCollection -ParameterFilter { $DefaultTimeToLive -eq 10000 } -Exactly 1 -Scope It
+
+        $DefaultParams.Remove('CosmosDbConfigurationString') # clean up
+
+    }
+
+    It "Cosmos collection is updated when OfferThroughput is changed" {
+
+        $DefaultParams['CosmosDbConfigurationString'] = $CollectionExists.Replace('400','444')
+
+        .\New-CosmosDbAccountCollections @DefaultParams
+
+        Assert-MockCalled Set-CosmosDbCollection -ParameterFilter { $OfferThroughput -eq 444 } -Exactly 1 -Scope It
 
         $DefaultParams.Remove('CosmosDbConfigurationString') # clean up
 
