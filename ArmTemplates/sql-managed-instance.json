@@ -106,10 +106,6 @@
         "saAdministratorLogin": {
             "type": "string",
             "value": "[variables('sqlServerAdminUserName')]"
-        },
-        "managedSQLPublicUri": {
-            "type": "object",
-            "value": "[reference(parameters('msqlServerName'))]"
         }
     }
 }
