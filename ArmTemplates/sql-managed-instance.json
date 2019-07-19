@@ -109,7 +109,7 @@
         },
         "managedSQLPublicUri": {
             "type": "string",
-            "value": "[reference(parameters('msqlServerName').outputs.fullyQualifiedDomainName)]"
+            "value": "[reference(parameters('msqlServerName')).fullyQualifiedDomainName]"
         }
     }
 }
