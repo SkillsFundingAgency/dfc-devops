@@ -6,8 +6,10 @@ function Import-Module {}
 function Install-Module {}
 function Get-AzureRmResource {}
 function New-CosmosDbContext {}
-function Get-CosmosDbDatabase {}
+function Get-CosmosDbDatabase ($Id) {}
 function New-CosmosDbDatabase {}
+function Get-CosmosDbCollection ($Id) {}
+function New-CosmosDbCollection {}
 
 Describe "New-CosmosDbAccountCollections unit tests" -Tag "Unit" {
 
@@ -26,21 +28,46 @@ Describe "New-CosmosDbAccountCollections unit tests" -Tag "Unit" {
         }
     }
 
+    Mock New-CosmosDbContext {
+        return @{
+            Account = "ABC123"
+        }
+    }
+
+    Mock Get-CosmosDbDatabase { return $null } # database name != foobar
     Mock Get-CosmosDbDatabase {
         return @{
-            Name    = "foobar"
+            Name = "foobar"
         }
     } -ParameterFilter { $Id -eq "foobar" }
 
-    Mock Get-CosmosDbDatabase { return $null } -ParameterFilter { $Id -ne "foobar" }
+    Mock Get-CosmosDbCollection { return $null } # collection name !- coll
+    Mock Get-CosmosDbCollection {
+        return @{
+            CollectionName  = "coll"
+            OfferThroughput = 400
+            PartitionKey    = "/partkey"
+            TTL             = 12345
+        }
+    } -ParameterFilter { $Id -eq "coll" }
 
     Mock Get-InstalledModule
     Mock Install-Module
     Mock Import-Module
-    Mock New-CosmosDbContext
     Mock New-CosmosDbDatabase
+    Mock New-CosmosDbCollection
 
-    $SampleDatasource = @'
+    $CollectionNotExists = @'
+{
+    "DatabaseName": "foobar",
+    "Collections": [ {
+        "CollectionName": "doesnotexist",
+        "OfferThroughput": 500
+    } ]
+}
+'@
+    
+    $CollectionExists = @'
 {
     "DatabaseName": "foobar",
     "Collections": [ {
@@ -73,59 +100,48 @@ Describe "New-CosmosDbAccountCollections unit tests" -Tag "Unit" {
 
         .\New-CosmosDbAccountCollections @DefaultParams
 
-        Assert-MockCalled New-CosmosDbDatabase -Exactly 1
+        Assert-MockCalled New-CosmosDbDatabase -Exactly 1 -Scope It
 
         $DefaultParams.Remove('CosmosDbConfigurationString') # clean up
 
     }
 
-    $DefaultParams['CosmosDbConfigurationString'] = $SampleDatasource
+    It "Ensure Cosmos database is not created if it already exists" {
 
-    <#
-
-    It "Ensure Cosmos module is loaded if version is below 2.1.9.88" {
-
-        Mock Get-Module {
-            return @{
-                Name    = "CosmosDB"
-                Version = "2.0.9.89"
-            }
-        }    
+        $DefaultParams['CosmosDbConfigurationString'] = '{ "DatabaseName": "foobar", "Collections": [] }'
 
         .\New-CosmosDbAccountCollections @DefaultParams
 
-        Assert-MockCalled Get-InstalledModule -Exactly 1
-        Assert-MockCalled Import-Module -Exactly 1
+        Assert-MockCalled New-CosmosDbDatabase -Exactly 0 -Scope It
+
+        $DefaultParams.Remove('CosmosDbConfigurationString') # clean up
 
     }
 
-    It "Ensure Cosmos module is not loaded if version between 2.1.9.88 and 2.1.15.239" {
+    It "Ensure Cosmos collection is created if it does not already exist" {
 
-        Mock Get-Module {
-            return @{
-                Name    = "CosmosDB"
-                Version = "2.1.12.0"
-            }
-        }
+        $DefaultParams['CosmosDbConfigurationString'] = $CollectionNotExists
 
         .\New-CosmosDbAccountCollections @DefaultParams
 
-        Assert-MockCalled Get-InstalledModule -Exactly 0
-        Assert-MockCalled Import-Module -Exactly 0
+        Assert-MockCalled New-CosmosDbCollection -Exactly 1 -Scope It
+
+        $DefaultParams.Remove('CosmosDbConfigurationString') # clean up
 
     }
 
-    It "Ensure Cosmos module is loaded if version is above 2.1.15.239" {
+    It "Ensure Cosmos collection is not created if it already exists" {
 
-        Mock Get-Module { return $null }
+        $DefaultParams['CosmosDbConfigurationString'] = $CollectionExists
 
         .\New-CosmosDbAccountCollections @DefaultParams
 
-        Assert-MockCalled Get-InstalledModule -Exactly 1
-        Assert-MockCalled Import-Module -Exactly 1
+        Assert-MockCalled New-CosmosDbCollection -Exactly 0 -Scope It
+
+        $DefaultParams.Remove('CosmosDbConfigurationString') # clean up
 
     }
-    #>
+
 }
 
 Push-Location -Path $PSScriptRoot
