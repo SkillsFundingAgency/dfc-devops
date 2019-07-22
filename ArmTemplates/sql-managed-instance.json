@@ -48,7 +48,7 @@
         },
         "storageSizeGb": {
             "type": "int",
-            "defaultValue": 32,
+            "defaultValue": 128,
             "metadata": {
                 "description": "Storage limit for the database in GB"
             }
