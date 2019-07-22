@@ -251,6 +251,8 @@ foreach ($Collection in $CosmosDbConfiguration.Collections) {
 
         }
 
+        <#
+        Commented out due to Set-CosmosDbCollection not supporting setting the offer throughput on a collection
         if ($Collection | Get-Member -Name OfferThroughput) {
 
             if ($ExistingCollection.OfferThroughput -eq $Collection.OfferThroughput) {
@@ -263,6 +265,7 @@ foreach ($Collection in $CosmosDbConfiguration.Collections) {
 
             }
         }
+        #>
 
         # TODO: Support index changing - warning will force full reindex!
 
