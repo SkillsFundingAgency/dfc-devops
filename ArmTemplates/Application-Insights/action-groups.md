@@ -1,21 +1,19 @@
 # Action Groups
 
-## Introduction
-
-This ARM template creates an action group in the current resource group.
+Creates an Azure Monitor action group.
 
 
 ## Parameters
 
+actionGroupName (required)
 
-| Parameter Name | Purpose     |
-| -------------- | ----------- |
-| actionGroupName | A name for the action group.  This has to follow our naming conventions! |
-| emailAddress  | The email address to send alerts to |
-| environment | The environment that we're deploying to |
+A name for the action group.  This has to follow our naming conventions!
+This reason for this is because internally, an actionGroup's name can only be 12 characters in length,  so we attempt to get the project's name and truncate it to 12 characters to give the best name for the action group as possible
 
-## Gotchas
+emailAddress  (optional)
 
-The actionGroupName parameter has to follow our naming conventions!
+The email address to send alerts to
 
-This is because internally, an actionGroup's name can only be 12 characters in length,  so internally we attempt to get the project's name and truncate it to 12 characters to give the best namne for the action group as possible
+environment (optional)
+
+The environment being deployed to
