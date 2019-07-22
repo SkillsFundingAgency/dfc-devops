@@ -176,6 +176,7 @@ Describe "New-CosmosDbAccountCollections unit tests" -Tag "Unit" {
 
     }
 
+    <#
     It "Cosmos collection is updated when OfferThroughput is changed" {
 
         $DefaultParams['CosmosDbConfigurationString'] = $CollectionExists.Replace('400','444')
@@ -187,7 +188,7 @@ Describe "New-CosmosDbAccountCollections unit tests" -Tag "Unit" {
         $DefaultParams.Remove('CosmosDbConfigurationString') # clean up
 
     }
-
+    #>
 }
 
 Push-Location -Path $PSScriptRoot
