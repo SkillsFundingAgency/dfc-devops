@@ -14,6 +14,6 @@ emailAddress  (optional)
 
 The email address to send alerts to
 
-environment (optional)
+environment (required)
 
 The environment being deployed to
