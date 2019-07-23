@@ -17,7 +17,7 @@ steps:
 
  # tasks to package a function app
  - task: DotNetCoreCLI@2
-   displayName: 'dotnet build application'
+   displayName: 'Build - dotnet build application'
    condition: not(${{ parameters.PublishWebApp }})
    inputs:
      command: 'build'
@@ -33,7 +33,7 @@ steps:
 
 # task to package a web app
  - task: DotNetCoreCLI@2
-   displayName: 'dotnet publish application'
+   displayName: 'Publish - dotnet publish application'
    condition: ${{ parameters.PublishWebApp }}
    inputs:
      command: 'publish'
@@ -42,7 +42,7 @@ steps:
      publishWebProjects: false #set to false as this setting (which defaults to true) will parse the entire repo for web projects
 
  - task: DotNetCoreCLI@2
-   displayName: Test
+   displayName: 'Test - dontnet test application'
    inputs:
      command: test
      projects: '${{ parameters.SolutionBaseName }}.Tests\${{ parameters.SolutionBaseName }}.Tests.csproj'
