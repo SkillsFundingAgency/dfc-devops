@@ -2,8 +2,9 @@
     "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-        "environment": {
-            "type": "string"
+        "enabled": {
+            "type": "bool",
+            "defaultValue": true
         },
         "alertName": {
             "type": "string"
@@ -82,9 +83,6 @@
             }
         }
     },
-    "variables": {
-        "enabled": "[equals(toUpper(parameters('environment')), 'PRD')]"
-    },
     "resources": [
         {
             "name":  "[parameters('alertName')]",
@@ -95,7 +93,7 @@
             "properties": {
                 "description": "[concat('Alert for metric ', parameters('metricName'))]",
                 "severity": "[parameters('alertSeverity')]",
-                "enabled": "[variables('enabled')]",
+                "enabled": "[parameters('enabled')]",
                 "scopes": [
                     "[parameters('resourceId')]"
                 ],
@@ -125,7 +123,7 @@
     "outputs": {
         "Enabled": {
             "type": "bool",
-            "value": "[variables('enabled')]"
+            "value": "[parameters('enabled')]"
         }
     }
 }

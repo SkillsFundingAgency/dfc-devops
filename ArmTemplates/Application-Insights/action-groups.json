@@ -9,16 +9,16 @@
             "type": "string",
             "defaultValue": "careersdevops@education.gov.uk"
         },
-        "environment": {
-            "type": "string"
+        "enabled": {
+            "type": "bool",
+            "defaultValue": true
         }
     },
     "variables": {
         "baseProperties": {
             "groupShortName": "[take(split(parameters('actionGroupName'), '-')[2], 12)]",
-            "enabled": "[variables('enabled')]"
+            "enabled": "[parameters('enabled')]"
         },
-        "enabled": "[equals(toUpper(parameters('Environment')), 'PRD')]",
         "emailPropertyArray": {
             "emailReceivers": [{
             "name": "[parameters('actionGroupName')]",
@@ -40,7 +40,7 @@
     "outputs": {
         "Enabled": {
             "type": "bool",
-            "value": "[variables('enabled')]"
+            "value": "[parameters('enabled')]"
         },
         "Properties": {
             "type": "object",

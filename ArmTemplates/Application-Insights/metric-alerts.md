@@ -4,9 +4,9 @@ Create an azure monitor metric alert on a resource
 
 ## Parameters
 
-environment (required)
+enabled (optional)
 
-The environment being deploy to.
+Sets the state of the metric alert. If true (the default), the alert is enabled.   If false, the alert is disabled.
 
 alertName (required)
 

@@ -2,7 +2,6 @@
 
 Creates an Azure Monitor action group.
 
-
 ## Parameters
 
 actionGroupName (required)
@@ -14,6 +13,6 @@ emailAddress  (optional)
 
 The email address to send alerts to
 
-environment (required)
+enabled (optional)
 
-The environment being deployed to
+Sets the state of the action group. If true (the default), the action group is enabled.  If false, the alert is disabled.
