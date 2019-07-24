@@ -251,22 +251,6 @@ foreach ($Collection in $CosmosDbConfiguration.Collections) {
 
         }
 
-        <#
-        Commented out due to Set-CosmosDbCollection not supporting setting the offer throughput on a collection
-        if ($Collection | Get-Member -Name OfferThroughput) {
-
-            if ($ExistingCollection.OfferThroughput -eq $Collection.OfferThroughput) {
-
-                Write-Verbose "OfferThroughput already set to $($ExistingCollection.OfferThroughput).  Not updating."
-
-            } else {
-
-                $SetCosmosDbCollectionParameters['OfferThroughput'] = $Collection.OfferThroughput
-
-            }
-        }
-        #>
-
         # TODO: Support index changing - warning will force full reindex!
 
         if($SetCosmosDbCollectionParameters.Count -gt 3) {
@@ -290,6 +274,23 @@ foreach ($Collection in $CosmosDbConfiguration.Collections) {
     
             }
 
+        }
+
+        if ($Collection | Get-Member -Name OfferThroughput) {
+
+            # Need to get the collection offer
+            $CollectionOffer = Get-CosmosDbOffer -Context $cosmosDbContext -Query ('SELECT * FROM root WHERE (root["resource"] = "{0}")' -f $ExistingCollection._self)
+
+            if ($CollectionOffer.content.offerThroughput -eq $Collection.OfferThroughput) {
+
+                Write-Verbose "OfferThroughput already set to $($CollectionOffer.content.offerThroughput).  Not updating."
+
+            } else {
+
+                $NewOffer = Set-CosmosDbOffer -Context $cosmosDbContext -InputObject $CollectionOffer -OfferThroughput $Collection.OfferThroughput
+                Write-Verbose "OfferThroughput set to $($NewOffer.content.offerThroughput)"
+
+            }
         }
 
     }
