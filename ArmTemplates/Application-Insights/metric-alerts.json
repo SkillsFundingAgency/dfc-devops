@@ -119,11 +119,5 @@
                 ]
             }
         }
-    ],
-    "outputs": {
-        "Enabled": {
-            "type": "bool",
-            "value": "[parameters('enabled')]"
-        }
-    }
+    ]
 }

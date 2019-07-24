@@ -38,10 +38,6 @@
           }
     ],
     "outputs": {
-        "Enabled": {
-            "type": "bool",
-            "value": "[parameters('enabled')]"
-        },
         "Properties": {
             "type": "object",
             "value": "[variables('emailProperties')]"
