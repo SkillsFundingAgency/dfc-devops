@@ -1,0 +1,123 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "enabled": {
+            "type": "bool",
+            "defaultValue": true
+        },
+        "alertName": {
+            "type": "string"
+        },
+        "alertSeverity": {
+            "type": "int",
+            "defaultValue": 3,
+            "allowedValues": [
+                0,
+                1,
+                2,
+                3,
+                4
+            ]
+        },
+        "metricName": {
+            "type": "string"
+        },
+        "operator": {
+            "type": "string",
+            "defaultValue": "GreaterThan",
+            "allowedValues": [
+                "Equals",
+                "NotEquals",
+                "GreaterThan",
+                "GreaterThanOrEqual",
+                "LessThan",
+                "LessThanOrEqual"
+            ],
+            "metadata": {
+                "description": "Operator comparing the current value with the threshold value."
+            }
+        },
+        "threshold": {
+            "type": "string",
+            "defaultValue": "0",
+            "metadata": {
+                "description": "The threshold value at which the alert is activated."
+            }
+        },
+        "aggregation": {
+            "type": "string",
+            "defaultValue": "Average",
+            "allowedValues": [
+                "Average",
+                "Minimum",
+                "Maximum",
+                "Total",
+                "Count"
+            ],
+            "metadata": {
+                "description": "How the data that is collected should be combined over time."
+            }
+        },
+        "windowSize": {
+            "type": "string",
+            "defaultValue": "PT5M",
+            "metadata": {
+                "description": "Period of time used to monitor alert activity based on the threshold. Must be between five minutes and one day. ISO 8601 duration format."
+            }
+        },
+        "evaluationFrequency": {
+            "type": "string",
+            "defaultValue": "PT1M",
+            "metadata": {
+                "description": "how often the metric alert is evaluated represented in ISO 8601 duration format"
+            }
+        },
+        "actionGroupName": {
+            "type": "string"
+        },
+        "resourceId": {
+            "type": "string",
+            "metadata": {
+                "description": "The id of the resource to attach the alert to"
+            }
+        }
+    },
+    "resources": [
+        {
+            "name":  "[parameters('alertName')]",
+            "type": "Microsoft.Insights/metricAlerts",
+            "apiVersion": "2018-03-01",
+            "location": "global",
+            "tags": {},
+            "properties": {
+                "description": "[concat('Alert for metric ', parameters('metricName'))]",
+                "severity": "[parameters('alertSeverity')]",
+                "enabled": "[parameters('enabled')]",
+                "scopes": [
+                    "[parameters('resourceId')]"
+                ],
+                "evaluationFrequency": "[parameters('evaluationFrequency')]",
+                "windowSize": "[parameters('windowSize')]",
+                "criteria": {
+                    "odata.type": "Microsoft.Azure.Monitor.SingleResourceMultipleMetricCriteria",
+                    "allOf": [
+                        {
+                            "name": "metric critria",
+                            "metricName": "[parameters('metricName')]",
+                            "dimensions": [],
+                            "operator": "[parameters('operator')]",
+                            "threshold": "[parameters('threshold')]",
+                            "timeAggregation": "[parameters('aggregation')]"
+                        }
+                    ]
+                },
+                "actions": [
+                    {
+                        "actionGroupId": "[resourceId(resourceGroup().name, 'microsoft.insights/actionGroups', parameters('actionGroupName'))]"
+                    }
+                ]
+            }
+        }
+    ]
+}
