@@ -10,18 +10,11 @@ function Get-CosmosDbDatabase ($Id) {}
 function New-CosmosDbDatabase {}
 function Get-CosmosDbCollection ($Id) {}
 function New-CosmosDbCollection {}
-function Set-CosmosDbCollection ($DefaultTimeToLive, $OfferThroughput) {}
+function Set-CosmosDbCollection ($DefaultTimeToLive) {}
+function Get-CosmosDbOffer {}
+function Set-CosmosDbOffer ($OfferThroughput) {}
 
 Describe "New-CosmosDbAccountCollections unit tests" -Tag "Unit" {
-
-<#
-    Mock Get-Module {
-        return @{
-            Name    = "CosmosDB"
-            Version = "2.1.9.88"
-        }
-    }
-#>
 
     Mock Get-AzureRmResource {
         return @{
@@ -46,7 +39,6 @@ Describe "New-CosmosDbAccountCollections unit tests" -Tag "Unit" {
     Mock Get-CosmosDbCollection {
         return @{
             CollectionName  = "coll"
-            OfferThroughput = 400
             PartitionKey    = "/partkey"
             DefaultTtl      = 12345
         }
@@ -55,10 +47,21 @@ Describe "New-CosmosDbAccountCollections unit tests" -Tag "Unit" {
     Mock Set-CosmosDbCollection {
         $cosmosCollection = New-Object -TypeName PSCustomObject @{
             DefaultTTL      = $DefaultTimeToLive
-            OfferThroughput = $OfferThroughput
             indexingPolicy  = New-Object -TypeName PSCustomObject
         }
         return $cosmosCollection
+    }
+
+    Mock Get-CosmosDbOffer {
+        return @{
+            content = @{ OfferThroughput = 400 }
+        }
+    }
+
+    Mock Set-CosmosDbOffer {
+        return @{
+            content = @{ OfferThroughput = $OfferThroughput }
+        }
     }
 
     Mock Get-InstalledModule
@@ -168,27 +171,32 @@ Describe "New-CosmosDbAccountCollections unit tests" -Tag "Unit" {
 
         $DefaultParams['CosmosDbConfigurationString'] = $CollectionExists.Replace('12345','10000')
 
-        .\New-CosmosDbAccountCollections @DefaultParams
+        $VerboseOutput = .\New-CosmosDbAccountCollections @DefaultParams -Verbose 4>&1
 
         Assert-MockCalled Set-CosmosDbCollection -ParameterFilter { $DefaultTimeToLive -eq 10000 } -Exactly 1 -Scope It
+        Assert-MockCalled Set-CosmosDbOffer -Exactly 0 -Scope It
+        ($VerboseOutput -like "Updating Time To Live (TTL) to 10000").Length | Should -Be 1
+        ($VerboseOutput -like "OfferThroughput already set to 400.  Not updating.").Length | Should -Be 1
 
         $DefaultParams.Remove('CosmosDbConfigurationString') # clean up
 
     }
 
-    <#
     It "Cosmos collection is updated when OfferThroughput is changed" {
 
         $DefaultParams['CosmosDbConfigurationString'] = $CollectionExists.Replace('400','444')
 
-        .\New-CosmosDbAccountCollections @DefaultParams
+        $VerboseOutput = .\New-CosmosDbAccountCollections @DefaultParams -Verbose 4>&1
 
-        Assert-MockCalled Set-CosmosDbCollection -ParameterFilter { $OfferThroughput -eq 444 } -Exactly 1 -Scope It
+        Assert-MockCalled Set-CosmosDbCollection -Exactly 0 -Scope It
+        Assert-MockCalled Set-CosmosDbOffer -Exactly 1 -Scope It
+        ($VerboseOutput -like "Time To Live (TTL) already set to 12345.  Not updating.").Length | Should -Be 1
+        ($VerboseOutput -like "OfferThroughput set to 444").Length | Should -Be 1
 
         $DefaultParams.Remove('CosmosDbConfigurationString') # clean up
 
     }
-    #>
+
 }
 
 Push-Location -Path $PSScriptRoot
