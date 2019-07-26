@@ -5,7 +5,8 @@ parameters:
   TestArmTemplateScriptFilePath: $(System.DefaultWorkingDirectory)\Test-ArmTemplate.ps1
 
 jobs:
-  - job: "Build"
+  - job: TestArmTemplate"
+    displayName: 'Test & package ARM Template(s)'
     pool:
       name: "DAS - Continuous Deployment"
     steps:
