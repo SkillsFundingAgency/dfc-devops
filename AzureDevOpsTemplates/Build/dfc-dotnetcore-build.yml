@@ -42,7 +42,7 @@ steps:
      publishWebProjects: false #set to false as this setting (which defaults to true) will parse the entire repo for web projects
 
  - task: DotNetCoreCLI@2
-   displayName: 'Test - dontnet test application'
+   displayName: 'Test - dotnet test application'
    inputs:
      command: test
      projects: '${{ parameters.SolutionBaseName }}.Tests\${{ parameters.SolutionBaseName }}.Tests.csproj'
