@@ -59,3 +59,7 @@ The following templates are available
 * [SQL Server](sql-server.md)
 * [Storage Account](storage-account.md)
 * [Storage Account Container](Storage/storage-account-arm-container.md)
+* [Action Groups](Application-Insights/action-groups.md)
+* [Failure Anomaly alerting rules](Application-Insights/failure-anomaly-rule.md)
+* [Metric Alerts](Application-Insights/metric-alerts.md)
+* [Slack Alert logic App](Application-Insights/slack-alerts-logic-app.md)
