@@ -9,6 +9,10 @@
             "type": "string",
             "defaultValue": "careersdevops@education.gov.uk"
         },
+        "webHookUrl": {
+            "type": "string",
+            "defaultValue": ""
+        },
         "enabled": {
             "type": "bool",
             "defaultValue": true
@@ -25,7 +29,17 @@
             "emailAddress": "[parameters('EmailAddress')]",
             "useCommonAlertSchema": true
         }]},
-        "emailProperties": "[union(variables('baseProperties'), variables('emailPropertyArray'))]"
+        "webhookPropertyArray": [
+            {},
+            {
+                "webhookReceivers": [{
+                    "name": "[concat(parameters('actionGroupName'), '-webhook')]",
+                    "serviceUri": "[parameters('webHookUrl')]"
+                }]
+            }
+        ],
+        "webHookPropertyEntry": "[if(empty(parameters('webHookUrl')), 0, 1)]",
+        "groupProperties": "[union(variables('baseProperties'), variables('emailPropertyArray'), variables('webhookPropertyArray')[variables('webHookPropertyEntry')])]"
     },
     "resources": [
         {
@@ -34,13 +48,13 @@
             "apiVersion": "2019-06-01",
             "location": "global",
             "tags": {},
-            "properties": "[variables('emailProperties')]"
+            "properties": "[variables('groupProperties')]"
           }
     ],
     "outputs": {
         "Properties": {
             "type": "object",
-            "value": "[variables('emailProperties')]"
+            "value": "[variables('groupProperties')]"
         }
     }
 }
