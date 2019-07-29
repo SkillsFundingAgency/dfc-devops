@@ -8,10 +8,9 @@ instanceBaseName:  (required)  string
 
 The base name used for the connection and the logic app.
 
-slackChannel:  (optional) string
+slackChannel:  (required) string
 
-The slack channel to send alerts to.
-Defaults to #general
+The slack channel to send alerts to, which must start with a # character.
 
 ## Outputs
 

@@ -10,9 +10,8 @@
       },
       "slackChannel": {
         "type": "string",
-        "defaultValue": "#general",
         "metadata": {
-          "description": "The Slack channel to post to."
+          "description": "The Slack channel to post to. Must start with #"
         }
       }
     },
