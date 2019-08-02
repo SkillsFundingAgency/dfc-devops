@@ -1,0 +1,70 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "alertName": {
+            "type": "string",
+            "metadata": {
+                "description": "The name of the failure anomaly alert rule"
+            }
+        },
+        "enabled": {
+            "type": "bool",
+            "defaultValue": true,
+            "metadata": {
+                "description": "When true, enable the processing of the alert. Otherwise, the alert will be paused."
+            }
+        },
+        "severity": {
+            "type": "string",
+            "defaultValue": "2",
+            "metadata": {
+                "description": "The severity of the alert"
+            }
+        },
+        "frequency": {
+            "type": "string",
+            "defaultValue": "PT1M",
+            "metadata": {
+                "description": "The frequency the alert is processed in ISO 8601 duration format"
+            }
+        },
+        "resourceId": {
+            "type": "string",
+            "metadata": {
+                "description": "The resource id of the app insights instance to attach the rule to"
+            }
+        },
+        "actionGroupId": {
+            "type": "string",
+            "metadata": {
+                "description": "The action group to trigger when the alert is fired"
+            }
+        }
+    },
+    "resources": [
+        {
+            "type": "Microsoft.AlertsManagement/smartdetectoralertrules",
+            "location": "[resourceGroup().location]",
+            "apiVersion": "2019-03-01",
+            "name": "[concat('Failure Anomalies v2 - ', parameters('alertName'))]",
+            "properties": {
+                "description": "Detects a spike in the failure rate of requests or dependencies",
+                "state": "[if(parameters('enabled'), 'Enabled', 'Disabled')]",
+                "severity": "[parameters('severity')]",
+                "frequency": "[parameters('frequency')]",
+                "detector": {
+                    "id": "FailureAnomaliesDetector"
+                },
+                "scope": [
+                    "[parameters('resourceId')]"
+                ],
+                "actionGroups": {
+                    "groupIds": [
+                        "[parameters('actionGroupId')]"
+                    ]
+                }
+            }
+        }
+    ]
+}

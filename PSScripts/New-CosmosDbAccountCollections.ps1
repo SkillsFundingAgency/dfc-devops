@@ -4,7 +4,8 @@
 Creates Cosmos DB Account collections
 
 .DESCRIPTION
-Creates Cosmos DB Account collections within a given CosmosDb Account
+Creates Cosmos DB Account collections within a given CosmosDb Account according to JSON configuration (string or file).
+If the collection already exists, will check if TTL or OfferThroughput has changed and update if necessary.
 
 .PARAMETER ResourceGroupName
 The name of the Resource Group for the CosmosDb Account
@@ -250,6 +251,8 @@ foreach ($Collection in $CosmosDbConfiguration.Collections) {
 
         }
 
+        # TODO: Support index changing - warning will force full reindex!
+
         if($SetCosmosDbCollectionParameters.Count -gt 3) {
 
             $Result = Set-CosmosDbCollection @SetCosmosDbCollectionParameters
@@ -271,6 +274,23 @@ foreach ($Collection in $CosmosDbConfiguration.Collections) {
     
             }
 
+        }
+
+        if ($Collection | Get-Member -Name OfferThroughput) {
+
+            # Need to get the collection offer
+            $CollectionOffer = Get-CosmosDbOffer -Context $cosmosDbContext -Query ('SELECT * FROM root WHERE (root["resource"] = "{0}")' -f $ExistingCollection._self)
+
+            if ($CollectionOffer.content.offerThroughput -eq $Collection.OfferThroughput) {
+
+                Write-Verbose "OfferThroughput already set to $($CollectionOffer.content.offerThroughput).  Not updating."
+
+            } else {
+
+                $NewOffer = Set-CosmosDbOffer -Context $cosmosDbContext -InputObject $CollectionOffer -OfferThroughput $Collection.OfferThroughput
+                Write-Verbose "OfferThroughput set to $($NewOffer.content.offerThroughput)"
+
+            }
         }
 
     }

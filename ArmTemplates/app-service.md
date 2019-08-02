@@ -72,3 +72,12 @@ deployStagingSlot: (optional) boolean
 
 Creates a staging slot.
 Defaults to creating a staging slot
+
+clientAffinity: (optional) boolean
+
+Enable ARR Affinity cookie (also known as sticky sessions).
+Often required for stateful web applications.
+Defaults to not enabled (stateless).
+
+If ARR Affinity is enabled the server will place a cookie on responses that causes a user to always hit the same instance within their session.
+This has a load balancing penalty (existing clients cannot be balanced away from an instance running hot) so is disabled by default.

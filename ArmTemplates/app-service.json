@@ -60,6 +60,10 @@
         "deployStagingSlot": {
             "type": "bool",
             "defaultValue": true
+        },
+        "clientAffinity": {
+            "type": "bool",
+            "defaultValue": false
         }
     },
     "variables": {
@@ -70,16 +74,17 @@
         {
             "name": "[parameters('appServiceName')]",
             "type": "Microsoft.Web/sites",
-            "apiVersion": "2016-08-01",
+            "apiVersion": "2018-11-01",
             "kind": "[parameters('appServiceType')]",
             "location": "[resourceGroup().location]",
             "properties": {
                 "serverFarmId": "[variables('appServicePlanId')]",
-                "clientAffinityEnabled": false,
+                "clientAffinityEnabled": "[parameters('clientAffinity')]",
                 "siteConfig": {
                     "alwaysOn": true,
                     "appSettings": "[parameters('appServiceAppSettings')]",
-                    "connectionStrings": "[parameters('appServiceConnectionStrings')]"
+                    "connectionStrings": "[parameters('appServiceConnectionStrings')]",
+                    "phpVersion": "off"
                 },
                 "httpsOnly": true
             },
@@ -88,13 +93,14 @@
                     "condition": "[parameters('deployStagingSlot')]",
                     "name": "staging",
                     "type": "slots",
-                    "apiVersion": "2016-08-01",
+                    "apiVersion": "2018-11-01",
                     "location": "[resourceGroup().location]",
                     "properties": {
-                        "clientAffinityEnabled": false,
+                        "clientAffinityEnabled": "[parameters('clientAffinity')]",
                         "siteConfig": {
                             "appSettings": "[parameters('appServiceAppSettings')]",
-                            "connectionStrings": "[parameters('appServiceConnectionStrings')]"
+                            "connectionStrings": "[parameters('appServiceConnectionStrings')]",
+                            "phpVersion": "off"
                         }
                     },
                     "dependsOn": [
