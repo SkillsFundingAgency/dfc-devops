@@ -105,7 +105,7 @@
                   "path": "/chat.postMessage",
                   "queries": {
                     "channel": "[parameters('slackChannel')]",
-                    "text": "Azure Alert - '@{triggerBody()['context']['name']}' @{triggerBody()['status']} on '@{triggerBody()['context']['resourceName']}'.  Details: @{triggerBody()['context']['portalLink']}"
+                    "text": "Azure Alert - '@{triggerBody()['data']['context']['name']}' @{triggerBody()['data']['status']} on '@{triggerBody()['data']['context']['resourceName']}'.  Details: @{triggerBody()['data']['context']['portalLink']}"
                   }
                 }
               }
