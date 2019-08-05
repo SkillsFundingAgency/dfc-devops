@@ -1,0 +1,69 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "containerName": {
+            "type": "string"
+        },
+        "appContainerRegistryImage": {
+            "type": "string"
+        },
+        "containerRegistryPassword": {
+            "type": "securestring"
+        },
+        "containerRegistryServer": {
+            "type": "string"
+        },
+        "containerRegistryUsername": {
+            "type": "string"
+        },
+        "cpu": {
+            "type": "int"
+        },
+        "memoryInGb": {
+            "type":"string"
+        },
+        "environmentVariables": {
+            "type": "secureObject"
+        }
+    },
+    "variables": {
+    },
+    "resources": [
+        {
+            "name": "[parameters('containerName')]",
+            "type": "Microsoft.ContainerInstance/containerGroups",
+            "apiVersion": "2018-10-01",
+            "location": "West Europe",
+            "tags": {},
+            "properties": {
+                "containers": [
+                    {
+                        "name": "[parameters('containerName')]",
+                        "properties": {
+                            "image": "[parameters('appContainerRegistryImage')]",
+                            "ports": [
+                            ],
+                            "environmentVariables": "[parameters('environmentVariables').variables]",
+                            "resources": {
+                                "requests": {
+                                    "cpu": "[parameters('cpu')]",
+                                    "memoryInGb": "[parameters('memoryInGb')]"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "osType": "Linux",
+                "imageRegistryCredentials": [
+                    {
+                        "server": "[parameters('containerRegistryServer')]",
+                        "username": "[parameters('containerRegistryUsername')]",
+                        "password": "[parameters('containerRegistryPassword')]"
+                    }
+                ]
+            }
+        }
+    ],
+    "outputs": {}
+}
