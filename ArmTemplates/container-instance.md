@@ -1,6 +1,6 @@
 # Container Instance
 
-Creates an Azure Container Group containing a single Azure Container Instance based on an Image from an Azure Container Registry.  If you require a Container Group with multiple Container Instances then a custom template should be constructed.
+Creates an Azure Container Group containing a single Azure Container Instance based on an Image from an Azure Container Registry.  If you require a Container Group with multiple Container Instances then a custom template should be constructed.  Note that the restart policy defaults to Never rather than the Azure default of Always.
 
 ## Parameters
 
@@ -54,3 +54,7 @@ Example environmentVariables parameter:
             }
         }
 ````
+
+restartPolicy (optional) string
+
+The default value is Never which is overriden from the Azure default of Always.  Containers within this environment are intended to be used for adhoc or occassional jobs, where a permanently available resource is required Azure PaaS services should be the first choice.

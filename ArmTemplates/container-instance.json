@@ -25,6 +25,15 @@
         },
         "environmentVariables": {
             "type": "secureObject"
+        },
+        "restartPolicy": {
+            "type": "string",
+            "allowedValues": [
+                "Always",
+                "Never",
+                "OnFailure"
+            ],
+            "defaultValue": "Never"
         }
     },
     "variables": {
@@ -61,7 +70,8 @@
                         "username": "[parameters('containerRegistryUsername')]",
                         "password": "[parameters('containerRegistryPassword')]"
                     }
-                ]
+                ],
+                "restartPolicy": "[parameters('restartPolicy')]"
             }
         }
     ],
