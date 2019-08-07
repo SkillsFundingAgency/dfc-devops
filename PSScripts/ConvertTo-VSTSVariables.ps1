@@ -18,14 +18,25 @@ ConvertTo-VSTSVariables.ps1 -ARMOutput '$(ARMOutputs)'
 where ARMOutputs is the name from Outputs > Deployment outputs from the Azure Deployment task
 
 #>
-
+[CmdletBinding()]
 param (
     [Parameter(Mandatory=$true)][string]$ARMOutput,
     [hashtable] $Rename
 )
 
 # Output from ARM template is a JSON document
-$JsonVars = $ARMOutput | convertfrom-json
+try {
+
+    $JsonVars = $ARMOutput | ConvertFrom-Json
+
+}
+catch {
+
+    Write-Debug "Unable to convert ARMOutput to JSON:`n$ARMOutput"
+    throw "Unable to convert ARMOutput to JSON."
+    
+}
+
 
 # the outputs with be of type noteproperty, get a list of all of them
 foreach ($OutputName in ($JsonVars | Get-Member -MemberType NoteProperty).name) {
