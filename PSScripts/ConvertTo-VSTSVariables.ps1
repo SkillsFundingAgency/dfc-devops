@@ -9,7 +9,7 @@ Takes the ARM template output (usually from the Azure Deployment task in VSTS) a
 The JSON output from the ARM template to convert into variables.
 If using the Azure Deployment task in an Azure Pipeline, you can set the output to a variable by specifying `Outputs > Deployment outputs`.
 
-.PARAMETER rename
+.PARAMETER Rename
 [Optional] Allows you to create a VSTS variable with a different name to the output name.
 Takes a dictionary where the key is the name of the ARM template output and the value is the desired name of the VSTS variable.
 
@@ -20,8 +20,10 @@ where ARMOutputs is the name from Outputs > Deployment outputs from the Azure De
 #>
 [CmdletBinding()]
 param (
-    [Parameter(Mandatory=$true)][string]$ARMOutput,
-    [hashtable] $Rename
+    [Parameter(Mandatory=$true)]
+    [string]$ARMOutput,
+    [Parameter(Mandatory=$false)]
+    [hashtable]$Rename
 )
 
 # Output from ARM template is a JSON document
@@ -33,10 +35,9 @@ try {
 catch {
 
     Write-Debug "Unable to convert ARMOutput to JSON:`n$ARMOutput"
-    throw "Unable to convert ARMOutput to JSON."
+    throw "Unable to convert ARMOutput to JSON.  Add Debug switch to view ARMOutput."
     
 }
-
 
 # the outputs with be of type noteproperty, get a list of all of them
 foreach ($OutputName in ($JsonVars | Get-Member -MemberType NoteProperty).name) {
@@ -47,19 +48,27 @@ foreach ($OutputName in ($JsonVars | Get-Member -MemberType NoteProperty).name) 
 
     # Check if variable name needs renaming
     if ($OutputName -in $Rename.keys) {
+
         $OldName = $OutputName
         $OutputName = $Rename[$OutputName]
         Write-Output "Creating VSTS variable $OutputName from $OldName"
+
     }
     else {
+
         Write-Output "Creating VSTS variable $OutputName"
+
     }
 
     # Set VSTS variable
     if ($OutputType.toLower() -eq 'securestring') {
+
         Write-Output "##vso[task.setvariable variable=$OutputName;issecret=true]$OutputValue"
+
     }
     else {
+
         Write-Output "##vso[task.setvariable variable=$OutputName]$OutputValue"
+
     }
 }
