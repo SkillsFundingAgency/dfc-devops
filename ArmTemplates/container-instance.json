@@ -37,16 +37,22 @@
         }
     },
     "variables": {
+        "ManagedIdentityName": "[concat(parameters('containerName'), '-mi')]"
     },
     "resources": [
         {
             "name": "[parameters('containerName')]",
             "type": "Microsoft.ContainerInstance/containerGroups",
+            "dependsOn": [
+                "[variables('ManagedIdentityName')]"
+            ],  
             "apiVersion": "2018-10-01",
-            "location": "West Europe",
-            "tags": {},
+            "location": "[resourceGroup().location]",
             "identity": {
-                "type": "SystemAssigned"
+                "type": "UserAssigned",
+                "userAssignedIdentities": {
+                    "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities/', variables('ManagedIdentityName'))]": {}
+                }
             },
             "properties": {
                 "containers": [
@@ -76,12 +82,19 @@
                 ],
                 "restartPolicy": "[parameters('restartPolicy')]"
             }
+        },
+        {
+            "name": "[variables('ManagedIdentityName')]",
+            "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
+            "apiVersion": "2018-11-30",
+            "location": "[resourceGroup().location]",
+            "properties": {}
         }
     ],
     "outputs": {
-        "containerServicePrincipalObjectId": {
-            "type": "object",
-            "value": "[parameters('containerName')]"
+        "ManagedIdentityObjectId": {
+            "type": "string",
+            "value": "[reference(concat('Microsoft.ManagedIdentity/userAssignedIdentities/', variables('ManagedIdentityName')), '2018-11-30').principalId]"
         }
     }
 }
