@@ -45,6 +45,9 @@
             "apiVersion": "2018-10-01",
             "location": "West Europe",
             "tags": {},
+            "identity": {
+                "type": "SystemAssigned"
+            },
             "properties": {
                 "containers": [
                     {
