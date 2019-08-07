@@ -7,7 +7,7 @@ Takes the ARM template output (usually from the Azure Deployment task in VSTS) a
 
 .PARAMETER ARMOutput
 The JSON output from the ARM template to convert into variables.
-If using the Azure Deployment task in an Azure Pipeline, you can set the output to a variable by specifying `Outputs > Deployment outputs`.
+If using the Azure Deployment task in an Azure Pipeline, you can set the output to a variable by specifying `Advanced > Deployment outputs`.
 
 .PARAMETER Rename
 [Optional] Allows you to create a VSTS variable with a different name to the output name.
@@ -15,7 +15,7 @@ Takes a dictionary where the key is the name of the ARM template output and the 
 
 .EXAMPLE
 ConvertTo-VSTSVariables.ps1 -ARMOutput '$(ARMOutputs)'
-where ARMOutputs is the name from Outputs > Deployment outputs from the Azure Deployment task
+where ARMOutputs is the name from Advanced > Deployment outputs from the Azure Deployment task
 
 #>
 [CmdletBinding()]
