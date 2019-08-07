@@ -37,7 +37,7 @@
         }
     },
     "variables": {
-        "ManagedIdentityName": "[concat(parameters('containerName'), '-mi')]"
+        "ManagedIdentityName": "[concat(parameters('containerName'), '-umi')]"
     },
     "resources": [
         {
