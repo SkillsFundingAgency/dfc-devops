@@ -16,7 +16,6 @@ Describe "Operational Insights Workspace Tests" -Tag "Acceptance" {
         }
 
         $output = Test-AzureRmResourceGroupDeployment @TestTemplateParams
-        Write-Verbose $output.Message
 
         It "Should be deployed successfully" {
             $output | Should -Be $null
