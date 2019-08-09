@@ -53,7 +53,6 @@
             "type": "Microsoft.DocumentDb/databaseAccounts/apis/databases/containers",
             "name": "[concat(parameters('accountName'), '/sql/', parameters('databaseName'), '/', parameters('collectionName'))]",
             "apiVersion": "2016-03-31",
-            "dependsOn": [ "[resourceId('Microsoft.DocumentDB/databaseAccounts/apis/databases', parameters('accountName'), 'sql', parameters('databaseName'))]" ],
             "properties":
             {
                 "resource":{
@@ -79,7 +78,7 @@
             "properties":
             {
                 "resource":{
-                    "throughput": "[int(parameters('offerThroughput'))]"
+                    "throughput": "[parameters('offerThroughput')]"
                 }
             }
         }

@@ -23,7 +23,7 @@
         },
         "offerThroughput": {
             "type": "int",
-            "defaultValue": "0",
+            "defaultValue": 400,
             "metadata": {
                 "description": "When 'useSharedRequestUnits' is set,  sets the databases Request Units."
             }
@@ -47,7 +47,7 @@
             },
             {
                 "options": {
-                    "throughput": "[int(parameters('offerThroughput'))]"
+                    "throughput": "[parameters('offerThroughput')]"
                 }
             }
         ],
@@ -59,7 +59,6 @@
             "type": "Microsoft.DocumentDB/databaseAccounts/apis/databases",
             "name": "[concat(parameters('accountName'), '/sql/', parameters('databaseName'))]",
             "apiVersion": "2016-03-31",
-            "dependsOn": [ "[resourceId('Microsoft.DocumentDB/databaseAccounts/', parameters('accountName'))]" ],
             "properties": "[variables('DatabaseProperties')]"
         },
         {
@@ -70,7 +69,7 @@
             "dependsOn": [ "[resourceId('Microsoft.DocumentDB/databaseAccounts/apis/databases', parameters('accountName'), 'sql', parameters('databaseName'))]" ],
             "properties":{
                 "resource":{
-                    "throughput": "[int(parameters('offerThroughput'))]"
+                    "throughput": "[parameters('offerThroughput')]"
                 }
             }
         }
