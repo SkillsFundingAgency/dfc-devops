@@ -1,0 +1,78 @@
+{
+    "contentVersion": "1.0.0.0",
+    "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "parameters": {
+        "accountName": {
+            "type": "string",
+            "metadata": {
+                "description": "Name of the cosmosdb account"
+            }
+        },
+        "databaseName": {
+            "type": "string",
+            "metadata": {
+                "description": "Name of the database to create on the cosmosdb account"
+            }            
+        },
+        "useSharedRequestUnits": {
+            "type": "bool",
+            "defaultValue": "false",
+            "metadata": {
+                "description": "Provisions all the collections to use the shared RU of the database. Database requires at least 100RU per collection"
+            }
+        },
+        "offerThroughput": {
+            "type": "int",
+            "defaultValue": "0",
+            "metadata": {
+                "description": "When 'useSharedRequestUnits' is set,  sets the databases Request Units."
+            }
+        },
+        "databaseNeedsCreation": {
+            "type": "bool",
+            "defaultValue": "false",
+            "metadata": {
+                "description": "Set to true when the database needs creating. Works around ARM limitation."
+            }
+        }
+    },
+    "variables": {
+        "DefaultDatabaseProperties": {
+            "resource":{
+                "id": "[parameters('databaseName')]"
+            }
+        },
+        "DatabaseThroughputCreationOption": [
+            {
+            },
+            {
+                "options": {
+                    "throughput": "[int(parameters('offerThroughput'))]"
+                }
+            }
+        ],
+        "DatabasePropertyOption": "[int(if(and(parameters('useSharedRequestUnits'), parameters('databaseNeedsCreation')), 1, 0))]",
+        "DatabaseProperties": "[union(variables('DefaultDatabaseProperties'), variables('DatabaseThroughputCreationOption')[variables('DatabasePropertyOption')])]"
+    },
+    "resources": [
+        {
+            "type": "Microsoft.DocumentDB/databaseAccounts/apis/databases",
+            "name": "[concat(parameters('accountName'), '/sql/', parameters('databaseName'))]",
+            "apiVersion": "2016-03-31",
+            "dependsOn": [ "[resourceId('Microsoft.DocumentDB/databaseAccounts/', parameters('accountName'))]" ],
+            "properties": "[variables('DatabaseProperties')]"
+        },
+        {
+            "condition": "[parameters('useSharedRequestUnits')]",
+            "type": "Microsoft.DocumentDB/databaseAccounts/apis/databases/settings",
+            "name": "[concat(parameters('accountName'), '/sql/', parameters('databaseName'), '/throughput')]",
+            "apiVersion": "2016-03-31",
+            "dependsOn": [ "[resourceId('Microsoft.DocumentDB/databaseAccounts/apis/databases', parameters('accountName'), 'sql', parameters('databaseName'))]" ],
+            "properties":{
+                "resource":{
+                    "throughput": "[int(parameters('offerThroughput'))]"
+                }
+            }
+        }
+    ]    
+}

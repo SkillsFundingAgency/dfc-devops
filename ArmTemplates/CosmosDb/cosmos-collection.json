@@ -1,0 +1,87 @@
+{
+    "contentVersion": "1.0.0.0",
+    "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "parameters": {
+        "accountName": {
+            "type": "string",
+            "metadata": {
+                "description": "Name of the cosmosdb account"
+            }
+        },
+        "databaseName": {
+            "type": "string",
+            "metadata": {
+                "description": "Name of the database to create on the cosmosdb account"
+            }
+        },
+        "collectionName": {
+            "type": "string",
+            "metadata": {
+                "description": "Name of the collection to create"
+            }
+        },
+        "provisionRequestUnits": {
+            "type": "bool",
+            "defaultValue": true,
+            "metadata": {
+                "description": "When true,  provision RUs for the collection. Set to false when the database has provisioned RUs."
+            }
+        },
+        "offerThroughput": {
+            "type": "int",
+            "defaultValue": 400,
+            "metadata": {
+                "description": "The RU throughput to use when the provisionRequestUnits parameter is true."
+            }
+        },
+        "partitionKey": {
+            "type": "string",
+            "metadata": {
+                "description": "The partition key for the collection"
+            }
+        },
+        "timeToLive": {
+            "type": "int",
+            "defaultValue": -1,
+            "metadata": {
+                "description": "The time to live for the collection. Defaults to -1"
+            }
+        }
+    },
+    "resources": [
+        {
+            "type": "Microsoft.DocumentDb/databaseAccounts/apis/databases/containers",
+            "name": "[concat(parameters('accountName'), '/sql/', parameters('databaseName'), '/', parameters('collectionName'))]",
+            "apiVersion": "2016-03-31",
+            "dependsOn": [ "[resourceId('Microsoft.DocumentDB/databaseAccounts/apis/databases', parameters('accountName'), 'sql', parameters('databaseName'))]" ],
+            "properties":
+            {
+                "resource":{
+                    "id":  "[parameters('collectionName')]",
+                    "partitionKey": {
+                        "paths": [
+                            "[parameters('partitionKey')]"
+                        ],
+                        "kind": "Hash"
+                    },
+                    "defaultTtl": "[int(parameters('timeToLive'))]"
+                }
+            }
+        },
+        {
+            "condition": "[parameters('provisionRequestUnits')]",
+            "type": "Microsoft.DocumentDb/databaseAccounts/apis/databases/containers/settings",
+            "name": "[concat(parameters('accountName'), '/sql/', parameters('databaseName'), '/', parameters('collectionName'), '/throughput')]",
+            "apiVersion": "2016-03-31",
+            "dependsOn": [ 
+                "[resourceId('Microsoft.DocumentDB/databaseAccounts/apis/databases/containers', parameters('accountName'), 'sql', parameters('databaseName'), parameters('collectionName'))]"
+            ],
+            "properties":
+            {
+                "resource":{
+                    "throughput": "[int(parameters('offerThroughput'))]"
+                }
+            }
+        }
+    ]
+}
