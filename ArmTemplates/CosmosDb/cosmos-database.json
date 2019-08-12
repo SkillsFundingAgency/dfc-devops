@@ -51,8 +51,19 @@
                 }
             }
         ],
-        "DatabasePropertyOption": "[int(if(and(parameters('useSharedRequestUnits'), parameters('databaseNeedsCreation')), 1, 0))]",
-        "DatabaseProperties": "[union(variables('DefaultDatabaseProperties'), variables('DatabaseThroughputCreationOption')[variables('DatabasePropertyOption')])]"
+        "DatabasePropertyOption": "[int(if(and(parameters('useSharedRequestUnits'), parameters('databaseNeedsCreation')), 1, 0))]",        
+        "DatabaseProperties": "[union(variables('DefaultDatabaseProperties'), variables('DatabaseThroughputCreationOption')[variables('DatabasePropertyOption')])]",
+        "VariableExplaination": [ 
+            "This variable contains comments about variables",
+            
+            "DatabasePropertyOption",
+            "This variables purpose is to determine which item from the DatabaseThroughputCreationOption variable to use given the parameters passed in.",
+            "This is an artifact of the azure resources - creating a cosmos database requires a object called 'options' on the resource properties, ",
+            "containing a 'throughput' property,  but it is set via a sub-resource at all other times.",
+
+            "DatabaseProperties",
+            "This variable contains the final database creation/update properties used by the template, and uses the DatabasePropertyOption to select the correct throughput options to use."
+        ]
     },
     "resources": [
         {
