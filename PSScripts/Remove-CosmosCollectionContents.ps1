@@ -52,7 +52,7 @@ Write-Debug "Documents retrieved, count: $($Documents.Count)"
 $ContinuationToken = [String] $ResponseHeader.'x-ms-continuation'
 Write-Debug "ContinuationToken: $ContinuationToken"
 
-do {
+while ($ContinuationToken) {
 
     $Documents += Get-CosmosDbDocument -Context $cosmosDbContext -CollectionId $CollectionId -MaxItemCount 100 -ContinuationToken $ContinuationToken  -ResponseHeader ([ref] $ResponseHeader)
     Write-Debug "Additional documents retrieved, count: $($Documents.Count)"
@@ -60,7 +60,7 @@ do {
     $ContinuationToken = [String] $ResponseHeader.'x-ms-continuation'
     Write-Debug "ContinuationToken: $ContinuationToken"
 
-} while ($ContinuationToken)
+}
 
 Write-Verbose "$([DateTime]::Now.ToString("dd-MM-yyyy HH:mm:ss")) Documents retrieved, count: $($Documents.Count)"
 Write-Verbose "$([DateTime]::Now.ToString("dd-MM-yyyy HH:mm:ss")) Deleting documents ..."
