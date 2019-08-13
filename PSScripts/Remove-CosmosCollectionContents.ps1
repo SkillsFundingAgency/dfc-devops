@@ -25,15 +25,16 @@ Remove-CosmosCollectionContents.ps1 -ResourceGroupName "dss-foo-shared-rg" -Cosm
 #>
 [CmdletBinding()]
 param(
-    [Parameter(Mandatory = $false)]
-    [ValidateNotNullOrEmpty()]
-    [string]$ResourceGroupName = $ENV:ResourceGroup,
+    [Parameter(Mandatory = $true)]
+    [string]$CollectionId,
     [Parameter(Mandatory = $true)]
     [string]$CosmosDbAccountName,
+    [Parameter(Mandatory = $true, ParameterSetName="CosmosDbKey")]
+    [System.Security.SecureString]$CosmosDbReadWriteKey,
     [Parameter(Mandatory = $true)]
     [string]$Database,
-    [Parameter(Mandatory = $true)]
-    [string]$CollectionId
+    [Parameter(Mandatory = $true, ParameterSetName="LoggedInIdentity")]
+    [string]$ResourceGroupName
 )
 
 if ($CosmosDbAccountName -match "-prd-") {
@@ -42,7 +43,16 @@ if ($CosmosDbAccountName -match "-prd-") {
 
 }
 
-$CosmosDbContext = New-CosmosDbContext -Account $CosmosDbAccountName -ResourceGroup $ResourceGroupName -MasterKeyType 'PrimaryMasterKey' -Database $CollectionId
+if ($CosmosDbReadWriteKey) {
+
+    $CosmosDbContext = New-CosmosDbContext -Account $CosmosDbAccountName -Key $CosmosDbReadWriteKey -Database $Database
+    
+}
+else {
+
+    $CosmosDbContext = New-CosmosDbContext -Account $CosmosDbAccountName -ResourceGroup $ResourceGroupName -MasterKeyType 'PrimaryMasterKey' -Database $Database
+
+}
 
 $ResponseHeader = $null
 Write-Verbose "$([DateTime]::Now.ToString("dd-MM-yyyy HH:mm:ss")) Retrieving documents ..."
