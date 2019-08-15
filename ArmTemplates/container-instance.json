@@ -20,6 +20,9 @@
         "cpu": {
             "type": "int"
         },
+        "managedIdentity": {
+            "type": "bool"
+        },
         "memoryInGb": {
             "type":"string"
         },
@@ -45,7 +48,19 @@
         }
     },
     "variables": {
-        "ManagedIdentityName": "[concat(parameters('containerName'), '-umi')]"
+        "ManagedIdentityName": "[concat(parameters('containerName'), '-umi')]",
+        "IdentityProperties": "[if(and(parameters('managedIdentity'), equals(parameters('osType'), 'Linux')), variables('IdentityTypes').ManagedIdentity, variables('IdentityTypes').NoIdentity)]",
+        "IdentityTypes": {
+            "ManagedIdentity": {
+                "type": "UserAssigned",
+                "userAssignedIdentities": {
+                    "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities/', variables('ManagedIdentityName'))]": {}
+                }
+            },
+            "NoIdentity": {
+                "type": "None"
+            }
+        }
     },
     "resources": [
         {
@@ -56,12 +71,7 @@
             ],  
             "apiVersion": "2018-10-01",
             "location": "[resourceGroup().location]",
-            "identity": {
-                "type": "UserAssigned",
-                "userAssignedIdentities": {
-                    "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities/', variables('ManagedIdentityName'))]": {}
-                }
-            },
+            "identity": "[variables('IdentityProperties')]",
             "properties": {
                 "containers": [
                     {
@@ -94,6 +104,9 @@
         {
             "name": "[variables('ManagedIdentityName')]",
             "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
+            "dependsOn": [
+                "[parameters('managedIdentity')]"
+            ],
             "apiVersion": "2018-11-30",
             "location": "[resourceGroup().location]",
             "properties": {}
