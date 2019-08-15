@@ -21,7 +21,8 @@
             "type": "int"
         },
         "managedIdentity": {
-            "type": "bool"
+            "type": "bool",
+            "defaultValue": "false"
         },
         "memoryInGb": {
             "type":"string"
@@ -66,9 +67,7 @@
         {
             "name": "[parameters('containerName')]",
             "type": "Microsoft.ContainerInstance/containerGroups",
-            "dependsOn": [
-                "[variables('ManagedIdentityName')]"
-            ],  
+            "condition": "[variables('ManagedIdentityName')]",  
             "apiVersion": "2018-10-01",
             "location": "[resourceGroup().location]",
             "identity": "[variables('IdentityProperties')]",
