@@ -26,6 +26,14 @@
         "environmentVariables": {
             "type": "secureObject"
         },
+        "osType": {
+            "type": "string",
+            "allowedValues": [
+                "Linux",
+                "Windows"
+            ],
+            "defaultValue": "Linux"
+        },
         "restartPolicy": {
             "type": "string",
             "allowedValues": [
@@ -72,7 +80,7 @@
                         }
                     }
                 ],
-                "osType": "Linux",
+                "osType": "[parameters('osType')]",
                 "imageRegistryCredentials": [
                     {
                         "server": "[parameters('containerRegistryServer')]",

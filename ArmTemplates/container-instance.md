@@ -55,6 +55,10 @@ Example environmentVariables parameter:
         }
 ````
 
+osType (optional) string
+
+The default is Linux, the allowed values are Linux or Windows.  Windows containers should be avoided if possible as they are harder to maintain.
+
 restartPolicy (optional) string
 
 The default value is Never which is overriden from the Azure default of Always.  Containers within this environment are intended to be used for adhoc or occassional jobs, where a permanently available resource is required Azure PaaS services should be the first choice.
