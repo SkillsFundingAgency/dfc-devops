@@ -22,7 +22,7 @@
         },
         "managedIdentity": {
             "type": "bool",
-            "defaultValue": "false"
+            "defaultValue": false
         },
         "memoryInGb": {
             "type":"string"
