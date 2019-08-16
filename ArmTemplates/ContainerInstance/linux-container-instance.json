@@ -30,14 +30,6 @@
         "environmentVariables": {
             "type": "secureObject"
         },
-        "osType": {
-            "type": "string",
-            "allowedValues": [
-                "Linux",
-                "Windows"
-            ],
-            "defaultValue": "Linux"
-        },
         "restartPolicy": {
             "type": "string",
             "allowedValues": [
@@ -50,7 +42,7 @@
     },
     "variables": {
         "ManagedIdentityName": "[concat(parameters('containerName'), '-umi')]",
-        "IdentityProperties": "[if(and(parameters('managedIdentity'), equals(parameters('osType'), 'Linux')), variables('IdentityTypes').ManagedIdentity, variables('IdentityTypes').NoIdentity)]",
+        "IdentityProperties": "[if(parameters('managedIdentity'), variables('IdentityTypes').ManagedIdentity, variables('IdentityTypes').NoIdentity)]",
         "IdentityTypes": {
             "ManagedIdentity": {
                 "type": "UserAssigned",
@@ -91,7 +83,7 @@
                         }
                     }
                 ],
-                "osType": "[parameters('osType')]",
+                "osType": "Linux",
                 "imageRegistryCredentials": [
                     {
                         "server": "[parameters('containerRegistryServer')]",

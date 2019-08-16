@@ -55,9 +55,9 @@ Example environmentVariables parameter:
         }
 ````
 
-osType (optional) string
+managedIdentity (optional) bool
 
-The default is Linux, the allowed values are Linux or Windows.  Windows containers should be avoided if possible as they are harder to maintain.
+The default value is false.  If set to true a Managed Identity will be created in the same Resource Group and assigned to the container.
 
 restartPolicy (optional) string
 
