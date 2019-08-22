@@ -72,7 +72,7 @@
                     "appSettings": [
                         {
                             "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
-                            "value": "[reference(variables('appInsightsName')).outputs.InstrumentationKey.value]"
+                            "value": "[reference(concat('microsoft.insights/components/', variables('appInsightsName'))).InstrumentationKey]"
                         },
                         {
                             "name": "AzureWebJobsStorage",
