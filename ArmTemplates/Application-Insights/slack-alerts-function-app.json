@@ -1,0 +1,116 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "instanceBaseName": {
+            "type": "string",
+            "metadata": {
+                "description": "The base name for all resources created by this template"
+            }
+        },
+        "storageConnectionString": {
+            "type": "securestring",
+            "metadata": {
+                "description": "The connection string used by the function app for azure webjob storage"
+            }
+        }, 
+        "slackWebHookToken": {
+            "type": "securestring",
+            "metadata": {
+                "description": "The token (ie: everything after https://hooks.slack.com/services/) for the incoming webhook on Slack"
+            }
+        },
+        "slackChannelName": {
+            "type": "string",
+            "metadata": {
+                "description": "The name of the channel (without the leading #) that you want messages posted to"
+            }
+        }
+    },
+    "variables": {
+        "hostingPlanName": "[concat(parameters('instanceBaseName'), '-asp')]",
+        "functionAppName": "[concat(parameters('instanceBaseName'), '-fa')]",
+        "appInsightsName": "[concat(parameters('instanceBaseName'), '-ai')]"
+    },
+    "resources": [
+        {
+            "name": "[variables('hostingPlanName')]",
+            "type": "Microsoft.Web/serverfarms",
+            "apiVersion": "2015-04-01",            
+            "location": "[resourceGroup().location]",
+            "properties": {
+                "name": "[variables('hostingPlanName')]",
+                "computeMode": "Dynamic",
+                "sku": "Dynamic"
+            }
+        },
+        {
+            "apiVersion": "2015-05-01",
+            "name": "[variables('appInsightsName')]",
+            "type": "Microsoft.Insights/components",
+            "location": "[resourceGroup().location]",
+            "kind": "web",
+            "tags": {
+                "[concat('hidden-link:', resourceId('Microsoft.Web/sites', variables('appInsightsName')))]": "Resource"
+            },
+            "properties": {
+                "Application_Type": "web"
+            }
+        },
+        {
+            "name": "[variables('functionAppName')]",
+            "apiVersion": "2018-11-01",
+            "type": "Microsoft.Web/sites",            
+            "location": "[resourceGroup().location]",
+            "kind": "functionapp",
+            "dependsOn": [
+                "[variables('appInsightsName')]",
+                "[variables('hostingPlanName')]"                            
+            ],
+            "properties": {
+                "siteConfig": {
+                    "appSettings": [
+                        {
+                            "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
+                            "value": "[reference(concat('microsoft.insights/components/', variables('appInsightsName'))).InstrumentationKey]"
+                        },
+                        {
+                            "name": "AzureWebJobsStorage",
+                            "value": "[parameters('storageConnectionString')]"
+                        },
+                        {
+                            "name": "WEBSITE_CONTENTAZUREFILECONNECTIONSTRING",
+                            "value": "[parameters('storageConnectionString')]"
+                        },
+                        {
+                            "name": "WEBSITE_CONTENTSHARE",
+                            "value": "[variables('functionAppName')]"
+                        },
+                        {
+                            "name": "FUNCTIONS_WORKER_RUNTIME",
+                            "value": "powershell"
+                        },
+                        {
+                            "name": "FUNCTIONS_EXTENSION_VERSION",
+                            "value": "~2"
+                        },
+                        {
+                            "name": "SlackToken",
+                            "value": "[parameters('slackWebHookToken')]"
+                        },
+                        {
+                            "name": "MSDEPLOY_RENAME_LOCKED_FILES",
+                            "value": "1"
+                        }
+                    ]
+                }
+            }
+        }    
+    ],
+    "outputs": {
+        "WebhookUrl": {
+            "type": "string",
+            "value": "[concat('https://', variables('functionAppName'), '.azurewebsites.net?code=', listkeys(concat(resourceId('Microsoft.Web/sites', variables('functionAppName')), '/host/default'), '2018-11-01').functionKeys.default, '&channel=', parameters('slackChannelName'))]"
+        }
+    }
+}
