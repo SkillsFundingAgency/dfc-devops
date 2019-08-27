@@ -20,20 +20,14 @@
         "cpu": {
             "type": "int"
         },
-        "dnsServers": {
-            "type": "array",
-            "defaultValue": [
-                "8.8.8.8"
-            ]
+        "memoryInGb": {
+            "type":"string"
         },
         "environmentVariables": {
             "type": "secureObject",
             "defaultValue": {
                 "variables": []
             }
-        },
-        "memoryInGb": {
-            "type":"string"
         },
         "restartPolicy": {
             "type": "string",
@@ -72,9 +66,6 @@
                     }
                 ],
                 "osType": "Windows",
-                "dnsConfig": {
-                    "nameServers": "[parameters('dnsServers')]"
-                },
                 "imageRegistryCredentials": [
                     {
                         "server": "[parameters('containerRegistryServer')]",
