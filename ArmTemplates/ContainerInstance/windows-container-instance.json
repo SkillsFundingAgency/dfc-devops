@@ -29,6 +29,10 @@
                 "variables": []
             }
         },
+        "publicallyExposedPorts": {
+            "type": "array",
+            "defaultValue": []
+        },
         "restartPolicy": {
             "type": "string",
             "allowedValues": [
@@ -40,6 +44,66 @@
         }
     },
     "variables": {
+        "baseProperties": {
+            "containers": [
+                {
+                    "name": "[parameters('containerName')]",
+                    "properties": "[variables('containerProperties')]"
+                }
+            ],
+            "osType": "Windows",
+            "imageRegistryCredentials": [
+                {
+                    "server": "[parameters('containerRegistryServer')]",
+                    "username": "[parameters('containerRegistryUsername')]",
+                    "password": "[parameters('containerRegistryPassword')]"
+                }
+            ],
+            "restartPolicy": "[parameters('restartPolicy')]"
+        },
+        "containerBaseProperties": {
+            "image": "[parameters('appContainerRegistryImage')]",
+            "environmentVariables": "[parameters('environmentVariables').variables]",
+            "resources": {
+                "requests": {
+                    "cpu": "[parameters('cpu')]",
+                    "memoryInGb": "[parameters('memoryInGb')]"
+                }
+            }
+        },
+        "containerProperties": "[if(empty(parameters('publicallyExposedPorts')), variables('containerBaseProperties'), union(variables('containerBaseProperties'), variables('portsObject')))]",
+        "ipAddressObject": {
+            "ipAddress": {
+                "type": "public",
+                "copy": [
+                    {
+                        "name": "ports",
+                        "count": "[length(variables('portsArray'))]",
+                        "input": {
+                            "protocol": "tcp",
+                            "port": "[variables('portsArray')[copyIndex('ports')]]"
+                        }
+                    }
+                ]
+            }
+        },
+        "metadata": {
+            "comments": "The portsArray variable ensures a object is always available for the copy loops.  The output of these loops is unioned with other properties only if publicallyExposedPorts is not an empty array."
+        },
+        "portsArray": "[if(empty(parameters('publicallyExposedPorts')), array(0), parameters('publicallyExposedPorts'))]",
+        "portsObject": {
+            "copy": [
+                {
+                    "name": "ports",
+                    "count": "[length(variables('portsArray'))]",
+                    "input": {
+                        "protocol": "tcp",
+                        "port": "[variables('portsArray')[copyIndex('ports')]]"
+                    }
+                }
+            ]          
+        },
+        "properties": "[if(empty(parameters('publicallyExposedPorts')), variables('baseProperties'), union(variables('baseProperties'), variables('ipAddressObject')))]"
     },
     "resources": [
         {
@@ -47,36 +111,14 @@
             "type": "Microsoft.ContainerInstance/containerGroups",
             "apiVersion": "2018-10-01",
             "location": "[resourceGroup().location]",
-            "properties": {
-                "containers": [
-                    {
-                        "name": "[parameters('containerName')]",
-                        "properties": {
-                            "image": "[parameters('appContainerRegistryImage')]",
-                            "ports": [
-                            ],
-                            "environmentVariables": "[parameters('environmentVariables').variables]",
-                            "resources": {
-                                "requests": {
-                                    "cpu": "[parameters('cpu')]",
-                                    "memoryInGb": "[parameters('memoryInGb')]"
-                                }
-                            }
-                        }
-                    }
-                ],
-                "osType": "Windows",
-                "imageRegistryCredentials": [
-                    {
-                        "server": "[parameters('containerRegistryServer')]",
-                        "username": "[parameters('containerRegistryUsername')]",
-                        "password": "[parameters('containerRegistryPassword')]"
-                    }
-                ],
-                "restartPolicy": "[parameters('restartPolicy')]"
-            }
+            "properties": "[variables('properties')]"
         }
     ],
     "outputs": {
+        "publicIpAddress": {
+            "type": "string",
+            "condition": "[greater(length(parameters('publicallyExposedPorts')), 0)]",
+            "value": "[reference(parameters('containerName')).ipAddress.ip]"
+        }
     }
 }
