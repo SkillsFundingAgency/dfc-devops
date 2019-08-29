@@ -45,7 +45,7 @@
     "resources": [
         {
             "type": "Microsoft.AlertsManagement/smartdetectoralertrules",
-            "location": "[resourceGroup().location]",
+            "location": "global",
             "apiVersion": "2019-03-01",
             "name": "[concat('Failure Anomalies v2 - ', parameters('alertName'))]",
             "properties": {
