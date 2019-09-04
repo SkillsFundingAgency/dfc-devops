@@ -1,0 +1,112 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "containerName": {
+            "type": "string"
+        },
+        "appContainerRegistryImage": {
+            "type": "string"
+        },
+        "containerRegistryPassword": {
+            "type": "securestring"
+        },
+        "containerRegistryServer": {
+            "type": "string"
+        },
+        "containerRegistryUsername": {
+            "type": "string"
+        },
+        "cpu": {
+            "type": "int"
+        },
+        "managedIdentity": {
+            "type": "bool",
+            "defaultValue": false
+        },
+        "memoryInGb": {
+            "type":"string"
+        },
+        "environmentVariables": {
+            "type": "secureObject"
+        },
+        "restartPolicy": {
+            "type": "string",
+            "allowedValues": [
+                "Always",
+                "Never",
+                "OnFailure"
+            ],
+            "defaultValue": "Never"
+        }
+    },
+    "variables": {
+        "ManagedIdentityName": "[concat(parameters('containerName'), '-umi')]",
+        "IdentityProperties": "[if(parameters('managedIdentity'), variables('IdentityTypes').ManagedIdentity, variables('IdentityTypes').NoIdentity)]",
+        "IdentityTypes": {
+            "ManagedIdentity": {
+                "type": "UserAssigned",
+                "userAssignedIdentities": {
+                    "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities/', variables('ManagedIdentityName'))]": {}
+                }
+            },
+            "NoIdentity": {
+                "type": "None"
+            }
+        }
+    },
+    "resources": [
+        {
+            "name": "[parameters('containerName')]",
+            "type": "Microsoft.ContainerInstance/containerGroups",
+            "dependsOn": [
+                "[variables('ManagedIdentityName')]"
+            ],  
+            "apiVersion": "2018-10-01",
+            "location": "[resourceGroup().location]",
+            "identity": "[variables('IdentityProperties')]",
+            "properties": {
+                "containers": [
+                    {
+                        "name": "[parameters('containerName')]",
+                        "properties": {
+                            "image": "[parameters('appContainerRegistryImage')]",
+                            "ports": [
+                            ],
+                            "environmentVariables": "[parameters('environmentVariables').variables]",
+                            "resources": {
+                                "requests": {
+                                    "cpu": "[parameters('cpu')]",
+                                    "memoryInGb": "[parameters('memoryInGb')]"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "osType": "Linux",
+                "imageRegistryCredentials": [
+                    {
+                        "server": "[parameters('containerRegistryServer')]",
+                        "username": "[parameters('containerRegistryUsername')]",
+                        "password": "[parameters('containerRegistryPassword')]"
+                    }
+                ],
+                "restartPolicy": "[parameters('restartPolicy')]"
+            }
+        },
+        {
+            "name": "[variables('ManagedIdentityName')]",
+            "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
+            "condition": "[parameters('managedIdentity')]",
+            "apiVersion": "2018-11-30",
+            "location": "[resourceGroup().location]",
+            "properties": {}
+        }
+    ],
+    "outputs": {
+        "ManagedIdentityObjectId": {
+            "type": "string",
+            "value": "[reference(concat('Microsoft.ManagedIdentity/userAssignedIdentities/', variables('ManagedIdentityName')), '2018-11-30').principalId]"
+        }
+    }
+}
