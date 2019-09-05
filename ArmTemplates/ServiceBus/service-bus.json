@@ -5,6 +5,7 @@
       "serviceBusNamespaceName": {
         "type": "string",
         "metadata": {
+          "comments": "THIS TEMPLATE IS DEPRACTED - USE THE servicebus-namespace.json TEMPLATE INSTEAD",
           "description": "Name of the Service Bus namespace."
         }
       },
