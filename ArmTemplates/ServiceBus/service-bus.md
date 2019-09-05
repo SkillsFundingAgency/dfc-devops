@@ -1,6 +1,6 @@
 # Service Bus
 
-THIS TEMPLATE IS DEPRACTED - USE [servicebus-namespace.json](.\servicebus-namespace.json)
+THIS TEMPLATE IS DEPRACTED - USE [servicebus-namespace.json](../servicebus-namespace.json)
 
 Creates a service bus namespace and optionally creates queues.
 
