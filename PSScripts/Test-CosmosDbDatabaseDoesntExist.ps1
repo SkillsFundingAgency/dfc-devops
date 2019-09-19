@@ -5,7 +5,8 @@ Tests if a CosmosDb database exists.
 .DESCRIPTION
 Tests if a CosmosDb  database exists,  outputting the results into an Azure Devops variable.
 
-This is to help work around the ARM templates requiring a certain property at create time, but not when updating.
+This is to help work around the ARM templates requiring a certain property at create time, but not when updating.  The cmdlet outputs true if the database doesn't exist.
+This value will be passed to databaseNeedsCreation parameter of the cosmos-database ARM template.
 
 Requires running Azure  Powershell using the Az cmdlets.
 
@@ -33,9 +34,11 @@ param(
     [string] $DatabaseName
     )
 
-$allDatabases = Get-AzResource -ResourceGroupName CosmosDbTest -ResourceName "$($CosmosDbAccountName)/sql/" -ResourceType "Microsoft.DocumentDb/databaseAccounts/apis/databases"  -ApiVersion 2016-03-31 -ErrorAction SilentlyContinue
+$allDatabases = Get-AzResource -ResourceGroupName $ResourceGroup -ResourceName "$($CosmosDbAccountName)/sql/" -ResourceType "Microsoft.DocumentDb/databaseAccounts/apis/databases"  -ApiVersion 2016-03-31 -ErrorAction SilentlyContinue
+Write-Verbose "Retrieved $($allDatabases.Count) databases from $CosmosDbAccountName"
 $selectedDatabase = $allDatabases | Where-Object { $_.Properties.id -eq $DatabaseName }
 
-$dbExistsAsString = ($null -ne $selectedDatabase | Out-String).ToLower()
+$dbDoesntExistAsString = ($null -eq $selectedDatabase | Out-String).ToLower()
 
-Write-Host "##vso[task.setvariable variable=CosmosDbDatabaseExists]$dbExistsAsString"
+Write-Verbose "Setting CosmosDbDatabaseDoesntExist Azure DevOps variable to: $dbDoesntExistAsString"
+Write-Host "##vso[task.setvariable variable=CosmosDbDatabaseDoesntExist]$dbDoesntExistAsString"

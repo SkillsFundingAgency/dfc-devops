@@ -4,6 +4,7 @@ parameters:
   BuildConfiguration: 'release'
   DotNetCoreVersion: '2.2.101'
   PublishWebApp: 'false'
+  TestSuffix: Tests
 
 steps:
  - task: DotNetCoreInstaller@0
@@ -45,7 +46,7 @@ steps:
    displayName: 'Test - dotnet test application'
    inputs:
      command: test
-     projects: '${{ parameters.SolutionBaseName }}.Tests\${{ parameters.SolutionBaseName }}.Tests.csproj'
+     projects: '${{ parameters.SolutionBaseName }}.${{ parameters.TestSuffix }}\${{ parameters.SolutionBaseName }}.${{ parameters.TestSuffix }}.csproj'
      arguments: '--configuration ${{ parameters.BuildConfiguration }} --collect "Code coverage"'
  - task: CopyFiles@2
    displayName: 'Copy Files to: $(build.artifactstagingdirectory)\Artifact\Azure'
