@@ -3,6 +3,7 @@ parameters:
   AzureSubscription: 'SFA-CDH-Dev/Test (962cae10-2950-412a-93e3-d8ae92b17896)'
   TestArmTemplateScriptUrl: https://raw.githubusercontent.com/SkillsFundingAgency/dfc-devops/master/PSScripts/Test-ArmTemplate.ps1
   TestArmTemplateScriptFilePath: $(System.DefaultWorkingDirectory)\Test-ArmTemplate.ps1
+  TokenizeTestParameters: false
 
 jobs:
   - job: TestArmTemplate
@@ -10,6 +11,12 @@ jobs:
     pool:
       name: "DAS - Continuous Deployment"
     steps:
+    - task: esfadevops.Tokenization.custom-build-task.Tokenization@0
+      condition: TokenizeTestParameters
+      displayName: 'Tokenization: Transform file test-parameters.json'
+      inputs:
+        SourcePath: '$(System.DefaultWorkingDirectory)\Resources'
+        TargetFileNames: test-parameters.json    
     - task: PowerShell@2
       name: DownloadTestArmTemplateScript
       displayName: 'Download Test-ArmTemplate script'
