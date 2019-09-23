@@ -12,7 +12,7 @@ jobs:
       name: "DAS - Continuous Deployment"
     steps:
     - task: esfadevops.Tokenization.custom-build-task.Tokenization@0
-      condition: TokenizeTestParameters
+      condition: ${{ parameters.TokenizeTestParameters }}
       displayName: 'Tokenization: Transform file test-parameters.json'
       inputs:
         SourcePath: '$(System.DefaultWorkingDirectory)\Resources'
