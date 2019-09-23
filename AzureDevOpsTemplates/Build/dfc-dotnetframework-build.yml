@@ -2,6 +2,7 @@ parameters:
   SolutionBaseName: ''
   BuildPlatform: 'any cpu'
   BuildConfiguration: 'release'
+  RunTests: true
 
 steps:
  - task: gittools.gitversion.gitversion-task.GitVersion@4
@@ -29,6 +30,7 @@ steps:
      contents: '**\bin\Release\**'
      targetFolder: '$(build.artifactstagingdirectory)/UnitTests'
  - task: VSTest@2
+   condition: ${{ parameters.RunTests }}
    displayName: 'VsTest - testAssemblies'
    inputs:
      testSelector: 'testAssemblies'
