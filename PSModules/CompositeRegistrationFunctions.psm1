@@ -48,6 +48,12 @@ https://skillsfundingagency.atlassian.net/wiki/spaces/DFC/pages/423231525/DSS+HT
 .PARAMETER Url
 Url to the entity
 
+.PARAMETER Method
+The HTTP method to use to call the given URL
+
+.PARAMETER RequestBody
+A body to send as part of Post and Patch requests.
+
 .EXAMPLE
 Invoke-CompositeApiRegistrationApiRequest -Url "https://api.example.com/path/somepath" -Method Get
 #>
@@ -355,16 +361,17 @@ Update-RegionRegistration -Path somePath -PathRegion 1 -ItemsToUpdate $itemsToUp
 function Get-DifferencesBetweenPathObjects {
 <#
 .SYNOPSIS
-Gets the difference between the current Path registration from the API and the wanted registration from the configuration file
+Gets the difference between two Path registration objects
 
 .DESCRIPTION
-Gets the difference between the current Path registration from the API and the wanted registration from the configuration file
+Gets the difference between the two Path registration objects, taking the properties from 
+the Right object if differences are detected
 
-.PARAMETER ObjectFromApi
-The Path entity as loaded from the API using Get-PathRegistration
+.PARAMETER Left
+The left hand path registration object
 
-.PARAMETER ObjectFromFile
-The Path entity loaded from the configuration file
+.PARAMETER Right
+The right hand path registration object
 
 .EXAMPLE
 $configurationEntities = Get-Content -Path ./registration.json | ConvertFrom-Json
@@ -372,58 +379,58 @@ $configurationEntities = Get-Content -Path ./registration.json | ConvertFrom-Jso
 $entityFromApi = Get-PathRegistration -Path SomePath
 $entityFromFile = $configurationEntities[0]
 
-$itemsToUpdate = Get-DifferencesBetweenPathObjects -ObjectFromApi $entityFromApi -ObjectFromFile $entityFromFile
+$itemsToUpdate = Get-DifferencesBetweenPathObjects -Left $entityFromApi -Right $entityFromFile
 #>
     param(
         [Parameter(Mandatory=$true)]
-        [object] $ObjectFromApi,
+        [object] $Left,
         [Parameter(Mandatory=$true)]
-        [object] $ObjectFromFile
+        [object] $Right
     )
-    if($null -eq $ObjectFromFile.Path) { throw "Path not specified" }
-    if($null -eq $ObjectFromFile.Layout) { throw "Layout is mandatory when creating a path registration for path '$($ObjectFromFile.Path)'."}
-    if($null -eq $ObjectFromFile.IsOnline) { 
-        $ObjectFromFile | Add-Member -NotePropertyName IsOnline -NotePropertyValue $true
+    if($null -eq $Right.Path) { throw "Path not specified" }
+    if($null -eq $Right.Layout) { throw "Layout is mandatory when creating a path registration for path '$($Right.Path)'."}
+    if($null -eq $Right.IsOnline) { 
+        $Right | Add-Member -NotePropertyName IsOnline -NotePropertyValue $true
      }
 
     $itemsToUpdate = @{
-        Path = $ObjectFromFile.Path
+        Path = $Left.Path
     }
         
-    if($ObjectFromApi.TopNavigationText -ne $ObjectFromFile.TopNavigationText) {
-        $itemsToUpdate["TopNavigationText"] = $ObjectFromFile.TopNavigationText
+    if($Left.TopNavigationText -ne $Right.TopNavigationText) {
+        $itemsToUpdate["TopNavigationText"] = $Right.TopNavigationText
     }
 
-    if($ObjectFromApi.TopNagivationOrder -ne $ObjectFromFile.TopNagivationOrder) {
-        $itemsToUpdate["TopNavigationOrder"] = $ObjectFromFile.TopNagivationOrder
+    if($Left.TopNagivationOrder -ne $Right.TopNagivationOrder) {
+        $itemsToUpdate["TopNavigationOrder"] = $Right.TopNagivationOrder
     }
 
-    if($ObjectFromApi.Layout -ne $ObjectFromFile.Layout) {
-        $itemsToUpdate["Layout"] = $ObjectFromFile.Layout
+    if($Left.Layout -ne $Right.Layout) {
+        $itemsToUpdate["Layout"] = $Right.Layout
     }
 
-    if($ObjectFromApi.IsOnline -ne $ObjectFromFile.IsOnline) {
-        $itemsToUpdate["IsOnline"] = $ObjectFromFile.IsOnline
+    if($Left.IsOnline -ne $Right.IsOnline) {
+        $itemsToUpdate["IsOnline"] = $Right.IsOnline
     }
 
-    if($ObjectFromApi.OfflineHtml -ne $ObjectFromFile.OfflineHtml) {
-        $itemsToUpdate["OfflineHtml"] = $ObjectFromFile.OfflineHtml
+    if($Left.OfflineHtml -ne $Right.OfflineHtml) {
+        $itemsToUpdate["OfflineHtml"] = $Right.OfflineHtml
     }
 
-    if($ObjectFromApi.PhaseBannerHtml -ne $ObjectFromFile.PhaseBannerHtml) {
-        $itemsToUpdate["PhaseBannerHtml"] = $ObjectFromFile.PhaseBannerHtml
+    if($Left.PhaseBannerHtml -ne $Right.PhaseBannerHtml) {
+        $itemsToUpdate["PhaseBannerHtml"] = $Right.PhaseBannerHtml
     }
 
-    if($ObjectFromApi.ExternalUrl -ne $ObjectFromFile.ExternalUrl) {
-        $itemsToUpdate["ExternalUrl"] = $ObjectFromFile.ExternalUrl
+    if($Left.ExternalUrl -ne $Right.ExternalUrl) {
+        $itemsToUpdate["ExternalUrl"] = $Right.ExternalUrl
     }    
 
-    if($ObjectFromApi.SitemapURL -ne $ObjectFromFile.SitemapURL) {
-        $itemsToUpdate["SitemapURL"] = $ObjectFromFile.SitemapURL
+    if($Left.SitemapURL -ne $Right.SitemapURL) {
+        $itemsToUpdate["SitemapURL"] = $Right.SitemapURL
     }
 
-    if($ObjectFromApi.RobotsURL -ne $ObjectFromFile.RobotsURL) {
-        $itemsToUpdate["RobotsURL"] = $ObjectFromFile.RobotsURL
+    if($Left.RobotsURL -ne $Right.RobotsURL) {
+        $itemsToUpdate["RobotsURL"] = $Right.RobotsURL
     }
 
     return $itemsToUpdate
@@ -432,16 +439,18 @@ $itemsToUpdate = Get-DifferencesBetweenPathObjects -ObjectFromApi $entityFromApi
 function Get-DifferencesBetweenRegionObjects {
     <#
     .SYNOPSIS
-    Gets the difference between the current Region registration from the API and the wanted registration from the configuration file
-    
+    Gets the difference between two region registration objects
+
     .DESCRIPTION
-    Gets the difference between the current Region registration from the API and the wanted registration from the configuration file
+    Gets the difference between the two region registration objects, taking the properties from 
+    the Right object if differences are detected
+
     
-    .PARAMETER ObjectFromApi
-    The Path entity as loaded from the API using Get-RegionRegistration
+    .PARAMETER Left
+    The left hand region registration object
     
-    .PARAMETER ObjectFromFile
-    The Path entity loaded from the configuration file
+    .PARAMETER Right
+    The right hand region registration object
     
     .EXAMPLE
     $configurationEntities = Get-Content -Path ./registration.json | ConvertFrom-Json
@@ -453,38 +462,38 @@ function Get-DifferencesBetweenRegionObjects {
     #>
     param(
         [Parameter(Mandatory=$true)]
-        [object] $ObjectFromApi,
+        [object] $Left,
         [Parameter(Mandatory=$true)]
-        [object] $ObjectFromFile
+        [object] $Right
     )
 
-    if($null -eq $ObjectFromFile.PageRegion) { throw "PageRegion is not set and is required"}
-    if($null -eq $ObjectFromFile.IsHealthy) { 
-        $ObjectFromFile | Add-Member -NotePropertyName IsHealthy -NotePropertyValue $true
+    if($null -eq $Right.PageRegion) { throw "PageRegion is not set and is required"}
+    if($null -eq $Right.IsHealthy) { 
+        $Right | Add-Member -NotePropertyName IsHealthy -NotePropertyValue $true
     }
-    if($null -eq $ObjectFromFile.HealthCheckRequired) { 
-        $ObjectFromFile | Add-Member -NotePropertyName HealthCheckRequired -NotePropertyValue $true
+    if($null -eq $Right.HealthCheckRequired) { 
+        $Right | Add-Member -NotePropertyName HealthCheckRequired -NotePropertyValue $true
     }
 
     $itemsToUpdate = @{
-        Path = $ObjectFromApi.Path
-        PageRegion = $ObjectFromApi.PageRegion
+        Path = $Left.Path
+        PageRegion = $Left.PageRegion
     }
     
-    if($ObjectFromApi.IsHealthy -ne $ObjectFromFile.IsHealthy) {
-        $itemsToUpdate["IsHealthy"] = $ObjectFromFile.IsHealthy
+    if($Left.IsHealthy -ne $Right.IsHealthy) {
+        $itemsToUpdate["IsHealthy"] = $Right.IsHealthy
     }
 
-    if($ObjectFromApi.RegionEndpoint -ne $ObjectFromFile.RegionEndpoint) {
-        $itemsToUpdate["RegionEndpoint"] = $ObjectFromFile.RegionEndpoint
+    if($Left.RegionEndpoint -ne $Right.RegionEndpoint) {
+        $itemsToUpdate["RegionEndpoint"] = $Right.RegionEndpoint
     }
 
-    if($ObjectFromApi.HealthCheckRequired -ne $ObjectFromFile.HealthCheckRequired) {
-        $itemsToUpdate["HealthCheckRequired"] = $ObjectFromFile.HealthCheckRequired
+    if($Left.HealthCheckRequired -ne $Right.HealthCheckRequired) {
+        $itemsToUpdate["HealthCheckRequired"] = $Right.HealthCheckRequired
     }
 
-    if($ObjectFromApi.OfflineHTML -ne $ObjectFromFile.OfflineHtml) {
-        $itemsToUpdate["OfflineHTML"] = $ObjectFromFile.OfflineHtml
+    if($Left.OfflineHTML -ne $Right.OfflineHtml) {
+        $itemsToUpdate["OfflineHTML"] = $Right.OfflineHtml
     } 
     
     return $itemsToUpdate

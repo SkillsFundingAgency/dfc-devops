@@ -302,13 +302,13 @@ InModuleScope CompositeRegistrationFunctions {
 
         Context "When the file object does not contain a Path" {
             {
-                Get-DifferencesBetweenPathObjects -ObjectFromApi $mockApiResult -ObjectFromFile @{}
+                Get-DifferencesBetweenPathObjects -Left $mockApiResult -Right @{}
             } | Should Throw "Path not specified"
         }
 
         Context "When the file object does not contain a Layout" {
             {
-                Get-DifferencesBetweenPathObjects -ObjectFromApi $mockApiResult -ObjectFromFile @{ Path = "SomePath"}
+                Get-DifferencesBetweenPathObjects -Left $mockApiResult -Right @{ Path = "SomePath" }
             } | Should Throw "Layout is mandatory when creating a path registration for path 'SomePath'."
         }
 
@@ -326,7 +326,7 @@ InModuleScope CompositeRegistrationFunctions {
                 "RobotsURL" = "https://some-website/robots.txt"
             }
 
-            $differences = Get-DifferencesBetweenPathObjects -ObjectFromApi $mockApiResult -ObjectFromFile $mockFileResult
+            $differences = Get-DifferencesBetweenPathObjects -Left $mockApiResult -Right $mockFileResult
 
             It "should only return 1 item" {
                 $differences.Count | Should Be 1
@@ -351,7 +351,7 @@ InModuleScope CompositeRegistrationFunctions {
                 "RobotsURL" = "https://another-website/robots.txt"
             }
 
-            $differences = Get-DifferencesBetweenPathObjects -ObjectFromApi $mockApiResult -ObjectFromFile $mockFileResult
+            $differences = Get-DifferencesBetweenPathObjects -Left $mockApiResult -Right $mockFileResult
 
             It "should return an item per difference" {
                 $differences.Count | Should Be 10
@@ -410,7 +410,7 @@ InModuleScope CompositeRegistrationFunctions {
 
         Context "When the file object does not contain a page region" {
             {
-                Get-DifferencesBetweenRegionObjects -ObjectFromApi $mockApiResult -ObjectFromFile @{}
+                Get-DifferencesBetweenRegionObjects -Left $mockApiResult -Right @{}
             } | Should Throw "PageRegion is not set and is required"
         }
 
@@ -423,7 +423,7 @@ InModuleScope CompositeRegistrationFunctions {
                 "OfflineHTML" = "SomeOfflineHtml"
             }
 
-            $differences = Get-DifferencesBetweenRegionObjects -ObjectFromApi $mockApiResult -ObjectFromFile $mockFileResult
+            $differences = Get-DifferencesBetweenRegionObjects -Left $mockApiResult -Right $mockFileResult
 
             It "should only return two items" {
                 $differences.Count | Should Be 2
@@ -447,7 +447,7 @@ InModuleScope CompositeRegistrationFunctions {
                 "OfflineHTML" = "Different Offline Html"
             }
 
-            $differences = Get-DifferencesBetweenRegionObjects -ObjectFromApi $mockApiResult -ObjectFromFile $mockFileResult
+            $differences = Get-DifferencesBetweenRegionObjects -Left $mockApiResult -Right $mockFileResult
 
             It "should return an item per difference" {
                 $differences.Count | Should Be 6
