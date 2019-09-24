@@ -71,9 +71,7 @@ Describe "Invoke-AddOrUpdateCompositeRegistrations" -Tag "Unit" {
             Path = "SomePath"
         } }
 
-        Mock Get-DifferencesBetweenPathObjects -MockWith { return @{
-            Path = "SomePath"
-        }}
+        Mock Get-DifferencesBetweenPathObjects -MockWith { return @{} }
 
         & $PSScriptRoot/../PSScripts/Invoke-AddOrUpdateCompositeRegistrations -PathApiUrl https://path/api -RegionApiUrl https://region/api -RegistrationFile ./some-file.json
 
@@ -123,8 +121,6 @@ Describe "Invoke-AddOrUpdateCompositeRegistrations" -Tag "Unit" {
         } }
 
         Mock Get-DifferencesBetweenPathObjects -MockWith { return @{
-            Path = "SomePath"
-            Layout = 2
             IsOnline = $true
         }}
 
@@ -180,9 +176,7 @@ Describe "Invoke-AddOrUpdateCompositeRegistrations" -Tag "Unit" {
             Path = "SomePath"
         } }
 
-        Mock Get-DifferencesBetweenPathObjects -MockWith { return @{
-            Path = "SomePath"
-        }}
+        Mock Get-DifferencesBetweenPathObjects -MockWith { return @{} }
 
         & $PSScriptRoot/../PSScripts/Invoke-AddOrUpdateCompositeRegistrations -PathApiUrl https://path/api -RegionApiUrl https://region/api -RegistrationFile ./some-file.json
 
@@ -237,18 +231,13 @@ Describe "Invoke-AddOrUpdateCompositeRegistrations" -Tag "Unit" {
             Path = "SomePath"
         } }
 
-        Mock Get-DifferencesBetweenPathObjects -MockWith { return @{
-            Path = "SomePath"
-        }}
+        Mock Get-DifferencesBetweenPathObjects -MockWith { return @{} }
 
         Mock Get-RegionRegistration -MockWith { return @{
             PageRegion = 1
         } }
 
-        Mock Get-DifferencesBetweenRegionObjects -MockWith { return @{
-            Path = "SomePath"
-            PageRegion = 1
-        }}
+        Mock Get-DifferencesBetweenRegionObjects -MockWith { return @{} }
 
         & $PSScriptRoot/../PSScripts/Invoke-AddOrUpdateCompositeRegistrations -PathApiUrl https://path/api -RegionApiUrl https://region/api -RegistrationFile ./some-file.json
 
@@ -302,17 +291,13 @@ Describe "Invoke-AddOrUpdateCompositeRegistrations" -Tag "Unit" {
             Path = "SomePath"
         } }
 
-        Mock Get-DifferencesBetweenPathObjects -MockWith { return @{
-            Path = "SomePath"
-        }}
+        Mock Get-DifferencesBetweenPathObjects -MockWith { return @{} }
 
         Mock Get-RegionRegistration -MockWith { return @{
             PageRegion = 1
         } }
 
         Mock Get-DifferencesBetweenRegionObjects -MockWith { return @{
-            Path = "SomePath"
-            PageRegion = 1
             OfflineHtml = "updated text"
         }}
 

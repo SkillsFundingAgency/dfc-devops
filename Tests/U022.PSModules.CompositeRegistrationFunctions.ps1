@@ -300,18 +300,6 @@ InModuleScope CompositeRegistrationFunctions {
             "RobotsURL" = "https://some-website/robots.txt"
         }
 
-        Context "When the file object does not contain a Path" {
-            {
-                Get-DifferencesBetweenPathObjects -Left $mockApiResult -Right @{}
-            } | Should Throw "Path not specified"
-        }
-
-        Context "When the file object does not contain a Layout" {
-            {
-                Get-DifferencesBetweenPathObjects -Left $mockApiResult -Right @{ Path = "SomePath" }
-            } | Should Throw "Layout is mandatory when creating a path registration for path 'SomePath'."
-        }
-
         Context "When the objects are identical" {
             $mockFileResult = New-Object PSObject -Property @{
                 "Path" = "SomePath"
@@ -328,12 +316,8 @@ InModuleScope CompositeRegistrationFunctions {
 
             $differences = Get-DifferencesBetweenPathObjects -Left $mockApiResult -Right $mockFileResult
 
-            It "should only return 1 item" {
-                $differences.Count | Should Be 1
-            }
-
-            It "should return the Page name" { 
-                $differences.Path | Should Be "SomePath"
+            It "should not return any item" {
+                $differences.Count | Should Be 0
             }
         }
 
@@ -354,11 +338,7 @@ InModuleScope CompositeRegistrationFunctions {
             $differences = Get-DifferencesBetweenPathObjects -Left $mockApiResult -Right $mockFileResult
 
             It "should return an item per difference" {
-                $differences.Count | Should Be 10
-            }
-
-            It "should return the Page name" { 
-                $differences.Path | Should Be "SomePath"
+                $differences.Count | Should Be 9
             }
 
             It "should mark the top navigation text field as being changed" {
@@ -408,12 +388,6 @@ InModuleScope CompositeRegistrationFunctions {
             "OfflineHTML" = "SomeOfflineHtml"            
         }
 
-        Context "When the file object does not contain a page region" {
-            {
-                Get-DifferencesBetweenRegionObjects -Left $mockApiResult -Right @{}
-            } | Should Throw "PageRegion is not set and is required"
-        }
-
         Context "When the objects are identical" {
             $mockFileResult = New-Object PSObject -Property @{
                 "PageRegion" = 1
@@ -425,16 +399,8 @@ InModuleScope CompositeRegistrationFunctions {
 
             $differences = Get-DifferencesBetweenRegionObjects -Left $mockApiResult -Right $mockFileResult
 
-            It "should only return two items" {
-                $differences.Count | Should Be 2
-            }
-
-            It "should return the Path" {
-                $differences.Path | Should Be "SomePath"
-            }
-
-            It "should return the Page Region" { 
-                $differences.PageRegion | Should Be 1
+            It "should not return any items" {
+                $differences.Count | Should Be 0
             }
         }
 
@@ -450,11 +416,7 @@ InModuleScope CompositeRegistrationFunctions {
             $differences = Get-DifferencesBetweenRegionObjects -Left $mockApiResult -Right $mockFileResult
 
             It "should return an item per difference" {
-                $differences.Count | Should Be 6
-            }
-
-            It "should return the Page Region" { 
-                $differences.PageRegion | Should Be 1
+                $differences.Count | Should Be 4
             }
 
             It "should mark the IsHealthy field as being changed" {

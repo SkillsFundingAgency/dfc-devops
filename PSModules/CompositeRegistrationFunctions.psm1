@@ -298,14 +298,18 @@ Update-PathRegistration -Path somePath -ItemsToUpdate $itemsToUpdate
         [Parameter(Mandatory=$true)]
         [object] $ItemsToUpdate
     )
- 
-    $itemsToPatch = [array] @()
+
+    # The Path registration's PATCH API requires that we pass an array of JsonPatchDocument operations to it.
+    # Each one of these defines an operation against a Path - which is an XPath-like definition to the property to update,
+    # an operation, and an optional value. We simply want to update the value of variables already set,
+    # so we define a bunch of replace operations.
+    $itemsToPatch = @()
 
     foreach($item in $ItemsToUpdate.Keys) {
-        if($item -eq "Path") { continue }
-
         $itemsToPatch += @{
             "op" = "Replace"
+            # This 'path' is an XPath-like definition for where the property lives within the document returned by the API.
+            # ie: /OfflineHtml is the top-level property called OfflineHtml
             "path" = "/$($item)"
             "value" = $ItemsToUpdate[$item]
         }
@@ -374,6 +378,9 @@ The left hand path registration object
 .PARAMETER Right
 The right hand path registration object
 
+.NOTES
+If the right hand side does not specify a value for the IsHealthy property, a default value of true will be applied
+
 .EXAMPLE
 $configurationEntities = Get-Content -Path ./registration.json | ConvertFrom-Json
 
@@ -388,15 +395,12 @@ $itemsToUpdate = Get-DifferencesBetweenPathObjects -Left $entityFromApi -Right $
         [Parameter(Mandatory=$true)]
         [object] $Right
     )
-    if($null -eq $Right.Path) { throw "Path not specified" }
-    if($null -eq $Right.Layout) { throw "Layout is mandatory when creating a path registration for path '$($Right.Path)'."}
+
     if($null -eq $Right.IsOnline) { 
         $Right | Add-Member -NotePropertyName IsOnline -NotePropertyValue $true
      }
 
-    $itemsToUpdate = @{
-        Path = $Left.Path
-    }
+    $itemsToUpdate = @{}
         
     if($Left.TopNavigationText -ne $Right.TopNavigationText) {
         $itemsToUpdate["TopNavigationText"] = $Right.TopNavigationText
@@ -446,7 +450,9 @@ function Get-DifferencesBetweenRegionObjects {
     Gets the difference between the two region registration objects, taking the properties from 
     the Right object if differences are detected
 
-    
+    .NOTES
+    If the right hand side does not specify a value for the IsHealthy property, a default value of true will be applied
+
     .PARAMETER Left
     The left hand region registration object
     
@@ -468,18 +474,11 @@ function Get-DifferencesBetweenRegionObjects {
         [object] $Right
     )
 
-    if($null -eq $Right.PageRegion) { throw "PageRegion is not set and is required"}
     if($null -eq $Right.IsHealthy) { 
         $Right | Add-Member -NotePropertyName IsHealthy -NotePropertyValue $true
     }
-    if($null -eq $Right.HealthCheckRequired) { 
-        $Right | Add-Member -NotePropertyName HealthCheckRequired -NotePropertyValue $true
-    }
 
-    $itemsToUpdate = @{
-        Path = $Left.Path
-        PageRegion = $Left.PageRegion
-    }
+    $itemsToUpdate = @{}
     
     if($Left.IsHealthy -ne $Right.IsHealthy) {
         $itemsToUpdate["IsHealthy"] = $Right.IsHealthy
