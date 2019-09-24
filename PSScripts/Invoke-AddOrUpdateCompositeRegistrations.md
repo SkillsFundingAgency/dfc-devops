@@ -58,4 +58,4 @@ The above configuration file registers two paths, Path1 and Path2.
 Each of these paths has a single region within it.
 
 Please note:
-If a Path registration or Region registration lack an `IsOnline` property,  it will be defaulted to true.
+If a Path registration lacks an `IsOnline` property or Region registration lack an `IsHealthy` property,  it will be defaulted to true.
