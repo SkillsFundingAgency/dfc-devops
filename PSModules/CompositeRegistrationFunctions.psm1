@@ -30,8 +30,6 @@ Url for the Region registration API
 }
 
 [CmdletBinding]
-Push-Location -Path $PSScriptRoot\..\PSScripts\
-Import-Module $PSScriptRoot\..\PSModules\AzureApiFunctions
 function Invoke-CompositeApiRegistrationRequest
 {
 <#
@@ -77,7 +75,7 @@ Invoke-CompositeApiRegistrationApiRequest -Url "https://api.example.com/path/som
             return $entity
         }
         "POST" {
-            $result = Invoke-WebRequest -Method Post -Uri $Url -Body $RequestBody -UseBasicParsing
+            $result = Invoke-WebRequest -Method Post -Uri $Url -Body $RequestBody -Headers @{ "Content-Type" = "application/json" } -UseBasicParsing
 
             if($result.StatusCode -eq 201) { 
                 $entity = ConvertFrom-Json $result.Content
@@ -88,12 +86,12 @@ Invoke-CompositeApiRegistrationApiRequest -Url "https://api.example.com/path/som
             return $null
         }
         "PATCH" {
-            $result = Invoke-WebRequest -Method Patch -Uri $Url -Body $RequestBody -UseBasicParsing
+            $result = Invoke-WebRequest -Method Patch -Uri $Url -Body $RequestBody -Headers @{ "Content-Type" = "application/json" } -UseBasicParsing
 
             if($result.StatusCode -eq 200) { 
                 $entity = ConvertFrom-Json $result.Content
     
-                return $entity    
+                return $entity
             }
 
             return $null
@@ -194,8 +192,8 @@ New-PathRegistration -Path $pathObject
         TopNavigationOrder = $Path.TopNavigationOrder
         Layout = $Path.Layout
         IsOnline = $Path.IsOnline
-        OfflineHTML = $Path.OfflineHtml
-        PhaseBannerHtml = $Path.PhaseBannerHtml
+        OfflineHtml = $Path.OfflineHtml
+        PhaseBannerUrl = $Path.PhaseBannerHtml
         ExternalUrl = $Path.ExternalUrl
         SitemapURL = $Path.SitemapUrl
         RobotsURL = $Path.RobotsUrl
@@ -293,12 +291,24 @@ Update-PathRegistration -Path somePath -ItemsToUpdate $itemsToUpdate
         [Parameter(Mandatory=$true)]
         [object] $ItemsToUpdate
     )
+ 
+    $itemsToPatch = [array] @()
 
-    $requestBodyText = $itemsToUpdate | ConvertTo-Json
+    foreach($item in $ItemsToUpdate.Keys) {
+        if($item -eq "Path") { continue }
+
+        $itemsToPatch += @{
+            "op" = "Replace"
+            "path" = "/$($item)"
+            "value" = $ItemsToUpdate[$item]
+        }
+    }
+
+    $requestBodyText = ConvertTo-Json $itemsToPatch
 
     $finalUrl = "$($script:PathApiUrl)/paths/$Path"
     
-    return Invoke-CompositeApiRegistrationRequest -Url $finalUrl -Method Patch -RequestBody $requestBodyText    
+    return Invoke-CompositeApiRegistrationRequest -Url $finalUrl -Method Patch -RequestBody $requestBodyText
 }
 
 function Update-RegionRegistration
@@ -396,13 +406,13 @@ $itemsToUpdate = Get-DifferencesBetweenPathObjects -ObjectFromApi $entityFromApi
         $itemsToUpdate["IsOnline"] = $ObjectFromFile.IsOnline
     }
 
-    if($ObjectFromApi.OfflineHTML -ne $ObjectFromFile.OfflineHTML) {
-        $itemsToUpdate["OfflineHTML"] = $ObjectFromFile.OfflineHTML
+    if($ObjectFromApi.OfflineHtml -ne $ObjectFromFile.OfflineHtml) {
+        $itemsToUpdate["OfflineHtml"] = $ObjectFromFile.OfflineHtml
     }
 
     if($ObjectFromApi.PhaseBannerHtml -ne $ObjectFromFile.PhaseBannerHtml) {
         $itemsToUpdate["PhaseBannerHtml"] = $ObjectFromFile.PhaseBannerHtml
-    }    
+    }
 
     if($ObjectFromApi.ExternalUrl -ne $ObjectFromFile.ExternalUrl) {
         $itemsToUpdate["ExternalUrl"] = $ObjectFromFile.ExternalUrl
@@ -410,11 +420,11 @@ $itemsToUpdate = Get-DifferencesBetweenPathObjects -ObjectFromApi $entityFromApi
 
     if($ObjectFromApi.SitemapURL -ne $ObjectFromFile.SitemapURL) {
         $itemsToUpdate["SitemapURL"] = $ObjectFromFile.SitemapURL
-    }    
-    
+    }
+
     if($ObjectFromApi.RobotsURL -ne $ObjectFromFile.RobotsURL) {
         $itemsToUpdate["RobotsURL"] = $ObjectFromFile.RobotsURL
-    }    
+    }
 
     return $itemsToUpdate
 }

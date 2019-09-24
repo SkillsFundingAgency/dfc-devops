@@ -27,35 +27,45 @@ param(
     [string] $RegistrationFile
 )
 
-Import-Module ../PSModules/CompositeRegistrationFunctions
+Import-Module ../PSModules/CompositeRegistrationFunctions -Force
 
-$content = Get-Content -Path $RegistrationFile
+$content = Get-Content -Path $RegistrationFile -Raw
 $contentAsObject = ConvertFrom-Json -InputObject $content
 
 New-RegistrationContext -PathApiUrl $PathApiUrl -RegionApiUrl $RegionApiUrl
 
 foreach($path in $contentAsObject) {
+    Write-Verbose "Getting path registration for Path $($path.Path)."
     $pathEntity = Get-PathRegistration -Path $path.Path
     
     if($null -eq $pathEntity) {
+        Write-Verbose "Path registration does not exist, creating new path registration."
         New-PathRegistration -Path $path
     } else {
+        Write-Verbose "Path registration exists, checking to see if it needs updating."
         $itemsToUpdate = Get-DifferencesBetweenPathObjects -ObjectFromApi $pathEntity -ObjectFromFile $path
 
         if($itemsToUpdate.Count -gt 1) {
+            Write-Verbose "Fields that require updates:  $($itemsToUpdate.Keys)"
+            Write-Verbose "Updating path registration."
             Update-PathRegistration -Path $path.Path -ItemsToUpdate $itemsToUpdate | Out-Null
         }
     }
 
     foreach($region in $path.Regions) {
+        Write-Verbose "Getting region registration for Path $($path.Path), PageRegion $($region.PageRegion)."
         $regionEntity = Get-RegionRegistration -Path $path.Path -PageRegion $region.PageRegion
 
         if($null -eq $regionEntity) {
+            Write-Verbose "Region registration does not exist, creating new region registration."
             New-RegionRegistration -Path $path.Path -Region $region
         } else {
+            Write-Verbose "Region registration exists, checking to see if it needs updating."
             $itemsToUpdate = Get-DifferencesBetweenRegionObjects -ObjectFromApi $regionEntity -ObjectFromFile $region
 
             if($itemsToUpdate.Count -gt 2) {
+                Write-Verbose "Fields that require updates:  $($itemsToUpdate.Keys)"
+                Write-Verbose "Updating region registration."
                 Update-RegionRegistration -Path $path.Path -PageRegion $region.PageRegion -ItemsToUpdate $itemsToUpdate | Out-Null
             }
         }
