@@ -5,13 +5,14 @@ Adds/Updates page and region registrations for an application into the composite
 .DESCRIPTION
 Adds/Updates page and region registrations for an application into the composite ui.
 
-.PARAMETER PageApiUrl
+.PARAMETER PathApiUrl
 Url to the Composite Page Registration Api
 
 .PARAMETER RegionApiUrl
 Url to the Composite Region Registration Api
 
-.PARAMETER RegistrationFile Path to the json file describing the applications registrations
+.PARAMETER RegistrationFile 
+Path to the json file describing the applications registrations
 
 .EXAMPLE
 New-RegistrationContext -PathApiUrl https://page-registration-url/api -RegionApiUrl https://region-registration-url/api -RegistrationFile c:\Path\To\Registration\File.json
