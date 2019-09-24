@@ -62,6 +62,7 @@ Invoke-CompositeApiRegistrationApiRequest -Url "https://api.example.com/path/som
         [Parameter(Mandatory=$true)]
         [string] $Url,
         [Parameter(Mandatory=$true)]
+        [ValidateSet("GET", "PATCH", "POST")]
         [string] $Method,
         [string] $RequestBody
     )
