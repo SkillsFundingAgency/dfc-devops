@@ -4,3 +4,6 @@
 
 # ignore VS folder
 /.vs
+
+# ignore VSCode folder
+/.vscode
