@@ -27,10 +27,10 @@ param(
     [string] $RegistrationFile
 )
 
-Import-Module ../PSModules/CompositeRegistrationFunctions -Force
+Import-Module ../PSModules/CompositeRegistrationFunctions
 
 $content = Get-Content -Path $RegistrationFile
-$contentAsObject = $content | ConvertFrom-Json
+$contentAsObject = ConvertFrom-Json -InputObject $content
 
 New-RegistrationContext -PathApiUrl $PathApiUrl -RegionApiUrl $RegionApiUrl
 

@@ -167,7 +167,7 @@ InModuleScope CompositeRegistrationFunctions {
 
             Mock Invoke-CompositeApiRegistrationRequest 
             
-            Get-RegionRegistration -Path SomePath -PathRegion 1
+            Get-RegionRegistration -Path SomePath -PageRegion 1
 
             It "should invoke a composite api registration request" {
                 Assert-MockCalled Invoke-CompositeApiRegistrationRequest -ParameterFilter {

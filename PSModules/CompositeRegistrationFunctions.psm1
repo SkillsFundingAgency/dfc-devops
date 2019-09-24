@@ -150,10 +150,10 @@ Get-RegionRegistration -Path somepath -PageRegion 1
         [Parameter(Mandatory=$true)]
         [string] $Path,
         [Parameter(Mandatory=$true)]
-        [int] $PathRegion
+        [int] $PageRegion
     ) 
 
-    $finalUrl = "$($script:RegionApiUrl)/paths/$($Path)/regions/$($PathRegion)"
+    $finalUrl = "$($script:RegionApiUrl)/paths/$($Path)/regions/$($PageRegion)"
 
     return Invoke-CompositeApiRegistrationRequest -Url $finalUrl -Method Get
 }
