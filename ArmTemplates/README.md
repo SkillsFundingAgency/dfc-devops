@@ -32,15 +32,22 @@ Templates for root resources (ie resources that appear at the root of the Micros
 
 The following templates are available
 
-* APIM
-* [App Service Plan](app-service-plan.md)
-* [App Service](app-service.md)
+* [APIM Service](apim-service.md)
+* [APIM API](APIM/apim-api.md)
+* [APIM Logger](APIM/apim-logger.md)
+* [APIM Product](APIM/apim-product.md)
+* [App Gateway](app-gateway.md)
 * [App Insights](application-insights.json)
+* [App Service](app-service.md)
+* [App Service Environment](app-service-environment.md)
+* [App Service Plan](app-service-plan.md)
+* [Azure Maps](azure-maps.md)
 * [Azure Search](azure-search.md)
 * [CDN Profile](cdn-profile.md)
 * [CDN Endpoint](CDN/cdn-endpoint.md)
 * [Certificate](certificate.md)
 * [Cognitive Services](cognitive-services.md)
+* [Container Registry](container-registry.md)
 * [Cosmos DB](cosmos-db.md)
 * [DataFactory](datafactory.md)
 * [DataFactory Linked Service Azure SQL](DataFactory/datafactory-linkedservice-azuresql.md)
@@ -57,6 +64,7 @@ The following templates are available
 * [Service Bus Queue Auth Rule](ServiceBus/servicebus-queue-authrule.md)
 * [SQL Server Managed Instance](sql-managed-instance.md)
 * [SQL Server](sql-server.md)
+* [SQL Database](SqlServer/sql-database.md)
 * [Storage Account](storage-account.md)
 * [Storage Account Container](Storage/storage-account-arm-container.md)
 * [Action Groups](Application-Insights/action-groups.md)
