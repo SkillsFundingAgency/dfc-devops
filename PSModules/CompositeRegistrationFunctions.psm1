@@ -191,7 +191,9 @@ New-PathRegistration -Path $pathObject
 
     if($null -eq $Path.Path) { throw "Path not specified" }
     if($null -eq $Path.Layout) { throw "Layout is mandatory when creating a page registration."}
-    if($null -eq $Path.IsOnline) { $Path.IsOnline = $true }
+    if($null -eq $Path.IsOnline) {
+        $Path | Add-Member -NotePropertyName IsOnline -NotePropertyValue $true
+    }
     
     $requestBody = @{
         Path = $Path.Path
