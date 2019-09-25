@@ -1,6 +1,6 @@
-# Application Gateway
+# Application Gateway v2
 
-Adds an application gateway
+Adds an Application Gateway v2
 
 ## parameters
 
@@ -18,7 +18,6 @@ If you have the vnet and subnet names, you can get the ID with the following fun
 appGatewayTier: (optional) string
 
 Application gateway type and instance size combined
-
 Must be either Standard_v2 or WAF_v2
 
 backendPools: (required) array of object
