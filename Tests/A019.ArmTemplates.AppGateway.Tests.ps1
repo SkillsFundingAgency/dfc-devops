@@ -13,15 +13,19 @@ Describe "App Gateway Deployment Tests" -Tag "Acceptance" {
                                   fqdn = "foo.example.net"
                             } )
       backendHttpSettings = @( @{
-                                  name     = "myHttpSettings"
-                                  port     = 80
-                                  protocol = "Http"
+                                  name                       = "myHttpSettings"
+                                  port                       = 80
+                                  protocol                   = "Http"
+                                  hostnameFromBackendAddress = $true
                             } )
-      routingRules        = @( @{
-                                  name     = "myroutingrule"
-                                  port     = 80
-                                  protocol = "Http"
+      routingRules        = @( @{ #routing rules dont make sense with only one backend but the template does not allow an empty routingrules array due to ARM template limitations
+                                  name        = "myroutingrule"
+                                  backendPool = "mypool"
+                                  backendHttp = "myHttpSettings"
+                                  paths       = @( "/dummy/*" )
                             } )
+      publicIpAddressId   = "1.2.3.4"
+      userAssignedIdentityName = "dfc-test-template-uim"
     }
     $TestTemplateParams = @{
       ResourceGroupName       = $ResourceGroupName
@@ -33,6 +37,10 @@ Describe "App Gateway Deployment Tests" -Tag "Acceptance" {
   
     It "Should be deployed successfully" {
       $output | Should -Be $null
+    }
+
+    if ($output) {
+      Write-Error $output.Message
     }
 
   }

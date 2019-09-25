@@ -19,7 +19,7 @@ appGatewayTier: (optional) string
 
 Application gateway type and instance size combined
 
-Must be one of Standard_Small (default if none supplied), Standard_Medium, Standard_Large, WAF_Medium, WAF_Large, Standard_v2 or WAF_v2
+Must be either Standard_v2 or WAF_v2
 
 backendPools: (required) array of object
 
@@ -179,10 +179,9 @@ Private IP address to allocate to the application gateway.
 If not specified, no private IP address will be assigned to the app gateway.
 At least one of privateIpAddress or publicIpAddressId must be supplied.
 
-publicIpAddressId: (optional) string
+publicIpAddressId: (required) string
 
-An ID of a public IP address resource.
-If not specified, no public IP address will be assigned to the app gateway.
+Public IP address resource. v2 App Gateways require a public IP address (older v1 ones didnt).
 At least one of privateIpAddress or publicIpAddressId must be supplied.
 
 httpFrontendPort: (optional) int
@@ -205,10 +204,10 @@ keyVaultSecretName: (optional) string
 Name of secret in key vault containing the SSL certificate.
 Will only add SSL options if keyVaultName, keyVaultSecretName and userAssignedIdentityName are supplied.
 
-userAssignedIdentityName: (optional) string
+userAssignedIdentityName: (required) string
 
 Name of assigned identity with secret read access to the key vault.
-Will only add SSL options if keyVaultName, keyVaultSecretName and userAssignedIdentityName are supplied.
+Because the app gateway is created under this identity it is required even if keyVaultName, keyVaultSecretName and userAssignedIdentityName are not supplied.
 
 This can be created in ARM with a Microsoft.ManagedIdentity/userAssignedIdentities resource.
 An example

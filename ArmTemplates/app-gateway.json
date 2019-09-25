@@ -17,15 +17,10 @@
         "appGatewayTier": {
             "type": "string",
             "allowedValues": [
-                "Standard_Small",
-                "Standard_Medium",
-                "Standard_Large",
-                "WAF_Medium",
-                "WAF_Large",
                 "Standard_v2",
                 "WAF_v2"
             ],
-            "defaultValue": "Standard_Small",
+            "defaultValue": "Standard_v2",
             "metadata": {
                 "description": "Application gateway tier"
             }
@@ -122,7 +117,6 @@
         },
         "userAssignedIdentityName": {
             "type": "string",
-            "defaultValue": "",
             "metadata": {
                 "description": "The name of the user assigned identity."
             }
@@ -317,16 +311,7 @@
                     }
                 }
             }
-        ],
-        "userIdentity": {
-            "type": "UserAssigned",
-            "userAssignedIdentities": {
-                "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities/', parameters('userAssignedIdentityName'))]": {}
-            }
-        },
-        "systemIdentity": {
-            "type": "SystemAssigned"
-        }
+        ]
     },
     "resources": [
         {
@@ -444,7 +429,12 @@
                     }
                 }
             ],
-            "identity": "[if(greater(length(parameters('userAssignedIdentityName')),0), variables('userIdentity'), variables('systemIdentity'))]"
+            "identity": {
+                "type": "UserAssigned",
+                "userAssignedIdentities": {
+                    "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities/', parameters('userAssignedIdentityName'))]": {}
+                }
+            }
         }
     ]
 }
