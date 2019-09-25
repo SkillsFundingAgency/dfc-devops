@@ -36,7 +36,7 @@ The following templates are available
 * [APIM API](APIM/apim-api.md)
 * [APIM Logger](APIM/apim-logger.md)
 * [APIM Product](APIM/apim-product.md)
-* [App Gateway](app-gateway.md)
+* [App Gateway v2](app-gateway-v2.md)
 * [App Insights](application-insights.json)
 * [App Service](app-service.md)
 * [App Service Environment](app-service-environment.md)
