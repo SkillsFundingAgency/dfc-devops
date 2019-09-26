@@ -18,7 +18,11 @@ If you have the vnet and subnet names, you can get the ID with the following fun
 appGatewayTier: (optional) string
 
 Application gateway type and instance size combined
-Must be either Standard_v2 or WAF_v2
+Must be either Standard_v2 or WAF_v2.
+Defaults to Standard_v2.
+
+Be aware that the Web Application Firewall option, WAF_v2, adds considerable overhead to the App Gateway.
+Ensure load testing is done before using WAF option. 
 
 backendPools: (required) array of object
 
@@ -27,8 +31,10 @@ The first backend pool specified will be the default one (used if not routing)
 
 Each backend is specified by an object consisting of
 
-* name: the name the backend pool resource
-* fqdn: the full domain name
+* name: string
+  The name the backend pool resource
+* fqdn: string
+  The full domain name
 
 An example of a valid object
 
@@ -46,15 +52,26 @@ The first setting in the array is used for the default routing rule.
 
 Each backend setting is specified by an object consisting of
 
-* name: the name the backend setting
-* port: port
-* protocol: protocol
-* hostnameFromBackendAddress: Select hostname from backend address
-* timeout: set the request timeout (optional)
-* backendPath: override the backend path (optional)
-* probeName: name of probe (optional)
-* authCerts: array of authentication certificates (optional)
-* rootCerts: array of trusted root certificates (optional)
+* name: string
+  The name the backend setting
+* port: int
+  Port number the backend
+* protocol: string
+  Protocol type, either Http or Https
+* hostnameFromBackendAddress: bool
+  Select hostname from backend address
+* timeout: (optional) int
+  Set the request timeout in seconds. Defaults to 20 seconds.
+* backendPath: (optional) string
+  Override the backend path, no override if not specified
+* probeName: (optional) string
+  Name of probe as specified in customProbes
+* authCerts: (optional) array of string
+  Authentication certificates
+* rootCerts: (optional) array of string
+  Array of trusted root certificates
+
+For more details see https://docs.microsoft.com/en-us/azure/templates/microsoft.network/2019-04-01/applicationgateways#ApplicationGatewayBackendHttpSettingsPropertiesFormat
 
 An example of a valid object
 
@@ -75,10 +92,14 @@ which is the first backend specified (see above).
 
 Each backend is specified by an object consisting of
 
-* name: the name the backend pool resource
-* backendPool: the name of the backend to route to (as specified in a previous parameter, see above)
-* backendHttp: the name of the backend http settings to use (as specified in the previous parameter, see above)
-* paths: an array of paths, usually wildcarded, to route to the backend
+* name: string
+  The name the backend pool resource
+* backendPool: string
+  The name of the backend to route to (as specified in a previous parameter, see above)
+* backendHttp: string
+  The name of the backend http settings to use (as specified in the previous parameter, see above)
+* paths: array of string
+  An array of paths, usually wildcarded, to route to this backend
 
 An example of a valid object
 
@@ -94,7 +115,7 @@ An example of a valid object
 customProbes: (optional) array of objects
 
 Create probes for use in backendHttpSettings.
-See https://docs.microsoft.com/en-us/azure/templates/microsoft.network/2018-11-01/applicationgateways#ApplicationGatewayProbe
+See https://docs.microsoft.com/en-us/azure/templates/microsoft.network/2019-04-01/applicationgateways#ApplicationGatewayProbe
 for options.
 
 An example of a valid object array
@@ -125,7 +146,7 @@ An example of a valid object array
 customErrorPages: (optional) array of objects
 
 Create probes for use in backendHttpSettings.
-See https://docs.microsoft.com/en-us/azure/templates/microsoft.network/2018-11-01/applicationgateways#ApplicationGatewayCustomError
+See https://docs.microsoft.com/en-us/azure/templates/microsoft.network/2019-04-01/applicationgateways#ApplicationGatewayCustomError
 for options.
 
 An example of a valid object array
@@ -143,27 +164,40 @@ rewriteRules: (optional) array of object
 
 A list of rewrite rules which will be applied to all URL paths.
 If not specified, no rewrite rules will be specified.
-This is only valid with v2 tiers.
 
 Each rewrite rule is specified by an object consisting of
 
-* name: the name the rewrite rule set
-* ruleSequence: an integer specifying the order to run the rules (lowest to highest) - defaults to 100 if not specified
-* conditions: an array of objects specifying the conditions that need to be met for the rule to be applied - rules are run unconditionally if not specified
-* actionSet: an array of objects specifying actionSet of the rule
+* name: string
+  The name the rewrite rule set
+* ruleSequence: (optional) int
+  Specifies the order to run the rules (lowest to highest) - defaults to 100 if not specified
+* conditions: (optional) array of object
+  An array of objects specifying the conditions that need to be met for the rule to be applied - rules are always ran if no conditions are specified
+* actionSet: object
+  An objects with either requestHeaderConfigurations or responseHeaderConfigurations arrays specifying action of the rule
 
-An example of a valid object. Only name and actionSet are required.
+An example of a valid object which rewrites location header. Only name and actionSet are required.
 
 ```json
 {
-    "name": "rewriteRule",
+    "name": "rewriteLocationRule",
     "ruleSequence": 100,
-    "conditions": { ... }, 
-    "actionSet": { ... }
+    "conditions": [ { 
+        "variable": "http_resp_Location",
+        "pattern": "(https?):\\/\\/example\\.net(.*)$",
+        "ignoreCase": true
+
+     } ], 
+    "actionSet": {
+        "responseHeaderConfigurations": [ {
+            "headerName": "Location",
+            "headerValue": "{http_resp_Location_1}redirect_uri=https%3a%2f%2f__appGatewayFqdn__{http_resp_Location_3}"
+        } ]
+    }
 }
 ```
 
-See https://docs.microsoft.com/en-us/azure/templates/microsoft.network/2018-11-01/applicationgateways#ApplicationGatewayRewriteRuleActionSet
+See https://docs.microsoft.com/en-us/azure/templates/microsoft.network/2019-04-01/applicationgateways#ApplicationGatewayRewriteRuleActionSet
 for rule settings via the actionSet object.
 
 capacity: (optional) int
@@ -190,7 +224,7 @@ Defaults to port 80 if not specified.
 
 httpsFrontendPort: (optional) int
 
-The port the application gateway is accessible on via HTTP.
+The port the application gateway is accessible on via HTTPS.
 Defaults to port 443 if not specified.
 
 keyVaultName: (optional) string
@@ -223,7 +257,7 @@ An example
 logStorageAccountId: (optional) string
 
 Storage account Id to archive logs to.
-Will not achive logs if no storage account is specified.
+Will not archive logs if no storage account is specified.
 Either this or logWorkspaceId needs to be specified in order to enable diagnostics.
 
 logWorkspaceId: (optional) string
