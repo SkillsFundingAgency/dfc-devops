@@ -17,6 +17,13 @@
         "originHostName": {
             "type": "string"
         },
+        "cacheExpirationOverride": {
+            "type": "string",
+            "defaultValue": "",
+            "metadata": {
+                "description": "The cache expiration to set in days when setting the Caching behaviour to Override"
+            }
+        },
         "optimizationType": {
             "type": "string",
             "defaultValue": "GeneralWebDelivery",
@@ -96,6 +103,29 @@
             "text/x-java-source"
         ],
         "customDomainEnabled": "[greater(length(parameters('customDomainName')), 0)]",
+        "deliveryPolicy": {
+            "noPolicy": null,
+            "overridePolicy": {
+                "description": "Override Delivery Policy",
+                "rules": [
+                    {
+                        "order": 0,
+                        "conditions": [],
+                        "actions": [
+                            {
+                                "name": "CacheExpiration",
+                                "parameters": {
+                                    "@odata.type": "#Microsoft.Azure.Cdn.Models.DeliveryRuleCacheExpirationActionParameters",
+                                    "cacheBehavior": "Override",
+                                    "cacheDuration": "[concat(parameters('cacheExpirationOverride'), '.00:00:00')]",
+                                    "cacheType": "All"
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
         "fullEndpointName": "[concat(parameters('cdnProfileName'), '/', parameters('cdnEndpointName'))]",
         "origin": [
             {
@@ -118,6 +148,7 @@
                 "isHttpsAllowed": true,
                 "queryStringCachingBehavior": "[parameters('queryStringCachingBehavior')]",
                 "optimizationType": "[parameters('optimizationType')]",
+                "deliveryPolicy": "[if(equals(parameters('cacheExpirationOverride'), ''), variables('deliveryPolicy').noPolicy, variables('deliveryPolicy').overridePolicy)]",
                 "origins": "[variables('origin')]"
             },
             "withoutOriginPath": {
@@ -128,6 +159,7 @@
                 "isHttpsAllowed": true,
                 "queryStringCachingBehavior": "[parameters('queryStringCachingBehavior')]",
                 "optimizationType": "[parameters('optimizationType')]",
+                "deliveryPolicy": "[if(equals(parameters('cacheExpirationOverride'), ''), variables('deliveryPolicy').noPolicy, variables('deliveryPolicy').overridePolicy)]",
                 "origins": "[variables('origin')]"
             }
         }
