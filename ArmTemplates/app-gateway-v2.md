@@ -59,7 +59,7 @@ Each backend setting is specified by an object consisting of
 * protocol: string
   Protocol type, either Http or Https
 * hostnameFromBackendAddress: bool
-  Select hostname from backend address
+  Select hostname from backend address. Normally set to true for any PaaS service (like app services).
 * timeout: (optional) int
   Set the request timeout in seconds. Defaults to 20 seconds.
 * backendPath: (optional) string
