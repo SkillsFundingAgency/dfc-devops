@@ -7,7 +7,7 @@
         },
         "emailAddress": {
             "type": "string",
-            "defaultValue": "careersdevops@education.gov.uk"
+            "defaultValue": ""
         },
         "webHookUrl": {
             "type": "string",
@@ -19,16 +19,21 @@
         }
     },
     "variables": {
+        "hasValidActionToPerform": "[or(greater(length(parameters('emailAddress')), 0), greater(length(parameters('webHookUrl')), 0))]",
         "baseProperties": {
             "groupShortName": "[take(split(parameters('actionGroupName'), '-')[2], 12)]",
             "enabled": "[parameters('enabled')]"
         },
-        "emailPropertyArray": {
-            "emailReceivers": [{
-            "name": "[parameters('actionGroupName')]",
-            "emailAddress": "[parameters('EmailAddress')]",
-            "useCommonAlertSchema": true
-        }]},
+        "emailPropertyArray": [
+            {},
+            {
+                "emailReceivers": [{
+                    "name": "[parameters('actionGroupName')]",
+                    "emailAddress": "[parameters('EmailAddress')]",
+                    "useCommonAlertSchema": true
+                }]
+            }
+        ],
         "webhookPropertyArray": [
             {},
             {
@@ -39,11 +44,13 @@
             }
         ],
         "webHookPropertyEntry": "[if(empty(parameters('webHookUrl')), 0, 1)]",
-        "groupProperties": "[union(variables('baseProperties'), variables('emailPropertyArray'), variables('webhookPropertyArray')[variables('webHookPropertyEntry')])]"
+        "emailPropertyEntry": "[if(empty(parameters('emailAddress')), 0, 1)]",
+        "groupProperties": "[union(variables('baseProperties'), variables('emailPropertyArray')[variables('emailPropertyEntry')], variables('webhookPropertyArray')[variables('webHookPropertyEntry')])]"
     },
     "resources": [
         {
             "name": "[parameters('actionGroupName')]",
+            "condition": "[variables('hasValidActionToPerform')]",
             "type": "microsoft.insights/actionGroups",
             "apiVersion": "2019-06-01",
             "location": "global",

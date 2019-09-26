@@ -1,6 +1,7 @@
 # Action Groups
 
 Creates an Azure Monitor action group.
+At least one of the emailAddress and webHookUrl properties must be specified, otherwise the action group will not be created or updated.
 
 ## Parameters
 
@@ -12,6 +13,10 @@ This reason for this is because internally, an actionGroup's name can only be 12
 emailAddress  (optional)
 
 The email address to send alerts to
+
+webHookUrl (optional)
+
+The URL of a webhook to send alerts to
 
 enabled (optional)
 
