@@ -18,6 +18,10 @@ originHostName (required) string
 
 URL to get the content from.
 
+cacheExpirationOverride (optional) string
+
+The cache expiration to set in days when setting the Caching behaviour to Override.  Setting this parameter will add the CacheExpiration Delivery Policy which is documented [here](https://docs.microsoft.com/en-us/rest/api/cdn/endpoints/create#deliveryrulecacheexpirationaction)
+
 optimizationType (optional) string
 
 Defaults to GeneralWebDelivery, select from GeneralWebDelivery, GeneralMediaStreaming, VideoOnDemandMediaStreaming, LargeFileDownload, DynamicSiteAcceleration
