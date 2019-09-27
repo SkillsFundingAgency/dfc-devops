@@ -3,6 +3,9 @@
 Creates an SSIS integration runtime within a Data Factory.  
 Depends on the Data Factory being already deployed, eg using the datafactory.json template.
 
+Please note that SSIS integration runtime is created in a stopped state, and needs starting before it can be used.
+This is a currently a manual process via the Azure Data Factory instance website.
+
 ## Parameters
 
 DataFactoryName: required (string)
