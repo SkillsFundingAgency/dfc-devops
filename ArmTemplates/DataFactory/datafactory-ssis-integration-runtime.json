@@ -1,0 +1,94 @@
+{
+    "contentVersion": "1.0.0.0",
+    "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "parameters": {
+        "DataFactoryName": {
+            "type": "string",
+            "metadata": {
+                "description": "Name of the data factory. Must be globally unique."
+            }
+        },
+        "RuntimeName": {
+            "type": "string",
+            "metadata": {
+                "description": "Name for the integration runtime"
+            }
+        },
+        "RuntimeDescription": {
+            "type": "string",
+            "metadata": {
+                "description": "Description of the integration runtime"
+            }
+        },        
+        "NodeSize": {
+            "type": "string",
+            "metadata": {
+                "description": "Size of the integration runtime node"
+            }            
+        },
+        "NodeCount": {
+            "type": "int",
+            "defaultValue": 2,
+            "metadata": {
+                "description": "Number of nodes to run the integration runtime upon"
+            }
+        },
+        "MaxConcurrentJobsPerNode":{
+            "type": "int",
+            "defaultValue": 8,
+            "metadata": {
+                "description": "Maximum number of concurrent jobs per node"
+            }
+        },
+        "CatalogServerEndpoint": {
+            "type": "string",
+            "metadata": {
+                "description": "Endpoint of the server containing the SSIS catalog."
+            }
+        },
+        "CatalogServerAdminUsername": {
+            "type": "string",
+            "metadata": {
+                "description": "Username to access the SSIS catalog."
+            }
+        },
+        "CatalogServerAdminPassword": {
+            "type": "securestring",
+            "metadata": {
+                "description": "Password to access the SSIS catalog."
+            }
+        }
+    },
+    "resources": [
+        {
+            "name": "[concat(parameters('DataFactoryName'), '/', parameters('RuntimeName'))]",
+            "type": "Microsoft.DataFactory/factories/integrationRuntimes",
+            "apiVersion": "2018-06-01",
+            "properties": {
+                "type": "Managed",
+                "description": "[parameters('RuntimeDescription')]",
+                "typeProperties": {
+                    "computeProperties": {
+                        "location": "[resourceGroup().location]",
+                        "nodeSize": "[parameters('NodeSize')]",
+                        "numberOfNodes": "[parameters('NodeCount')]",
+                        "maxParallelExecutionsPerNode": "[parameters('MaxConcurrentJobsPerNode')]"
+                    },
+                    "ssisProperties": {
+                        "catalogInfo": {
+                            "catalogServerEndpoint": "[parameters('CatalogServerEndpoint')]",
+                            "catalogAdminUserName": "[parameters('CatalogServerAdminUsername')]",
+                            "catalogAdminPassword": {
+                                "type": "SecureString",
+                                "value": "[parameters('CatalogServerAdminPassword')]"
+                            },
+                            "catalogPricingTier": null
+                        },
+                        "edition": "Standard",
+                        "licenseType": "LicenseIncluded"
+                    }
+                }
+            }
+        }
+    ]
+}
