@@ -36,27 +36,30 @@ Write-Host "Will retry every 15 seconds for 10 minutes before failing..."
 $attempts = 1
 $runtimeInstance = $null
 
-while($true) {    
+do {
     Write-Host "Attempting to fetching runtime instance, attempt $($attempts) of 40"
     $runtimeInstance = Get-AzDataFactoryV2IntegrationRuntime -ResourceGroupName $ResourceGroupName -DataFactoryName $DataFactoryName -Name $RuntimeName -ErrorAction SilentlyContinue
 
-    if($attempts -gt 40)  {
-        Write-Error "Unable to get runtime instance after 10 minutes, giving up."
-        return
+    if($attempts -eq 40)  {        
+        break;
     } 
 
-    if($runtimeInstance.State -iin $breakStates) { 
-        break;
+    if($null -eq $runtimeInstance) {
+        Start-Sleep -Seconds 15
     }
 
-    Start-Sleep -Seconds 15
     $attempts++
-}
+} while($runtimeInstance.State -inotin $breakStates)
 
-if($runtimeInstance.State -ine "Started") { 
-    Write-Host "Starting up integration runtime"
-    Start-AzDataFactoryV2IntegrationRuntime -ResourceGroupName $ResourceGroupName -DataFactoryName $DataFactoryName -Name $RuntimeName -Force | Out-Null
-    Write-Host "SSIS integration runtime started successfully!"
+
+if($null -eq $runtimeInstance) {
+    Write-Error "Unable to get runtime instance after 10 minutes, giving up."
 } else {
-    Write-Host "SSIS integration runtime is already running!"
+    if($runtimeInstance.State -ine "Started") {
+        Write-Host "Starting up integration runtime"
+        Start-AzDataFactoryV2IntegrationRuntime -ResourceGroupName $ResourceGroupName -DataFactoryName $DataFactoryName -Name $RuntimeName -Force | Out-Null
+        Write-Host "SSIS integration runtime started successfully!"
+    } else {
+        Write-Host "SSIS integration runtime is already running, no action required"
+    }
 }
