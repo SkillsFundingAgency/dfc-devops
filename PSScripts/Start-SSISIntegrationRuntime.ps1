@@ -38,7 +38,7 @@ $runtimeInstance = $null
 
 do {
     Write-Host "Attempting to fetching runtime instance, attempt $($attempts) of 40"
-    $runtimeInstance = Get-AzDataFactoryV2IntegrationRuntime -ResourceGroupName $ResourceGroupName -DataFactoryName $DataFactoryName -Name $RuntimeName -ErrorAction SilentlyContinue
+    $runtimeInstance = Get-AzureRmDataFactoryV2IntegrationRuntime -ResourceGroupName $ResourceGroupName -DataFactoryName $DataFactoryName -Name $RuntimeName -ErrorAction SilentlyContinue
 
     if($attempts -eq 40)  {        
         break;
@@ -57,7 +57,7 @@ if($null -eq $runtimeInstance) {
 } else {
     if($runtimeInstance.State -ine "Started") {
         Write-Host "Starting up integration runtime"
-        Start-AzDataFactoryV2IntegrationRuntime -ResourceGroupName $ResourceGroupName -DataFactoryName $DataFactoryName -Name $RuntimeName -Force | Out-Null
+        Start-AzureRmDataFactoryV2IntegrationRuntime -ResourceGroupName $ResourceGroupName -DataFactoryName $DataFactoryName -Name $RuntimeName -Force | Out-Null
         Write-Host "SSIS integration runtime started successfully!"
     } else {
         Write-Host "SSIS integration runtime is already running, no action required"
