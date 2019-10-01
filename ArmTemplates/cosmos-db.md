@@ -21,6 +21,10 @@ defaultConsistencyLevel: (required) string
 
 Consistency level of Cosmos DB. Can be either Eventual, Session, BoundedStaleness, Strong or ConsistentPrefix.
 
+allowConnectionsFromAzureDataCenters (optional) bool
+
+Defaults to true (to maintain backwards compatibility).  Only applies if the additionalIpAddresses is specified.  If set to false this will remove access to CosmosDB from other Azure resources.  Access will still be allowed from the Azure Portal and IP Address specified in the additionalIpAddresses parameter
+
 ## Notes
 
 If cosmosApiType is set to MongoDB, the kind value is also set to MongoDB, otherwise it will be set to GlobalDocumentDB.

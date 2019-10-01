@@ -40,6 +40,13 @@
             "metadata": {
                 "description": "Any additional IP addresses to add to the IP Range Filter in addition to the default addresses.  If more than 1 address is included they should be seperated by a comma, eg: 11.111.123.134,12.134.114.115"
             }
+        },
+        "allowConnectionsFromAzureDataCenters": {
+            "type": "bool",
+            "defaultValue": true,
+            "metadata": {
+                "description": "Set this to false to remove access to CosmosDB from resources in Azure Data Centres"
+            }
         }
     },
     "variables": {
@@ -63,7 +70,7 @@
                 },
                 "capabilities": "[if(equals(variables('capabilityName'),''), variables('emptyCapabilities'), variables('enabledCapabilities'))]",
                 "databaseAccountOfferType": "Standard",
-                "ipRangeFilter": "[concat('0.0.0.0,104.42.195.92,40.76.54.131,52.176.6.30,52.169.50.45,52.187.184.26,', parameters('additionalIpAddresses'))]"
+                "ipRangeFilter": "[concat('104.42.195.92,40.76.54.131,52.176.6.30,52.169.50.45,52.187.184.26,', if(parameters('allowConnectionsFromAzureDataCenters'), '0.0.0.0,', ''), parameters('additionalIpAddresses'))]"
             },
             "WithoutIpFilter": {
                 "locations": [
