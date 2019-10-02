@@ -1,0 +1,39 @@
+{
+    "$schema": "http://schema.management.azure.com/schemas/2014-04-01-preview/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "action": {
+            "type": "string",
+            "allowedValues": [
+                "Accept",
+                "Reject"
+            ]
+        },
+        "ipAddress": {
+            "type": "string",
+            "metadata": {
+                "description": "List of IP addresses allowed to connect to ServiceBus"
+            }
+        },
+        "servicebusName": {
+            "type": "string",
+            "metadata": {
+                "description": "Name of the namespace"
+            }
+        }
+    },
+    "variables": {},
+    "resources": [
+        {
+            "apiVersion": "2018-01-01-preview",
+            "name": "[concat(parameters('servicebusName'), '/', parameters('action'), '-', parameters('ipAddress'))]",
+            "type": "Microsoft.ServiceBus/Namespaces/IPFilterRules",
+            "properties": {
+                "FilterName": "[concat(parameters('servicebusName'), '/', parameters('action'), '-', parameters('ipAddress'))]",
+                "Action": "[parameters('action')]",
+                "IpMask": "[parameters('ipAddress')]"
+            }
+        }
+    ],
+    "outputs": {}
+}
