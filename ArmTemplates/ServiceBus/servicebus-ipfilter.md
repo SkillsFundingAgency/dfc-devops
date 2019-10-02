@@ -14,7 +14,7 @@ A single IP address from which traffic will either be accepted or denied
 
 servicebusName (required) string
 
-The name of the ServiceBus to apply the rule to
+The name of the ServiceBus to apply the rule to.  The ServiceBus must be on the Premium SKU.
 
 ## Example
 
