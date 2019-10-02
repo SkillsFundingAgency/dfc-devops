@@ -25,7 +25,7 @@
             "type": "int",
             "defaultValue": 400,
             "metadata": {
-                "description": "When 'useSharedRequestUnits' is set,  sets the databases Request Units."
+                "description": "When 'useSharedRequestUnits' is set,  sets the databases Request Units.  The minimum assignment is 100 RUs per collection.  RUs must be assigned in increments of 100."
             }
         },
         "databaseNeedsCreation": {
