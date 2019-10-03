@@ -25,6 +25,8 @@ param(
     [Parameter(Mandatory=$true)]
     [string] $RegionApiUrl,
     [Parameter(Mandatory=$true)]
+    [string] $ApiKey,
+    [Parameter(Mandatory=$true)]
     [string] $RegistrationFile
 )
 
@@ -33,7 +35,7 @@ Import-Module ../PSModules/CompositeRegistrationFunctions -Force
 $content = Get-Content -Path $RegistrationFile -Raw
 $contentAsObject = ConvertFrom-Json -InputObject $content
 
-New-RegistrationContext -PathApiUrl $PathApiUrl -RegionApiUrl $RegionApiUrl
+New-RegistrationContext -PathApiUrl $PathApiUrl -RegionApiUrl $RegionApiUrl -ApiKey $ApiKey
 
 foreach($path in $contentAsObject) {
     Write-Verbose "Getting path registration for Path $($path.Path)."

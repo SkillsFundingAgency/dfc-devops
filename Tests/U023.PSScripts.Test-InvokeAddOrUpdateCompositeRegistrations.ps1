@@ -24,7 +24,7 @@ Describe "Invoke-AddOrUpdateCompositeRegistrations" -Tag "Unit" {
             }
         )}
 
-        & $PSScriptRoot/../PSScripts/Invoke-AddOrUpdateCompositeRegistrations -PathApiUrl https://path/api -RegionApiUrl https://region/api -RegistrationFile ./some-file.json
+        & $PSScriptRoot/../PSScripts/Invoke-AddOrUpdateCompositeRegistrations -PathApiUrl https://path/api -RegionApiUrl https://region/api -RegistrationFile ./some-file.json -ApiKey SomeApiKey
 
         It "should attempt to get a path registration" {
             Assert-MockCalled Get-PathRegistration -ParameterFilter { $Path -eq "SomePath" } -Exactly 1
@@ -73,7 +73,7 @@ Describe "Invoke-AddOrUpdateCompositeRegistrations" -Tag "Unit" {
 
         Mock Get-DifferencesBetweenPathObjects -MockWith { return @{} }
 
-        & $PSScriptRoot/../PSScripts/Invoke-AddOrUpdateCompositeRegistrations -PathApiUrl https://path/api -RegionApiUrl https://region/api -RegistrationFile ./some-file.json
+        & $PSScriptRoot/../PSScripts/Invoke-AddOrUpdateCompositeRegistrations -PathApiUrl https://path/api -RegionApiUrl https://region/api -RegistrationFile ./some-file.json -ApiKey SomeApiKey
 
         It "should attempt to get a path registration" {
             Assert-MockCalled Get-PathRegistration -ParameterFilter { $Path -eq "SomePath" } -Exactly 1
@@ -124,7 +124,7 @@ Describe "Invoke-AddOrUpdateCompositeRegistrations" -Tag "Unit" {
             IsOnline = $true
         }}
 
-        & $PSScriptRoot/../PSScripts/Invoke-AddOrUpdateCompositeRegistrations -PathApiUrl https://path/api -RegionApiUrl https://region/api -RegistrationFile ./some-file.json
+        & $PSScriptRoot/../PSScripts/Invoke-AddOrUpdateCompositeRegistrations -PathApiUrl https://path/api -RegionApiUrl https://region/api -RegistrationFile ./some-file.json  -ApiKey SomeApiKey
 
         It "should attempt to get a path registration" {
             Assert-MockCalled Get-PathRegistration -ParameterFilter { $Path -eq "SomePath" } -Exactly 1
@@ -178,7 +178,7 @@ Describe "Invoke-AddOrUpdateCompositeRegistrations" -Tag "Unit" {
 
         Mock Get-DifferencesBetweenPathObjects -MockWith { return @{} }
 
-        & $PSScriptRoot/../PSScripts/Invoke-AddOrUpdateCompositeRegistrations -PathApiUrl https://path/api -RegionApiUrl https://region/api -RegistrationFile ./some-file.json
+        & $PSScriptRoot/../PSScripts/Invoke-AddOrUpdateCompositeRegistrations -PathApiUrl https://path/api -RegionApiUrl https://region/api -RegistrationFile ./some-file.json  -ApiKey SomeApiKey
 
         It "should attempt to get a path registration" {
             Assert-MockCalled Get-PathRegistration -ParameterFilter { $Path -eq "SomePath" } -Exactly 1
@@ -239,7 +239,7 @@ Describe "Invoke-AddOrUpdateCompositeRegistrations" -Tag "Unit" {
 
         Mock Get-DifferencesBetweenRegionObjects -MockWith { return @{} }
 
-        & $PSScriptRoot/../PSScripts/Invoke-AddOrUpdateCompositeRegistrations -PathApiUrl https://path/api -RegionApiUrl https://region/api -RegistrationFile ./some-file.json
+        & $PSScriptRoot/../PSScripts/Invoke-AddOrUpdateCompositeRegistrations -PathApiUrl https://path/api -RegionApiUrl https://region/api -RegistrationFile ./some-file.json  -ApiKey SomeApiKey
 
         It "should attempt to get a path registration" {
             Assert-MockCalled Get-PathRegistration -ParameterFilter { $Path -eq "SomePath" } -Exactly 1
@@ -301,7 +301,7 @@ Describe "Invoke-AddOrUpdateCompositeRegistrations" -Tag "Unit" {
             OfflineHtml = "updated text"
         }}
 
-        & $PSScriptRoot/../PSScripts/Invoke-AddOrUpdateCompositeRegistrations -PathApiUrl https://path/api -RegionApiUrl https://region/api -RegistrationFile ./some-file.json
+        & $PSScriptRoot/../PSScripts/Invoke-AddOrUpdateCompositeRegistrations -PathApiUrl https://path/api -RegionApiUrl https://region/api -RegistrationFile ./some-file.json  -ApiKey SomeApiKey
 
         It "should attempt to get a path registration" {
             Assert-MockCalled Get-PathRegistration -ParameterFilter { $Path -eq "SomePath" } -Exactly 1
