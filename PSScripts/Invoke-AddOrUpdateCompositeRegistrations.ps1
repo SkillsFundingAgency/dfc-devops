@@ -14,6 +14,9 @@ Url to the Composite Region Registration Api
 .PARAMETER RegistrationFile 
 Path to the json file describing the applications registrations
 
+.PARAMETER ApiKey
+The API key for the page and registration Api endpoints
+
 .EXAMPLE
 New-RegistrationContext -PathApiUrl https://page-registration-url/api -RegionApiUrl https://region-registration-url/api -RegistrationFile c:\Path\To\Registration\File.json
 
