@@ -1,5 +1,12 @@
 Push-Location -Path $PSScriptRoot\..\PSScripts\
 
+# solves CommandNotFoundException
+function Get-AzResource {}
+function Get-AzWebApp {}
+function Get-AzSqlDatabase {}
+function New-AzSqlDatabaseCopy {}
+function Set-AzSqlDatabaseBackupShortTermRetentionPolicy {}
+
 Describe "Copy-Database" -Tag "Unit" {
 
     # mocks

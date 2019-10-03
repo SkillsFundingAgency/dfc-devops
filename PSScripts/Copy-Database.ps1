@@ -16,11 +16,12 @@ Either this can be specified or an app service name can be specified.
 
 .PARAMETER AppServiceName
 Name of the App Service to get the database name from.
+Gets the database name from the app settings
 Either this can be specified or the database name passed in directly.
 
 .PARAMETER DatabaseNameAppSetting
 [Optional] Name of the app setting that contains the database name.
-Defaults to DatabaseVersion if not specified.
+Defaults to reading the DatabaseVersion app setting if not specified.
 
 .PARAMETER ReleaseNumber
 [Optional] Release number for the new database.
