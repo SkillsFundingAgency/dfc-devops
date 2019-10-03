@@ -14,6 +14,9 @@ Url to the Composite Region Registration Api
 .PARAMETER RegistrationFile 
 Path to the json file describing the applications registrations
 
+.PARAMETER ApiKey
+The API key for the page and registration Api endpoints
+
 .EXAMPLE
 New-RegistrationContext -PathApiUrl https://page-registration-url/api -RegionApiUrl https://region-registration-url/api -RegistrationFile c:\Path\To\Registration\File.json
 
@@ -25,6 +28,8 @@ param(
     [Parameter(Mandatory=$true)]
     [string] $RegionApiUrl,
     [Parameter(Mandatory=$true)]
+    [string] $ApiKey,
+    [Parameter(Mandatory=$true)]
     [string] $RegistrationFile
 )
 
@@ -33,7 +38,7 @@ Import-Module ../PSModules/CompositeRegistrationFunctions -Force
 $content = Get-Content -Path $RegistrationFile -Raw
 $contentAsObject = ConvertFrom-Json -InputObject $content
 
-New-RegistrationContext -PathApiUrl $PathApiUrl -RegionApiUrl $RegionApiUrl
+New-RegistrationContext -PathApiUrl $PathApiUrl -RegionApiUrl $RegionApiUrl -ApiKey $ApiKey
 
 foreach($path in $contentAsObject) {
     Write-Verbose "Getting path registration for Path $($path.Path)."

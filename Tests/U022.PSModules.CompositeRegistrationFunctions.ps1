@@ -5,7 +5,7 @@ Import-Module $PSScriptRoot\..\PSModules\CompositeRegistrationFunctions -Force
 InModuleScope CompositeRegistrationFunctions {
     Describe "Invoke-CompositeApiRegistrationRequest" -Tag "Unit" {
     
-        Context "When  performing  a request that throws a 4xx or 5xx status code" {
+        Context "When  performing a request that throws a 4xx or 5xx status code" {
             Mock Invoke-WebRequest -MockWith { throw "an error status code" }
 
             It "should throw an exception" {
@@ -19,6 +19,7 @@ InModuleScope CompositeRegistrationFunctions {
 
             Mock Invoke-WebRequest -MockWith { return @{ StatusCode = 204 } }
 
+            $script:ApiKey = "SomeApiKey"
             $result = Invoke-CompositeApiRegistrationRequest -Url https://some/api -Method Get
 
             It "should return null" {
@@ -29,7 +30,8 @@ InModuleScope CompositeRegistrationFunctions {
                 Assert-MockCalled  Invoke-WebRequest -Exactly 1 -ParameterFilter {
                     $Uri -eq "https://some/api" -and `
                     $Method -eq "Get" -and `
-                    $UseBasicParsing -eq $true
+                    $UseBasicParsing -eq $true -and `
+                    $Headers["Ocp-Apim-Subscription-Key"] -eq "SomeApiKey"
                 }
             }
         }
@@ -41,6 +43,7 @@ InModuleScope CompositeRegistrationFunctions {
                 }
             }
 
+            $script:ApiKey = "SomeApiKey"
             $result = Invoke-CompositeApiRegistrationRequest -Url https://some/api -Method Get
 
             It "should deserialize the returned content" {
@@ -51,9 +54,10 @@ InModuleScope CompositeRegistrationFunctions {
                 Assert-MockCalled  Invoke-WebRequest -Exactly 1 -ParameterFilter {
                     $Uri -eq "https://some/api" -and `
                     $Method -eq "Get" -and `
-                    $UseBasicParsing -eq $true
+                    $UseBasicParsing -eq $true -and `
+                    $Headers["Ocp-Apim-Subscription-Key"] -eq "SomeApiKey"
                 }
-            }            
+            }
         }
 
         Context "When performing a POST request and the api does not return a 201 status code"  {
@@ -62,6 +66,7 @@ InModuleScope CompositeRegistrationFunctions {
                 }
             }
 
+            $script:ApiKey = "SomeApiKey"
             $result = Invoke-CompositeApiRegistrationRequest -Url https://some/api -Method Post
 
             It "should return null" {
@@ -72,7 +77,9 @@ InModuleScope CompositeRegistrationFunctions {
                 Assert-MockCalled  Invoke-WebRequest -Exactly 1 -ParameterFilter {
                     $Uri -eq "https://some/api" -and `
                     $Method -eq "Post" -and `
-                    $UseBasicParsing -eq $true
+                    $UseBasicParsing -eq $true -and `
+                    $Headers["Ocp-Apim-Subscription-Key"] -eq "SomeApiKey" -and `
+                    $Headers["Content-Type"] -eq "application/json"
                 }
             }
         }
@@ -84,6 +91,7 @@ InModuleScope CompositeRegistrationFunctions {
                 }
             }
 
+            $script:ApiKey = "SomeApiKey"
             $result = Invoke-CompositeApiRegistrationRequest -Url https://some/api -Method Post
 
             It "should return deserialise the returned content" {
@@ -94,7 +102,9 @@ InModuleScope CompositeRegistrationFunctions {
                 Assert-MockCalled  Invoke-WebRequest -Exactly 1 -ParameterFilter {
                     $Uri -eq "https://some/api" -and `
                     $Method -eq "Post" -and `
-                    $UseBasicParsing -eq $true
+                    $UseBasicParsing -eq $true -and `
+                    $Headers["Ocp-Apim-Subscription-Key"] -eq "SomeApiKey" -and `
+                    $Headers["Content-Type"] -eq "application/json"
                 }
             }
         }
@@ -105,6 +115,7 @@ InModuleScope CompositeRegistrationFunctions {
                 }
             }
 
+            $script:ApiKey = "SomeApiKey"
             $result = Invoke-CompositeApiRegistrationRequest -Url https://some/api -Method Patch
 
             It "should return null" {
@@ -115,7 +126,9 @@ InModuleScope CompositeRegistrationFunctions {
                 Assert-MockCalled  Invoke-WebRequest -Exactly 1 -ParameterFilter {
                     $Uri -eq "https://some/api" -and `
                     $Method -eq "Patch" -and `
-                    $UseBasicParsing -eq $true
+                    $UseBasicParsing -eq $true -and `
+                    $Headers["Ocp-Apim-Subscription-Key"] -eq "SomeApiKey" -and `
+                    $Headers["Content-Type"] -eq "application/json"
                 }
             }
         }
@@ -127,6 +140,7 @@ InModuleScope CompositeRegistrationFunctions {
                 }
             }
 
+            $script:ApiKey = "SomeApiKey"
             $result = Invoke-CompositeApiRegistrationRequest -Url https://some/api -Method Patch
 
             It "should return deserialise the returned content" {
@@ -137,7 +151,9 @@ InModuleScope CompositeRegistrationFunctions {
                 Assert-MockCalled  Invoke-WebRequest -Exactly 1 -ParameterFilter {
                     $Uri -eq "https://some/api" -and `
                     $Method -eq "Patch" -and `
-                    $UseBasicParsing -eq $true
+                    $UseBasicParsing -eq $true -and `
+                    $Headers["Ocp-Apim-Subscription-Key"] -eq "SomeApiKey" -and `
+                    $Headers["Content-Type"] -eq "application/json"
                 }
             }
         }
@@ -145,7 +161,7 @@ InModuleScope CompositeRegistrationFunctions {
 
     Describe "Get-PathRegistration" -Tag "Unit" {        
         Context "When getting a path registration" {
-            New-RegistrationContext -PathApiUrl https://path-api/api -RegionApiUrl https://region-api/api
+            New-RegistrationContext -PathApiUrl https://path-api/api -RegionApiUrl https://region-api/api -ApiKey SomeApiKey
 
             Mock Invoke-CompositeApiRegistrationRequest 
             
@@ -163,7 +179,7 @@ InModuleScope CompositeRegistrationFunctions {
 
     Describe "Get-RegionRegistration" -Tag "Unit" {        
         Context "When getting a region registration" {
-            New-RegistrationContext -PathApiUrl https://path-api/api -RegionApiUrl https://region-api/api
+            New-RegistrationContext -PathApiUrl https://path-api/api -RegionApiUrl https://region-api/api -ApiKey SomeApiKey
 
             Mock Invoke-CompositeApiRegistrationRequest 
             
@@ -196,7 +212,7 @@ InModuleScope CompositeRegistrationFunctions {
         }
 
         Context "When creating a new path registration" {
-            New-RegistrationContext -PathApiUrl https://path-api/api -RegionApiUrl https://region-api/api
+            New-RegistrationContext -PathApiUrl https://path-api/api -RegionApiUrl https://region-api/api -ApiKey SomeApiKey
             Mock Invoke-CompositeApiRegistrationRequest 
             Mock ConvertTo-Json 
 
@@ -228,7 +244,7 @@ InModuleScope CompositeRegistrationFunctions {
         }
 
         Context "When creating a new region registration" {
-            New-RegistrationContext -PathApiUrl https://path-api/api -RegionApiUrl https://region-api/api
+            New-RegistrationContext -PathApiUrl https://path-api/api -RegionApiUrl https://region-api/api -ApiKey SomeApiKey
             Mock Invoke-CompositeApiRegistrationRequest 
             Mock ConvertTo-Json 
 
@@ -248,7 +264,7 @@ InModuleScope CompositeRegistrationFunctions {
     }
 
     Describe "Update-PathRegistration" -Tag "Unit" {
-        New-RegistrationContext -PathApiUrl https://path-api/api -RegionApiUrl https://region-api/api
+        New-RegistrationContext -PathApiUrl https://path-api/api -RegionApiUrl https://region-api/api -ApiKey SomeApiKey
         Mock Invoke-CompositeApiRegistrationRequest 
         Mock ConvertTo-Json 
     
@@ -267,7 +283,7 @@ InModuleScope CompositeRegistrationFunctions {
     }
 
     Describe "Update-RegionRegistration" -Tag "Unit" {
-        New-RegistrationContext -PathApiUrl https://path-api/api -RegionApiUrl https://region-api/api
+        New-RegistrationContext -PathApiUrl https://path-api/api -RegionApiUrl https://region-api/api -ApiKey SomeApiKey
         Mock Invoke-CompositeApiRegistrationRequest 
         Mock ConvertTo-Json 
     

@@ -15,6 +15,9 @@ Url for the Path registration API
 .PARAMETER RegionApiUrl
 Url for the Region registration API
 
+.PARAMETER ApiKey
+The Api Key for the APIM instance hosting both apis
+
 .EXAMPLE
  New-RegistrationContext -PathApiUrl "https://api.example.com/path/api" -RegionApiUrl "https://api.example.com/region/api"
 #>
@@ -22,11 +25,14 @@ Url for the Region registration API
         [Parameter(Mandatory=$true)]
         [string] $PathApiUrl,
         [Parameter(Mandatory=$true)]
-        [string] $RegionApiUrl
+        [string] $RegionApiUrl,
+        [Parameter(Mandatory=$true)]
+        [string] $ApiKey
     )
 
     $script:PathApiUrl = $PathApiUrl
     $script:RegionApiUrl = $RegionApiUrl
+    $script:ApiKey = $ApiKey
 }
 
 [CmdletBinding]
@@ -69,9 +75,15 @@ Invoke-CompositeApiRegistrationApiRequest -Url "https://api.example.com/path/som
 
     Write-Verbose "Performing $Method request against '$Url'."
 
+    $authHeader = @{"Ocp-Apim-Subscription-Key" = $script:ApiKey }
+    $authHeaderWithContentType = @{
+        "Ocp-Apim-Subscription-Key" = $script:ApiKey
+        "Content-Type" = "application/json"
+    }
+
     switch($Method) {
         "GET" {
-            $result = Invoke-WebRequest -Method Get -Uri $Url -UseBasicParsing
+            $result = Invoke-WebRequest -Method Get -Uri $Url -UseBasicParsing -Headers $authHeader
 
             if($result.StatusCode -eq 204) { 
                 return $null
@@ -82,7 +94,7 @@ Invoke-CompositeApiRegistrationApiRequest -Url "https://api.example.com/path/som
             return $entity
         }
         "POST" {
-            $result = Invoke-WebRequest -Method Post -Uri $Url -Body $RequestBody -Headers @{ "Content-Type" = "application/json" } -UseBasicParsing
+            $result = Invoke-WebRequest -Method Post -Uri $Url -Body $RequestBody -Headers $authHeaderWithContentType -UseBasicParsing
 
             if($result.StatusCode -eq 201) { 
                 $entity = ConvertFrom-Json $result.Content
@@ -93,7 +105,7 @@ Invoke-CompositeApiRegistrationApiRequest -Url "https://api.example.com/path/som
             return $null
         }
         "PATCH" {
-            $result = Invoke-WebRequest -Method Patch -Uri $Url -Body $RequestBody -Headers @{ "Content-Type" = "application/json" } -UseBasicParsing
+            $result = Invoke-WebRequest -Method Patch -Uri $Url -Body $RequestBody -Headers $authHeaderWithContentType -UseBasicParsing
 
             if($result.StatusCode -eq 200) { 
                 $entity = ConvertFrom-Json $result.Content
