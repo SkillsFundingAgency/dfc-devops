@@ -15,6 +15,9 @@ Url for the Path registration API
 .PARAMETER RegionApiUrl
 Url for the Region registration API
 
+.PARAMETER ApiKey
+The Api Key for the APIM instance hosting both apis
+
 .EXAMPLE
  New-RegistrationContext -PathApiUrl "https://api.example.com/path/api" -RegionApiUrl "https://api.example.com/region/api"
 #>
