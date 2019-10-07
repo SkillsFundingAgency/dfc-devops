@@ -92,7 +92,7 @@
             "properties": {
                 "serverFarmId": "[variables('appServicePlanId')]",
                 "clientAffinityEnabled": "[parameters('clientAffinity')]",
-                "siteConfig": "[variables('siteConfig').withSettings]",
+                "siteConfig": "[variables('siteConfig').withoutSettings]",
                 "httpsOnly": true
             },
             "resources": [
