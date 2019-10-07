@@ -68,7 +68,19 @@
     },
     "variables": {
         "useCustomHostname": "[greater(length(parameters('customHostname')), 0)]",
-        "appServicePlanId": "[resourceId(parameters('appServicePlanResourceGroup'), 'Microsoft.Web/serverfarms', parameters('appServicePlanName'))]"
+        "appServicePlanId": "[resourceId(parameters('appServicePlanResourceGroup'), 'Microsoft.Web/serverfarms', parameters('appServicePlanName'))]",
+        "siteConfig": {
+            "withSettings": {
+                    "alwaysOn": true,
+                    "appSettings": "[parameters('appServiceAppSettings')]",
+                    "connectionStrings": "[parameters('appServiceConnectionStrings')]",
+                    "phpVersion": "off"
+            },
+            "withoutSettings": {
+                    "alwaysOn": true,
+                    "phpVersion": "off"
+            }
+        }
     },
     "resources": [
         {
@@ -80,12 +92,7 @@
             "properties": {
                 "serverFarmId": "[variables('appServicePlanId')]",
                 "clientAffinityEnabled": "[parameters('clientAffinity')]",
-                "siteConfig": {
-                    "alwaysOn": true,
-                    "appSettings": "[parameters('appServiceAppSettings')]",
-                    "connectionStrings": "[parameters('appServiceConnectionStrings')]",
-                    "phpVersion": "off"
-                },
+                "siteConfig": "[if(parameters('deployStagingSlot'), variables('siteConfig').withoutSettings, variables('siteConfig').withSettings)]",
                 "httpsOnly": true
             },
             "resources": [
