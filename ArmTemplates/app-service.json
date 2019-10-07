@@ -92,7 +92,7 @@
             "properties": {
                 "serverFarmId": "[variables('appServicePlanId')]",
                 "clientAffinityEnabled": "[parameters('clientAffinity')]",
-                "siteConfig": "[variables('siteConfig').withoutSettings]",
+                "siteConfig": "[if(parameters('deployStagingSlot'), variables('siteConfig').withoutSettings, variables('siteConfig').withSettings)]",
                 "httpsOnly": true
             },
             "resources": [
@@ -105,6 +105,8 @@
                     "properties": {
                         "clientAffinityEnabled": "[parameters('clientAffinity')]",
                         "siteConfig": {
+                            "appSettings": "[parameters('appServiceAppSettings')]",
+                            "connectionStrings": "[parameters('appServiceConnectionStrings')]",
                             "phpVersion": "off"
                         }
                     },
