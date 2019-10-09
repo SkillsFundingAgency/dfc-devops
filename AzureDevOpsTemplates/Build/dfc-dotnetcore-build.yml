@@ -9,11 +9,11 @@ parameters:
 steps:
  - task: DotNetCoreInstaller@0
    displayName: 'Use .NET Core sdk ${{ parameters.DotNetCoreVersion }}'
-   condition: ne('', ${{ parameters.DotNetCoreVersion }})
+   condition: ne('', '${{ parameters.DotNetCoreVersion }}')
    inputs:
      version: ${{ parameters.DotNetCoreVersion }}
  - task: gittools.gitversion.gitversion-task.GitVersion@4
-   displayName: First non-conditioned task GitVersion
+   displayName: GitVersion
    inputs:
      preferBundledVersion: false
 
