@@ -14,7 +14,7 @@
         },
         "containerRegistryServer": {
             "type": "string",
-            "defaultValue": ""
+            "defaultValue": "hub.docker.com"
         },
         "containerRegistryUsername": {
             "type": "string",
