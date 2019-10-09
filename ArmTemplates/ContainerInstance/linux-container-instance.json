@@ -93,7 +93,7 @@
                 "name": "TcpPorts",
                 "count": "[length(parameters('tcpPorts'))]",
                 "input": {
-                    "port": "[copyIndex('TcpPorts')]",
+                    "port": "[parameters('tcpPorts')[copyIndex('TcpPorts')]]",
                     "protocol": "TCP"
                 }
             }
