@@ -71,6 +71,21 @@
                 "type": "None"
             }
         },
+        "ImageRegistryCredentials": {
+            "withPassword": [
+                {
+                    "server": "[parameters('containerRegistryServer')]",
+                    "username": "[parameters('containerRegistryUsername')]",
+                    "password": "[parameters('containerRegistryPassword')]"
+                }
+            ],
+            "withoutPassword": [
+                {
+                    "server": "[parameters('containerRegistryServer')]",
+                    "username": "[parameters('containerRegistryUsername')]",
+                }
+            ]
+        },
         "ManagedIdentityName": "[concat(parameters('containerName'), '-umi')]",
         "copy": [
             {
@@ -115,13 +130,7 @@
                     "dnsNameLabel": "[parameters('containerName')]",
                     "ports": "[if(equals(parameters('tcpPorts')[0], 0), createArray(''), variables('TcpPorts'))]"
                 },
-                "imageRegistryCredentials": [
-                    {
-                        "server": "[parameters('containerRegistryServer')]",
-                        "username": "[parameters('containerRegistryUsername')]",
-                        "password": "[parameters('containerRegistryPassword')]"
-                    }
-                ],
+                "imageRegistryCredentials": "[if(equals(parameters('containerRegistryPassword'), ''), variables('ImageRegistryCredentials').withoutPassword, variables('ImageRegistryCredentials').withPassword)]",
                 "osType": "Linux",
                 "restartPolicy": "[parameters('restartPolicy')]"
             }
