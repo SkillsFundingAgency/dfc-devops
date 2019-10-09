@@ -23,6 +23,14 @@
         "cpu": {
             "type": "int"
         },
+        "ipAddressType": {
+            "type": "string",
+            "allowedValues": [
+                "Private",
+                "Public"
+            ],
+            "defaultValue": "Private"
+        },
         "managedIdentity": {
             "type": "bool",
             "defaultValue": false
@@ -99,7 +107,11 @@
                         }
                     }
                 ],
-                "osType": "Linux",
+                "ipAddress": {
+                    "type": "[parameters('ipAddressType')]",
+                    "dnsNameLabel": "[parameters('containerName')]",
+                    "ports": "[if(equals(parameters('tcpPorts')[0], 0), createArray(''), variables('TcpPorts'))]"
+                },
                 "imageRegistryCredentials": [
                     {
                         "server": "[parameters('containerRegistryServer')]",
@@ -107,6 +119,7 @@
                         "password": "[parameters('containerRegistryPassword')]"
                     }
                 ],
+                "osType": "Linux",
                 "restartPolicy": "[parameters('restartPolicy')]"
             }
         },
