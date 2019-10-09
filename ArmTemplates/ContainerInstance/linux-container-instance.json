@@ -131,7 +131,6 @@
                     "dnsNameLabel": "[parameters('containerName')]",
                     "ports": "[if(equals(parameters('tcpPorts')[0], 0), createArray(''), variables('TcpPorts'))]"
                 },
-                "imageRegistryCredentials": "[if(equals(parameters('containerRegistryPassword'), ''), variables('ImageRegistryCredentials').withoutPassword, variables('ImageRegistryCredentials').withPassword)]",
                 "osType": "Linux",
                 "restartPolicy": "[parameters('restartPolicy')]"
             }
