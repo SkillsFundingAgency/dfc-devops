@@ -39,7 +39,13 @@
             "type": "string"
         },
         "environmentVariables": {
-            "type": "secureObject"
+            "type": "secureObject",
+            "defaultValue": {
+                "variables": []
+            },
+            "metadata": {
+                "description": "See documentation file linux-container-instance.md for information on how to correctly format this parameter."
+            }
         },
         "restartPolicy": {
             "type": "string",
@@ -126,6 +132,7 @@
                         }
                     }
                 ],
+                "imageRegistryCredentials": "[if(equals(parameters('containerRegistryPassword'), ''), variables('ImageRegistryCredentials').withoutPassword, variables('ImageRegistryCredentials').withPassword)]",
                 "ipAddress": {
                     "type": "[parameters('ipAddressType')]",
                     "dnsNameLabel": "[parameters('containerName')]",

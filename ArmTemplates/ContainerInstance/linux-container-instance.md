@@ -36,6 +36,8 @@ environmentVariables  (optional) secureObject
 
 An object that has a single property (variables) whose value is an array of Name \ Value pairs.  The Value of each pair can either be a "value" or a "secureValue".  Documentation on environment variables can be found here: https://docs.microsoft.com/en-us/azure/templates/microsoft.containerinstance/2018-10-01/containergroups#EnvironmentVariable
 
+If you pass in an incorrectly formated object then the error returned will include the message "The language expression property 'variables' doesn't exist"
+
 Example environmentVariables parameter:
 
 ````
