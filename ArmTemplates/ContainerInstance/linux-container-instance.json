@@ -41,10 +41,13 @@
                 "OnFailure"
             ],
             "defaultValue": "Never"
+        },
+        "tcpPorts": {
+            "type": "array",
+            "defaultValue": [ 0 ]
         }
     },
     "variables": {
-        "ManagedIdentityName": "[concat(parameters('containerName'), '-umi')]",
         "IdentityProperties": "[if(parameters('managedIdentity'), variables('IdentityTypes').ManagedIdentity, variables('IdentityTypes').NoIdentity)]",
         "IdentityTypes": {
             "ManagedIdentity": {
@@ -56,7 +59,18 @@
             "NoIdentity": {
                 "type": "None"
             }
-        }
+        },
+        "ManagedIdentityName": "[concat(parameters('containerName'), '-umi')]",
+        "copy": [
+            {
+                "name": "TcpPorts",
+                "count": "[length(parameters('tcpPorts'))]",
+                "input": { 
+                    "port": "[copyIndex('TcpPorts')]",
+                    "protocol": "TCP"
+                }
+            }
+        ]
     },
     "resources": [
         {
@@ -74,8 +88,7 @@
                         "name": "[parameters('containerName')]",
                         "properties": {
                             "image": "[parameters('appContainerRegistryImage')]",
-                            "ports": [
-                            ],
+                            "ports": "[if(equals(parameters('tcpPorts')[0], 0), createArray(''), variables('TcpPorts'))]",
                             "environmentVariables": "[parameters('environmentVariables').variables]",
                             "resources": {
                                 "requests": {
