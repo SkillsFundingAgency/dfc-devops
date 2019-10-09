@@ -36,7 +36,7 @@
             "defaultValue": false
         },
         "memoryInGb": {
-            "type":"string"
+            "type": "string"
         },
         "environmentVariables": {
             "type": "secureObject"
@@ -52,7 +52,9 @@
         },
         "tcpPorts": {
             "type": "array",
-            "defaultValue": [ 0 ]
+            "defaultValue": [
+                0
+            ]
         }
     },
     "variables": {
@@ -61,19 +63,27 @@
             "ManagedIdentity": {
                 "type": "UserAssigned",
                 "userAssignedIdentities": {
-                    "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities/', variables('ManagedIdentityName'))]": {}
+                    "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities/', variables('ManagedIdentityName'))]": {
+                    }
                 }
             },
             "NoIdentity": {
                 "type": "None"
             }
         },
+        "ImageRegistryCredentials": [
+            {
+                "server": "[parameters('containerRegistryServer')]",
+                "username": "[parameters('containerRegistryUsername')]",
+                "password": "[parameters('containerRegistryPassword')]"
+            }
+        ],
         "ManagedIdentityName": "[concat(parameters('containerName'), '-umi')]",
         "copy": [
             {
                 "name": "TcpPorts",
                 "count": "[length(parameters('tcpPorts'))]",
-                "input": { 
+                "input": {
                     "port": "[copyIndex('TcpPorts')]",
                     "protocol": "TCP"
                 }
@@ -86,7 +96,7 @@
             "type": "Microsoft.ContainerInstance/containerGroups",
             "dependsOn": [
                 "[variables('ManagedIdentityName')]"
-            ],  
+            ],
             "apiVersion": "2018-10-01",
             "location": "[resourceGroup().location]",
             "identity": "[variables('IdentityProperties')]",
@@ -112,13 +122,7 @@
                     "dnsNameLabel": "[parameters('containerName')]",
                     "ports": "[if(equals(parameters('tcpPorts')[0], 0), createArray(''), variables('TcpPorts'))]"
                 },
-                "imageRegistryCredentials": [
-                    {
-                        "server": "[parameters('containerRegistryServer')]",
-                        "username": "[parameters('containerRegistryUsername')]",
-                        "password": "[parameters('containerRegistryPassword')]"
-                    }
-                ],
+                "imageRegistryCredentials": "[if(greater(length(parameters('containerRegistryServer')), 0), variables('ImageRegistryCredentials'), createArray(''))]",
                 "osType": "Linux",
                 "restartPolicy": "[parameters('restartPolicy')]"
             }
@@ -129,7 +133,8 @@
             "condition": "[parameters('managedIdentity')]",
             "apiVersion": "2018-11-30",
             "location": "[resourceGroup().location]",
-            "properties": {}
+            "properties": {
+            }
         }
     ],
     "outputs": {
