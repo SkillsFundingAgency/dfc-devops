@@ -18,7 +18,7 @@
         },
         "containerRegistryUsername": {
             "type": "string",
-            "defaultValue": ""
+            "defaultValue": "username"
         },
         "cpu": {
             "type": "int"
@@ -71,13 +71,6 @@
                 "type": "None"
             }
         },
-        "ImageRegistryCredentials": [
-            {
-                "server": "[parameters('containerRegistryServer')]",
-                "username": "[parameters('containerRegistryUsername')]",
-                "password": "[parameters('containerRegistryPassword')]"
-            }
-        ],
         "ManagedIdentityName": "[concat(parameters('containerName'), '-umi')]",
         "copy": [
             {
@@ -122,7 +115,13 @@
                     "dnsNameLabel": "[parameters('containerName')]",
                     "ports": "[if(equals(parameters('tcpPorts')[0], 0), createArray(''), variables('TcpPorts'))]"
                 },
-                "imageRegistryCredentials": "[if(greater(length(parameters('containerRegistryServer')), 0), variables('ImageRegistryCredentials'), json('null'))]",
+                "imageRegistryCredentials": [
+                    {
+                        "server": "[parameters('containerRegistryServer')]",
+                        "username": "[parameters('containerRegistryUsername')]",
+                        "password": "[parameters('containerRegistryPassword')]"
+                    }
+                ],
                 "osType": "Linux",
                 "restartPolicy": "[parameters('restartPolicy')]"
             }
