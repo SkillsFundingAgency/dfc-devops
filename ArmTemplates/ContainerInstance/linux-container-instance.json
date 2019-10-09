@@ -9,13 +9,16 @@
             "type": "string"
         },
         "containerRegistryPassword": {
-            "type": "securestring"
+            "type": "securestring",
+            "defaultValue": ""
         },
         "containerRegistryServer": {
-            "type": "string"
+            "type": "string",
+            "defaultValue": ""
         },
         "containerRegistryUsername": {
-            "type": "string"
+            "type": "string",
+            "defaultValue": ""
         },
         "cpu": {
             "type": "int"
