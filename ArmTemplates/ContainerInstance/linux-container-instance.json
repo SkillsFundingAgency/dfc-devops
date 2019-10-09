@@ -82,7 +82,8 @@
             "withoutPassword": [
                 {
                     "server": "[parameters('containerRegistryServer')]",
-                    "username": "[parameters('containerRegistryUsername')]"
+                    "username": "[parameters('containerRegistryUsername')]",
+                    "password": "not-a-real-password"
                 }
             ]
         },
