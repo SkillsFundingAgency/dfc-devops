@@ -149,6 +149,7 @@
     "outputs": {
         "ManagedIdentityObjectId": {
             "type": "string",
+            "condition": "[parameters('managedIdentity')]",
             "value": "[reference(concat('Microsoft.ManagedIdentity/userAssignedIdentities/', variables('ManagedIdentityName')), '2018-11-30').principalId]"
         }
     }
