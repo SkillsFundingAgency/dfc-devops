@@ -13,7 +13,7 @@ steps:
    inputs:
      version: ${{ parameters.DotNetCoreVersion }}
  - task: gittools.gitversion.gitversion-task.GitVersion@4
-   displayName: GitVersion
+   displayName: First non-conditioned task GitVersion
    inputs:
      preferBundledVersion: false
 
