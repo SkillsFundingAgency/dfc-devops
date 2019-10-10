@@ -127,7 +127,7 @@
             ]
         },
         "ManagedIdentityName": "[concat(parameters('containerName'), '-umi')]",
-        "StorageAccountMountedFileShareName": "[concat('FileShare-', parameters('storageAccountFileShareName'))]",
+        "StorageAccountMountedFileShareName": "[concat('fileshare-', parameters('storageAccountFileShareName'))]",
         "VolumeMounts": {
             "NoMountedVolume": [],
             "MountedFileShare": [
