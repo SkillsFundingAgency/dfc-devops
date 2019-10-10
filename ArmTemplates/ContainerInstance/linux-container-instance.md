@@ -12,18 +12,6 @@ appContainerRegistryImage (required) string
 
 Name of the Image that will be used to create the Container.  Needs to be the full name of the Image, eg foosharedcr.azurecr.io/bar-app:latest
 
-containerRegistryPassword (required) securestring
-
-Password to the Container Registry
-
-containerRegistryServer (required) string
-
-Server name of the Container Registry
-
-containerRegistryUsername (required) string
-
-Usename of the Container Registry
-
 cpu (required) int
 
 The number of vCPU cores assigned to the Container Instance.
@@ -31,6 +19,18 @@ The number of vCPU cores assigned to the Container Instance.
 memoryInGb (required) string
 
 The amount of memory assigned to the Container Instance.  Value can be either an int or a decimal (a number in ARM terminology).  Parameter type is string so that both can be accomodated.
+
+containerRegistryPassword (optional) securestring
+
+Password to the Container Registry
+
+containerRegistryServer (optional) string
+
+Server name of the Container Registry.  The template requires a container registry even if a private registry is not being used, the default value is therefore "hub.docker.com" even though the image registry credentials will not be used if Docker Hub is the image source.
+
+containerRegistryUsername (optional) string
+
+Usename of the Container Registry.  The template requires a username even if a private registry is not being used, the default value is therefore "username"
 
 environmentVariables  (optional) secureObject
 
@@ -57,6 +57,10 @@ Example environmentVariables parameter:
         }
 ````
 
+ipAddressType (optional) string
+
+Allowed values are "Private" and "Public", defaults to "Private".  If set to "Public" an array of tcpPorts must also be passed in as a parameter.
+
 managedIdentity (optional) bool
 
 The default value is false.  If set to true a Managed Identity will be created in the same Resource Group and assigned to the container.
@@ -80,3 +84,7 @@ The file share that will be mounted to the container.  Requires storageAccountTo
 storageAccountKey (optional) securestring
 
 The key for storage account containing the file share that will be available to mount to the container.
+
+tcpPorts (optional) array
+
+An array of ints that will set the port(s) exposed by the container internally within the container group and also by the container group to the internet.  Defaults to [ 0 ] to workaround the copy function limitation that errors if the copy length is 0.  Default value can be removed when this limitation is fixed (currently fixed in PowerShell but not the Azure DevOps task).

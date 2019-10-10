@@ -23,6 +23,9 @@
         "cpu": {
             "type": "int"
         },
+        "memoryInGb": {
+            "type": "string"
+        },
         "ipAddressType": {
             "type": "string",
             "allowedValues": [
@@ -35,9 +38,7 @@
             "type": "bool",
             "defaultValue": false
         },
-        "memoryInGb": {
-            "type": "string"
-        },
+
         "environmentVariables": {
             "type": "secureObject",
             "defaultValue": {
