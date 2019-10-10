@@ -9,26 +9,49 @@
             "type": "string"
         },
         "containerRegistryPassword": {
-            "type": "securestring"
+            "type": "securestring",
+            "defaultValue": ""
         },
         "containerRegistryServer": {
-            "type": "string"
+            "type": "string",
+            "defaultValue": "hub.docker.com"
         },
         "containerRegistryUsername": {
-            "type": "string"
+            "type": "string",
+            "defaultValue": "username"
         },
         "cpu": {
             "type": "int"
+        },
+        "memoryInGb": {
+            "type": "string"
+        },
+        "ipAddressType": {
+            "type": "string",
+            "allowedValues": [
+                "Private",
+                "Public"
+            ],
+            "defaultValue": "Private"
         },
         "managedIdentity": {
             "type": "bool",
             "defaultValue": false
         },
-        "memoryInGb": {
-            "type":"string"
-        },
+
         "environmentVariables": {
-            "type": "secureObject"
+            "type": "secureObject",
+            "defaultValue": {
+                "variables": [
+                ]
+            },
+            "metadata": {
+                "description": "See documentation file linux-container-instance.md for information on how to correctly format this parameter."
+            }
+        },
+        "mountedVolumeMountPath": {
+            "type": "string",
+            "defaultValue": ""
         },
         "restartPolicy": {
             "type": "string",
@@ -38,22 +61,94 @@
                 "OnFailure"
             ],
             "defaultValue": "Never"
+        },
+        "storageAccountToMount": {
+            "type": "string",
+            "defaultValue": ""
+        },
+        "storageAccountFileShareName": {
+            "type": "string",
+            "defaultValue": ""
+        },
+        "storageAccountKey": {
+            "type": "securestring",
+            "defaultValue": ""
+        },
+        "tcpPorts": {
+            "type": "array",
+            "defaultValue": [
+                0
+            ]
         }
     },
     "variables": {
-        "ManagedIdentityName": "[concat(parameters('containerName'), '-umi')]",
+        "GroupVolumes": {
+            "EmptyVolume": {
+                "name": "novolume",
+                "emptyDir": {
+                }
+            },
+            "StorageAccountVolume": {
+                "name": "[variables('StorageAccountMountedFileShareName')]",
+                "azureFile": {
+                    "readOnly": false,
+                    "shareName": "[parameters('storageAccountFileShareName')]",
+                    "storageAccountName": "[parameters('storageAccountToMount')]",
+                    "storageAccountKey": "[parameters('storageAccountKey')]"
+                }
+            }
+        },
         "IdentityProperties": "[if(parameters('managedIdentity'), variables('IdentityTypes').ManagedIdentity, variables('IdentityTypes').NoIdentity)]",
         "IdentityTypes": {
             "ManagedIdentity": {
                 "type": "UserAssigned",
                 "userAssignedIdentities": {
-                    "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities/', variables('ManagedIdentityName'))]": {}
+                    "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities/', variables('ManagedIdentityName'))]": {
+                    }
                 }
             },
             "NoIdentity": {
                 "type": "None"
             }
-        }
+        },
+        "ImageRegistryCredentials": {
+            "withPassword": [
+                {
+                    "server": "[parameters('containerRegistryServer')]",
+                    "username": "[parameters('containerRegistryUsername')]",
+                    "password": "[parameters('containerRegistryPassword')]"
+                }
+            ],
+            "withoutPassword": [
+                {
+                    "server": "[parameters('containerRegistryServer')]",
+                    "username": "[parameters('containerRegistryUsername')]",
+                    "password": "not-a-real-password"
+                }
+            ]
+        },
+        "ManagedIdentityName": "[concat(parameters('containerName'), '-umi')]",
+        "StorageAccountMountedFileShareName": "[concat('fileshare-', parameters('storageAccountFileShareName'))]",
+        "VolumeMounts": {
+            "NoMountedVolume": [],
+            "MountedFileShare": [
+                {
+                    "name": "[variables('StorageAccountMountedFileShareName')]",
+                    "mountPath": "[parameters('mountedVolumeMountPath')]",
+                    "readOnly": false
+                }
+            ]
+        },
+        "copy": [
+            {
+                "name": "TcpPorts",
+                "count": "[length(parameters('tcpPorts'))]",
+                "input": {
+                    "port": "[parameters('tcpPorts')[copyIndex('TcpPorts')]]",
+                    "protocol": "TCP"
+                }
+            }
+        ]
     },
     "resources": [
         {
@@ -61,7 +156,7 @@
             "type": "Microsoft.ContainerInstance/containerGroups",
             "dependsOn": [
                 "[variables('ManagedIdentityName')]"
-            ],  
+            ],
             "apiVersion": "2018-10-01",
             "location": "[resourceGroup().location]",
             "identity": "[variables('IdentityProperties')]",
@@ -71,27 +166,29 @@
                         "name": "[parameters('containerName')]",
                         "properties": {
                             "image": "[parameters('appContainerRegistryImage')]",
-                            "ports": [
-                            ],
+                            "ports": "[if(equals(parameters('tcpPorts')[0], 0), createArray(''), variables('TcpPorts'))]",
                             "environmentVariables": "[parameters('environmentVariables').variables]",
                             "resources": {
                                 "requests": {
                                     "cpu": "[parameters('cpu')]",
                                     "memoryInGb": "[parameters('memoryInGb')]"
                                 }
-                            }
+                            },
+                            "volumeMounts": "[if(equals(parameters('mountedVolumeMountPath'), ''), variables('VolumeMounts').NoMountedVolume, variables('VolumeMounts').MountedFileShare)]"
                         }
                     }
                 ],
+                "imageRegistryCredentials": "[if(equals(parameters('containerRegistryPassword'), ''), variables('ImageRegistryCredentials').withoutPassword, variables('ImageRegistryCredentials').withPassword)]",
+                "ipAddress": {
+                    "type": "[parameters('ipAddressType')]",
+                    "dnsNameLabel": "[parameters('containerName')]",
+                    "ports": "[if(equals(parameters('tcpPorts')[0], 0), createArray(''), variables('TcpPorts'))]"
+                },
                 "osType": "Linux",
-                "imageRegistryCredentials": [
-                    {
-                        "server": "[parameters('containerRegistryServer')]",
-                        "username": "[parameters('containerRegistryUsername')]",
-                        "password": "[parameters('containerRegistryPassword')]"
-                    }
-                ],
-                "restartPolicy": "[parameters('restartPolicy')]"
+                "restartPolicy": "[parameters('restartPolicy')]",
+                "volumes": [
+                    "[if(equals(parameters('storageAccountFileShareName'), ''), variables('GroupVolumes').EmptyVolume, variables('GroupVolumes').StorageAccountVolume)]"
+                ]
             }
         },
         {
@@ -100,12 +197,14 @@
             "condition": "[parameters('managedIdentity')]",
             "apiVersion": "2018-11-30",
             "location": "[resourceGroup().location]",
-            "properties": {}
+            "properties": {
+            }
         }
     ],
     "outputs": {
         "ManagedIdentityObjectId": {
             "type": "string",
+            "condition": "[parameters('managedIdentity')]",
             "value": "[reference(concat('Microsoft.ManagedIdentity/userAssignedIdentities/', variables('ManagedIdentityName')), '2018-11-30').principalId]"
         }
     }
