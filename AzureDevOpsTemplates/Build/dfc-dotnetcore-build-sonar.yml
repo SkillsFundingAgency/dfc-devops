@@ -2,12 +2,13 @@ parameters:
   SolutionBaseName: ''
   BuildPlatform: 'any cpu'
   BuildConfiguration: 'release'
-  DotNetCoreVersion: '2.2.101'
+  DotNetCoreVersion: ''
   PublishWebApp: 'false'
 
 steps:
  - task: DotNetCoreInstaller@0
    displayName: 'Use .NET Core sdk ${{ parameters.DotNetCoreVersion }}'
+   condition: ne('', '${{ parameters.DotNetCoreVersion }}')
    inputs:
      version: ${{ parameters.DotNetCoreVersion }}
  - task: gittools.gitversion.gitversion-task.GitVersion@4

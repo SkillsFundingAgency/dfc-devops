@@ -2,13 +2,20 @@ parameters:
   SolutionBaseName: ''
   BuildPlatform: 'any cpu'
   BuildConfiguration: 'release'
+  DotNetCoreVersion: ''
   PublishWebApp: 'false'
 
 steps:
+ - task: DotNetCoreInstaller@0
+   displayName: 'Use .NET Core sdk ${{ parameters.DotNetCoreVersion }}'
+   condition: ne('', '${{ parameters.DotNetCoreVersion }}')
+   inputs:
+     version: ${{ parameters.DotNetCoreVersion }}
  - task: gittools.gitversion.gitversion-task.GitVersion@4
    displayName: GitVersion
    inputs:
      preferBundledVersion: false
+
  # tasks to package a function app
  - task: DotNetCoreCLI@2
    displayName: 'dotnet build application'
@@ -24,6 +31,7 @@ steps:
      rootFolderOrFile: $(build.artifactstagingdirectory)\Build\
      archiveFile: $(build.artifactstagingdirectory)\Artifact\DeploymentPackages\$(SolutionBaseName).zip
      includeRootFolder: false
+
 # task to package a web app
  - task: DotNetCoreCLI@2
    displayName: 'dotnet publish application'
