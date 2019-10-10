@@ -41,11 +41,16 @@
         "environmentVariables": {
             "type": "secureObject",
             "defaultValue": {
-                "variables": []
+                "variables": [
+                ]
             },
             "metadata": {
                 "description": "See documentation file linux-container-instance.md for information on how to correctly format this parameter."
             }
+        },
+        "mountedVolumeMountPath": {
+            "type": "string",
+            "defaultValue": ""
         },
         "restartPolicy": {
             "type": "string",
@@ -56,6 +61,18 @@
             ],
             "defaultValue": "Never"
         },
+        "storageAccountToMount": {
+            "type": "string",
+            "defaultValue": ""
+        },
+        "storageAccountFileShareName": {
+            "type": "string",
+            "defaultValue": ""
+        },
+        "storageAccountKey": {
+            "type": "securestring",
+            "defaultValue": ""
+        },
         "tcpPorts": {
             "type": "array",
             "defaultValue": [
@@ -64,6 +81,22 @@
         }
     },
     "variables": {
+        "GroupVolumes": {
+            "EmptyVolume": {
+                "name": "novolume",
+                "emptyDir": {
+                }
+            },
+            "StorageAccountVolume": {
+                "name": "[variables('StorageAccountMountedFileShareName')]",
+                "azureFile": {
+                    "readOnly": false,
+                    "shareName": "[parameters('storageAccountFileShareName')]",
+                    "storageAccountName": "[parameters('storageAccountToMount')]",
+                    "storageAccountKey": "[parameters('storageAccountKey')]"
+                }
+            }
+        },
         "IdentityProperties": "[if(parameters('managedIdentity'), variables('IdentityTypes').ManagedIdentity, variables('IdentityTypes').NoIdentity)]",
         "IdentityTypes": {
             "ManagedIdentity": {
@@ -94,6 +127,17 @@
             ]
         },
         "ManagedIdentityName": "[concat(parameters('containerName'), '-umi')]",
+        "StorageAccountMountedFileShareName": "[concat('FileShare-', parameters('storageAccountFileShareName'))]",
+        "VolumeMounts": {
+            "NoMountedVolume": [],
+            "MountedFileShare": [
+                {
+                    "name": "[parameters('mountedVolumeMountPath')]",
+                    "mountPath": "[variables('StorageAccountMountedFileShareName')]",
+                    "readOnly": false
+                }
+            ]
+        },
         "copy": [
             {
                 "name": "TcpPorts",
@@ -128,7 +172,8 @@
                                     "cpu": "[parameters('cpu')]",
                                     "memoryInGb": "[parameters('memoryInGb')]"
                                 }
-                            }
+                            },
+                            "volumeMounts": "[if(equals(parameters('mountedVolumeMountPath'), ''), variables('VolumeMounts').NoMountedVolume, variables('VolumeMounts').MountedFileShare)]"
                         }
                     }
                 ],
@@ -139,7 +184,10 @@
                     "ports": "[if(equals(parameters('tcpPorts')[0], 0), createArray(''), variables('TcpPorts'))]"
                 },
                 "osType": "Linux",
-                "restartPolicy": "[parameters('restartPolicy')]"
+                "restartPolicy": "[parameters('restartPolicy')]",
+                "volumes": [
+                    "[if(equals(parameters('storageAccountFileShareName'), ''), variables('GroupVolumes').EmptyVolume, variables('GroupVolumes').StorageAccountVolume)]"
+                ]
             }
         },
         {

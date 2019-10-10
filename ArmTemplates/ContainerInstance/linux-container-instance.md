@@ -61,6 +61,22 @@ managedIdentity (optional) bool
 
 The default value is false.  If set to true a Managed Identity will be created in the same Resource Group and assigned to the container.
 
+mountedVolumeMountPath (optional) string
+
+If a storageAccountFileShareName is specified this parameter is used to specify the path within the container that the file share will be mounted to.
+
 restartPolicy (optional) string
 
 The default value is Never which is overriden from the Azure default of Always.  Containers within this environment are intended to be used for adhoc or occassional jobs, where a permanently available resource is required Azure PaaS services should be the first choice.
+
+storageAccountToMount (optional) string
+
+The storage account containing the file share that will be available to mount to the container.
+
+storageAccountFileShareName (optional) string
+
+The file share that will be mounted to the container.  Requires storageAccountToMount & storageAccountKey.  mountedVolumeMountPath must also be set to mount the container.
+
+storageAccountKey (optional) securestring
+
+The key for storage account containing the file share that will be available to mount to the container.
