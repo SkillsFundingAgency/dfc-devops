@@ -30,7 +30,7 @@ Server name of the Container Registry.  The template requires a container regist
 
 containerRegistryUsername (optional) string
 
-Usename of the Container Registry.  The template requires a username even if a private registry is not being used, the default value is therefore "username"
+Username of the Container Registry.  The template requires a username even if a private registry is not being used, the default value is therefore "username"
 
 environmentVariables  (optional) secureObject
 
