@@ -132,8 +132,8 @@
             "NoMountedVolume": [],
             "MountedFileShare": [
                 {
-                    "name": "[parameters('mountedVolumeMountPath')]",
-                    "mountPath": "[variables('StorageAccountMountedFileShareName')]",
+                    "name": "[variables('StorageAccountMountedFileShareName')]",
+                    "mountPath": "[parameters('mountedVolumeMountPath')]",
                     "readOnly": false
                 }
             ]
