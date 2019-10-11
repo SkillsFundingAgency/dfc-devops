@@ -6,8 +6,8 @@ Describe "Service Bus Topic Deployment Tests" -Tag "Acceptance" {
   
   Context "When an app gateway is deployed with just a single pool" {
     $TemplateParameters = @{
-      servicebusName      = "dfc-foo-bar-ns"
-      serviceBusTopicName = "topic-name"
+      serviceBusNamespaceName = "dfc-foo-bar-ns"
+      serviceBusTopicName     = "topic-name"
     }
     $TestTemplateParams = @{
       ResourceGroupName       = $ResourceGroupName

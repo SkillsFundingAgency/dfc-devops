@@ -4,7 +4,7 @@ Creates a Subscription for an existing ServiceBus Topic.
 
 ## Parameters
 
-servicebusName: (required) string
+serviceBusNamespaceName: (required) string
 
 Name of an existing ServiceBus to create the topic in.
 

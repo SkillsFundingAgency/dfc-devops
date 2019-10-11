@@ -4,7 +4,7 @@ Creates a Topic for an existing ServiceBus.
 
 ## Parameters
 
-servicebusName: (required) string
+serviceBusNamespaceName: (required) string
 
 Name of an existing ServiceBus to create the topic in.
 
