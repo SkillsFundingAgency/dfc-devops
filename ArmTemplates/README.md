@@ -62,6 +62,8 @@ The following templates are available
 * [Service Bus](ServiceBus/service-bus.md)
 * [Service Bus Firewall vNet Rule](ServiceBus/servicebus-firewall-vnetrule.md)
 * [Service Bus Queue Auth Rule](ServiceBus/servicebus-queue-authrule.md)
+* [Service Bus Topic](ServiceBus/servicebus-topic.md)
+* [Service Bus Topic Subscription](ServiceBus/servicebus-topic-subscription.md)
 * [SQL Server Managed Instance](sql-managed-instance.md)
 * [SQL Server](sql-server.md)
 * [SQL Database](SqlServer/sql-database.md)
