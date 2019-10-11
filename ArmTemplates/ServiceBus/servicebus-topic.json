@@ -14,14 +14,14 @@
                 "description": "Topic name to add to Service Bus"
             }
         },
-        "defaultTTL": {
+        "messageDefaultTTL": {
             "type": "string",
             "defaultValue": "P90D",
             "metadata": {
                 "description": "Default time to live (defaults to 90 days)"
             }
         },
-        "maxSize": {
+        "messageMaxSizeMb": {
             "type": "int",
             "defaultValue": 1024,
             "metadata": {
@@ -36,8 +36,8 @@
             "apiVersion": "2017-04-01",
             "properties": {
                 "path": "[parameters('serviceBusTopicName')]",
-                "defaultMessageTimeToLive": "[parameters('defaultTTL')]",
-                "maxSizeInMegabytes": "[parameters('maxSize')]"
+                "defaultMessageTimeToLive": "[parameters('messageDefaultTTL')]",
+                "messageMaxSizeMbInMegabytes": "[parameters('messageMaxSizeMb')]"
             }
         }
     ]
