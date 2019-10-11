@@ -4,7 +4,7 @@ $TemplateFile = "$PSScriptRoot\..\ArmTemplates\ServiceBus\servicebus-topic.json"
 
 Describe "Service Bus Topic Deployment Tests" -Tag "Acceptance" {
   
-  Context "When an app gateway is deployed with just a single pool" {
+  Context "When deploying the Service Bus Topic" {
     $TemplateParameters = @{
       serviceBusNamespaceName = "dfc-foo-bar-ns"
       serviceBusTopicName     = "topic-name"
@@ -14,10 +14,9 @@ Describe "Service Bus Topic Deployment Tests" -Tag "Acceptance" {
       TemplateFile            = $TemplateFile
       TemplateParameterObject = $TemplateParameters
     }
-
-    $output = Test-AzureRmResourceGroupDeployment @TestTemplateParams
   
     It "Should be deployed successfully" {
+      $output = Test-AzureRmResourceGroupDeployment @TestTemplateParams
       $output | Should -Be $null
     }
 
