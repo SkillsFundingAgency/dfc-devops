@@ -21,11 +21,11 @@
                 "description": "Default time to live (defaults to 90 days)"
             }
         },
-        "messageMaxSizeMb": {
+        "topicMaxSizeMb": {
             "type": "int",
             "defaultValue": 1024,
             "metadata": {
-                "description": "Topic name to add to Service Bus"
+                "description": "Default topic max size (in Mb)"
             }
         }
     },
@@ -37,7 +37,7 @@
             "properties": {
                 "path": "[parameters('serviceBusTopicName')]",
                 "defaultMessageTimeToLive": "[parameters('messageDefaultTTL')]",
-                "messageMaxSizeMbInMegabytes": "[parameters('messageMaxSizeMb')]"
+                "maxSizeInMegabytes": "[parameters('topicMaxSizeMb')]"
             }
         }
     ]
