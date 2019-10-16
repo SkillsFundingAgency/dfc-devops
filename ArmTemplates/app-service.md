@@ -81,3 +81,8 @@ Defaults to not enabled (stateless).
 
 If ARR Affinity is enabled the server will place a cookie on responses that causes a user to always hit the same instance within their session.
 This has a load balancing penalty (existing clients cannot be balanced away from an instance running hot) so is disabled by default.
+
+ftpState (optional) string
+
+Allowed values are "AllAllowed", "FtpsOnly" and "Disabled", the default value is "Disabled".  This parameter was added after this template was already put into use.
+The default value will change the setting on existing apps, this decision was made to address a security issue.

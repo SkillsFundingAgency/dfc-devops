@@ -64,6 +64,15 @@
         "clientAffinity": {
             "type": "bool",
             "defaultValue": false
+        },
+        "ftpState": {
+            "type": "string",
+            "defaultValue": "Disabled",
+            "allowedValues": [
+                "AllAllowed",
+                "FtpsOnly",
+                "Disabled"
+            ]
         }
     },
     "variables": {
@@ -84,6 +93,7 @@
                     "alwaysOn": true,
                     "appSettings": "[parameters('appServiceAppSettings')]",
                     "connectionStrings": "[parameters('appServiceConnectionStrings')]",
+                    "ftpsState": "[parameters('ftpState')]",
                     "phpVersion": "off"
                 },
                 "httpsOnly": true
@@ -100,6 +110,7 @@
                         "siteConfig": {
                             "appSettings": "[parameters('appServiceAppSettings')]",
                             "connectionStrings": "[parameters('appServiceConnectionStrings')]",
+                            "ftpsState": "[parameters('ftpState')]",
                             "phpVersion": "off"
                         }
                     },
