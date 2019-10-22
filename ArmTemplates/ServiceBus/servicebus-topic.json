@@ -1,0 +1,44 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2018-05-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "serviceBusNamespaceName": {
+            "type": "string",
+            "metadata": {
+                "description": "Name of an existing Service Bus namespace to add the topic to"
+            }
+        },
+        "serviceBusTopicName": {
+            "type": "string",
+            "metadata": {
+                "description": "Topic name to add to Service Bus"
+            }
+        },
+        "messageDefaultTTL": {
+            "type": "string",
+            "defaultValue": "P90D",
+            "metadata": {
+                "description": "Default time to live (defaults to 90 days)"
+            }
+        },
+        "topicMaxSizeMb": {
+            "type": "int",
+            "defaultValue": 1024,
+            "metadata": {
+                "description": "Default topic max size (in Mb)"
+            }
+        }
+    },
+    "resources": [
+        {
+            "name": "[concat(parameters('serviceBusNamespaceName'), '/', parameters('serviceBusTopicName'))]",
+            "type": "Microsoft.ServiceBus/namespaces/topics",
+            "apiVersion": "2017-04-01",
+            "properties": {
+                "path": "[parameters('serviceBusTopicName')]",
+                "defaultMessageTimeToLive": "[parameters('messageDefaultTTL')]",
+                "maxSizeInMegabytes": "[parameters('topicMaxSizeMb')]"
+            }
+        }
+    ]
+}

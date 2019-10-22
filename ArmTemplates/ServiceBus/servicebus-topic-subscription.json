@@ -1,0 +1,57 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2018-05-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "serviceBusNamespaceName": {
+            "type": "string",
+            "metadata": {
+                "description": "Name of an existing Service Bus namespace to add the topic to"
+            }
+        },
+        "serviceBusTopicName": {
+            "type": "string",
+            "metadata": {
+                "description": "Topic name to add to Service Bus"
+            }
+        },
+        "serviceBusTopicSubscriptionName": {
+            "type": "string",
+            "metadata": {
+                "description": "Subscription name to add to Service Bus"
+            }
+        },
+        "subscriptionSqlFilter": {
+            "type": "string",
+            "defaultValue": "",
+            "metadata": {
+                "description": "Optionally add a SQL filter rule if provided"
+            }
+        }
+    },
+    "variables": {
+        "fullSBTopicSubscriptionName": "[concat(parameters('serviceBusNamespaceName'), '/', parameters('serviceBusTopicName'), '/', parameters('serviceBusTopicSubscriptionName'))]"
+    },
+    "resources": [
+        {
+            "name": "[variables('fullSBTopicSubscriptionName')]",
+            "type": "Microsoft.ServiceBus/namespaces/topics/subscriptions",
+            "apiVersion": "2017-04-01",
+            "properties": {}
+        },
+        {
+            "name": "[concat(variables('fullSBTopicSubscriptionName'), '/', parameters('serviceBusTopicName'), '-sqlfilter')]",
+            "type": "Microsoft.ServiceBus/namespaces/topics/subscriptions/rules",
+            "apiVersion": "2017-04-01",
+            "condition": "[greater(length(parameters('subscriptionSqlFilter')), 0)]",
+            "dependsOn": [
+                "[parameters('serviceBusTopicSubscriptionName')]"
+            ],
+            "properties": {
+                "filterType": "SqlFilter",
+                "sqlFilter": {
+                    "sqlExpression": "[parameters('subscriptionSqlFilter')]"
+                }
+            }
+        }
+    ]
+}
