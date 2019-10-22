@@ -34,8 +34,15 @@ timeToLive (optional) int
 
 Sets the default time to live for documents within the collection.
 
-If set less than -1, items are not expired automatically.
 If set to -1, expiry is enabled, but items don't expire by default.
 If set to a number greater than 0, expiry is enabled and items will expire "n" seconds after their last modified time.
 
-Defaults to -99
+This property defaults to -99, which means that no default ttl is set up.
+
+WARNING:
+
+This template *cannot* turn off the default Ttl feature once it's enabled.
+ie:  If you set TTL to "On (no default)" or "On",  then this template cannot reset that to "Off".
+
+The only way to currently do this is via the Portal.
+If you want to do this, it's recommended that you remove the 'defaultTtl' from your parameters and update the collection via the portal.
