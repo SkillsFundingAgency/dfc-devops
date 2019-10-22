@@ -51,8 +51,10 @@
     },
     "variables": {
         "baseResourceProperties": {
-            "id": "[parameters('collectionName')]",
-            "defaultTtl": "[if(greaterOrEquals(parameters('timeToLive'), -1),  parameters('timeToLive'),  json('null'))]"
+            "id": "[parameters('collectionName')]"
+        },
+        "defaultTtlProperty": {
+            "defaultTtl": "[parameters('timeToLive')]"
         },
         "partitionKeyProperty": {
             "partitionKey": {
@@ -62,7 +64,7 @@
                 "kind": "Hash"
             }
         },
-        "fullResourceProperties": "[union(variables('baseResourceProperties'), if(not(empty(parameters('partitionKey'))), variables('partitionKeyProperty'), json('{}')))]"
+        "fullResourceProperties": "[union(variables('baseResourceProperties'), if(greaterOrEquals(parameters('timeToLive'), -1), variables('defaultTtlProperty'), json('{}')), if(not(empty(parameters('partitionKey'))), variables('partitionKeyProperty'), json('{}')))]"
     },
     "resources": [
         {
