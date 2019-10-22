@@ -35,7 +35,7 @@ timeToLive (optional) int
 Sets the default time to live for documents within the collection.
 
 If set less than -1, items are not expired automatically.
-If set to -1, and items don't expire by default.
-If set to a number greater than 0, items will expire "n" seconds after their last modified time.
+If set to -1, expiry is enabled, but items don't expire by default.
+If set to a number greater than 0, expiry is enabled and items will expire "n" seconds after their last modified time.
 
 Defaults to -99
