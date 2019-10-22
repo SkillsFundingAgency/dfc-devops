@@ -46,3 +46,5 @@ ie:  If you set TTL to "On (no default)" or "On",  then this template cannot res
 
 The only way to currently do this is via the Portal.
 If you want to do this, it's recommended that you remove the 'defaultTtl' from your parameters and update the collection via the portal.
+
+For more information about the TTL options, please read [this Microsoft article about them](https://docs.microsoft.com/en-us/azure/cosmos-db/time-to-live)
