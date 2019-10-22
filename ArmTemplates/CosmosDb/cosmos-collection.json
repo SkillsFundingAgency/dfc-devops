@@ -36,17 +36,33 @@
         },
         "partitionKey": {
             "type": "string",
+            "defaultValue": "",
             "metadata": {
                 "description": "The partition key for the collection"
             }
         },
         "timeToLive": {
             "type": "int",
-            "defaultValue": -1,
+            "defaultValue": -99,
             "metadata": {
-                "description": "The time to live for the collection. Defaults to -1"
+                "description": "The time to live for the collection. Defaults to not setting any time to live up."
             }
         }
+    },
+    "variables": {
+        "baseResourceProperties": {
+            "id": "[parameters('collectionName')]",
+            "defaultTtl": "[if(greaterOrEquals(parameters('timeToLive'), -1),  parameters('timeToLive'),  json('null'))]"
+        },
+        "partitionKeyProperty": {
+            "partitionKey": {
+                "paths": [
+                    "[parameters('partitionKey')]"
+                ],
+                "kind": "Hash"
+            }
+        },
+        "fullResourceProperties": "[union(variables('baseResourceProperties'), if(not(empty(parameters('partitionKey'))), variables('partitionKeyProperty'), json('{}')))]"
     },
     "resources": [
         {
@@ -55,16 +71,7 @@
             "apiVersion": "2016-03-31",
             "properties":
             {
-                "resource":{
-                    "id":  "[parameters('collectionName')]",
-                    "partitionKey": {
-                        "paths": [
-                            "[parameters('partitionKey')]"
-                        ],
-                        "kind": "Hash"
-                    },
-                    "defaultTtl": "[int(parameters('timeToLive'))]"
-                }
+                "resource": "[variables('fullResourceProperties')]"
             }
         },
         {
