@@ -50,13 +50,9 @@
         }
     },
     "variables": {
-        "hasTtl": "[greaterOrEquals(parameters('timeToLive'), -1)]",
-        "hasPartitionKey": "[not(empty(parameters('partitionKey')))]",
         "baseResourceProperties": {
-            "id": "[parameters('collectionName')]"
-        },
-        "ttlProperty": {
-            "defaultTtl": "[int(parameters('timeToLive'))]"
+            "id": "[parameters('collectionName')]",
+            "defaultTtl": "[if(greaterOrEquals(parameters('timeToLive'), -1),  parameters('timeToLive'),  json('null'))]"
         },
         "partitionKeyProperty": {
             "partitionKey": {
@@ -66,7 +62,7 @@
                 "kind": "Hash"
             }
         },
-        "fullResourceProperties": "[union(variables('baseResourceProperties'), if(variables('hasTtl'), variables('ttlProperty'), json('{}')), if(variables('hasPartitionKey'), variables('partitionKeyProperty'), json('{}')))]"
+        "fullResourceProperties": "[union(variables('baseResourceProperties'), if(not(empty(parameters('partitionKey'))), variables('partitionKeyProperty'), json('{}')))]"
     },
     "resources": [
         {
