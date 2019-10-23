@@ -64,6 +64,7 @@ The following templates are available
 * [Service Bus Queue Auth Rule](ServiceBus/servicebus-queue-authrule.md)
 * [Service Bus Topic](ServiceBus/servicebus-topic.md)
 * [Service Bus Topic Subscription](ServiceBus/servicebus-topic-subscription.md)
+* [Service Bus Topic Auth Rule](ServiceBus/servicebus-topic-authrule.md)
 * [SQL Server Managed Instance](sql-managed-instance.md)
 * [SQL Server](sql-server.md)
 * [SQL Database](SqlServer/sql-database.md)
