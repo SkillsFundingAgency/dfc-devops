@@ -18,14 +18,14 @@ steps:
 
  # tasks to package a function app
  - task: DotNetCoreCLI@2
-   displayName: 'dotnet build application'
+   displayName: 'dotnet build application ${{ parameters.SolutionBaseName }}'
    condition: not(${{ parameters.PublishWebApp }})
    inputs:
      command: 'build'
      projects: '${{ parameters.SolutionBaseName }}\${{ parameters.SolutionBaseName }}.csproj'
      arguments: '-o "$(build.artifactstagingdirectory)\Build\"'
  - task: ArchiveFiles@2
-   displayName: 'Archive Application'
+   displayName: 'Archive Application ${{ parameters.SolutionBaseName }}'
    condition: not(${{ parameters.PublishWebApp }})
    inputs: 
      rootFolderOrFile: $(build.artifactstagingdirectory)\Build\
@@ -34,7 +34,7 @@ steps:
 
 # task to package a web app
  - task: DotNetCoreCLI@2
-   displayName: 'dotnet publish application'
+   displayName: 'dotnet publish application ${{ parameters.SolutionBaseName }}'
    condition: ${{ parameters.PublishWebApp }}
    inputs:
      command: 'publish'

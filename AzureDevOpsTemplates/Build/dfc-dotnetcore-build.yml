@@ -19,14 +19,14 @@ steps:
 
  # tasks to package a function app
  - task: DotNetCoreCLI@2
-   displayName: 'Build - dotnet build application'
+   displayName: 'Build - dotnet build application ${{ parameters.SolutionBaseName }}'
    condition: not(${{ parameters.PublishWebApp }})
    inputs:
      command: 'build'
      projects: '${{ parameters.SolutionBaseName }}\${{ parameters.SolutionBaseName }}.csproj'
      arguments: '-o "$(build.artifactstagingdirectory)\Build\"'
  - task: ArchiveFiles@2
-   displayName: 'Archive Application'
+   displayName: 'Archive Application ${{ parameters.SolutionBaseName }}'
    condition: not(${{ parameters.PublishWebApp }})
    inputs: 
      rootFolderOrFile: $(build.artifactstagingdirectory)\Build\
@@ -35,7 +35,7 @@ steps:
 
 # task to package a web app
  - task: DotNetCoreCLI@2
-   displayName: 'Publish - dotnet publish application'
+   displayName: 'Publish - dotnet publish application ${{ parameters.SolutionBaseName }}'
    condition: ${{ parameters.PublishWebApp }}
    inputs:
      command: 'publish'
@@ -44,7 +44,7 @@ steps:
      publishWebProjects: false #set to false as this setting (which defaults to true) will parse the entire repo for web projects
 
  - task: DotNetCoreCLI@2
-   displayName: 'Test - dotnet test application'
+   displayName: 'Test - dotnet test application ${{ parameters.SolutionBaseName }}'
    inputs:
      command: test
      projects: '${{ parameters.SolutionBaseName }}.${{ parameters.TestSuffix }}\${{ parameters.SolutionBaseName }}.${{ parameters.TestSuffix }}.csproj'
