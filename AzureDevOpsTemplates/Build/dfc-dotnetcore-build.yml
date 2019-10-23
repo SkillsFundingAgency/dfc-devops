@@ -30,7 +30,7 @@ steps:
    condition: not(${{ parameters.PublishWebApp }})
    inputs: 
      rootFolderOrFile: $(build.artifactstagingdirectory)\Build\
-     archiveFile: $(build.artifactstagingdirectory)\Artifact\DeploymentPackages\$(SolutionBaseName).zip
+     archiveFile: $(build.artifactstagingdirectory)\Artifact\DeploymentPackages\${{ parameters.SolutionBaseName }}.zip
      includeRootFolder: false
 
 # task to package a web app
