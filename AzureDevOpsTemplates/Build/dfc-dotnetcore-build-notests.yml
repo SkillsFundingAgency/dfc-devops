@@ -42,6 +42,12 @@ steps:
      arguments: '-o "$(build.artifactstagingdirectory)\Artifact\${{ parameters.SolutionBaseName }}\DeploymentPackages\${{ parameters.SolutionBaseName }}\\"'
      publishWebProjects: false #set to false as this setting (which defaults to true) will parse the entire repo for web projects
 
+ - task: CopyFiles@2
+   displayName: 'Copy Files to: $(build.artifactstagingdirectory)\Artifact\${{ parameters.SolutionBaseName }}\Azure'
+   inputs:
+     sourceFolder: 'Resources'
+     contents: '**'
+     targetFolder: '$(build.artifactstagingdirectory)\Artifact\${{ parameters.SolutionBaseName }}\Azure'
  - task: PublishBuildArtifacts@1
    displayName: 'Publish Artifact: ${{ parameters.SolutionBaseName }}'
    inputs:
