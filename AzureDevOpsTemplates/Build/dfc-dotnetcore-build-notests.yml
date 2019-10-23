@@ -23,13 +23,13 @@ steps:
    inputs:
      command: 'build'
      projects: '${{ parameters.SolutionBaseName }}\${{ parameters.SolutionBaseName }}.csproj'
-     arguments: '-o "$(build.artifactstagingdirectory)\Build\"'
+     arguments: '-o "$(build.artifactstagingdirectory)\Build\${{ parameters.SolutionBaseName }}\"'
  - task: ArchiveFiles@2
    displayName: 'Archive Application ${{ parameters.SolutionBaseName }}'
    condition: not(${{ parameters.PublishWebApp }})
    inputs: 
-     rootFolderOrFile: $(build.artifactstagingdirectory)\Build\
-     archiveFile: $(build.artifactstagingdirectory)\Artifact\DeploymentPackages\${{ parameters.SolutionBaseName }}.zip
+     rootFolderOrFile: $(build.artifactstagingdirectory)\Build\${{ parameters.SolutionBaseName }}
+     archiveFile: $(build.artifactstagingdirectory)\Artifact\${{ parameters.SolutionBaseName }}\DeploymentPackages\${{ parameters.SolutionBaseName }}.zip
      includeRootFolder: false
 
 # task to package a web app
@@ -39,17 +39,12 @@ steps:
    inputs:
      command: 'publish'
      projects: '${{ parameters.SolutionBaseName }}\${{ parameters.SolutionBaseName }}.csproj'
-     arguments: '-o "$(build.artifactstagingdirectory)\Artifact\DeploymentPackages\\"'
+     arguments: '-o "$(build.artifactstagingdirectory)\Artifact\${{ parameters.SolutionBaseName }}\DeploymentPackages\${{ parameters.SolutionBaseName }}\\"'
      publishWebProjects: false #set to false as this setting (which defaults to true) will parse the entire repo for web projects
- - task: CopyFiles@2
-   displayName: 'Copy Files to: $(build.artifactstagingdirectory)\Artifact\Azure'
-   inputs:
-     sourceFolder: 'Resources'
-     contents: '**'
-     targetFolder: '$(build.artifactstagingdirectory)\Artifact\Azure'
+
  - task: PublishBuildArtifacts@1
    displayName: 'Publish Artifact: ${{ parameters.SolutionBaseName }}'
    inputs:
-     pathtoPublish: $(build.artifactstagingdirectory)\Artifact\
+     pathtoPublish: $(build.artifactstagingdirectory)\Artifact\${{ parameters.SolutionBaseName }}\
      artifactName: ${{ parameters.SolutionBaseName }}
      publishLocation: container
