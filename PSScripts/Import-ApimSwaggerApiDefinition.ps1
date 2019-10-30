@@ -61,9 +61,9 @@ if ($PSCmdlet.ParameterSetName -eq "File") {
 
 try {
     # --- Build context and retrieve apiid
-    Write-Host "Building APIM context for $ApimResourceGroup\$InstanceName"
+    Write-Verbose "Building APIM context for $ApimResourceGroup\$InstanceName"
     $Context = New-AzApiManagementContext -ResourceGroupName $ApimResourceGroup -ServiceName $InstanceName
-    Write-Host "Retrieving ApiId for API $ApiName"
+    Write-Verbose "Retrieving ApiId for API $ApiName"
     $Api = Get-AzApiManagementApi -Context $Context -ApiId $ApiName
 
     # --- Throw if Api is null
@@ -77,13 +77,13 @@ try {
 
     if ($PSCmdlet.ParameterSetName -eq "File") {
 
-        Write-Host "Updating API $InstanceName\$($Api.ApiId) from definition $($OutputFile.FullName)"
+        Write-Verbose "Updating API $InstanceName\$($Api.ApiId) from definition $($OutputFile.FullName)"
         Import-AzApiManagementApi -Context $Context -SpecificationFormat "Swagger" -SpecificationPath $($OutputFile.FullName) -ApiId $($Api.ApiId) -Path $($Api.Path) -ErrorAction Stop -Verbose:$VerbosePreference
 
     }
     else {
 
-        Write-Host "Updating API $InstanceName\$($Api.ApiId) from definition $SwaggerSpecificationUrl"
+        Write-Verbose "Updating API $InstanceName\$($Api.ApiId) from definition $SwaggerSpecificationUrl"
         Import-AzApiManagementApi -Context $Context -SpecificationFormat "Swagger" -SpecificationUrl $SwaggerSpecificationUrl -ApiId $($Api.ApiId) -Path $($Api.Path) -ErrorAction Stop -Verbose:$VerbosePreference
 
     }
