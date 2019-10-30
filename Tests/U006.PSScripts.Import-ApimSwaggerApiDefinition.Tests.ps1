@@ -6,13 +6,13 @@ Describe "Import-ApimSwaggerApiDefinition unit tests" -Tag "Unit" {
 
         Mock Invoke-RestMethod
         Mock Set-Content
-        Mock Get-AzureRmApiManagementApi { [PsCustomObject]
+        Mock Get-AzApiManagementApi { [PsCustomObject]
             @{
                 ApiId = "bar"
                 Path = "bar"
             }
         }
-        Mock Import-AzureRmApiManagementApi
+        Mock Import-AzApiManagementApi
 
         $CmdletParameters = @{
            ApimResourceGroup = "dfc-foo-bar-rg"
@@ -25,8 +25,8 @@ Describe "Import-ApimSwaggerApiDefinition unit tests" -Tag "Unit" {
 
         Assert-MockCalled Invoke-RestMethod -Exactly 0 -Scope It
         Assert-MockCalled Set-Content -Exactly 0 -Scope It
-        Assert-MockCalled Get-AzureRmApiManagementApi -Exactly 1 -Scope It
-        Assert-MockCalled Import-AzureRmApiManagementApi -Exactly 1 -Scope It
+        Assert-MockCalled Get-AzApiManagementApi -Exactly 1 -Scope It
+        Assert-MockCalled Import-AzApiManagementApi -Exactly 1 -Scope It
 
     }
 
