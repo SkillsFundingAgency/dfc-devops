@@ -18,7 +18,7 @@ The name of the API to update
 The full path to the swagger defintion
 
 .PARAMETER ApiPath
-(optional) The Path prefix that APIM will apply to the API URL.  If this has not been set via an ARM template then it must be passed in as a parameter
+(optional) The URL suffix that APIM will apply to the API URL.  If this has not been set via an ARM template then it must be passed in as a parameter
 
 .PARAMETER SwaggerSpecificationFile
 (optional)  Switch, specifies whether the swagger file should be saved to a local directory before importing in APIM.
