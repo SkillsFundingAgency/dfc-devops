@@ -17,6 +17,9 @@ The name of the API to update
 .PARAMETER SwaggerSpecificationUrl
 The full path to the swagger defintion
 
+.PARAMETER ApiPath
+(optional) The Path prefix that APIM will apply to the API URL.  If this has not been set via an ARM template then it must be passed in as a parameter
+
 .PARAMETER SwaggerSpecificationFile
 (optional)  Switch, specifies whether the swagger file should be saved to a local directory before importing in APIM.
 
@@ -37,6 +40,8 @@ Param(
     [String]$ApiName,
     [Parameter(Mandatory=$true)]
     [String]$SwaggerSpecificationUrl,
+    [Parameter(Mandatory=$false)]
+    [String]$ApiPath,
     [Parameter(Mandatory=$false, ParameterSetName="File")]
     [Switch]$SwaggerSpecificationFile,
 	[Parameter(Mandatory=$false, ParameterSetName="File")]
@@ -75,19 +80,31 @@ if ($PSVersionTable.PSVersion -ge [System.Version]::new("6.0.0")) {
             throw "Could not retrieve Api for API $ApiName"
     
         }
+
+        if (!$Api.Path -and !$ApiPath) {
+
+            throw "API Path is not set and has not been passed in as a parameter"
+
+        }
+
+        if (!$ApiPath) {
+
+            $ApiPath = $Api.Path
+
+        }
     
         # --- Import swagger definition
     
         if ($PSCmdlet.ParameterSetName -eq "File") {
     
             Write-Verbose "Updating API $InstanceName\$($Api.ApiId) from definition $($OutputFile.FullName)"
-            Import-AzApiManagementApi -Context $Context -SpecificationFormat "Swagger" -SpecificationPath $($OutputFile.FullName) -ApiId $($Api.ApiId) -Path $($Api.Path) -ErrorAction Stop -Verbose:$VerbosePreference
+            Import-AzApiManagementApi -Context $Context -SpecificationFormat "Swagger" -SpecificationPath $($OutputFile.FullName) -ApiId $($Api.ApiId) -Path $ApiPath -ErrorAction Stop -Verbose:$VerbosePreference
     
         }
         else {
     
             Write-Verbose "Updating API $InstanceName\$($Api.ApiId) from definition $SwaggerSpecificationUrl"
-            Import-AzApiManagementApi -Context $Context -SpecificationFormat "Swagger" -SpecificationUrl $SwaggerSpecificationUrl -ApiId $($Api.ApiId) -Path $($Api.Path) -ErrorAction Stop -Verbose:$VerbosePreference
+            Import-AzApiManagementApi -Context $Context -SpecificationFormat "Swagger" -SpecificationUrl $SwaggerSpecificationUrl -ApiId $($Api.ApiId) -Path $ApiPath -ErrorAction Stop -Verbose:$VerbosePreference
     
         }
     
