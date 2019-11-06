@@ -4,6 +4,7 @@ parameters:
   BuildConfiguration: 'release'
   DotNetCoreVersion: ''
   PublishWebApp: 'false'
+  TestSuffix: Tests
 
 steps:
  - task: DotNetCoreInstaller@0
@@ -57,7 +58,7 @@ steps:
    displayName: Test
    inputs:
      command: test
-     projects: '${{ parameters.SolutionBaseName }}.Tests\${{ parameters.SolutionBaseName }}.Tests.csproj'
+     projects: '${{ parameters.SolutionBaseName }}.${{ parameters.TestSuffix }}\${{ parameters.SolutionBaseName }}.${{ parameters.TestSuffix }}.csproj'
      arguments: '--configuration ${{ parameters.BuildConfiguration }} --collect "Code coverage"'
  - task: SonarCloudAnalyze@1
    displayName: 'Run Code Analysis'
