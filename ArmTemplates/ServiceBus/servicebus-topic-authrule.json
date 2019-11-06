@@ -8,10 +8,10 @@
                 "description": "Name of the Authorization Rule (shared access policy)"
             }
         },
-        "queueName": {
+        "topicName": {
             "type": "string",
             "metadata": {
-                "description": "Queue to apply the rule (policy) to"
+                "description": "Topic to apply the rule (policy) to"
             }
         },
         "rights": {
@@ -23,15 +23,15 @@
         "servicebusName": {
             "type": "string",
             "metadata": {
-                "description": "Name of Service Bus namespace the queue attached to"
+                "description": "Name of Service Bus namespace the topic attached to"
             }
         }
     },
     "variables": {},
     "resources": [
         {
-            "type": "Microsoft.ServiceBus/namespaces/queues/authorizationRules",
-            "name": "[concat(parameters('servicebusName'),'/',parameters('queueName'), '/', parameters('authorizationRuleName'))]",
+            "type": "Microsoft.ServiceBus/namespaces/topics/authorizationRules",
+            "name": "[concat(parameters('servicebusName'),'/',parameters('topicName'), '/', parameters('authorizationRuleName'))]",
             "apiVersion": "2017-04-01",
             "location": "[resourceGroup().location]",
             "tags": {},
