@@ -3,7 +3,7 @@
 Adds API permissions to an App Registration
 
 .DESCRIPTION
-Adds API permissions to an existing App Registration
+Adds API permissions to an existing App Registration.  Approval will need to be granted manually via the Azure Portal once the permissions have been added
 
 .PARAMETER AppRegistrationDisplayName
 The name of the App Registration
@@ -12,10 +12,14 @@ The name of the App Registration
 The name of the API, currently limited to Microsoft Graph
 
 .PARAMETER ApplicationPermissions
-.
+An array of permissions, eg "Directory.Read.All", "User.Read".  The available permissions can be obtained from the Azure Portal in the Azure Active Directory blade
 
 .PARAMETER DelegatedPermissions
-.
+An array of permissions, eg "Directory.Read.All", "User.Read".  The available permissions can be obtained from the Azure Portal in the Azure Active Directory blade
+
+.EXAMPLE
+ .\PSScripts\Add-AzureAdApiPermissionsToApp.ps1 -AppRegistrationDisplayName FooBarAppRegistration -ApiName "Microsoft Graph" -DelegatedPermissions "Directory.Read.All", 
+"User.Read" -Verbose
 #>
 [CmdletBinding()]
 param(
@@ -25,9 +29,9 @@ param(
     [Parameter(Mandatory=$true)]
     [String]$ApiName,
     [Parameter(Mandatory=$true, ParameterSetName="Application")]
-    $ApplicationPermissions,
+    [String[]]$ApplicationPermissions,
     [Parameter(Mandatory=$true, ParameterSetName="Delegated")]
-    $DelegatedPermissions
+    [String[]]$DelegatedPermissions
 )
 
 function Add-ResourceAccess {
@@ -37,7 +41,7 @@ function Add-ResourceAccess {
         $ExposedPermissions,
         #The permissions that will be added, these should be passed as a list seperated by spaces
         [Parameter(Mandatory=$true)]
-        [String]$RequiredPermissions, ##TO DO: change to String[]
+        [String[]]$RequiredPermissions,
         #The Microsoft.Open.AzureAD.Model.RequiredResourceAccess object that the ResourceAccess will be added to
         [Parameter(Mandatory=$true)]
         $RequiredResourceAccessObject, 
@@ -47,7 +51,7 @@ function Add-ResourceAccess {
         [String]$PermissionType
     )
 
-    foreach ($Permission in $RequiredPermissions.Trim().Split(" ")) {
+    foreach ($Permission in $RequiredPermissions) {
         $RequestedPermissionObject = $ExposedPermissions | Where-Object {$_.Value -contains $Permission}
         Write-Verbose "Collected information for $($RequestedPermissionObject.Value) of type $PermissionType"
         $ResourceAccess = New-Object -TypeName Microsoft.Open.AzureAD.Model.ResourceAccess
@@ -62,9 +66,9 @@ function New-RequireResourceAccessObject {
         [Parameter(Mandatory=$true)]
         [Microsoft.Open.AzureAD.Model.ServicePrincipal]$TargetServicePrincipal,
         [Parameter(Mandatory=$false)]
-        [String]$RequiredApplicationPermissions,
+        [String[]]$RequiredApplicationPermissions,
         [Parameter(Mandatory=$false)]
-        [String]$RequiredDelegatedPermissions 
+        [String[]]$RequiredDelegatedPermissions 
     )
 
     $RequiredResourceAccess = New-Object Microsoft.Open.AzureAD.Model.RequiredResourceAccess
