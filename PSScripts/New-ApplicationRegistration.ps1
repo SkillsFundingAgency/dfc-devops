@@ -1,3 +1,22 @@
+<#
+.SYNOPSIS
+Registers and application with Azure Active Directory and optionally creates a secret
+
+.DESCRIPTION
+Creates an AAD App Registration and associated Serivce Principal.  Optionally creates a secret for the App Registration and stores that in a KeyVault
+
+.PARAMETER AppRegistrationName
+The name of the App Registration and Service Principal that will be created
+
+.PARAMETER IdentifierUris
+Defaults to https://localhost
+
+.PARAMETER AddSecret
+Creates the Service Principal with a secret that is stored in a KeyVault
+
+.PARAMETER KeyVaultName
+Required if AddSecret is set
+#>
 [CmdletBinding(DefaultParametersetName='None')]
 param(
     [Parameter(Mandatory=$true)]

@@ -1,3 +1,22 @@
+<#
+.SYNOPSIS
+Adds API permissions to an App Registration
+
+.DESCRIPTION
+Adds API permissions to an existing App Registration
+
+.PARAMETER AppRegistrationDisplayName
+The name of the App Registration
+
+.PARAMETER ApiName
+The name of the API, currently limited to Microsoft Graph
+
+.PARAMETER ApplicationPermissions
+.
+
+.PARAMETER DelegatedPermissions
+.
+#>
 [CmdletBinding()]
 param(
     [Parameter(Mandatory=$true)]
