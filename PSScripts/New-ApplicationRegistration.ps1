@@ -43,6 +43,8 @@ function New-Password{
 	}
 }
 
+Install-Module AzureAD -Force -Scope CurrentUser -SkipPublisherCheck
+
 $Context = Get-AzureRmContext
 Write-Verbose "Connected to AzureRm Context Tenant $($Context.Tenant.Id) with Account $($Context.Account.Id), connecting to AzureAd ..."
 $Conn = Connect-AzureAD -TenantId $Context.Tenant.Id -AccountId $Context.Account.Id
