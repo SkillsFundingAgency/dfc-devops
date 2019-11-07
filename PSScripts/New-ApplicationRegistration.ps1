@@ -44,7 +44,7 @@ function New-Password{
 }
 
 $Context = Get-AzureRmContext
-Write-Verbose "Connected to AzureRm Context Tenant $($Context.Tenant.Id) with Account $($Context.Account.Id), connecting to AzureAd ..."
+Write-Verbose "Connected to AzureRm Context Tenant $($Context.Tenant.Id) with Account $($Context.Account.Id) & Account.Type $($Context.Id.Type), connecting to AzureAd ..."
 $Conn = Connect-AzureAD -TenantId $Context.Tenant.Id -AccountId $Context.Account.Id
 
 $AdServicePrincipal = Get-AzureRmADServicePrincipal -SearchString $AppRegistrationName
