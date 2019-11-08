@@ -70,14 +70,7 @@ try {
     Write-Verbose "Building APIM context for $ApimResourceGroup\$InstanceName"
     $Context = New-AzApiManagementContext -ResourceGroupName $ApimResourceGroup -ServiceName $InstanceName
     Write-Verbose "Retrieving ApiId for API $ApiName"
-    $Api = Get-AzApiManagementApi -Context $Context -ApiId $ApiName
-
-    # --- Throw if Api is null
-    if (!$Api) {
-
-        throw "Could not retrieve Api for API $ApiName"
-
-    }
+    $Api = Get-AzApiManagementApi -Context $Context -ApiId $ApiName -ErrorAction SilentlyContinue
 
     if (!$Api.Path -and !$ApiPath) {
 
