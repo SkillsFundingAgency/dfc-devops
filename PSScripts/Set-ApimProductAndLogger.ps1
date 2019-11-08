@@ -19,6 +19,9 @@ The ApiProductId within APIM of the Product to add the API to.  This is differen
 
 .PARAMETER ApimLoggerName
 The name of the APIM logger that will be attached to the API.  This is different to the Application Insights instance, they can be created together with the apim-logger.json ARM template
+
+.EXAMPLE
+Set-ApimProductAndLogger -ApimResourceGroup dfc-foo-shared-rg -InstanceName dfc-foo-shared-apim -ApiId barapi -ApiProductId bar-product -ApimLoggerName bar-logger
 #>
 [CmdletBinding()]
 param(
