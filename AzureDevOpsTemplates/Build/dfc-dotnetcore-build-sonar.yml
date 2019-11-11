@@ -32,7 +32,7 @@ steps:
      preferBundledVersion: false
  - task: SonarCloudPrepare@1
    displayName: 'Prepare analysis on SonarCloud'
-   condition: and(succeeded(), variables['ShouldRunSonarCloud'], 'True'))
+   condition: and(succeeded(), variables['ShouldRunSonarCloud'], 'True')
    inputs:
     # The Service Endpoint (DFC-SonarCloud) will need to be configured using a GitHub account that has been added to SonarCloud.  
     # That account will need to be granted "Execute Analysis" and "Create Projects" permissions in SonarCloud.  This needs to be granted in the organization where the results will be published.
@@ -75,7 +75,7 @@ steps:
      arguments: '--configuration ${{ parameters.BuildConfiguration }} --collect "Code coverage"'
  - task: SonarCloudAnalyze@1
    displayName: 'Run Code Analysis'
-   condition: and(succeeded(), variables['ShouldRunSonarCloud'], 'True'))
+   condition: and(succeeded(), variables['ShouldRunSonarCloud'], 'True')
  - task: CopyFiles@2
    displayName: 'Copy Files to: $(build.artifactstagingdirectory)\Artifact\Azure'
    inputs:
