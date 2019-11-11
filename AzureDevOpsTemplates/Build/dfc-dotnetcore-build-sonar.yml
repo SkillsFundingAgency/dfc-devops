@@ -14,13 +14,13 @@ steps:
    displayName: 'Download Test-BranchFeatures script'
    inputs:
      targetType: 'inline'
-     script: Invoke-WebRequest -Uri $(TestBranchFeaturesScriptUrl) -OutFile $(TestBranchFeaturesScriptFilePath)
+     script: Invoke-WebRequest -Uri '${{ parameters.TestBranchFeaturesScriptUrl }}' -OutFile '${{ parameters.TestBranchFeaturesScriptFilePath }}'
  - task: PowerShell@2
    name: ExecuteTestBranchFeaturesScript
    displayName: Test-BranchFeatures
    inputs:
      targetType: 'filePath'
-     filePath: $(TestBranchFeaturesScriptFilePath)
+     filePath: '${{ parameters.TestBranchFeaturesScriptFilePath }}'
  - task: DotNetCoreInstaller@0
    displayName: 'Use .NET Core sdk ${{ parameters.DotNetCoreVersion }}'
    condition: ne('', '${{ parameters.DotNetCoreVersion }}')
