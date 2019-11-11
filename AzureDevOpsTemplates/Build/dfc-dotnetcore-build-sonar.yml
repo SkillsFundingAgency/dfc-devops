@@ -5,8 +5,22 @@ parameters:
   DotNetCoreVersion: ''
   PublishWebApp: 'false'
   TestSuffix: Tests
+  TestBranchFeaturesScriptUrl: https://raw.githubusercontent.com/SkillsFundingAgency/dfc-devops/master/PSScripts/Test-BranchFeatures.ps1
+  TestBranchFeaturesScriptFilePath: $(System.DefaultWorkingDirectory)\Test-BranchFeatures.ps1
 
 steps:
+ - task: PowerShell@2
+   name: DownloadTestBranchFeaturesScript
+   displayName: 'Download Test-BranchFeatures script'
+   inputs:
+     targetType: 'inline'
+     script: Invoke-WebRequest -Uri $(TestBranchFeaturesScriptUrl) -OutFile $(TestBranchFeaturesScriptFilePath)
+ - task: PowerShell@2
+   name: ExecuteTestBranchFeaturesScript
+   displayName: Test-BranchFeatures
+   inputs:
+     targetType: 'filePath'
+     filePath: $(TestBranchFeaturesScriptFilePath)
  - task: DotNetCoreInstaller@0
    displayName: 'Use .NET Core sdk ${{ parameters.DotNetCoreVersion }}'
    condition: ne('', '${{ parameters.DotNetCoreVersion }}')
@@ -18,7 +32,7 @@ steps:
      preferBundledVersion: false
  - task: SonarCloudPrepare@1
    displayName: 'Prepare analysis on SonarCloud'
-   condition: and(succeeded(), or(in(variables['build.sourceBranch'], 'refs/heads/master', 'refs/heads/dev'), eq(variables['Build.Reason'], 'PullRequest')))
+   condition: and(succeeded(), variables['ShouldRunSonarCloud'], 'True'))
    inputs:
     # The Service Endpoint (DFC-SonarCloud) will need to be configured using a GitHub account that has been added to SonarCloud.  
     # That account will need to be granted "Execute Analysis" and "Create Projects" permissions in SonarCloud.  This needs to be granted in the organization where the results will be published.
@@ -61,7 +75,7 @@ steps:
      arguments: '--configuration ${{ parameters.BuildConfiguration }} --collect "Code coverage"'
  - task: SonarCloudAnalyze@1
    displayName: 'Run Code Analysis'
-   condition: and(succeeded(), or(in(variables['build.sourceBranch'], 'refs/heads/master', 'refs/heads/dev'), eq(variables['Build.Reason'], 'PullRequest')))
+   condition: and(succeeded(), variables['ShouldRunSonarCloud'], 'True'))
  - task: CopyFiles@2
    displayName: 'Copy Files to: $(build.artifactstagingdirectory)\Artifact\Azure'
    inputs:
