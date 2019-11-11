@@ -18,15 +18,20 @@ function Test-IfNotFeatureBranch {
     
     param(
         [Parameter(Mandatory=$true)]
-        [string] $BranchName
+        [string] $BranchName,
+        [string] $BuildReason
+
     )
     $shouldRunSonarCloud  = $false
 
     if($BranchName -match  '^(v[0-9]+-)?(master|dev)(-v[0-9]+)?$') { $shouldRunSonarCloud = $true }
 
+    if($BuildReason -eq "PullRequest") { $shouldRunSonarCloud = $true }
+
     Write-Output "##vso[task.setvariable variable=ShouldRunSonarCloud]$($shouldRunSonarCloud)"
 }
 
-
 $branchName = $env:Build_SourceBranchName
-Test-IfNotFeatureBranch -BranchName $branchName
+$buildReason = $env:Build_Reason
+
+Test-IfNotFeatureBranch -BranchName $branchName -BuildReason $buildReason

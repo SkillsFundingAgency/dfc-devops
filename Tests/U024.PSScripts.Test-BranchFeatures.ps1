@@ -21,7 +21,7 @@ Describe "Test-BranchFeatures" -Tag "Unit" {
             @{ SourceBranch = "someFeatureBranch-v999999"; ShouldHaveSonarOutput = "False" }
         )
         
-        It "Should return '<ShouldHaveSonarOutput>' for branch '<SourceBranch>'" -TestCases $testData{
+        It "Should return '<ShouldHaveSonarOutput>' for branch '<SourceBranch>'" -TestCases $testData {
             param($SourceBranch, $ShouldHaveSonarOutput)
 
             $env:Build_SourceBranchName = $SourceBranch
@@ -29,6 +29,16 @@ Describe "Test-BranchFeatures" -Tag "Unit" {
             $output = & $PSScriptRoot/../PSScripts/Test-BranchFeatures
 
             $output | Should Be "##vso[task.setvariable variable=ShouldRunSonarCloud]$ShouldHaveSonarOutput"
+        }
+
+        It "Should return 'True' for pull requests" {
+            $env:Build_SourceBranchName = "someSourceBranch"
+            $env:Build_Reason = "PullRequest"
+
+            $output = & $PSScriptRoot/../PSScripts/Test-BranchFeatures
+
+            $output | Should Be "##vso[task.setvariable variable=ShouldRunSonarCloud]True"
+
         }
     }
 }
