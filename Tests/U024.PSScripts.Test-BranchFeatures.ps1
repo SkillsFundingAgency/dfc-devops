@@ -1,5 +1,3 @@
-Import-Module $PSScriptRoot/../PSModules/CompositeRegistrationFunctions
-
 Describe "Test-BranchFeatures" -Tag "Unit" {
 
     Context "When testing if a branch supports SonarCloud execution" {  
