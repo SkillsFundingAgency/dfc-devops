@@ -10,7 +10,12 @@ Test-BuildFeatures.ps1
 
 #>
 
+[System.Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSProvideCommentHelp', '', Scope='Function', Target='Test-IfNotFeatureBranch')]
+[System.Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSProvideCommentDescription', '', Scope='Function', Target='Test-IfNotFeatureBranch')]
+
+param()
 function Test-IfNotFeatureBranch {
+    
     param(
         [Parameter(Mandatory=$true)]
         [string] $BranchName
