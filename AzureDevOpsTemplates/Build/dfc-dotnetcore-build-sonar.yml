@@ -32,7 +32,6 @@ steps:
      preferBundledVersion: false
  - task: SonarCloudPrepare@1
    displayName: 'Prepare analysis on SonarCloud'
-   # Please call the `Test-BranchFeatures.ps1` in the script repo as part of your build to populate the following variable."
    condition: and(succeeded(), variables['ShouldRunSonarCloud'], 'True'))
    inputs:
     # The Service Endpoint (DFC-SonarCloud) will need to be configured using a GitHub account that has been added to SonarCloud.  
