@@ -104,17 +104,16 @@ function Get-FunctionAppName {
         [Parameter(Mandatory=$true)]
         [string] $FunctionAppVersion
     )
-    $Result = $FunctionAppBaseName | Select-String -Pattern "^[a-z]+-[a-z]+-[a-z]+-fa$"
 
-    if (!$Result) {
-        throw "Warning: FunctionAppBaseName variable not set correctly, value $FunctionAppBaseName must match regex ^[a-z]+-[a-z]+-[a-z]+-fa$, eg dss-at-cust-fa"
+    if(-not $FunctionAppBaseName.EndsWith(("-fa"))) {
+        throw "Warning: FunctionAppBaseName does not end with -fa, as expected."
     }
 
-    $NameParts = $FunctionAppBaseName -split "-"
+    $nameWithoutSuffix = $FunctionAppBaseName.Substring(0, $FunctionAppBaseName.Length -3)
 
-    $fullAppName = ($NameParts[0..2] -join "-"), $FunctionAppVersion, $NameParts[3] -join "-"
+    $versionedName = ($nameWithoutSuffix, $FunctionAppVersion, "fa") -join "-"
 
-    return $fullAppName
+    return $versionedName
 }
 
 $branchName = $env:Build_SourceBranchName
