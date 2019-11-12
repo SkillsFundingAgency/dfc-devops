@@ -22,8 +22,8 @@
         }
     },
     "variables": {
-        "versionSetName": "[concat(parameters('apiName'), '-versionset')]",
-        "lowerApiName": "[tolower(parameters('apiName'))]"
+        "lowerApiName": "[tolower(parameters('apiName'))]",
+        "versionSetName": "[concat(variables('lowerApiName'), '-versionset')]"
     },
     "resources": [
         {
