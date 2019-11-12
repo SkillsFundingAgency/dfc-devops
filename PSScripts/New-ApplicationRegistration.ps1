@@ -44,8 +44,20 @@ function New-Password{
 }
 
 $Context = Get-AzureRmContext
-Write-Verbose "Connected to AzureRm Context Tenant $($Context.Tenant.Id) with Account $($Context.Account.Id) & Account.Type $($Context.Id.Type), connecting to AzureAd ..."
-$Conn = Connect-AzureAD -TenantId $Context.Tenant.Id -AccountId $Context.Account.Id
+#force context to grab a token for graph
+$AADUser = Get-AzureRmADUser -UserPrincipalName $Context.Account.Id
+Write-Verbose "Connected to AzureRm Context Tenant $($Context.Tenant.Id) with Account $($AADUser.DisplayName) & Account.Type $($Context.Account.Type), connecting to AzureAD ..."
+
+$Cache = $Context.TokenCache
+$CacheItems = $Cache.ReadItems()
+
+$Token = ($CacheItems | where { $_.Resource -eq "https://graph.windows.net/" })
+if ($Token.ExpiresOn -le [System.DateTime]::UtcNow) {
+    $AuthContext = [Microsoft.IdentityModel.Clients.ActiveDirectory.AuthenticationContext]::new("$($Context.Environment.ActiveDirectoryAuthority)$($Context.Tenant.Id)",$Token)
+    $Token = $AuthContext.AcquireTokenByRefreshToken($Token.RefreshToken, "1950a258-227b-4e31-a9cf-717495945fc2", "https://graph.windows.net")
+}
+$AADConn = Connect-AzureAD -AadAccessToken $Token.AccessToken -AccountId $Context.Account.Id -TenantId $Context.Tenant.Id
+Write-Verbose "Connected to AzureAD tenant domain $($AADConn.TenantDomain)"
 
 $AdServicePrincipal = Get-AzureRmADServicePrincipal -SearchString $AppRegistrationName
 if(!$AdServicePrincipal) {
