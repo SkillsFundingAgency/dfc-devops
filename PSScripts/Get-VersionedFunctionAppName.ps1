@@ -109,7 +109,7 @@ function Get-FunctionAppName {
         throw "Warning: FunctionAppBaseName does not end with -fa, as expected."
     }
 
-    $nameWithoutSuffix = $FunctionAppBaseName -replace "-fa"
+    $nameWithoutSuffix = $FunctionAppBaseName.Substring(0, $FunctionAppBaseName.Length -3)
 
     $versionedName = ($nameWithoutSuffix, $FunctionAppVersion, "fa") -join "-"
 
