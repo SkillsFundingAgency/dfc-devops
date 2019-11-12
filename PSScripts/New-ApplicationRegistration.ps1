@@ -73,6 +73,18 @@ if(!$AdServicePrincipal) {
             throw "KeyVault $KeyVaultName doesn't exist, nowhere to store secret"
 
         }
+        else {
+
+            Write-Verbose "Checking user access policy ..."
+            $UserAccessPolicy = $KeyVault.AccessPolicies | Where-Object { $_.ObjectId -eq $AADUser.Id }
+            if (!$UserAccessPolicy.PermissionsToSecrets.Contains("Set")) {
+
+                throw "Service Principal $($AADUser.Id) doesn't have Set permission on KeyVault $($KeyVault.VaultName)"
+                
+            }
+
+
+        }
 
         try {
 
