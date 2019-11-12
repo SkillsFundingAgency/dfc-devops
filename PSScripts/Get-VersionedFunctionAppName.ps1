@@ -1,6 +1,9 @@
 <#
     .SYNOPSIS
-    Get a function app name from it's source branch
+    Get a function app name and version from it's source branch
+
+    .DESCRIPTION
+    Gets the function app name and version from it's branch name and it's base name
 
     .EXAMPLE
     Get-VersionedFunctionAppName.ps1 -BranchName someBranch -FunctionBaseName some-function-app
