@@ -44,12 +44,9 @@ function New-Password{
 }
 
 $Context = Get-AzureRmContext
-$Context
-$Context.Account
 #force context to grab a token for graph
-$AADServicePrincipal = Get-AzureRmADServicePrincipal -ApplicationId $Context.Account.Id
-$AADServicePrincipal
-Write-Verbose "Connected to AzureRm Context Tenant $($Context.Tenant.Id) with Account $($AADServicePrincipal.DisplayName) & Account.Type $($Context.Account.Type), connecting to AzureAD ..."
+$AzureDevOpsServicePrincipal = Get-AzureRmADServicePrincipal -ApplicationId $Context.Account.Id
+Write-Verbose "Connected to AzureRm Context Tenant $($Context.Tenant.Id) with Account $($AzureDevOpsServicePrincipal.DisplayName) & Account.Type $($Context.Account.Type), connecting to AzureAD ..."
 
 $Cache = $Context.TokenCache
 $CacheItems = $Cache.ReadItems()
@@ -78,11 +75,11 @@ if(!$AdServicePrincipal) {
         }
         else {
 
-            Write-Verbose "Checking user access policy for user $($AADServicePrincipal.Id) ..."
-            $UserAccessPolicy = $KeyVault.AccessPolicies | Where-Object { $_.ObjectId -eq $AADServicePrincipal.Id }
+            Write-Verbose "Checking user access policy for user $($AzureDevOpsServicePrincipal.Id) ..."
+            $UserAccessPolicy = $KeyVault.AccessPolicies | Where-Object { $_.ObjectId -eq $AzureDevOpsServicePrincipal.Id }
             if (!$UserAccessPolicy -or !$UserAccessPolicy.PermissionsToSecrets.Contains("Set")) {
 
-                throw "Service Principal $($AADServicePrincipal.Id) doesn't have Set permission on KeyVault $($KeyVault.VaultName)"
+                throw "Service Principal $($AzureDevOpsServicePrincipal.Id) doesn't have Set permission on KeyVault $($KeyVault.VaultName)"
 
             }
 
