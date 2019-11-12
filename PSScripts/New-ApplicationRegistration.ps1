@@ -45,13 +45,13 @@ function New-Password{
 
 $Context = Get-AzureRmContext
 #force context to grab a token for graph
-$AADUser = Get-AzureRmADUser -UserPrincipalName $Context.Account.Id
+$AADServicePrincipal = Get-AzureRmADServicePrincipal -ObjectId $Context.Account.Id
 Write-Verbose "Connected to AzureRm Context Tenant $($Context.Tenant.Id) with Account $($AADUser.DisplayName) & Account.Type $($Context.Account.Type), connecting to AzureAD ..."
 
 $Cache = $Context.TokenCache
 $CacheItems = $Cache.ReadItems()
 
-$Token = ($CacheItems | where { $_.Resource -eq "https://graph.windows.net/" })
+$Token = ($CacheItems | Where-Object { $_.Resource -eq "https://graph.windows.net/" })
 if ($Token.ExpiresOn -le [System.DateTime]::UtcNow) {
     $AuthContext = [Microsoft.IdentityModel.Clients.ActiveDirectory.AuthenticationContext]::new("$($Context.Environment.ActiveDirectoryAuthority)$($Context.Tenant.Id)",$Token)
     $Token = $AuthContext.AcquireTokenByRefreshToken($Token.RefreshToken, "1950a258-227b-4e31-a9cf-717495945fc2", "https://graph.windows.net")
@@ -75,12 +75,12 @@ if(!$AdServicePrincipal) {
         }
         else {
 
-            Write-Verbose "Checking user access policy ..."
-            $UserAccessPolicy = $KeyVault.AccessPolicies | Where-Object { $_.ObjectId -eq $AADUser.Id }
+            Write-Verbose "Checking user access policy for user $($AADServicePrincipal.Id) ..."
+            $UserAccessPolicy = $KeyVault.AccessPolicies | Where-Object { $_.ObjectId -eq $AADServicePrincipal.Id }
             if (!$UserAccessPolicy.PermissionsToSecrets.Contains("Set")) {
 
-                throw "Service Principal $($AADUser.Id) doesn't have Set permission on KeyVault $($KeyVault.VaultName)"
-                
+                throw "Service Principal $($AADServicePrincipal.Id) doesn't have Set permission on KeyVault $($KeyVault.VaultName)"
+
             }
 
 
