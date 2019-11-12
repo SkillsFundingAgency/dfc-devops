@@ -115,3 +115,4 @@ Write-Verbose "Getting App Registration ..."
 $AdApplication = Get-AzureRmADApplication -DisplayName $AppRegistrationDisplayName
 Write-Verbose "Adding permissions to AD Application $($AdApplication.DisplayName)"
 Set-AzureAdApplication -ObjectId $AdApplication.ObjectId -RequiredResourceAccess $RequiredResourcesAccessList
+Write-Warning -Message "Permission grants need to be approved in the Azure Portal via Azure Active Directory > App registrations > $($AdApplication.DisplayName) > API Permissions > Grant admin consent for Default Directory"
