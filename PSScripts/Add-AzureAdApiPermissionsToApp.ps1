@@ -84,8 +84,20 @@ function New-RequireResourceAccessObject {
 }
 
 $Context = Get-AzureRmContext
-Write-Verbose "Connected to AzureRm Context Tenant $($Context.Tenant.Id) with Account $($Context.Account.Id), connecting to AzureAd ..."
-$Conn = Connect-AzureAD -TenantId $Context.Tenant.Id -AccountId $Context.Account.Id
+#force context to grab a token for graph
+$AzureDevOpsServicePrincipal = Get-AzureRmADServicePrincipal -ApplicationId $Context.Account.Id
+Write-Verbose "Connected to AzureRm Context Tenant $($Context.Tenant.Id) with Account $($AzureDevOpsServicePrincipal.DisplayName) & Account.Type $($Context.Account.Type), connecting to AzureAD ..."
+
+$Cache = $Context.TokenCache
+$CacheItems = $Cache.ReadItems()
+
+$Token = ($CacheItems | Where-Object { $_.Resource -eq "https://graph.windows.net/" })
+if ($Token.ExpiresOn -le [System.DateTime]::UtcNow) {
+    $AuthContext = [Microsoft.IdentityModel.Clients.ActiveDirectory.AuthenticationContext]::new("$($Context.Environment.ActiveDirectoryAuthority)$($Context.Tenant.Id)",$Token)
+    $Token = $AuthContext.AcquireTokenByRefreshToken($Token.RefreshToken, "1950a258-227b-4e31-a9cf-717495945fc2", "https://graph.windows.net")
+}
+$AADConn = Connect-AzureAD -AadAccessToken $Token.AccessToken -AccountId $Context.Account.Id -TenantId $Context.Tenant.Id
+Write-Verbose "Connected to AzureAD tenant domain $($AADConn.TenantDomain)"
 
 Write-Verbose "Getting API Service Principal ..."
 $ApiServicePrincipal = Get-AzureADServicePrincipal -SearchString $ApiName
