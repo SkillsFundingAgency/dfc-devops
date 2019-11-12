@@ -46,7 +46,8 @@ function New-Password{
 $Context = Get-AzureRmContext
 #force context to grab a token for graph
 $AADServicePrincipal = Get-AzureRmADServicePrincipal -ObjectId $Context.Account.Id
-Write-Verbose "Connected to AzureRm Context Tenant $($Context.Tenant.Id) with Account $($AADUser.DisplayName) & Account.Type $($Context.Account.Type), connecting to AzureAD ..."
+$AADServicePrincipal
+Write-Verbose "Connected to AzureRm Context Tenant $($Context.Tenant.Id) with Account $($AADServicePrincipal.DisplayName) & Account.Type $($Context.Account.Type), connecting to AzureAD ..."
 
 $Cache = $Context.TokenCache
 $CacheItems = $Cache.ReadItems()
