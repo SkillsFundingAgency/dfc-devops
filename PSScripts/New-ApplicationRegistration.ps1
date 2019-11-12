@@ -44,6 +44,8 @@ function New-Password{
 }
 
 $Context = Get-AzureRmContext
+$Context
+$Context.Account
 #force context to grab a token for graph
 $AADServicePrincipal = Get-AzureRmADServicePrincipal -ObjectId $Context.Account.Id
 $AADServicePrincipal
