@@ -12,9 +12,9 @@ apiName (required) string
 
 The name of the API.
 
-versioningScheme (required)  string
+versioningMethod (required)  string
 
-The type of versioning to apply.
+The method of determining the api version to use.
 Can be one of three values:  Header, Query, and Segment.
 
 versionProperty (optional)  string

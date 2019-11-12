@@ -8,7 +8,7 @@
         "apiName": {
             "type": "string"
         },
-        "versioningScheme": {
+        "versioningMethod": {
             "type": "string",
             "allowedValues": [
                 "Header",
@@ -31,7 +31,7 @@
             "apiVersion": "2019-01-01",
             "properties": {
                 "displayName": "[concat('The ', concat(toLower(parameters('apiName')), ' version set'))]",
-                "versioningScheme": "[parameters('versioningScheme')]",
+                "versioningScheme": "[parameters('versioningMethod')]",
                 "description": "[tolower(parameters('apiName'))]",
                 "versionHeaderName": "[parameters('versionProperty')]",
                 "versionQueryName": "[parameters('versionProperty')]"
