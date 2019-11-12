@@ -1,6 +1,6 @@
 <#
 .SYNOPSIS
-Registers and application with Azure Active Directory and optionally creates a secret
+Registers and application with Azure Active Directory and optionally creates a secret from an Azure DevOps pipeline
 
 .DESCRIPTION
 Creates an AAD App Registration and associated Serivce Principal.  Optionally creates a secret for the App Registration and stores that in a KeyVault
@@ -16,6 +16,16 @@ Creates the Service Principal with a secret that is stored in a KeyVault
 
 .PARAMETER KeyVaultName
 Required if AddSecret is set
+
+.EXAMPLE
+ .\New-ApplicationRegistration.ps1 -AppRegistrationName BarApplication -AddSecret -KeyVaultName dfc-foo-shared-kv -Verbose
+
+.NOTES
+This cmdlet is designed to run from an Azure DevOps pipeline using a Service Connection.  
+The Service Principal that the connection authenticates with will need the following permissions to create the application registration:
+- Windows Azure Active Directory Directory.ReadWrite.All
+- Windows Azure Active Directory Application.ReadWrite.OwnedBy
+
 #>
 [CmdletBinding(DefaultParametersetName='None')]
 param(
@@ -44,8 +54,7 @@ function New-Password{
 }
 
 $Context = Get-AzureRmContext
-Write-Verbose "Connected to AzureRm Context Tenant $($Context.Tenant.Id) with Account $($Context.Account.Id), connecting to AzureAd ..."
-$Conn = Connect-AzureAD -TenantId $Context.Tenant.Id -AccountId $Context.Account.Id
+$AzureDevOpsServicePrincipal = Get-AzureRmADServicePrincipal -ApplicationId $Context.Account.Id
 
 $AdServicePrincipal = Get-AzureRmADServicePrincipal -SearchString $AppRegistrationName
 if(!$AdServicePrincipal) {
@@ -59,6 +68,18 @@ if(!$AdServicePrincipal) {
         if (!$KeyVault) {
 
             throw "KeyVault $KeyVaultName doesn't exist, nowhere to store secret"
+
+        }
+        else {
+
+            Write-Verbose "Checking user access policy for user $($AzureDevOpsServicePrincipal.Id) ..."
+            $UserAccessPolicy = $KeyVault.AccessPolicies | Where-Object { $_.ObjectId -eq $AzureDevOpsServicePrincipal.Id }
+            if (!$UserAccessPolicy -or !$UserAccessPolicy.PermissionsToSecrets.Contains("Set")) {
+
+                throw "Service Principal $($AzureDevOpsServicePrincipal.Id) doesn't have Set permission on KeyVault $($KeyVault.VaultName)"
+
+            }
+
 
         }
 
