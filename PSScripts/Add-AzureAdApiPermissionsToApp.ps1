@@ -1,6 +1,6 @@
 <#
 .SYNOPSIS
-Adds API permissions to an App Registration
+Adds API permissions to an App Registration via the Azure PowerShell Azure DevOps task.
 
 .DESCRIPTION
 Adds API permissions to an existing App Registration.  Approval will need to be granted manually via the Azure Portal once the permissions have been added
@@ -20,6 +20,12 @@ An array of permissions, eg "Directory.Read.All", "User.Read".  The available pe
 .EXAMPLE
  .\PSScripts\Add-AzureAdApiPermissionsToApp.ps1 -AppRegistrationDisplayName FooBarAppRegistration -ApiName "Microsoft Graph" -DelegatedPermissions "Directory.Read.All", 
 "User.Read" -Verbose
+
+.NOTES
+This cmdlet is designed to run from an Azure DevOps pipeline using a Service Connection.  
+The Service Principal that the connection authenticates with will need the following permissions to create the application registration:
+- Windows Azure Active Directory Directory.ReadWrite.All
+- Windows Azure Active Directory Application.ReadWrite.OwnedBy  (this assumes that the same Service Connection was used to create the Service Principal, eg using the New-ApplicationRegistration script)
 #>
 [CmdletBinding()]
 param(
