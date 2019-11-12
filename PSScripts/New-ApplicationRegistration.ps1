@@ -23,8 +23,8 @@ Required if AddSecret is set
 .NOTES
 This cmdlet is designed to run from an Azure DevOps pipeline using a Service Connection.  
 The Service Principal that the connection authenticates with will need the following permissions to create the application registration:
-- Windows Azure Active Directory Directory.ReadWrite.All
-- Windows Azure Active Directory Application.ReadWrite.OwnedBy
+- Azure Active Directory Graph Application Directory.ReadWrite.All
+- Azure Active Directory Graph Application Application.ReadWrite.OwnedBy
 
 #>
 [CmdletBinding(DefaultParametersetName='None')]

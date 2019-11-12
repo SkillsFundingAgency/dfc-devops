@@ -24,8 +24,8 @@ An array of permissions, eg "Directory.Read.All", "User.Read".  The available pe
 .NOTES
 This cmdlet is designed to run from an Azure DevOps pipeline using a Service Connection.  
 The Service Principal that the connection authenticates with will need the following permissions to create the application registration:
-- Windows Azure Active Directory Directory.ReadWrite.All
-- Windows Azure Active Directory Application.ReadWrite.OwnedBy  (this assumes that the same Service Connection was used to create the Service Principal, eg using the New-ApplicationRegistration script)
+- Azure Active Directory Graph Application Directory.ReadWrite.All
+- Azure Active Directory Graph Application Application.ReadWrite.OwnedBy (this assumes that the same Service Connection was used to create the Service Principal, eg using the New-ApplicationRegistration script)
 #>
 [CmdletBinding()]
 param(
