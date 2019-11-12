@@ -27,7 +27,7 @@ The Service Principal that the connection authenticates with will need the follo
 - Azure Active Directory Graph Application Directory.ReadWrite.All
 - Azure Active Directory Graph Application Application.ReadWrite.OwnedBy (this assumes that the same Service Connection was used to create the Service Principal, eg using the New-ApplicationRegistration script)
 #>
-[CmdletBinding()]
+[CmdletBinding(SupportsShouldProcess = $true, ConfirmImpact = 'Low')]
 param(
     [Parameter(Mandatory=$true)]
     [String]$AppRegistrationDisplayName,

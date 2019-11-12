@@ -27,15 +27,15 @@ The Service Principal that the connection authenticates with will need the follo
 - Azure Active Directory Graph Application Application.ReadWrite.OwnedBy
 
 #>
-[CmdletBinding(DefaultParametersetName='None')]
+[CmdletBinding(DefaultParametersetName='None', SupportsShouldProcess = $true, ConfirmImpact = 'Low')]
 param(
     [Parameter(Mandatory=$true)]
     [string]$AppRegistrationName,
     [Parameter(Mandatory=$false)]
     [string]$IdentifierUris = "https://localhost",
-    [Parameter(ParameterSetName="AddSecret", Mandatory=$false)]
+    [Parameter(Mandatory=$false, ParameterSetName="AddSecret")]
     [switch]$AddSecret,
-    [Parameter(ParameterSetName="AddSecret", Mandatory=$true)]
+    [Parameter(Mandatory=$true, ParameterSetName="AddSecret")]
     [string]$KeyVaultName
 )
 
@@ -44,9 +44,9 @@ function New-Password{
 		[Parameter(Mandatory=$true)]
 		[int]$Length
 	)
-	$passwordString = -join ((48..57) + (65..90) + (97..122) | Get-Random -Count $Length | ForEach {[char]$_})
-	if ($passwordString -match "^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)") {
-		return $passwordString
+	$PasswordString = -join ((48..57) + (65..90) + (97..122) | Get-Random -Count $Length | ForEach-Object {[char]$_})
+	if ($PasswordString -match "^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)") {
+		return $PasswordString
 	}
 	else {
 		New-Password -length $Length
