@@ -1,0 +1,42 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "apimServiceName": {
+            "type": "string"
+        },
+        "apiName": {
+            "type": "string"
+        },
+        "versioningScheme": {
+            "type": "string",
+            "allowedValues": [
+                "Header",
+                "Query",
+                "Segment"
+            ]
+        },
+        "versionProperty": {
+            "type": "string",
+            "defaultValue": ""
+        }
+    },
+    "variables": {
+        "versionSetName": "[concat(parameters('apiName'), '-versionset')]"
+    },
+    "resources": [
+        {
+            "name": "[concat(parameters('ApimServiceName'), '/', variables('VersionSetName'))]",
+            "type": "Microsoft.ApiManagement/service/apiVersionSets",
+            "apiVersion": "2019-01-01",
+            "properties": {
+                "displayName": "[concat('The ', concat(toLower(parameters('apiName')), ' version set'))]",
+                "versioningScheme": "[parameters('versioningScheme')]",
+                "description": "[tolower(parameters('apiName'))]",
+                "versionHeaderName": "[parameters('versionProperty')]",
+                "versionQueryName": "[parameters('versionProperty')]"
+            }
+        }
+    ],
+    "outputs": {}
+}
