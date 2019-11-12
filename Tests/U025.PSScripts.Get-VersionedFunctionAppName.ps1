@@ -1,6 +1,6 @@
 Describe "Get-VersionedFunctionAppName" -Tag "Unit" {
 
-    Context "When getting a versioned function app name with pooly formatted function app" {
+    Context "When getting a versioned function app name with poorly formatted function app" {
 
         It "should throw an exception" {
             $env:Build_SourceBranchName = "dev"

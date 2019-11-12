@@ -14,7 +14,7 @@
     .PARAMETER FunctionAppBaseName
     The function app name minus the version, eg dss-at-cust-fa rather than dss-at-cust-v2-fa
 #>
-
+[CmdletBinding()]
 param()
 
 function Write-AzureDevopsVariable {
@@ -69,7 +69,7 @@ function Get-FunctionVersionFromBranch {
     if($BranchName -iin @("dev", "master"))  {
         $branchVersion = "v1"
     } else {
-        if($BranchName -match '^(?:(v[0-9]*)-)?(?:master|dev)(?:-(v[0-9]*))?$') {
+        if($BranchName -match '^(?:(v[0-9]+)-)?(?:master|dev)(?:-(v[0-9]+))?$') {
             if($null -ne $Matches[1]) {
                 $branchVersion = $Matches[1]
             } else {
