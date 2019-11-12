@@ -47,7 +47,7 @@ $Context = Get-AzureRmContext
 $Context
 $Context.Account
 #force context to grab a token for graph
-$AADServicePrincipal = Get-AzureRmADServicePrincipal -DisplayNameBeginsWith $Context.Account.Id
+$AADServicePrincipal = Get-AzureRmADServicePrincipal -ApplicationId $Context.Account.Id
 $AADServicePrincipal
 Write-Verbose "Connected to AzureRm Context Tenant $($Context.Tenant.Id) with Account $($AADServicePrincipal.DisplayName) & Account.Type $($Context.Account.Type), connecting to AzureAD ..."
 
