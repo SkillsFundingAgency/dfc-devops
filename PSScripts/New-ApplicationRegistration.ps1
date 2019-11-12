@@ -46,10 +46,14 @@ function New-Password{
 	)
 	$PasswordString = -join ((48..57) + (65..90) + (97..122) | Get-Random -Count $Length | ForEach-Object {[char]$_})
 	if ($PasswordString -match "^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)") {
-		return $PasswordString
+
+        return $PasswordString
+        
 	}
 	else {
-		New-Password -length $Length
+
+        New-Password -length $Length
+        
 	}
 }
 
@@ -59,7 +63,7 @@ $AzureDevOpsServicePrincipal = Get-AzureRmADServicePrincipal -ApplicationId $Con
 $AdServicePrincipal = Get-AzureRmADServicePrincipal -SearchString $AppRegistrationName
 if(!$AdServicePrincipal) {
 
-    Write-Verbose -Message "Registering service principal"
+    Write-Verbose "Registering service principal"
     if ($AddSecret) {
 
         $Password = New-Password -Length 24
@@ -108,6 +112,6 @@ if(!$AdServicePrincipal) {
 }	
 else {
 
-    Write-Verbose -Message "$($AdServicePrincipal.ServicePrincipalNames -join ",") already registered as AD Service Principal, no action"
+    Write-Verbose "$($AdServicePrincipal.ServicePrincipalNames -join ",") already registered as AD Service Principal, no action"
 
 }
