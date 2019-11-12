@@ -22,7 +22,8 @@
         }
     },
     "variables": {
-        "versionSetName": "[concat(parameters('apiName'), '-versionset')]"
+        "versionSetName": "[concat(parameters('apiName'), '-versionset')]",
+        "lowerApiName": "[tolower(parameters('apiName'))]"
     },
     "resources": [
         {
@@ -30,9 +31,9 @@
             "type": "Microsoft.ApiManagement/service/apiVersionSets",
             "apiVersion": "2019-01-01",
             "properties": {
-                "displayName": "[concat('The ', concat(toLower(parameters('apiName')), ' version set'))]",
+                "displayName": "[concat('The ', concat(variables('lowerApiName'), ' version set'))]",
                 "versioningScheme": "[parameters('versioningMethod')]",
-                "description": "[tolower(parameters('apiName'))]",
+                "description": "[variables('lowerApiName')]",
                 "versionHeaderName": "[parameters('versionProperty')]",
                 "versionQueryName": "[parameters('versionProperty')]"
             }
