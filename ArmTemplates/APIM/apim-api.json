@@ -126,7 +126,7 @@
             ]
         },
         {
-            "name": "[concat(parameters('apimServiceName'), '/', parameters('apimProductInstanceName'), '/', parameters('apiName'))]",
+            "name": "[concat(parameters('apimServiceName'), '/', parameters('apimProductInstanceName'), '/', variables('apimApiVersionName'))]",
             "type": "Microsoft.ApiManagement/service/products/apis",
             "condition": "[not(equals(parameters('apimProductInstanceName'), ''))]",
             "apiVersion": "2018-01-01",
