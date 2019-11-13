@@ -119,7 +119,7 @@ $ApiServicePrincipal = Get-AzureADServicePrincipal -SearchString $ApiName
 if (!$ApiServicePrincipal) {
 
     throw "$ApiName Service Principal is not registered"
-    
+
 }
 
 # Add Required API Access

@@ -11,7 +11,7 @@ Url to the Composite Page Registration Api
 .PARAMETER RegionApiUrl
 Url to the Composite Region Registration Api
 
-.PARAMETER RegistrationFile 
+.PARAMETER RegistrationFile
 Path to the json file describing the applications registrations
 
 .PARAMETER ApiKey
@@ -22,7 +22,7 @@ New-RegistrationContext -PathApiUrl https://page-registration-url/api -RegionApi
 
 #>
 
-param(    
+param(
     [Parameter(Mandatory=$true)]
     [string] $PathApiUrl,
     [Parameter(Mandatory=$true)]
@@ -43,7 +43,7 @@ New-RegistrationContext -PathApiUrl $PathApiUrl -RegionApiUrl $RegionApiUrl -Api
 foreach($path in $contentAsObject) {
     Write-Verbose "Getting path registration for Path $($path.Path)."
     $pathEntity = Get-PathRegistration -Path $path.Path
-    
+
     if($null -eq $pathEntity) {
         Write-Verbose "Path registration does not exist, creating new path registration."
         New-PathRegistration -Path $path

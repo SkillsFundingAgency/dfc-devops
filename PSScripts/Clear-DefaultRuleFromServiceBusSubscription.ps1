@@ -47,7 +47,7 @@ $rules = Get-AzServiceBusRule -ResourceGroupName $ResourceGroupName `
 $hasExtraRules = $rules.Count -gt 1
 $hasDefaultRule = ($rules | Where-Object { $_.Name -eq '$Default' }).Count -gt 0
 
-if($hasExtraRules -and $hasDefaultRule) { 
+if($hasExtraRules -and $hasDefaultRule) {
     Write-Output "Subscription has default rule in combination with one set elsewhere, clearing."
 
     Remove-AzServiceBusRule  -ResourceGroupName $ResourceGroupName `

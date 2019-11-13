@@ -80,5 +80,4 @@ foreach ($Indexer in $IndexerConfiguration) {
         ApiRequest -Method POST -Url $Url -ApiKey $SearchResourceKeys.PrimaryKey -Body $Indexer
         continue
     }
-}
-    
+} 

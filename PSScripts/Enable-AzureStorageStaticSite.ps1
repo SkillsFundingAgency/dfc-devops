@@ -32,7 +32,7 @@ Write-Verbose "Enabling static website on: $StorageAccountName"
 Enable-AzStorageStaticWebsite -Context $Context -IndexDocument $IndexDocument -ErrorDocument404Path $ErrorDocument404Path
 $SiteAddress = "$StorageAccountName.z6.web.core.windows.net"
 $SiteAddressResolved = $false
-While (!$SiteAddressResolved) { 
+While (!$SiteAddressResolved) {
 
     Write-Verbose "Resolving $SiteAddress with PSVerion: $($PSVersionTable.PSVersion.Major)"
     if ($PSVersionTable.PSVersion.Major -ge 6) {
@@ -46,8 +46,8 @@ While (!$SiteAddressResolved) {
 
     }
 
-    if ($SiteAddressResolved) { 
-        
+    if ($SiteAddressResolved) {
+
         Write-Verbose "Resovled address: $SiteAddress"
 
     }
