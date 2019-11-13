@@ -21,7 +21,7 @@ Required if AddSecret is set
  .\New-ApplicationRegistration.ps1 -AppRegistrationName BarApplication -AddSecret -KeyVaultName dfc-foo-shared-kv -Verbose
 
 .NOTES
-This cmdlet is designed to run from an Azure DevOps pipeline using a Service Connection.  
+This cmdlet is designed to run from an Azure DevOps pipeline using a Service Connection.
 The Service Principal that the connection authenticates with will need the following permissions to create the application registration:
 - Azure Active Directory Graph Application Directory.ReadWrite.All
 - Azure Active Directory Graph Application Application.ReadWrite.OwnedBy
@@ -40,6 +40,7 @@ param(
 )
 
 function New-Password{
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseShouldProcessForStateChangingFunctions", "", Justification="This function doesn't change system state it merely returns a random string for use as a password.")]
 	param(
 		[Parameter(Mandatory=$true)]
 		[int]$Length
@@ -48,12 +49,12 @@ function New-Password{
 	if ($PasswordString -match "^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)") {
 
         return $PasswordString
-        
+
 	}
 	else {
 
         New-Password -length $Length
-        
+
 	}
 }
 
@@ -108,8 +109,8 @@ if(!$AdServicePrincipal) {
         $AdServicePrincipal = New-AzureRmADServicePrincipal -DisplayName $AppRegistrationName
 
     }
-    
-}	
+
+}
 else {
 
     Write-Verbose "$($AdServicePrincipal.ServicePrincipalNames -join ",") already registered as AD Service Principal, no action"
