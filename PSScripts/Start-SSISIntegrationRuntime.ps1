@@ -40,9 +40,9 @@ do {
     Write-Host "Attempting to fetching runtime instance, attempt $($attempts) of 40"
     $runtimeInstance = Get-AzureRmDataFactoryV2IntegrationRuntime -ResourceGroupName $ResourceGroupName -DataFactoryName $DataFactoryName -Name $RuntimeName -ErrorAction SilentlyContinue
 
-    if($attempts -eq 40)  {        
+    if($attempts -eq 40)  {
         break;
-    } 
+    }
 
     if($null -eq $runtimeInstance) {
         Start-Sleep -Seconds 15
