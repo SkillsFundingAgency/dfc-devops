@@ -49,7 +49,7 @@ if ($CosmosDbAccountName -match "-prd-") {
 if ($CosmosDbReadWriteKey) {
 
     $CosmosDbContext = New-CosmosDbContext -Account $CosmosDbAccountName -Key $CosmosDbReadWriteKey -Database $Database
-    
+
 }
 else {
 
@@ -69,7 +69,7 @@ while ($ContinuationToken) {
 
     $Documents += Get-CosmosDbDocument -Context $cosmosDbContext -CollectionId $CollectionId -MaxItemCount 100 -ContinuationToken $ContinuationToken  -ResponseHeader ([ref] $ResponseHeader)
     Write-Debug "Additional documents retrieved, count: $($Documents.Count)"
-    
+
     $ContinuationToken = [String] $ResponseHeader.'x-ms-continuation'
     Write-Debug "ContinuationToken: $ContinuationToken"
 

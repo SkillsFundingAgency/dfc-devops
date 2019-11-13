@@ -81,4 +81,3 @@ foreach ($Indexer in $IndexerConfiguration) {
         continue
     }
 }
-    
