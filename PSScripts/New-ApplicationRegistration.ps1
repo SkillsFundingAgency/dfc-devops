@@ -117,3 +117,4 @@ else {
     Write-Verbose "$($AdServicePrincipal.ServicePrincipalNames -join ",") already registered as AD Service Principal, no action"
 
 }
+$AdServicePrincipal
