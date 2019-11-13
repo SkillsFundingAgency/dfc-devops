@@ -31,9 +31,9 @@
             "type": "Microsoft.ApiManagement/service/apiVersionSets",
             "apiVersion": "2019-01-01",
             "properties": {
-                "displayName": "[concat('The ', concat(variables('lowerApiName'), ' version set'))]",
+                "displayName": "[variables('lowerApiName')]",
                 "versioningScheme": "[parameters('versioningMethod')]",
-                "description": "[variables('lowerApiName')]",
+                "description": "[concat('The ', concat(variables('lowerApiName'), ' version set'))]",
                 "versionHeaderName": "[parameters('versionProperty')]",
                 "versionQueryName": "[parameters('versionProperty')]"
             }

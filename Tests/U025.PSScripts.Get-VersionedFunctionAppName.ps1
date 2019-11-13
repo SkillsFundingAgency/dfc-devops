@@ -24,6 +24,7 @@ Describe "Get-VersionedFunctionAppName" -Tag "Unit" {
             @{ SourceBranch = "v999999-master"; FunctionBaseName = "dfc-dev-test-fa"; ExpectedResult = "dfc-dev-test-v999999-fa" }
             @{ SourceBranch = "dev-v999999"; FunctionBaseName = "dfc-dev-test-fa"; ExpectedResult = "dfc-dev-test-v999999-fa" }
             @{ SourceBranch = "master-v999999"; FunctionBaseName = "dfc-dev-test-fa"; ExpectedResult = "dfc-dev-test-v999999-fa" }
+            @{ SourceBranch = "dev-v5"; FunctionBaseName = "dfc-dev-draft-component-fa"; ExpectedResult = "dfc-dev-draft-component-v5-fa" }
         )
 
         It "Should return '<ExpectedResult>' for branch <SourceBranch>' and functionName '<FunctionBaseName>'" -TestCases $testData {
