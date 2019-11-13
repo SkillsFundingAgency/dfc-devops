@@ -58,12 +58,14 @@ function Add-ResourceAccess {
     )
 
     foreach ($Permission in $RequiredPermissions) {
+
         $RequestedPermissionObject = $ExposedPermissions | Where-Object {$_.Value -contains $Permission}
         Write-Verbose "Collected information for $($RequestedPermissionObject.Value) of type $PermissionType"
         $ResourceAccess = New-Object -TypeName Microsoft.Open.AzureAD.Model.ResourceAccess
         $ResourceAccess.Type = $PermissionType
         $ResourceAccess.Id = $RequestedPermissionObject.Id
         $RequiredResourceAccessObject.ResourceAccess.Add($ResourceAccess)
+
     }
 }
 
@@ -82,10 +84,14 @@ function New-RequireResourceAccessObject {
     $RequiredResourceAccess.ResourceAppId = $TargetServicePrincipal.AppId
     $RequiredResourceAccess.ResourceAccess = New-Object System.Collections.Generic.List[Microsoft.Open.AzureAD.Model.ResourceAccess]
     if ($RequiredDelegatedPermissions) {
+
         Add-ResourceAccess -ExposedPermissions $TargetServicePrincipal.Oauth2Permissions -RequiredPermissions $RequiredDelegatedPermissions -RequiredResourceAccessObject $RequiredResourceAccess -PermissionType "Scope"
+
     }
     if ($RequiredApplicationPermissions) {
+
         Add-ResourceAccess -ExposedPermissions $TargetServicePrincipal.AppRoles -RequiredPermissions $RequiredApplicationPermissions -RequiredResourceAccessObject $RequiredResourceAccess -PermissionType "Role"
+
     }
     return $RequiredResourceAccess
 }
@@ -100,8 +106,10 @@ $CacheItems = $Cache.ReadItems()
 
 $Token = ($CacheItems | Where-Object { $_.Resource -eq "https://graph.windows.net/" })
 if ($Token.ExpiresOn -le [System.DateTime]::UtcNow) {
+
     $AuthContext = [Microsoft.IdentityModel.Clients.ActiveDirectory.AuthenticationContext]::new("$($Context.Environment.ActiveDirectoryAuthority)$($Context.Tenant.Id)",$Token)
     $Token = $AuthContext.AcquireTokenByRefreshToken($Token.RefreshToken, "1950a258-227b-4e31-a9cf-717495945fc2", "https://graph.windows.net")
+
 }
 $AADConn = Connect-AzureAD -AadAccessToken $Token.AccessToken -AccountId $Context.Account.Id -TenantId $Context.Tenant.Id
 Write-Verbose "Connected to AzureAD tenant domain $($AADConn.TenantDomain)"
@@ -109,7 +117,9 @@ Write-Verbose "Connected to AzureAD tenant domain $($AADConn.TenantDomain)"
 Write-Verbose "Getting API Service Principal ..."
 $ApiServicePrincipal = Get-AzureADServicePrincipal -SearchString $ApiName
 if (!$ApiServicePrincipal) {
+
     throw "$ApiName Service Principal is not registered"
+    
 }
 
 # Add Required API Access
