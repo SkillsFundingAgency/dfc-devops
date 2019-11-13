@@ -64,7 +64,6 @@ $AzureDevOpsServicePrincipal = Get-AzureRmADServicePrincipal -ApplicationId $Con
 $AdServicePrincipal = Get-AzureRmADServicePrincipal -SearchString $AppRegistrationName
 if(!$AdServicePrincipal) {
 
-    Write-Verbose "Registering service principal"
     if ($AddSecret) {
 
         $Password = New-Password -Length 24
@@ -90,6 +89,7 @@ if(!$AdServicePrincipal) {
 
         try {
 
+            Write-Verbose "Registering service principal ..."
             $AdServicePrincipal = New-AzureRmADServicePrincipal -DisplayName $AppRegistrationName -Password $SecurePassword -EndDate $([DateTime]::new(2299, 12, 31)) -ErrorAction Stop
 
         }
@@ -106,6 +106,7 @@ if(!$AdServicePrincipal) {
     }
     else {
 
+        Write-Verbose "Registering service principal ..."
         $AdServicePrincipal = New-AzureRmADServicePrincipal -DisplayName $AppRegistrationName
 
     }
