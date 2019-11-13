@@ -2,8 +2,6 @@ Push-Location -Path $PSScriptRoot\..\PSScripts\
 
 Describe "Add-AzureAdApiPermissionsToApp unit tests" -Tag "Unit" {
 
-    . .\Add-AzureAdApiPermissionsToApp.ps1
-
     Mock Get-AzureRmContext { [PsCustomObject]
         @{
             Account = @{
@@ -18,7 +16,6 @@ Describe "Add-AzureAdApiPermissionsToApp unit tests" -Tag "Unit" {
             Id = "4a11d94c-9c97-4c0b-8f85-476c1ef15956"
         }
     }
-    Mock Connect-AzureAdFromAzureRm
     Mock Get-AzureRmADApplication { [PsCustomObject] 
         @{
             ObjectId = "b68bcf9f-9ec6-47b6-bcc4-8efa9a0c497d"
