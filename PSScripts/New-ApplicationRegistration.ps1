@@ -78,7 +78,7 @@ if(!$AdServicePrincipal) {
 
             Write-Verbose "Checking user access policy for user $($AzureDevOpsServicePrincipal.Id) ..."
             $UserAccessPolicy = $KeyVault.AccessPolicies | Where-Object { $_.ObjectId -eq $AzureDevOpsServicePrincipal.Id }
-            if (!$UserAccessPolicy -or !$UserAccessPolicy.PermissionsToSecrets -contains "Set") {
+            if (!$UserAccessPolicy -or !($UserAccessPolicy.PermissionsToSecrets -contains "Set")) {
 
                 throw "Service Principal $($AzureDevOpsServicePrincipal.Id) doesn't have Set permission on KeyVault $($KeyVault.VaultName)"
 
