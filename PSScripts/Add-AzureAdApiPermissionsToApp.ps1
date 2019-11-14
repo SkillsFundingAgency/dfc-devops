@@ -9,7 +9,7 @@ Adds API permissions to an existing App Registration.  Approval will need to be 
 The name of the App Registration
 
 .PARAMETER ApiName
-The name of the API, currently limited to Microsoft Graph and any correctly formated dfc API (must start "dfc-<env>-", where <env> is the name of the environemt, eg "dev")
+The name of the API, currently limited to Microsoft Graph and any correctly formated dfc API (must start "dfc-<env>-", where <env> is the name of the environment, eg "dev")
 
 .PARAMETER ApplicationPermissions
 An array of permissions, eg "Directory.Read.All", "User.Read".  The available permissions can be obtained from the Azure Portal in the Azure Active Directory blade
@@ -132,4 +132,4 @@ Write-Verbose "Getting App Registration ..."
 $AdApplication = Get-AzureRmADApplication -DisplayName $AppRegistrationDisplayName
 Write-Verbose "Adding permissions to AD Application $($AdApplication.DisplayName)"
 Set-AzureAdApplication -ObjectId $AdApplication.ObjectId -RequiredResourceAccess $RequiredResourcesAccessList
-Write-Warning -Message "If not already approved permission grants need to be approved in the Azure Portal via Azure Active Directory > App registrations > $($AdApplication.DisplayName) > API Permissions > Grant admin consent for Default Directory"
+Write-Warning -Message "If not already approved, permission grants need to be approved in the Azure Portal via Azure Active Directory > App registrations > $($AdApplication.DisplayName) > API Permissions > Grant admin consent for Default Directory"
