@@ -83,20 +83,20 @@
     },
     "virtualNetworkResourceGroup": {
       "type": "string",
-      "defaultValue": "[resourceGroup().name]",
       "metadata": {
         "description": "Name of the existing VNET resource group"
       }
     },
     "logAnalyticsResourceGroupName": {
       "type": "string",
-      "defaultValue": "[resourceGroup().name]",
+      "defaultValue": "",
       "metadata": {
         "description": "The name of the resource group for log analytics"
       }
     },
     "logAnalyticsWorkspaceName": {
       "type": "string",
+      "defaultValue": "",
       "metadata": {
         "description": "The name of the log analytics workspace that will be used for monitoring"
       }
@@ -110,7 +110,19 @@
   },
   "variables": {
     "vnetSubnetId": "[resourceId(parameters('virtualNetworkResourceGroup'),'Microsoft.Network/virtualNetworks/subnets',parameters('virtualNetworkName'),parameters('subnetName'))]",
-    "logAnalyticsId": "[resourceId(parameters('logAnalyticsResourceGroupName'), 'Microsoft.OperationalInsights/workspaces', parameters('logAnalyticsWorkspaceName'))]"
+    "logAnalyticsId": "[resourceId(parameters('logAnalyticsResourceGroupName'), 'Microsoft.OperationalInsights/workspaces', parameters('logAnalyticsWorkspaceName'))]",
+    "addOnObject": {
+        "noAddons": "[json('null')]",
+        "omsAddon": {
+          "omsagent": {
+            "enabled": true,
+            "config": {
+              "logAnalyticsWorkspaceResourceID": "[variables('logAnalyticsId')]"
+            }
+          }
+        }
+    }
+
   },
   "resources": [
     {
@@ -132,14 +144,7 @@
             "storageProfile": "ManagedDisks"
           }
         ],
-        "addonProfiles": {
-          "omsagent": {
-            "enabled": true,
-            "config": {
-              "logAnalyticsWorkspaceResourceID": "[variables('logAnalyticsId')]"
-            }
-          }
-        },
+        "addonProfiles": "[if(equals(parameters('logAnalyticsWorkspaceName'), ''), variables('addOnObject').noAddons, variables('addOnObject').omsAddon)]",
         "nodeResourceGroup": "[parameters('nodeResourceGroup')]",
         "enableRBAC": true,
         "servicePrincipalProfile": {
