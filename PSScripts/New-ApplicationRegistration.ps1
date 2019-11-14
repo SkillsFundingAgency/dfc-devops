@@ -84,7 +84,6 @@ if(!$AdServicePrincipal) {
 
             }
 
-
         }
 
         try {
