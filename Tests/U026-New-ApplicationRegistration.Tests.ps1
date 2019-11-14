@@ -46,7 +46,7 @@ Describe "New-ApplicationRegistration unit tests" -Tag "Unit" {
                 AccessPolicies = @(
                     @{
                         ObjectId = "4a11d94c-9c97-4c0b-8f85-476c1ef15956"
-                        PermissionsToSecrets = "Get, List"
+                        PermissionsToSecrets = @("Get", "List")
                     }
                 )
             }
@@ -76,7 +76,7 @@ Describe "New-ApplicationRegistration unit tests" -Tag "Unit" {
                 AccessPolicies = @(
                     @{
                         ObjectId = "4a11d94c-9c97-4c0b-8f85-476c1ef15956"
-                        PermissionsToSecrets = "Get, List, Set"
+                        PermissionsToSecrets = @("Get", "List", "Set")
                     }
                 )
             }
