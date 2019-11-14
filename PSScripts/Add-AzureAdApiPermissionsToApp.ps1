@@ -9,7 +9,7 @@ Adds API permissions to an existing App Registration.  Approval will need to be 
 The name of the App Registration
 
 .PARAMETER ApiName
-The name of the API, currently limited to Microsoft Graph
+The name of the API, currently limited to Microsoft Graph and any correctly formated dfc API (must start "dfc-<env>-", where <env> is the name of the environemt, eg "dev")
 
 .PARAMETER ApplicationPermissions
 An array of permissions, eg "Directory.Read.All", "User.Read".  The available permissions can be obtained from the Azure Portal in the Azure Active Directory blade
@@ -31,7 +31,7 @@ The Service Principal that the connection authenticates with will need the follo
 param(
     [Parameter(Mandatory=$true)]
     [String]$AppRegistrationDisplayName,
-    [ValidateSet("Microsoft Graph")]
+    [ValidatePattern("^(Microsoft Graph|dfc-\w+-.+)$")]
     [Parameter(Mandatory=$true)]
     [String]$ApiName,
     [Parameter(Mandatory=$true, ParameterSetName="Application")]
