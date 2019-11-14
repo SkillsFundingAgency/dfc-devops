@@ -34,8 +34,10 @@ param(
     [ValidatePattern("^(Microsoft Graph|dfc-\w+-.+)$")]
     [Parameter(Mandatory=$true)]
     [String]$ApiName,
+    [Parameter(Mandatory=$true, ParameterSetName="Both")]
     [Parameter(Mandatory=$true, ParameterSetName="Application")]
     [String[]]$ApplicationPermissions,
+    [Parameter(Mandatory=$true, ParameterSetName="Both")]
     [Parameter(Mandatory=$true, ParameterSetName="Delegated")]
     [String[]]$DelegatedPermissions
 )
