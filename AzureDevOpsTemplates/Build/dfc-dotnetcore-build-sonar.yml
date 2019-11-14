@@ -71,7 +71,7 @@ steps:
    displayName: Test
    inputs:
      command: test
-     projects: '${{ parameters.SolutionBaseName }}.${{ parameters.TestSuffix }}\${{ parameters.SolutionBaseName }}.${{ parameters.TestSuffix }}.csproj'
+     projects: '${{ parameters.SolutionBaseName }}*${{ parameters.TestSuffix }}\${{ parameters.SolutionBaseName }}*${{ parameters.TestSuffix }}.csproj'
      arguments: '--configuration ${{ parameters.BuildConfiguration }} --collect "Code coverage"'
  - task: SonarCloudAnalyze@1
    displayName: 'Run Code Analysis'
