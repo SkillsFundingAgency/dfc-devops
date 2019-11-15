@@ -14,7 +14,7 @@ The display name of the product.  The name of the product will be the same but a
 
 addDevelopers (optional) bool
 
-Defaults tor true.  Adds the built in Developers user group to the API Access Control list.  This allows all registered users access to the API by default.
+Defaults to false.  Adds the built in Developers user group to the API Access Control list.  This allows all registered users access to the API by default.
 
 allowAnonymousAccess (optional) bool
 
