@@ -8,17 +8,20 @@
         "description": "The name of the Managed Cluster resource."
       }
     },
+    "dnsServiceIp": {
+      "type": "string"
+    },
     "kubernetesVersion": {
       "type": "string",
       "metadata": {
         "description": "The version of Kubernetes."
       }
     },
-    "servicePrincipalClientId": {
-      "type": "string"
-    },
-    "servicePrincipalSecret": {
-      "type": "securestring"
+    "nodeResourceGroup": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the resource group used for nodes"
+      }
     },
     "rbacClientAppId": {
       "type": "string"
@@ -35,39 +38,11 @@
     "serviceCidr": {
       "type": "string"
     },
-    "dnsServiceIp": {
+    "servicePrincipalClientId": {
       "type": "string"
     },
-    "podCidr": {
-      "type": "string",
-      "defaultValue": "10.244.0.0/16"
-    },
-    "dockerBridgeCidr": {
-      "type": "string",
-      "defaultValue": "172.17.0.1/16"
-    },
-    "agentPoolName": {
-      "type": "string",
-      "defaultValue": "agentpool",
-      "metadata": {
-        "description": "The name of the default agent pool"
-      }
-    },
-    "agentNodeCount": {
-      "type": "int",
-      "defaultValue": 3,
-      "metadata": {
-        "description": "The number of nodes for the cluster."
-      },
-      "minValue": 1,
-      "maxValue": 50
-    },
-    "agentVMSize": {
-      "type": "string",
-      "defaultValue": "Standard_DS2_v2",
-      "metadata": {
-        "description": "The sku of the machines that will be used for the default agentpool."
-      }
+    "servicePrincipalSecret": {
+      "type": "securestring"
     },
     "subnetName": {
       "type": "string",
@@ -87,6 +62,33 @@
         "description": "Name of the existing VNET resource group"
       }
     },
+    "agentNodeCount": {
+      "type": "int",
+      "defaultValue": 3,
+      "metadata": {
+        "description": "The number of nodes for the cluster."
+      },
+      "minValue": 1,
+      "maxValue": 50
+    },
+    "agentPoolName": {
+      "type": "string",
+      "defaultValue": "agentpool",
+      "metadata": {
+        "description": "The name of the default agent pool"
+      }
+    },
+    "agentVMSize": {
+      "type": "string",
+      "defaultValue": "Standard_DS2_v2",
+      "metadata": {
+        "description": "The sku of the machines that will be used for the default agentpool."
+      }
+    },
+    "dockerBridgeCidr": {
+      "type": "string",
+      "defaultValue": "172.17.0.1/16"
+    },
     "logAnalyticsResourceGroupName": {
       "type": "string",
       "defaultValue": "",
@@ -101,11 +103,9 @@
         "description": "The name of the log analytics workspace that will be used for monitoring"
       }
     },
-    "nodeResourceGroup": {
+    "podCidr": {
       "type": "string",
-      "metadata": {
-        "description": "The name of the resource group used for nodes"
-      }
+      "defaultValue": "10.244.0.0/16"
     }
   },
   "variables": {
