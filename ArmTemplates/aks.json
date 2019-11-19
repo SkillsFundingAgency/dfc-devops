@@ -144,6 +144,7 @@
                         "storageProfile": "ManagedDisks"
                     }
                 ],
+                "addonProfiles": "[if(equals(parameters('logAnalyticsWorkspaceName'), ''), variables('addOnObject').noAddons, variables('addOnObject').omsAddon)]",
                 "nodeResourceGroup": "[parameters('nodeResourceGroup')]",
                 "enableRBAC": true,
                 "servicePrincipalProfile": {
