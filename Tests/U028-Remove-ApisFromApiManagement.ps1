@@ -20,9 +20,11 @@ Describe "Remove-ApisFromApiManagement unit tests" -Tag "Unit" {
         param($Context, $ApiId)
     }
 
+    Mock New-AzApiManagementContext
+    Mock Remove-AzApiManagementApi
+
     Context "When removing apis" {
     
-        Mock New-AzApiManagementContext
         Mock Get-AzApiManagementApi -MockWith { 
 
             if($Name -eq "Api One") { 
@@ -31,7 +33,6 @@ Describe "Remove-ApisFromApiManagement unit tests" -Tag "Unit" {
 
             return @{ ApiId = "ApiTwo" }
         }
-        Mock Remove-AzApiManagementApi
 
         ./Remove-ApisFromApiManagement -ApisToRemove @( "Api One", "Api Two") -ApimResourceGroup "aResourceGroup" -ApimServiceName "anApimInstance"
 
@@ -50,6 +51,27 @@ Describe "Remove-ApisFromApiManagement unit tests" -Tag "Unit" {
         It "Should remove the apis" {
             Assert-MockCalled Remove-AzApiManagementApi -Exactly 1 -ParameterFilter { $ApiId -eq "ApiOne" }
             Assert-MockCalled Remove-AzApiManagementApi -Exactly 1 -ParameterFilter { $ApiId -eq "ApiTwo" }
+        }
+    }
+
+    Context "When the api does not exist" {
+        Mock Get-AzApiManagementApi -MockWith { return $null }
+
+        ./Remove-ApisFromApiManagement -ApisToRemove @( "ApiNotFound" ) -ApimResourceGroup "aResourceGroup" -ApimServiceName "anApimInstance"
+
+        It "Should create a new apim context"  {
+            Assert-MockCalled New-AzApiManagementContext -Exactly 1  -ParameterFilter {
+                $ResourceGroupName -eq "aResourceGroup" -and `
+                $ServiceName -eq "anApimInstance"
+            }
+        }
+
+        It "Should get the apis" {
+            Assert-MockCalled Get-AzApiManagementApi -Exactly 1 -ParameterFilter { $Name -eq "ApiNotFound" }
+        }
+
+        It "Should not remove any apis" {
+            Assert-MockCalled Remove-AzApiManagementApi -Exactly 0
         }
     }
 }
