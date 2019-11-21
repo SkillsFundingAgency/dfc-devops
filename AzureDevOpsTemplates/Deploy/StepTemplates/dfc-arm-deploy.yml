@@ -1,0 +1,42 @@
+# This template includes a tokenisation step.  
+# In addition to the passing in the parameters listed below you will need to ensure that the variables that are tokenised are scoped to the stage or job calling this step template.
+
+parameters:
+  ArmTemplateRoot: ''
+  AzureSubscription: ''
+  EnvironmentTag: ''
+  ParentBusinessTag: ''
+  ResourceGroup: ''
+  ServiceOfferingTag: ''
+  SetTagsScriptUrl: 'https://raw.githubusercontent.com/SkillsFundingAgency/dfc-devops/master/PSScripts/Set-EsfaResourceGroupTags.ps1'
+  SetTagsScriptFilePath: '$(System.DefaultWorkingDirectory)\Set-EsfaResourceGroupTags.ps1'
+
+steps:
+- task: TotalALM.totalalm-tokenization.tokenization-build-task.Tokenization@2
+  displayName: 'Tokenization: Transform file parameters.json'
+  inputs:
+    SourcePath: ${{ parameters.ArmTemplateRoot }}
+    TargetFileNames: parameters.json
+- task: PowerShell@2
+  name: DownloadSetEsfaResourceGroupTagsScript
+  displayName: 'Download Set-EsfaResourceGroupTags script'
+  inputs:
+    targetType: 'inline'
+    script: Invoke-WebRequest -Uri ${{ parameters.SetTagsScriptUrl }} -OutFile ${{ parameters.SetTagsScriptFilePath }}
+- task: AzurePowerShell@3
+  displayName: 'Tagging Resource Group ${{ parameters.ResourceGroup }}'
+  inputs:
+    azureSubscription: ${{ parameters.AzureSubscription }}
+    scriptType: filePath
+    ScriptPath: $(SetTagsScriptFilePath)
+    ScriptArguments: '-ResourceGroupName ${{ parameters.ResourceGroup }} -Environment "${{ parameters.EnvironmentTag }}" -ParentBusiness "${{ parameters.ParentBusinessTag }}" -ServiceOffering "${{ parameters.ServiceOfferingTag }}"'
+    azurePowerShellVersion: LatestVersion
+- task: AzureResourceGroupDeployment@2
+  displayName: 'Azure Deployment: Shared infrastructure to ${{ parameters.ResourceGroup }}'
+  inputs:
+    azureSubscription: ${{ parameters.AzureSubscription }}
+    resourceGroupName: '${{ parameters.ResourceGroup }}'
+    location: 'West Europe'
+    csmFile: '${{ parameters.ArmTemplateRoot }}/template.json'
+    csmParametersFile: '${{ parameters.ArmTemplateRoot }}/parameters.json'
+    deploymentOutputs: ARMOutputs
