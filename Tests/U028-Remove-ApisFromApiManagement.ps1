@@ -26,10 +26,10 @@ Describe "Remove-ApisFromApiManagement unit tests" -Tag "Unit" {
         Mock Get-AzApiManagementApi -MockWith { 
 
             if($Name -eq "Api One") { 
-                return @{ Id = "ApiOne" }
+                return @{ ApiId = "ApiOne" }
             }
 
-            return @{ Id = "ApiTwo" }
+            return @{ ApiId = "ApiTwo" }
         }
         Mock Remove-AzApiManagementApi
 
