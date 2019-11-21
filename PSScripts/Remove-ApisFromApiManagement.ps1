@@ -33,6 +33,6 @@ $Context = New-AzApiManagementContext -ResourceGroupName $ApimResourceGroup -Ser
 
 foreach ($ApiToRemove in $ApisToRemove) {
     $Api = Get-AzApiManagementApi -Context $Context -Name $ApiToRemove
-    Remove-AzApiManagementApi -Context $Context -ApiId $Api.Id
+    Remove-AzApiManagementApi -Context $Context -ApiId $Api.ApiId
 }
 
