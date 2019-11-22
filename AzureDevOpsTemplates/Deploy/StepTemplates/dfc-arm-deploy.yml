@@ -32,7 +32,7 @@ steps:
     ScriptArguments: '-ResourceGroupName ${{ parameters.ResourceGroup }} -Environment "${{ parameters.EnvironmentTag }}" -ParentBusiness "${{ parameters.ParentBusinessTag }}" -ServiceOffering "${{ parameters.ServiceOfferingTag }}"'
     azurePowerShellVersion: LatestVersion
 - task: AzureResourceGroupDeployment@2
-  displayName: 'Azure Deployment: Shared infrastructure to ${{ parameters.ResourceGroup }}'
+  displayName: 'Azure Deployment: Deploy resources to ${{ parameters.ResourceGroup }}'
   inputs:
     azureSubscription: ${{ parameters.AzureSubscription }}
     resourceGroupName: '${{ parameters.ResourceGroup }}'
