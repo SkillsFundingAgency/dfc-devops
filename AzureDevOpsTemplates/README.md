@@ -24,7 +24,7 @@ Build templates can be stage, job or step templates.  These are stored in sepera
 A build template should:
 1. Build a single project in the repo
 2. Run the unit tests for that project
-3. Create an artefact that includes deployable code and any related files for that project.  It should not include artifacts related to other projects or sections of the repo.  eg ARM templates should be in their own artifact
+3. Create an artefact that includes deployable code and any related files for that project.  It should not include artifacts related to other projects or parts of the repo.  ie, ARM templates should be in their own artifact
 
 #### Deploy
 
