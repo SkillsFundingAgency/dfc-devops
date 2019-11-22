@@ -33,7 +33,7 @@ steps:
   inputs:
     SourceFolder: '${{ parameters.ArmTemplateRoot }}\'
     Contents: |
-      '**'
+      **
       !AzureDevOps\**
     TargetFolder: $(build.artifactstagingdirectory)/Azure/ArmTemplates
 - task: PublishPipelineArtifact@0
