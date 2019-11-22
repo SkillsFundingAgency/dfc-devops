@@ -40,3 +40,9 @@ steps:
     csmFile: '${{ parameters.ArmTemplateRoot }}/template.json'
     csmParametersFile: '${{ parameters.ArmTemplateRoot }}/parameters.json'
     deploymentOutputs: ARMOutputs
+- task: DeleteFiles@1
+  displayName: 'Delete tokenised parameters.json file'
+  inputs:
+    SourceFolder: ${{ parameters.ArmTemplateRoot }}
+    Contents: parameters.json
+  condition: always()
