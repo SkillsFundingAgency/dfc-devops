@@ -41,4 +41,4 @@ steps:
   condition: ${{ parameters.PublishPipelineArtifact }}
   inputs:
     targetPath: $(build.artifactstagingdirectory)/Azure/ArmTemplates
-    artifactName: ${{ parameters.SolutionBaseName }}.Resources.Azure
+    artifactName: ${{ parameters.SolutionBaseName }}.Resources.ArmTemplates
