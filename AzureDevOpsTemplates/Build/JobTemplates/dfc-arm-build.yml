@@ -7,40 +7,35 @@ parameters:
   TestArmTemplateScriptFilePath: $(System.DefaultWorkingDirectory)\Test-ArmTemplate.ps1
   TokenizeTestParameters: false
 
-jobs:
-  - job: TestArmTemplate
-    displayName: 'Test & package ARM Template(s)'
-    pool:
-      name: "DAS - Continuous Deployment"
-    steps:
-    - task: esfadevops.Tokenization.custom-build-task.Tokenization@0
-      condition: ${{ parameters.TokenizeTestParameters }}
-      displayName: 'Tokenization: Transform file test-parameters.json'
-      inputs:
-        SourcePath: '$(System.DefaultWorkingDirectory)\Resources'
-        TargetFileNames: test-parameters.json    
-    - task: PowerShell@2
-      name: DownloadTestArmTemplateScript
-      displayName: 'Download Test-ArmTemplate script'
-      inputs:
-        targetType: 'inline'
-        script: Invoke-WebRequest -Uri ${{ parameters.TestArmTemplateScriptUrl }} -OutFile ${{ parameters.TestArmTemplateScriptFilePath }}
-    - task: AzurePowerShell@3
-      displayName: 'Test Arm Template'
-      inputs:
-        azureSubscription: ${{ parameters.AzureSubscription }}
-        scriptType: filePath
-        scriptPath: ${{ parameters.TestArmTemplateScriptFilePath }}
-        scriptArguments: -ParameterFile '${{ parameters.ArmTemplateRoot }}\test-parameters.json' -TemplateFile '${{ parameters.ArmTemplateRoot }}\template.json' -Verbose
-        azurePowerShellVersion: LatestVersion
-    - task: CopyFiles@2
-      displayName: 'Copy Arm Templates to Staging'
-      inputs:
-        SourceFolder: '${{ parameters.ArmTemplateRoot }}\'
-        TargetFolder: $(build.artifactstagingdirectory)/Azure/ArmTemplates
-    - task: PublishPipelineArtifact@0
-      displayName: Publish Pipeline Artifact
-      condition: ${{ parameters.PublishPipelineArtifact }}
-      inputs:
-        targetPath: $(build.artifactstagingdirectory)/Azure/ArmTemplates
-        artifactName: ${{ parameters.SolutionBaseName }}.Resources.Azure
+steps:
+- task: esfadevops.Tokenization.custom-build-task.Tokenization@0
+  condition: ${{ parameters.TokenizeTestParameters }}
+  displayName: 'Tokenization: Transform file test-parameters.json'
+  inputs:
+    SourcePath: '$(System.DefaultWorkingDirectory)\Resources'
+    TargetFileNames: test-parameters.json    
+- task: PowerShell@2
+  name: DownloadTestArmTemplateScript
+  displayName: 'Download Test-ArmTemplate script'
+  inputs:
+    targetType: 'inline'
+    script: Invoke-WebRequest -Uri ${{ parameters.TestArmTemplateScriptUrl }} -OutFile ${{ parameters.TestArmTemplateScriptFilePath }}
+- task: AzurePowerShell@3
+  displayName: 'Test Arm Template'
+  inputs:
+    azureSubscription: ${{ parameters.AzureSubscription }}
+    scriptType: filePath
+    scriptPath: ${{ parameters.TestArmTemplateScriptFilePath }}
+    scriptArguments: -ParameterFile '${{ parameters.ArmTemplateRoot }}\test-parameters.json' -TemplateFile '${{ parameters.ArmTemplateRoot }}\template.json' -Verbose
+    azurePowerShellVersion: LatestVersion
+- task: CopyFiles@2
+  displayName: 'Copy Arm Templates to Staging'
+  inputs:
+    SourceFolder: '${{ parameters.ArmTemplateRoot }}\'
+    TargetFolder: $(build.artifactstagingdirectory)/Azure/ArmTemplates
+- task: PublishPipelineArtifact@0
+  displayName: Publish Pipeline Artifact
+  condition: ${{ parameters.PublishPipelineArtifact }}
+  inputs:
+    targetPath: $(build.artifactstagingdirectory)/Azure/ArmTemplates
+    artifactName: ${{ parameters.SolutionBaseName }}.Resources.Azure
