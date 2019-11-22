@@ -1,6 +1,8 @@
 parameters:
   ArmTemplateRoot: ''
+  SolutionBaseName: ''
   AzureSubscription: 'SFA-CDH-Dev/Test (962cae10-2950-412a-93e3-d8ae92b17896)'
+  PublishPipelineArtifact: false
   TestArmTemplateScriptUrl: https://raw.githubusercontent.com/SkillsFundingAgency/dfc-devops/master/PSScripts/Test-ArmTemplate.ps1
   TestArmTemplateScriptFilePath: $(System.DefaultWorkingDirectory)\Test-ArmTemplate.ps1
   TokenizeTestParameters: false
@@ -36,3 +38,9 @@ jobs:
       inputs:
         SourceFolder: '${{ parameters.ArmTemplateRoot }}\'
         TargetFolder: $(build.artifactstagingdirectory)/Azure/ArmTemplates
+    - task: PublishPipelineArtifact@0
+      displayName: Publish Pipeline Artifact
+      condition: ${{ parameters.PublishPipelineArtifact }}
+      inputs:
+        targetPath: $(build.artifactstagingdirectory)/Azure/ArmTemplates
+        artifactName: ${{ parameters.SolutionBaseName }}.Resources.Azure
