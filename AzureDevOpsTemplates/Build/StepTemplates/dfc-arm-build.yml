@@ -32,6 +32,9 @@ steps:
   displayName: 'Copy Arm Templates to Staging'
   inputs:
     SourceFolder: '${{ parameters.ArmTemplateRoot }}\'
+    Contents: |
+      '**'
+      !AzureDevOps\**
     TargetFolder: $(build.artifactstagingdirectory)/Azure/ArmTemplates
 - task: PublishPipelineArtifact@0
   displayName: Publish Pipeline Artifact
