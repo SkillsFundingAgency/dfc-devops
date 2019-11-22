@@ -28,7 +28,7 @@ steps:
   inputs:
     azureSubscription: ${{ parameters.AzureSubscription }}
     scriptType: filePath
-    ScriptPath: $(SetTagsScriptFilePath)
+    ScriptPath: ${{ parameters.SetTagsScriptFilePath }}
     ScriptArguments: '-ResourceGroupName ${{ parameters.ResourceGroup }} -Environment "${{ parameters.EnvironmentTag }}" -ParentBusiness "${{ parameters.ParentBusinessTag }}" -ServiceOffering "${{ parameters.ServiceOfferingTag }}"'
     azurePowerShellVersion: LatestVersion
 - task: AzureResourceGroupDeployment@2
