@@ -7,11 +7,12 @@ parameters:
   TestSuffix: Tests
 
 steps:
- - task: DotNetCoreInstaller@0
+ - task: UseDotNet@2
    displayName: 'Use .NET Core sdk ${{ parameters.DotNetCoreVersion }}'
    condition: ne('', '${{ parameters.DotNetCoreVersion }}')
    inputs:
      version: ${{ parameters.DotNetCoreVersion }}
+     performMultiLevelLookup: true
  - task: gittools.gitversion.gitversion-task.GitVersion@4
    displayName: GitVersion
    inputs:
