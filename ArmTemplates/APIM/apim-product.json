@@ -79,7 +79,7 @@
                     "apiVersion": "2019-01-01",
                     "properties": {
                         "value": "[parameters('productPolicyLink')]",
-                        "format": "xml-link"
+                        "format": "rawxml-link"
                     },
                     "dependsOn": [
                         "[variables('apimProductInstanceName')]"
