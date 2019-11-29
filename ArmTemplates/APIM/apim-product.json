@@ -75,7 +75,7 @@
                 {
                     "name": "[concat(variables('apimProductInstanceName'), '-productPolicy')]",
                     "condition": "[greater(length(parameters('productPolicyLink')), 0)]",
-                    "type": "policies",
+                    "type": "policy",
                     "apiVersion": "2019-01-01",
                     "properties": {
                         "value": "[parameters('productPolicyLink')]",
