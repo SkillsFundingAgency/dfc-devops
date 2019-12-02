@@ -45,7 +45,9 @@ Param(
     [Parameter(Mandatory=$false, ParameterSetName="File")]
     [Switch]$SwaggerSpecificationFile,
 	[Parameter(Mandatory=$false, ParameterSetName="File")]
-	[string]$OutputFilePath
+    [string]$OutputFilePath,
+    [Parameter(Mandatory=$false)]
+    [bool]$UseAzModule = $false
 )
 
 if ($PSCmdlet.ParameterSetName -eq "File") {
@@ -64,7 +66,8 @@ if ($PSCmdlet.ParameterSetName -eq "File") {
 
 }
 
-if ($PSVersionTable.PSVersion -ge [System.Version]::new("6.0.0")) {
+#if ($PSVersionTable.PSVersion -ge [System.Version]::new("6.0.0")) {
+if ($UseAzModule) {
 
     Write-Verbose "PSVersion is $($PSVersionTable.PSVersion), executing with Az cmdlets"
     try {
@@ -72,25 +75,18 @@ if ($PSVersionTable.PSVersion -ge [System.Version]::new("6.0.0")) {
         Write-Verbose "Building APIM context for $ApimResourceGroup\$InstanceName"
         $Context = New-AzApiManagementContext -ResourceGroupName $ApimResourceGroup -ServiceName $InstanceName
         Write-Verbose "Retrieving ApiId for API $ApiName"
-        $Api = Get-AzApiManagementApi -Context $Context -ApiId $ApiName
+        $Api = Get-AzApiManagementApi -Context $Context -ApiId $ApiName -ErrorAction SilentlyContinue
     
-        # --- Throw if Api is null
-        if (!$Api) {
-    
-            throw "Could not retrieve Api for API $ApiName"
-    
-        }
-
         if (!$Api.Path -and !$ApiPath) {
-
+    
             throw "API Path is not set and has not been passed in as a parameter"
-
+    
         }
-
+    
         if (!$ApiPath) {
-
+    
             $ApiPath = $Api.Path
-
+    
         }
     
         # --- Import swagger definition
@@ -98,19 +94,21 @@ if ($PSVersionTable.PSVersion -ge [System.Version]::new("6.0.0")) {
         if ($PSCmdlet.ParameterSetName -eq "File") {
     
             Write-Verbose "Updating API $InstanceName\$($Api.ApiId) from definition $($OutputFile.FullName)"
-            Import-AzApiManagementApi -Context $Context -SpecificationFormat "Swagger" -SpecificationPath $($OutputFile.FullName) -ApiId $($Api.ApiId) -Path $ApiPath -ErrorAction Stop -Verbose:$VerbosePreference
+            Import-AzApiManagementApi -Context $Context -SpecificationFormat "Swagger" -SpecificationPath $($OutputFile.FullName) -ApiId $ApiName -Path $ApiPath -ErrorAction Stop -Verbose:$VerbosePreference
     
         }
         else {
     
             Write-Verbose "Updating API $InstanceName\$($Api.ApiId) from definition $SwaggerSpecificationUrl"
-            Import-AzApiManagementApi -Context $Context -SpecificationFormat "Swagger" -SpecificationUrl $SwaggerSpecificationUrl -ApiId $($Api.ApiId) -Path $ApiPath -ErrorAction Stop -Verbose:$VerbosePreference
+            Import-AzApiManagementApi -Context $Context -SpecificationFormat "Swagger" -SpecificationUrl $SwaggerSpecificationUrl -ApiId $ApiName -Path $ApiPath -ErrorAction Stop -Verbose:$VerbosePreference
     
         }
     
     }
     catch {
-       throw $_
+
+        throw $_
+        
     }
 
 }
