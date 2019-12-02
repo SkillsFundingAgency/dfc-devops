@@ -30,7 +30,7 @@ Describe "Import-ApimSwaggerApiDefinition unit tests" -Tag "Unit" {
 
     }
 
-    It "Should run with AZ cmdlets if a URL is supplied and UseAzModule is set to `$true but not create a file" {
+    It "Should run with AZ cmdlets if a URL is supplied and UseAzModule is set to `$true but not create a file" -Tag "Unit" -Skip {
 
         Mock Invoke-RestMethod
         Mock Set-Content
