@@ -45,7 +45,7 @@ Param(
     [Parameter(Mandatory=$false, ParameterSetName="File")]
     [Switch]$SwaggerSpecificationFile,
 	[Parameter(Mandatory=$false, ParameterSetName="File")]
-    [string]$OutputFilePath,
+    [String]$OutputFilePath,
     [Parameter(Mandatory=$false)]
     [bool]$UseAzModule = $false
 )
