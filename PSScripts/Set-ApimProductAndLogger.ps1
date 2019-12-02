@@ -56,15 +56,15 @@ if ($ApimLoggerName) {
 
     $ApiDiagnostics = Get-AzApiManagementDiagnostic -Context $Context -ApiId $ApiId
     if ($ApiDiagnostics.LoggerId -eq $ApimLoggerName) {
-    
+
         Write-Output "Apim Logger $($ApiDiagnostics.LoggerId) is already attached to api $ApiId, no change"
-    
+
     }
     elseif (!$ApiDiagnostics) {
-     
+
         Write-Output "Diagnostics for $ApiId are currently not set, setting to $ApimLoggerName"
         New-AzApiManagementDiagnostic -Context $Context -LoggerId $ApimLoggerName -ApiId $ApiId -DiagnosticId applicationinsights
-    
+
     }
     else {
 
