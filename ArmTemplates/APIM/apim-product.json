@@ -21,13 +21,6 @@
             "metadata": {
                 "description": "Adds the built in Guests group to the Access Control list.  This allows unauthenticated access to the APIs in this Product."
             }
-        },
-        "productPolicyLink": {
-            "type": "string",
-            "defaultValue": "",
-            "metadata": {
-                "description": "A link to the raw version of an APIM Policy xml document stored in GitHub (or on another publically accessible URL)"
-            }
         }
     },
     "variables": {
@@ -68,19 +61,6 @@
                     "type": "groups",
                     "condition": "[parameters('allowAnonymousAccess')]",
                     "apiVersion": "2018-01-01",
-                    "dependsOn": [
-                        "[variables('apimProductInstanceName')]"
-                    ]
-                },
-                {
-                    "name": "[concat(variables('apimProductInstanceName'), '-productPolicy')]",
-                    "condition": "[greater(length(parameters('productPolicyLink')), 0)]",
-                    "type": "policy",
-                    "apiVersion": "2019-01-01",
-                    "properties": {
-                        "value": "[parameters('productPolicyLink')]",
-                        "format": "rawxml-link"
-                    },
                     "dependsOn": [
                         "[variables('apimProductInstanceName')]"
                     ]
