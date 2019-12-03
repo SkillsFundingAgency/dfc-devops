@@ -12,6 +12,7 @@ steps:
    inputs:
      version: ${{ parameters.DotNetCoreVersion }}
      performMultiLevelLookup: true
+ 
  - task: gittools.gitversion.gitversion-task.GitVersion@4
    displayName: GitVersion
    inputs:
@@ -25,6 +26,7 @@ steps:
      command: 'build'
      projects: '${{ parameters.SolutionBaseName }}\${{ parameters.SolutionBaseName }}.csproj'
      arguments: '-o "$(build.artifactstagingdirectory)\Build\${{ parameters.SolutionBaseName }}\" -c "${{ parameters.BuildConfiguration }}"'
+
  - task: ArchiveFiles@2
    displayName: 'Archive Application ${{ parameters.SolutionBaseName }}'
    condition: not(${{ parameters.PublishWebApp }})
@@ -49,6 +51,7 @@ steps:
      sourceFolder: 'Resources'
      contents: '**'
      targetFolder: '$(build.artifactstagingdirectory)\Artifact\${{ parameters.SolutionBaseName }}\Azure'
+
  - task: PublishBuildArtifacts@1
    displayName: 'Publish Artifact: ${{ parameters.SolutionBaseName }}'
    inputs:
