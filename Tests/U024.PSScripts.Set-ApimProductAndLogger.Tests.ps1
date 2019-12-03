@@ -2,10 +2,11 @@ Push-Location -Path $PSScriptRoot\..\PSScripts\
 
 Describe "Set-ApimProductAndLogger unit tests" -Tag "Unit" {
 
-    Mock Add-AzApiManagementApiToProduct
-    Mock Get-AzApiManagementDiagnostic
-    Mock New-AzApiManagementDiagnostic
-    Mock Set-AzApiManagementDiagnostic
+    ##Commented out whislt tests are set to skip
+    #Mock Add-AzApiManagementApiToProduct
+    #Mock Get-AzApiManagementDiagnostic
+    #Mock New-AzApiManagementDiagnostic
+    #Mock Set-AzApiManagementDiagnostic
 
     It "Should set product only if no logger passed in" -Skip {
 

@@ -26,4 +26,3 @@ Describe "Enable-AzureStorageStaticSite unit tests" -Tag "Unit" {
 }
 
 Push-Location -Path $PSScriptRoot
->
