@@ -6,11 +6,13 @@ parameters:
   PublishWebApp: 'false'
 
 steps:
- - task: DotNetCoreInstaller@0
+ - task: UseDotNet@2
    displayName: 'Use .NET Core sdk ${{ parameters.DotNetCoreVersion }}'
    condition: ne('', '${{ parameters.DotNetCoreVersion }}')
    inputs:
      version: ${{ parameters.DotNetCoreVersion }}
+     performMultiLevelLookup: true
+ 
  - task: gittools.gitversion.gitversion-task.GitVersion@4
    displayName: GitVersion
    inputs:
@@ -23,7 +25,8 @@ steps:
    inputs:
      command: 'build'
      projects: '${{ parameters.SolutionBaseName }}\${{ parameters.SolutionBaseName }}.csproj'
-     arguments: '-o "$(build.artifactstagingdirectory)\Build\${{ parameters.SolutionBaseName }}\"'
+     arguments: '-o "$(build.artifactstagingdirectory)\Build\${{ parameters.SolutionBaseName }}\" -c "${{ parameters.BuildConfiguration }}"'
+
  - task: ArchiveFiles@2
    displayName: 'Archive Application ${{ parameters.SolutionBaseName }}'
    condition: not(${{ parameters.PublishWebApp }})
@@ -39,7 +42,7 @@ steps:
    inputs:
      command: 'publish'
      projects: '${{ parameters.SolutionBaseName }}\${{ parameters.SolutionBaseName }}.csproj'
-     arguments: '-o "$(build.artifactstagingdirectory)\Artifact\${{ parameters.SolutionBaseName }}\DeploymentPackages\${{ parameters.SolutionBaseName }}\\"'
+     arguments: '-o "$(build.artifactstagingdirectory)\Artifact\${{ parameters.SolutionBaseName }}\DeploymentPackages\${{ parameters.SolutionBaseName }}\\"  -c "${{ parameters.BuildConfiguration }}"'
      publishWebProjects: false #set to false as this setting (which defaults to true) will parse the entire repo for web projects
 
  - task: CopyFiles@2
@@ -48,6 +51,7 @@ steps:
      sourceFolder: 'Resources'
      contents: '**'
      targetFolder: '$(build.artifactstagingdirectory)\Artifact\${{ parameters.SolutionBaseName }}\Azure'
+
  - task: PublishBuildArtifacts@1
    displayName: 'Publish Artifact: ${{ parameters.SolutionBaseName }}'
    inputs:
