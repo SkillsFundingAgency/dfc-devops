@@ -15,22 +15,26 @@ steps:
    inputs:
      targetType: 'inline'
      script: Invoke-WebRequest -Uri '${{ parameters.TestBranchFeaturesScriptUrl }}' -OutFile '${{ parameters.TestBranchFeaturesScriptFilePath }}'
+
  - task: PowerShell@2
    name: ExecuteTestBranchFeaturesScript
    displayName: Test-BranchFeatures
    inputs:
      targetType: 'filePath'
      filePath: '${{ parameters.TestBranchFeaturesScriptFilePath }}'
+
  - task: UseDotNet@2
    displayName: 'Use .NET Core sdk ${{ parameters.DotNetCoreVersion }}'
    condition: ne('', '${{ parameters.DotNetCoreVersion }}')
    inputs:
      version: ${{ parameters.DotNetCoreVersion }}
      performMultiLevelLookup: true
+
  - task: gittools.gitversion.gitversion-task.GitVersion@4
    displayName: GitVersion
    inputs:
      preferBundledVersion: false
+
  - task: SonarCloudPrepare@1
    displayName: 'Prepare analysis on SonarCloud'
    condition: and(succeeded(), variables['ShouldRunSonarCloud'], 'True')
@@ -50,7 +54,8 @@ steps:
    inputs:
      command: 'build'
      projects: '${{ parameters.SolutionBaseName }}\${{ parameters.SolutionBaseName }}.csproj'
-     arguments: '-o "$(build.artifactstagingdirectory)\Build\"'
+     arguments: '-o "$(build.artifactstagingdirectory)\Build\"  -c "${{ parameters.BuildConfiguration }}"'
+
  - task: ArchiveFiles@2
    displayName: 'Archive Application'
    condition: not(${{ parameters.PublishWebApp }})
@@ -66,23 +71,27 @@ steps:
    inputs:
      command: 'publish'
      projects: '${{ parameters.SolutionBaseName }}\${{ parameters.SolutionBaseName }}.csproj'
-     arguments: '-o "$(build.artifactstagingdirectory)\Artifact\DeploymentPackages\\"'
+     arguments: '-o "$(build.artifactstagingdirectory)\Artifact\DeploymentPackages\\"  -c "${{ parameters.BuildConfiguration }}"'
      publishWebProjects: false #set to false as this setting (which defaults to true) will parse the entire repo for web projects
+
  - task: DotNetCoreCLI@2
    displayName: Test
    inputs:
      command: test
      projects: '${{ parameters.SolutionBaseName }}*${{ parameters.TestSuffix }}\${{ parameters.SolutionBaseName }}*${{ parameters.TestSuffix }}.csproj'
      arguments: '--configuration ${{ parameters.BuildConfiguration }} --collect "Code coverage"'
+
  - task: SonarCloudAnalyze@1
    displayName: 'Run Code Analysis'
    condition: and(succeeded(), variables['ShouldRunSonarCloud'], 'True')
+
  - task: CopyFiles@2
    displayName: 'Copy Files to: $(build.artifactstagingdirectory)\Artifact\Azure'
    inputs:
      sourceFolder: 'Resources'
      contents: '**'
      targetFolder: '$(build.artifactstagingdirectory)\Artifact\Azure'
+
  - task: PublishBuildArtifacts@1
    displayName: 'Publish Artifact: ${{ parameters.SolutionBaseName }}'
    inputs:
