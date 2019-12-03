@@ -3,6 +3,7 @@ parameters:
   BuildPlatform: 'any cpu'
   BuildConfiguration: 'release'
   DotNetCoreVersion: ''
+  IncludePreviewVersions: false
   PublishWebApp: 'false'
   TestSuffix: Tests
   TestBranchFeaturesScriptUrl: https://raw.githubusercontent.com/SkillsFundingAgency/dfc-devops/master/PSScripts/Test-BranchFeatures.ps1
@@ -28,7 +29,7 @@ steps:
    condition: ne('', '${{ parameters.DotNetCoreVersion }}')
    inputs:
      version: ${{ parameters.DotNetCoreVersion }}
-     performMultiLevelLookup: true
+     IncludePreviewVersions: ${{ parameters.IncludePreviewVersions }}
 
  - task: gittools.gitversion.gitversion-task.GitVersion@4
    displayName: GitVersion
