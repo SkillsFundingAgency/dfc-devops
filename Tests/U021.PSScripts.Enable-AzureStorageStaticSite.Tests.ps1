@@ -1,12 +1,11 @@
-# Current testing approach doesn't support PowerShell 5.1 and PowerShell Core side-by-side
-
-<#Push-Location -Path $PSScriptRoot\..\PSScripts\
+Push-Location -Path $PSScriptRoot\..\PSScripts\
 
 $strname = "dfcfoobarstr"
 
 Describe "Enable-AzureStorageStaticSite unit tests" -Tag "Unit" {
 
-    It "Should call the Azure cmdlets" {
+    # Current testing approach doesn't support PowerShell 5.1 and PowerShell Core side-by-side
+    It "Should call the Azure cmdlets" -Skip {
         Mock New-AzStorageContext
         Mock Enable-AzStorageStaticWebsite
         Mock Resolve-DnsName{ [PsCustomObject]
@@ -27,4 +26,4 @@ Describe "Enable-AzureStorageStaticSite unit tests" -Tag "Unit" {
 }
 
 Push-Location -Path $PSScriptRoot
-#>
+>
