@@ -1,3 +1,4 @@
+# GitVersion: if a GitVersion config file is required this should be stored at the root of the repo.  If the file doesn't exist GitVersion defaults will be used - https://gitversion.readthedocs.io/en/latest/
 parameters:
   SolutionBaseName: ''
   BuildPlatform: 'any cpu'
@@ -34,7 +35,8 @@ steps:
  - task: gittools.gitversion.gitversion-task.GitVersion@5
    displayName: GitVersion
    inputs:
-     preferBundledVersion: false
+     useConfigFile: true
+     configFilePath: GitVersion.yml
 
  - task: SonarCloudPrepare@1
    displayName: 'Prepare analysis on SonarCloud'
