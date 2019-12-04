@@ -55,7 +55,7 @@ steps:
    inputs:
      command: 'build'
      projects: '${{ parameters.SolutionBaseName }}\${{ parameters.SolutionBaseName }}.csproj'
-     arguments: '-o "$(build.artifactstagingdirectory)\Build\"  -c "${{ parameters.BuildConfiguration }}"'
+     arguments: '-o $(build.artifactstagingdirectory)\Build\  -c ${{ parameters.BuildConfiguration }}'
 
  - task: ArchiveFiles@2
    displayName: 'Archive Application'
@@ -72,7 +72,7 @@ steps:
    inputs:
      command: 'publish'
      projects: '${{ parameters.SolutionBaseName }}\${{ parameters.SolutionBaseName }}.csproj'
-     arguments: '-o "$(build.artifactstagingdirectory)\Artifact\DeploymentPackages\\"  -c "${{ parameters.BuildConfiguration }}"'
+     arguments: '-o $(build.artifactstagingdirectory)\Artifact\DeploymentPackages\  -c ${{ parameters.BuildConfiguration }}'
      publishWebProjects: false #set to false as this setting (which defaults to true) will parse the entire repo for web projects
 
  - task: DotNetCoreCLI@2

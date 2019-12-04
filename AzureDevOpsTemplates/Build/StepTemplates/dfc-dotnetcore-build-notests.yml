@@ -26,7 +26,7 @@ steps:
    inputs:
      command: 'build'
      projects: '${{ parameters.SolutionBaseName }}\${{ parameters.SolutionBaseName }}.csproj'
-     arguments: '-o "$(build.artifactstagingdirectory)\Build\${{ parameters.SolutionBaseName }}\" -c "${{ parameters.BuildConfiguration }}"'
+     arguments: '-o $(build.artifactstagingdirectory)\Build\${{ parameters.SolutionBaseName }}\ -c ${{ parameters.BuildConfiguration }}'
 
  - task: ArchiveFiles@2
    displayName: 'Archive Application ${{ parameters.SolutionBaseName }}'
@@ -43,7 +43,7 @@ steps:
    inputs:
      command: 'publish'
      projects: '${{ parameters.SolutionBaseName }}\${{ parameters.SolutionBaseName }}.csproj'
-     arguments: '-o "$(build.artifactstagingdirectory)\Artifact\${{ parameters.SolutionBaseName }}\DeploymentPackages\${{ parameters.SolutionBaseName }}\\"  -c "${{ parameters.BuildConfiguration }}"'
+     arguments: '-o $(build.artifactstagingdirectory)\Artifact\${{ parameters.SolutionBaseName }}\DeploymentPackages\${{ parameters.SolutionBaseName }}\  -c ${{ parameters.BuildConfiguration }}'
      publishWebProjects: false #set to false as this setting (which defaults to true) will parse the entire repo for web projects
 
  - task: CopyFiles@2
