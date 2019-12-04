@@ -34,7 +34,8 @@ steps:
  - task: gittools.gitversion.gitversion-task.GitVersion@5
    displayName: GitVersion
    inputs:
-     preferBundledVersion: false
+     useConfigFile: true
+     configFilePath: GitVersion.yml
 
  - task: SonarCloudPrepare@1
    displayName: 'Prepare analysis on SonarCloud'
