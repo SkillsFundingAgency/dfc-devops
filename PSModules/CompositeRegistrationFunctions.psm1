@@ -227,6 +227,7 @@ New-PathRegistration -Path $pathObject
     return Invoke-CompositeApiRegistrationRequest -Url $finalUrl -Method Post -RequestBody $requestBodyText
 }
 
+[CmdletBinding]
 function New-RegionRegistration
 {
 <#
@@ -277,7 +278,11 @@ New-RegionRegistration -Path somePath -Region $regionObject
 
     $requestBodyText = $requestBody | ConvertTo-Json
 
+    Write-Verbose $requestBodyText
+
     $finalUrl = "$($script:RegionApiUrl)/paths/$Path/regions"
+
+    Write-Verbose $finalUrl
 
     return Invoke-CompositeApiRegistrationRequest -Url $finalUrl -Method Post -RequestBody $requestBodyText    
 }
