@@ -35,7 +35,6 @@ The Api Key for the APIM instance hosting both apis
     $script:ApiKey = $ApiKey
 }
 
-[CmdletBinding]
 function Invoke-CompositeApiRegistrationRequest
 {
 <#
@@ -123,7 +122,6 @@ Invoke-CompositeApiRegistrationApiRequest -Url "https://api.example.com/path/som
     }
 }
 
-[CmdletBinding]
 function Get-PathRegistration
 {
 <#
@@ -149,7 +147,6 @@ Get-PathRegistration -Path somepath
     return Invoke-CompositeApiRegistrationRequest -Url $finalUrl -Method Get
 }
 
-[CmdletBinding]
 function Get-RegionRegistration
 {
 <#
@@ -232,7 +229,6 @@ New-PathRegistration -Path $pathObject
     return Invoke-CompositeApiRegistrationRequest -Url $finalUrl -Method Post -RequestBody $requestBodyText
 }
 
-[CmdletBinding]
 function New-RegionRegistration
 {
 <#
@@ -288,7 +284,6 @@ New-RegionRegistration -Path somePath -Region $regionObject
     return Invoke-CompositeApiRegistrationRequest -Url $finalUrl -Method Post -RequestBody $requestBodyText    
 }
 
-[CmdletBinding]
 function Update-PathRegistration
 {
 <#
@@ -343,7 +338,6 @@ Update-PathRegistration -Path somePath -ItemsToUpdate $itemsToUpdate
     return Invoke-CompositeApiRegistrationRequest -Url $finalUrl -Method Patch -RequestBody $requestBodyText
 }
 
-[CmdletBinding]
 function Update-RegionRegistration
 {
 <#
