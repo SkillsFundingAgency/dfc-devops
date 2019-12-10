@@ -35,7 +35,6 @@ The Api Key for the APIM instance hosting both apis
     $script:ApiKey = $ApiKey
 }
 
-[CmdletBinding]
 function Invoke-CompositeApiRegistrationRequest
 {
 <#
@@ -74,6 +73,11 @@ Invoke-CompositeApiRegistrationApiRequest -Url "https://api.example.com/path/som
     )
 
     Write-Verbose "Performing $Method request against '$Url'."
+
+    if (($method -in "POST","PATCH") -and ($RequestBody)) {
+        Write-Verbose "With body"
+        Write-Verbose $requestBody
+    }
 
     $authHeader = @{"Ocp-Apim-Subscription-Key" = $script:ApiKey }
     $authHeaderWithContentType = @{
@@ -118,7 +122,6 @@ Invoke-CompositeApiRegistrationApiRequest -Url "https://api.example.com/path/som
     }
 }
 
-[CmdletBinding]
 function Get-PathRegistration
 {
 <#
@@ -144,7 +147,6 @@ Get-PathRegistration -Path somepath
     return Invoke-CompositeApiRegistrationRequest -Url $finalUrl -Method Get
 }
 
-[CmdletBinding]
 function Get-RegionRegistration
 {
 <#
