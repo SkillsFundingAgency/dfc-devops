@@ -75,6 +75,11 @@ Invoke-CompositeApiRegistrationApiRequest -Url "https://api.example.com/path/som
 
     Write-Verbose "Performing $Method request against '$Url'."
 
+    if (($method -in "POST","PATCH") -and ($RequestBody)) {
+        Write-Verbose "With body"
+        Write-Verbose $requestBody
+    }
+
     $authHeader = @{"Ocp-Apim-Subscription-Key" = $script:ApiKey }
     $authHeaderWithContentType = @{
         "Ocp-Apim-Subscription-Key" = $script:ApiKey
@@ -278,15 +283,12 @@ New-RegionRegistration -Path somePath -Region $regionObject
 
     $requestBodyText = $requestBody | ConvertTo-Json
 
-    Write-Verbose $requestBodyText
-
     $finalUrl = "$($script:RegionApiUrl)/paths/$Path/regions"
-
-    Write-Verbose $finalUrl
 
     return Invoke-CompositeApiRegistrationRequest -Url $finalUrl -Method Post -RequestBody $requestBodyText    
 }
 
+[CmdletBinding]
 function Update-PathRegistration
 {
 <#
@@ -341,6 +343,7 @@ Update-PathRegistration -Path somePath -ItemsToUpdate $itemsToUpdate
     return Invoke-CompositeApiRegistrationRequest -Url $finalUrl -Method Patch -RequestBody $requestBodyText
 }
 
+[CmdletBinding]
 function Update-RegionRegistration
 {
 <#
