@@ -1,0 +1,27 @@
+variables:
+- name: SolutionBaseName
+  value: Dfc.DevOps
+
+resources:
+  repositories:
+  - repository: self
+  - repository: dfc-devops
+    type: github
+    name: SkillsFundingAgency/dfc-devops
+    endpoint: 'GitHub (ESFA)'
+    ref: refs/tags/v1.7.2
+
+pr:
+  branches:
+    include:
+    - master
+
+stages:
+
+- stage: Test
+  variables:
+  jobs:
+  - templates: JobTemplates\Test.yml
+    parameters:
+      AzureSubscription: 'SFA-CDH-Dev/Test (962cae10-2950-412a-93e3-d8ae92b17896)'
+      CodeCoveragePercentage: 45

@@ -1,0 +1,38 @@
+parameters:
+  AzureSubscription: ''
+  CodeCoveragePercentage: 80
+
+jobs:
+- job: Test
+  pool:
+    name: 'NCS - CI and CD'
+  steps:
+  - task: AzurePowerShell@3
+    displayName: 'Azure PowerShell script: FilePath'
+    inputs:
+      azureSubscription: ${{ parameters.AzureSubscription }}
+      ScriptPath: '$(System.DefaultWorkingDirectory)/Tests/Invoke-Tests.ps1'
+      ScriptArguments: '-CodeCoveragePath $(System.DefaultWorkingDirectory)\PSScripts\*.ps1'
+      azurePowerShellVersion: LatestVersion
+    continueOnError: true
+  - task: PublishTestResults@2
+    displayName: 'Publish Test Results'
+    inputs:
+      testResultsFormat: NUnit
+  - task: PublishCodeCoverageResults@1
+    displayName: 'Publish code coverage'
+    inputs:
+      summaryFileLocation: '**/CODECOVERAGE-*.xml'
+  - task: PowerShell@2
+    displayName: 'PowerShell Script'
+    inputs:
+      targetType: filePath
+      filePath: './$(System.DefaultWorkingDirectory)/Tests/Out-TestResults.ps1'
+      arguments: '-CoveragePercent ${{ parameters.CodeCoveragePercentage }}'
+
+
+
+
+
+
+
