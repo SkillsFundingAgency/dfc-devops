@@ -8,7 +8,7 @@ jobs:
     name: 'NCS - CI and CD'
   steps:
   - task: AzurePowerShell@3
-    displayName: 'Azure PowerShell script: FilePath'
+    displayName: 'Azure PowerShell Script: Invoke-Tests'
     inputs:
       azureSubscription: ${{ parameters.AzureSubscription }}
       ScriptPath: '$(System.DefaultWorkingDirectory)/Tests/Invoke-Tests.ps1'
@@ -20,11 +20,11 @@ jobs:
     inputs:
       testResultsFormat: NUnit
   - task: PublishCodeCoverageResults@1
-    displayName: 'Publish code coverage'
+    displayName: 'Publish Code Coverage'
     inputs:
       summaryFileLocation: '**/CODECOVERAGE-*.xml'
   - task: PowerShell@2
-    displayName: 'PowerShell Script'
+    displayName: 'PowerShell Script: Out-TestResults'
     inputs:
       targetType: filePath
       filePath: './$(System.DefaultWorkingDirectory)/Tests/Out-TestResults.ps1'
