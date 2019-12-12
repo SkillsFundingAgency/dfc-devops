@@ -19,7 +19,6 @@ pr:
 stages:
 
 - stage: Test
-  variables:
   jobs:
   - template: JobTemplates\Test.yml
     parameters:
