@@ -21,7 +21,7 @@ stages:
 - stage: Test
   variables:
   jobs:
-  - templates: JobTemplates\Test.yml
+  - template: JobTemplates\Test.yml
     parameters:
       AzureSubscription: 'SFA-CDH-Dev/Test (962cae10-2950-412a-93e3-d8ae92b17896)'
       CodeCoveragePercentage: 45
