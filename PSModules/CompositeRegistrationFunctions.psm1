@@ -372,7 +372,23 @@ Update-RegionRegistration -Path somePath -PathRegion 1 -ItemsToUpdate $itemsToUp
         [object] $ItemsToUpdate
     )
 
-    $requestBodyText = $ItemsToUpdate | ConvertTo-Json
+    # The Region registration's PATCH API requires that we pass an array of JsonPatchDocument operations to it.
+    # Each one of these defines an operation against a Path - which is an XPath-like definition to the property to update,
+    # an operation, and an optional value. We simply want to update the value of variables already set,
+    # so we define a bunch of replace operations.
+    $itemsToPatch = @()
+
+    foreach($item in $ItemsToUpdate.Keys) {
+        $itemsToPatch += @{
+            "op" = "Replace"
+            # This 'path' is an XPath-like definition for where the property lives within the document returned by the API.
+            # ie: /OfflineHtml is the top-level property called OfflineHtml
+            "path" = "/$($item)"
+            "value" = $ItemsToUpdate[$item]
+        }
+    }
+
+    $requestBodyText = ConvertTo-Json $itemsToPatch
 
     $finalUrl = "$($script:RegionApiUrl)/paths/$($Path)/regions/$($PageRegion)"
 
