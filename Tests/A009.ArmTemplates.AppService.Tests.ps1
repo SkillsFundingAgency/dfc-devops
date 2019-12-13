@@ -7,7 +7,7 @@ Describe "App Service Deployment Tests" -Tag "Acceptance" {
   Context "When app service is deployed with just name and ASP" {
     $TemplateParameters = @{
       appServiceName     = "dfc-foo-bar-as"
-      appServicePlanName = "dfc-foo-bar-asp"
+      appServicePlanName = "dfc-test-template-asp"
     }
     $TestTemplateParams = @{
       ResourceGroupName       = $ResourceGroupName
@@ -26,7 +26,7 @@ Describe "App Service Deployment Tests" -Tag "Acceptance" {
   Context "When app service is deployed as a function app" {
     $TemplateParameters = @{
       appServiceName     = "dfc-foo-bar-fa"
-      appServicePlanName = "dfc-foo-bar-asp"
+      appServicePlanName = "dfc-test-template-asp"
       appServiceType     = "functionapp"
     }
     $TestTemplateParams = @{
