@@ -8,7 +8,7 @@ jobs:
     name: 'Hosted Ubuntu 1604'
   steps:
   # Build and publish the NCS.AzureDevOpsAgents.OWASP docker image
-  - template: StepTemplates\BuildAndPublishContainer.yml
+  - template: ..\StepTemplates\BuildAndPublishContainer.yml
     parameters:
       DockerfileName: owasp-agent.Dockerfile
       ImageName: NCS.AzureDevOpsAgents.OWASP:$(Build.BuildNumber)
