@@ -1,0 +1,20 @@
+parameters:
+  DockerfileName: ''
+  ImageName: ''
+
+steps:
+- script: |
+    cd ./Resources/Dockerfiles
+    ImageName=${{ parameters.ImageName }}
+    # Lowercase the AppImage name to conform to Docker Image naming constraints
+    ImageName=${ImageName,,}
+    docker build -t ${{ parameters.ContainerRegistryAdminUser }}.azurecr.io/$ImageName --file ${{ parameters.DockerfileName }}
+  displayName: 'Build ${{ parameters.ImageName }} container'
+- script: |
+    docker login -u ${{ parameters.ContainerRegistryAdminUser }} -p ${{ parameters.ContainerRegistryPassword }} ${{ parameters.ContainerRegistryAdminUser }}.azurecr.io
+    ImageName=${{ parameters.ImageName }}
+    # Lowercase the AppImage name to conform to Docker Image naming constraints
+    ImageName=${ImageName,,}
+    docker push ${{ parameters.ContainerRegistryAdminUser }}.azurecr.io/$ImageName
+  displayName: 'Publish ${{ parameters.ImageName }} container'
+  condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))

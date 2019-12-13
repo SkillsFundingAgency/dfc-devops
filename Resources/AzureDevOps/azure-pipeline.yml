@@ -24,3 +24,14 @@ stages:
     parameters:
       AzureSubscription: 'SFA-CDH-Dev/Test (962cae10-2950-412a-93e3-d8ae92b17896)'
       CodeCoveragePercentage: 45
+
+- stage: BuildAndPublishContainers
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+  variables:
+    - group: KeyVault - dfc-dev-shared-kv
+    - group: dfc-shared-dev
+  jobs:
+  - template: JobTemplates\BuildAndPublishLinuxContainers.yml
+    parameters:
+      ContainerRegistryAdminUser: $(ContainerRegistryAdminUser)
+      ContainerRegistryPassword: $(ContainerRegistryPassword)
