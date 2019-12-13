@@ -6,11 +6,11 @@ parameters:
 
 steps:
 - script: |
-    cd ./Resources/Dockerfiles
+    cd ./DockerFiles
     ImageName=${{ parameters.ImageName }}
     # Lowercase the AppImage name to conform to Docker Image naming constraints
     ImageName=${ImageName,,}
-    docker build -t ${{ parameters.ContainerRegistryAdminUser }}.azurecr.io/$ImageName --file ${{ parameters.DockerfileName }}
+    docker build -t ${{ parameters.ContainerRegistryAdminUser }}.azurecr.io/$ImageName --file ${{ parameters.DockerfileName }} .
   displayName: 'Build ${{ parameters.ImageName }} container'
 - script: |
     docker login -u ${{ parameters.ContainerRegistryAdminUser }} -p ${{ parameters.ContainerRegistryPassword }} ${{ parameters.ContainerRegistryAdminUser }}.azurecr.io
