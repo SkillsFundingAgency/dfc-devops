@@ -1,4 +1,6 @@
 parameters:
+  ContainerRegistryAdminUser: ''
+  ContainerRegistryPassword: ''
   DockerfileName: ''
   ImageName: ''
 
