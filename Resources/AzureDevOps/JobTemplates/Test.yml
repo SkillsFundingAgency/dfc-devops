@@ -27,7 +27,7 @@ jobs:
     displayName: 'PowerShell Script: Out-TestResults'
     inputs:
       targetType: filePath
-      filePath: './$(System.DefaultWorkingDirectory)/Tests/Out-TestResults.ps1'
+      filePath: '$(System.DefaultWorkingDirectory)/Tests/Out-TestResults.ps1'
       arguments: '-CoveragePercent ${{ parameters.CodeCoveragePercentage }}'
 
 
