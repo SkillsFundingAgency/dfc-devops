@@ -6,7 +6,7 @@ parameters:
 
 steps:
 - script: |
-    cd ./DockerFiles
+    cd $(Build.SourcesDirectory)\DockerFiles
     ImageName=${{ parameters.ImageName }}
     # Lowercase the AppImage name to conform to Docker Image naming constraints
     ImageName=${ImageName,,}
