@@ -49,12 +49,14 @@ foreach($path in $contentAsObject) {
         New-PathRegistration -Path $path
     } else {
         Write-Verbose "Path registration exists, checking to see if it needs updating."
-        $itemsToUpdate = Get-DifferencesBetweenPathObjects -Left $pathEntity -Right $path
 
-        if($itemsToUpdate.Count -gt 0) {
-            Write-Verbose "Fields that require updates:  $($itemsToUpdate.Keys)"
+        $patchDocuments = Get-PatchDocuments -OriginalValues $pathEntity -ReplacementValues $path
+
+        if($patchDocuments.Count -gt 0) {
+            $propertiesToPatch = $patchDocuments | Select-Object -ExpandProperty Path
+            Write-Verbose "Fields that require updates:  $($propertiesToPatch)"
             Write-Verbose "Updating path registration."
-            Update-PathRegistration -Path $path.Path -ItemsToUpdate $itemsToUpdate | Out-Null
+            Update-PathRegistration -Path $path.Path -ItemsToPatch $patchDocuments | Out-Null
         }
     }
 
@@ -67,12 +69,14 @@ foreach($path in $contentAsObject) {
             New-RegionRegistration -Path $path.Path -Region $region
         } else {
             Write-Verbose "Region registration exists, checking to see if it needs updating."
-            $itemsToUpdate = Get-DifferencesBetweenRegionObjects -Left $regionEntity -Right $region
 
-            if($itemsToUpdate.Count -gt 0) {
-                Write-Verbose "Fields that require updates:  $($itemsToUpdate.Keys)"
+            $patchDocuments = Get-PatchDocuments -OriginalValues $regionEntity -ReplacementValues $region
+
+            if($patchDocuments.Count -gt 0) {
+                $propertiesToPatch = $patchDocuments | Select-Object -ExpandProperty Path
+                Write-Verbose "Fields that require updates:  $($propertiesToPatch)"
                 Write-Verbose "Updating region registration."
-                Update-RegionRegistration -Path $path.Path -PageRegion $region.PageRegion -ItemsToUpdate $itemsToUpdate | Out-Null
+                Update-RegionRegistration -Path $path.Path -PageRegion $region.PageRegion -ItemsToPatch $patchDocuments | Out-Null
             }
         }
     }

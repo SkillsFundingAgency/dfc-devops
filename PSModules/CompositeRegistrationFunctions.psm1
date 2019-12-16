@@ -205,21 +205,38 @@ New-PathRegistration -Path $pathObject
 
     if($null -eq $Path.Path) { throw "Path not specified" }
     if($null -eq $Path.Layout) { throw "Layout is mandatory when creating a page registration."}
-    if($null -eq $Path.IsOnline) {
-        $Path | Add-Member -NotePropertyName IsOnline -NotePropertyValue $true
-    }
     
     $requestBody = @{
         Path = $Path.Path
-        TopNavigationText = $Path.TopNavigationText
-        TopNavigationOrder = $Path.TopNavigationOrder
         Layout = $Path.Layout
-        IsOnline = $Path.IsOnline
-        OfflineHtml = $Path.OfflineHtml
-        PhaseBannerUrl = $Path.PhaseBannerHtml
-        ExternalUrl = $Path.ExternalUrl
-        SitemapURL = $Path.SitemapUrl
-        RobotsURL = $Path.RobotsUrl
+    }
+
+    if($null -ne $Path.TopNavigationText) {
+        $requestBody.TopNavigationText = $Path.TopNavigationText
+    }
+
+    if($null -ne $Path.TopNavigationOrder) {
+        $requestBody.TopNavigationOrder = $Path.TopNavigationOrder
+    }
+
+    if($null -ne $Path.OfflineHtml) {
+        $requestBody.OfflineHtml = $Path.OfflineHtml
+    }
+
+    if($null -ne $Path.PhaseBannerHtml) {
+        $requestBody.PhaseBannerHtml = $Path.PhaseBannerHtml
+    }
+
+    if($null -ne $Path.ExternalUrl) {
+        $requestBody.ExternalUrl = $Path.ExternalUrl
+    }
+
+    if($null -ne $Path.SitemapUrl) {
+        $requestBody.SitemapURL = $Path.SitemapUrl
+    }
+
+    if($null -ne $Path.RobotsUrl) {
+        $requestBody.RobotsURL = $Path.RobotsUrl
     }
 
     $requestBodyText = $requestBody | ConvertTo-Json
@@ -260,21 +277,22 @@ New-RegionRegistration -Path somePath -Region $regionObject
     )
 
     if($null -eq $Region.PageRegion) { throw "PageRegion is not set for a region on path $Path."}
-    if($null -eq $Region.HealthCheckRequired) { 
-        $Region | Add-Member -NotePropertyName HealthCheckRequired -NotePropertyValue $true 
-    }
-
-    if($null -eq $Region.IsHealthy) { 
-        $Region | Add-Member -NotePropertyName IsHealthy -NotePropertyValue $true 
-    }
 
     $requestBody = @{
         Path = $Path
         PageRegion = $Region.PageRegion
-        IsHealthy = $Region.IsHealthy
-        RegionEndpoint = $Region.RegionEndpoint
-        HeathCheckRequired = $Region.HealthCheckRequired
-        OfflineHTML = $Region.OfflineHtml
+    }
+
+    if($null -ne $Region.RegionEndpoint) {
+        $requestBody.RegionEndpoint = $Region.RegionEndpoint
+    }
+
+    if($null -ne $Region.HealthCheckRequired) {
+        $requestBody.HeathCheckRequired = $Region.HealthCheckRequired
+    }
+
+    if($null -ne $Region.OfflineHtml) {
+        $requestBody.OfflineHTML = $Region.OfflineHtml
     }
 
     $requestBodyText = $requestBody | ConvertTo-Json
@@ -296,42 +314,25 @@ Patches a existing path registration.  Only fields that are passed in will be ch
 .PARAMETER Path
 The path of the path registration to update.
 
-.PARAMETER ItemsToUpdate
-A dictionary containing items to update.
-Note that this *must* contain at least the name of the path registration itself.
+.PARAMETER ItemsToPatch
+An array of hashtables describing what to patch.
+Each item must be in JSON Patch (http://jsonpatch.com/) format.
 
 .EXAMPLE
-$itemsToUpdate = @{
-    Path = "somePath"
-    Layout = 1
-}
+$ItemsToPatch = @(
+    @{ op = "replace"; Path="/Layout"; Value = "1" }
+)
 
-Update-PathRegistration -Path somePath -ItemsToUpdate $itemsToUpdate
+Update-PathRegistration -Path somePath -ItemsToPatch $ItemsToPatch
 #> 
     param(
         [Parameter(Mandatory=$true)]
         [string] $Path,
         [Parameter(Mandatory=$true)]
-        [object] $ItemsToUpdate
+        [array] $ItemsToPatch
     )
 
-    # The Path registration's PATCH API requires that we pass an array of JsonPatchDocument operations to it.
-    # Each one of these defines an operation against a Path - which is an XPath-like definition to the property to update,
-    # an operation, and an optional value. We simply want to update the value of variables already set,
-    # so we define a bunch of replace operations.
-    $itemsToPatch = @()
-
-    foreach($item in $ItemsToUpdate.Keys) {
-        $itemsToPatch += @{
-            "op" = "Replace"
-            # This 'path' is an XPath-like definition for where the property lives within the document returned by the API.
-            # ie: /OfflineHtml is the top-level property called OfflineHtml
-            "path" = "/$($item)"
-            "value" = $ItemsToUpdate[$item]
-        }
-    }
-
-    $requestBodyText = ConvertTo-Json $itemsToPatch
+    $requestBodyText = ConvertTo-Json $ItemsToPatch
 
     $finalUrl = "$($script:PathApiUrl)/paths/$Path"
     
@@ -351,17 +352,16 @@ Only fields in ItemsToUpdate will be changed.
 .PARAMETER Path
 The path of the region registration to update.
 
-.PARAMETER ItemsToUpdate
-A dictionary containing items to update.
-Note that this *must* contain at least the name of the path registration itself.
+.PARAMETER ItemsToPatch
+An array of hashtables describing what to patch.
+Each item must be in JSON Patch (http://jsonpatch.com/) format.
 
 .EXAMPLE
-$itemsToUpdate = @{
-    Path = "somePath"
-    Layout = 1
-}
+$ItemsToPatch = @(
+    @{ op = "replace"; Path="/Layout"; Value = "1" }
+)
 
-Update-RegionRegistration -Path somePath -PathRegion 1 -ItemsToUpdate $itemsToUpdate
+Update-RegionRegistration -Path somePath -PathRegion 1 -ItemsToPatch $ItemsToPatch
 #> 
     param(
         [Parameter(Mandatory=$true)]
@@ -369,148 +369,68 @@ Update-RegionRegistration -Path somePath -PathRegion 1 -ItemsToUpdate $itemsToUp
         [Parameter(Mandatory=$true)]
         [int] $PageRegion,
         [Parameter(Mandatory=$true)]
-        [object] $ItemsToUpdate
+        [array] $ItemsToPatch
     )
 
-    $requestBodyText = $ItemsToUpdate | ConvertTo-Json
+    $requestBodyText = $ItemsToPatch | ConvertTo-Json
 
     $finalUrl = "$($script:RegionApiUrl)/paths/$($Path)/regions/$($PageRegion)"
 
     return Invoke-CompositeApiRegistrationRequest -Url $finalUrl -Method Patch -RequestBody $requestBodyText
 }
 
-function Get-DifferencesBetweenPathObjects {
+function Get-PatchDocuments {
 <#
 .SYNOPSIS
-Gets the difference between two Path registration objects
+Generate a series of patch documents
 
 .DESCRIPTION
-Gets the difference between the two Path registration objects, taking the properties from 
-the Right object if differences are detected
+Generates a series of patch documents for all properties on the replacement hashtable.
 
-.PARAMETER Left
-The left hand path registration object
+If the values of a replacement property matches the original value,  patch generation for that property is skipped.
 
-.PARAMETER Right
-The right hand path registration object
+Each patch document will generate the correct patch operation type depending on the values passed in
+via the OriginalValues and ReplacementValues parameters
 
-.NOTES
-If the right hand side does not specify a value for the IsHealthy property, a default value of true will be applied
+.PARAMETER OriginalValue
+A hashtable containing the name/values of the original properties
+
+.PARAMETER ReplacementValue
+A hashtable containing the name/values of the replacement properties
 
 .EXAMPLE
-$configurationEntities = Get-Content -Path ./registration.json | ConvertFrom-Json
 
-$entityFromApi = Get-PathRegistration -Path SomePath
-$entityFromFile = $configurationEntities[0]
-
-$itemsToUpdate = Get-DifferencesBetweenPathObjects -Left $entityFromApi -Right $entityFromFile
+$original = @{}
+$replacement = @{}
+Get-PatchDocuments -OriginalValues SomeValue -ReplacementValue AnotherValue
 #>
     param(
         [Parameter(Mandatory=$true)]
-        [object] $Left,
+        [hashtable] $OriginalValues,
         [Parameter(Mandatory=$true)]
-        [object] $Right
+        [hashtable] $ReplacementValues
     )
 
-    if($null -eq $Right.IsOnline) { 
-        $Right | Add-Member -NotePropertyName IsOnline -NotePropertyValue $true
-     }
+    $patchDocuments = @()
 
-    $itemsToUpdate = @{}
-        
-    if($Left.TopNavigationText -ne $Right.TopNavigationText) {
-        $itemsToUpdate["TopNavigationText"] = $Right.TopNavigationText
+    foreach($property in $ReplacementValues.Keys) {
+        if ($OriginalValues.$property -eq $ReplacementValues.$property) {
+            Write-Verbose "Original and Replacement values for '$property' are the same, skipping."
+            continue
+        }
+
+        $operation = "replace"
+
+        if($null -eq $OriginalValue -and $null -ne $ReplacementValues.$property) {
+            $operation = "add"
+        }
+
+        $patchDocuments += @{
+            "op" = $operation
+            "path" = "/$($property)"
+            "value" = $ReplacementValues.$property
+        }
     }
 
-    if($Left.TopNagivationOrder -ne $Right.TopNagivationOrder) {
-        $itemsToUpdate["TopNavigationOrder"] = $Right.TopNagivationOrder
-    }
-
-    if($Left.Layout -ne $Right.Layout) {
-        $itemsToUpdate["Layout"] = $Right.Layout
-    }
-
-    if($Left.IsOnline -ne $Right.IsOnline) {
-        $itemsToUpdate["IsOnline"] = $Right.IsOnline
-    }
-
-    if($Left.OfflineHtml -ne $Right.OfflineHtml) {
-        $itemsToUpdate["OfflineHtml"] = $Right.OfflineHtml
-    }
-
-    if($Left.PhaseBannerHtml -ne $Right.PhaseBannerHtml) {
-        $itemsToUpdate["PhaseBannerHtml"] = $Right.PhaseBannerHtml
-    }
-
-    if($Left.ExternalUrl -ne $Right.ExternalUrl) {
-        $itemsToUpdate["ExternalUrl"] = $Right.ExternalUrl
-    }    
-
-    if($Left.SitemapURL -ne $Right.SitemapURL) {
-        $itemsToUpdate["SitemapURL"] = $Right.SitemapURL
-    }
-
-    if($Left.RobotsURL -ne $Right.RobotsURL) {
-        $itemsToUpdate["RobotsURL"] = $Right.RobotsURL
-    }
-
-    return $itemsToUpdate
-}
-
-function Get-DifferencesBetweenRegionObjects {
-    <#
-    .SYNOPSIS
-    Gets the difference between two region registration objects
-
-    .DESCRIPTION
-    Gets the difference between the two region registration objects, taking the properties from 
-    the Right object if differences are detected
-
-    .NOTES
-    If the right hand side does not specify a value for the IsHealthy property, a default value of true will be applied
-
-    .PARAMETER Left
-    The left hand region registration object
-    
-    .PARAMETER Right
-    The right hand region registration object
-    
-    .EXAMPLE
-    $configurationEntities = Get-Content -Path ./registration.json | ConvertFrom-Json
-    
-    $entityFromApi = Get-RegionRegistration -Path SomePath -PageRegion 1
-    $entityFromFile = $configurationEntities[0].Region[0]
-    
-    $itemsToUpdate = Get-DifferencesBetweenRegionObjects -ObjectFromApi $entityFromApi -ObjectFromFile $entityFromFile
-    #>
-    param(
-        [Parameter(Mandatory=$true)]
-        [object] $Left,
-        [Parameter(Mandatory=$true)]
-        [object] $Right
-    )
-
-    if($null -eq $Right.IsHealthy) { 
-        $Right | Add-Member -NotePropertyName IsHealthy -NotePropertyValue $true
-    }
-
-    $itemsToUpdate = @{}
-    
-    if($Left.IsHealthy -ne $Right.IsHealthy) {
-        $itemsToUpdate["IsHealthy"] = $Right.IsHealthy
-    }
-
-    if($Left.RegionEndpoint -ne $Right.RegionEndpoint) {
-        $itemsToUpdate["RegionEndpoint"] = $Right.RegionEndpoint
-    }
-
-    if($Left.HealthCheckRequired -ne $Right.HealthCheckRequired) {
-        $itemsToUpdate["HealthCheckRequired"] = $Right.HealthCheckRequired
-    }
-
-    if($Left.OfflineHTML -ne $Right.OfflineHtml) {
-        $itemsToUpdate["OfflineHTML"] = $Right.OfflineHtml
-    } 
-    
-    return $itemsToUpdate
+    return ,$patchDocuments
 }
