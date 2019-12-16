@@ -2,7 +2,7 @@ $script:PathApiUrl = $null
 $script:RegionApiUrl = $null
 
 function New-RegistrationContext {
-<#
+    <#
 .SYNOPSIS
 Set-up the registration api configuration
 
@@ -22,11 +22,11 @@ The Api Key for the APIM instance hosting both apis
  New-RegistrationContext -PathApiUrl "https://api.example.com/path/api" -RegionApiUrl "https://api.example.com/region/api"
 #>
     param(
-        [Parameter(Mandatory=$true)]
+        [Parameter(Mandatory = $true)]
         [string] $PathApiUrl,
-        [Parameter(Mandatory=$true)]
+        [Parameter(Mandatory = $true)]
         [string] $RegionApiUrl,
-        [Parameter(Mandatory=$true)]
+        [Parameter(Mandatory = $true)]
         [string] $ApiKey
     )
 
@@ -35,9 +35,8 @@ The Api Key for the APIM instance hosting both apis
     $script:ApiKey = $ApiKey
 }
 
-function Invoke-CompositeApiRegistrationRequest
-{
-<#
+function Invoke-CompositeApiRegistrationRequest {
+    <#
 .SYNOPSIS
 Invoke a request against one of the composite registration apis
 
@@ -64,9 +63,9 @@ Invoke-CompositeApiRegistrationApiRequest -Url "https://api.example.com/path/som
 #>
 
     param(
-        [Parameter(Mandatory=$true)]
+        [Parameter(Mandatory = $true)]
         [string] $Url,
-        [Parameter(Mandatory=$true)]
+        [Parameter(Mandatory = $true)]
         [ValidateSet("GET", "PATCH", "POST")]
         [string] $Method,
         [string] $RequestBody
@@ -74,7 +73,7 @@ Invoke-CompositeApiRegistrationApiRequest -Url "https://api.example.com/path/som
 
     Write-Verbose "Performing $Method request against '$Url'."
 
-    if (($method -in "POST","PATCH") -and ($RequestBody)) {
+    if (($method -in "POST", "PATCH") -and ($RequestBody)) {
         Write-Verbose "With body"
         Write-Verbose $requestBody
     }
@@ -82,14 +81,14 @@ Invoke-CompositeApiRegistrationApiRequest -Url "https://api.example.com/path/som
     $authHeader = @{"Ocp-Apim-Subscription-Key" = $script:ApiKey }
     $authHeaderWithContentType = @{
         "Ocp-Apim-Subscription-Key" = $script:ApiKey
-        "Content-Type" = "application/json"
+        "Content-Type"              = "application/json"
     }
 
-    switch($Method) {
+    switch ($Method) {
         "GET" {
             $result = Invoke-WebRequest -Method Get -Uri $Url -UseBasicParsing -Headers $authHeader
 
-            if($result.StatusCode -eq 204) { 
+            if ($result.StatusCode -eq 204) { 
                 return $null
             }    
     
@@ -100,7 +99,7 @@ Invoke-CompositeApiRegistrationApiRequest -Url "https://api.example.com/path/som
         "POST" {
             $result = Invoke-WebRequest -Method Post -Uri $Url -Body $RequestBody -Headers $authHeaderWithContentType -UseBasicParsing
 
-            if($result.StatusCode -eq 201) { 
+            if ($result.StatusCode -eq 201) { 
                 $entity = ConvertFrom-Json $result.Content
     
                 return $entity    
@@ -111,7 +110,7 @@ Invoke-CompositeApiRegistrationApiRequest -Url "https://api.example.com/path/som
         "PATCH" {
             $result = Invoke-WebRequest -Method Patch -Uri $Url -Body $RequestBody -Headers $authHeaderWithContentType -UseBasicParsing
 
-            if($result.StatusCode -eq 200) { 
+            if ($result.StatusCode -eq 200) { 
                 $entity = ConvertFrom-Json $result.Content
     
                 return $entity
@@ -122,9 +121,8 @@ Invoke-CompositeApiRegistrationApiRequest -Url "https://api.example.com/path/som
     }
 }
 
-function Get-PathRegistration
-{
-<#
+function Get-PathRegistration {
+    <#
 .SYNOPSIS
 Get a path from the path registration
 
@@ -138,7 +136,7 @@ The name of the Path registration
 Get-PathRegistration -Path somepath
 #>    
     param(
-        [Parameter(Mandatory=$true)]
+        [Parameter(Mandatory = $true)]
         [string] $Path
     )
 
@@ -147,9 +145,8 @@ Get-PathRegistration -Path somepath
     return Invoke-CompositeApiRegistrationRequest -Url $finalUrl -Method Get
 }
 
-function Get-RegionRegistration
-{
-<#
+function Get-RegionRegistration {
+    <#
 .SYNOPSIS
 Get a region from the path registration by path name and region
 
@@ -166,9 +163,9 @@ The region identifier
 Get-RegionRegistration -Path somepath -PageRegion 1
 #> 
     param(
-        [Parameter(Mandatory=$true)]
+        [Parameter(Mandatory = $true)]
         [string] $Path,
-        [Parameter(Mandatory=$true)]
+        [Parameter(Mandatory = $true)]
         [int] $PageRegion
     ) 
 
@@ -177,9 +174,8 @@ Get-RegionRegistration -Path somepath -PageRegion 1
     return Invoke-CompositeApiRegistrationRequest -Url $finalUrl -Method Get
 }
 
-function New-PathRegistration
-{
-<#
+function New-PathRegistration {
+    <#
 .SYNOPSIS
 Creates a new path registration
 
@@ -199,27 +195,27 @@ $pathObject = @{
 New-PathRegistration -Path $pathObject
 #> 
     param(
-        [Parameter(Mandatory=$true)]
+        [Parameter(Mandatory = $true)]
         [object] $Path
     )
 
-    if($null -eq $Path.Path) { throw "Path not specified" }
-    if($null -eq $Path.Layout) { throw "Layout is mandatory when creating a page registration."}
-    if($null -eq $Path.IsOnline) {
+    if ($null -eq $Path.Path) { throw "Path not specified" }
+    if ($null -eq $Path.Layout) { throw "Layout is mandatory when creating a page registration." }
+    if ($null -eq $Path.IsOnline) {
         $Path | Add-Member -NotePropertyName IsOnline -NotePropertyValue $true
     }
     
     $requestBody = @{
-        Path = $Path.Path
-        TopNavigationText = $Path.TopNavigationText
+        Path               = $Path.Path
+        TopNavigationText  = $Path.TopNavigationText
         TopNavigationOrder = $Path.TopNavigationOrder
-        Layout = $Path.Layout
-        IsOnline = $Path.IsOnline
-        OfflineHtml = $Path.OfflineHtml
-        PhaseBannerUrl = $Path.PhaseBannerHtml
-        ExternalUrl = $Path.ExternalUrl
-        SitemapURL = $Path.SitemapUrl
-        RobotsURL = $Path.RobotsUrl
+        Layout             = $Path.Layout
+        IsOnline           = $Path.IsOnline
+        OfflineHtml        = $Path.OfflineHtml
+        PhaseBannerUrl     = $Path.PhaseBannerHtml
+        ExternalUrl        = $Path.ExternalUrl
+        SitemapURL         = $Path.SitemapUrl
+        RobotsURL          = $Path.RobotsUrl
     }
 
     $requestBodyText = $requestBody | ConvertTo-Json
@@ -229,9 +225,8 @@ New-PathRegistration -Path $pathObject
     return Invoke-CompositeApiRegistrationRequest -Url $finalUrl -Method Post -RequestBody $requestBodyText
 }
 
-function New-RegionRegistration
-{
-<#
+function New-RegionRegistration {
+    <#
 .SYNOPSIS
 Creates a new region registration
 
@@ -253,28 +248,28 @@ $regionObject = @{
 New-RegionRegistration -Path somePath -Region $regionObject
 #> 
     param(
-        [Parameter(Mandatory=$true)]
+        [Parameter(Mandatory = $true)]
         [string] $Path,
-        [Parameter(Mandatory=$true)]
+        [Parameter(Mandatory = $true)]
         [object] $Region
     )
 
-    if($null -eq $Region.PageRegion) { throw "PageRegion is not set for a region on path $Path."}
-    if($null -eq $Region.HealthCheckRequired) { 
+    if ($null -eq $Region.PageRegion) { throw "PageRegion is not set for a region on path $Path." }
+    if ($null -eq $Region.HealthCheckRequired) { 
         $Region | Add-Member -NotePropertyName HealthCheckRequired -NotePropertyValue $true 
     }
 
-    if($null -eq $Region.IsHealthy) { 
+    if ($null -eq $Region.IsHealthy) { 
         $Region | Add-Member -NotePropertyName IsHealthy -NotePropertyValue $true 
     }
 
     $requestBody = @{
-        Path = $Path
-        PageRegion = $Region.PageRegion
-        IsHealthy = $Region.IsHealthy
-        RegionEndpoint = $Region.RegionEndpoint
+        Path               = $Path
+        PageRegion         = $Region.PageRegion
+        IsHealthy          = $Region.IsHealthy
+        RegionEndpoint     = $Region.RegionEndpoint
         HeathCheckRequired = $Region.HealthCheckRequired
-        OfflineHTML = $Region.OfflineHtml
+        OfflineHTML        = $Region.OfflineHtml
     }
 
     $requestBodyText = $requestBody | ConvertTo-Json
@@ -284,9 +279,8 @@ New-RegionRegistration -Path somePath -Region $regionObject
     return Invoke-CompositeApiRegistrationRequest -Url $finalUrl -Method Post -RequestBody $requestBodyText    
 }
 
-function Update-PathRegistration
-{
-<#
+function Update-PathRegistration {
+    <#
 .SYNOPSIS
 Patches a existing path registration
 
@@ -316,9 +310,9 @@ $itemsToUpdate = @(
 Update-PathRegistration -Path somePath -ItemsToUpdate $itemsToUpdate
 #> 
     param(
-        [Parameter(Mandatory=$true)]
+        [Parameter(Mandatory = $true)]
         [string] $Path,
-        [Parameter(Mandatory=$true)]
+        [Parameter(Mandatory = $true)]
         [object] $ItemsToUpdate
     )
 
@@ -329,9 +323,8 @@ Update-PathRegistration -Path somePath -ItemsToUpdate $itemsToUpdate
     return Invoke-CompositeApiRegistrationRequest -Url $finalUrl -Method Patch -RequestBody $requestBodyText
 }
 
-function Update-RegionRegistration
-{
-<#
+function Update-RegionRegistration {
+    <#
 .SYNOPSIS
 Patches a existing region registration
 
@@ -362,11 +355,11 @@ $itemsToUpdate = @(
 Update-RegionRegistration -Path somePath -PathRegion 1 -ItemsToUpdate $itemsToUpdate
 #> 
     param(
-        [Parameter(Mandatory=$true)]
+        [Parameter(Mandatory = $true)]
         [string] $Path,
-        [Parameter(Mandatory=$true)]
+        [Parameter(Mandatory = $true)]
         [int] $PageRegion,
-        [Parameter(Mandatory=$true)]
+        [Parameter(Mandatory = $true)]
         [object] $ItemsToUpdate
     )
 
@@ -378,7 +371,7 @@ Update-RegionRegistration -Path somePath -PathRegion 1 -ItemsToUpdate $itemsToUp
 }
 
 function Get-DifferencesBetweenDefinitionAndCurrent {
-<#
+    <#
 .SYNOPSIS
 Gets the difference between two Path registration objects
 
@@ -400,30 +393,28 @@ $entityFromFile = $configurationEntities[0]
 
 $itemsToUpdate = Get-DifferencesBetweenDefinitionAndCurrent -Definition $entityFromFile -Current $entityFromApi
 #>
-	[CmdletBinding()]
-	param (
-		[Object] $Definition,
-		[Object] $Current
-	)
+    [CmdletBinding()]
+    param (
+        [Object] $Definition,
+        [Object] $Current
+    )
 
-	# convert both objects to hashtables to make them easier to work with
-	$DefinitionHashTable = @{}
-	foreach( $property in $Definition.psobject.properties.name )
-	{
-		$DefinitionHashTable[$property] = $Definition.$property
-	}
-	$CurrentHashTable = @{}
-	foreach( $property in $Current.psobject.properties.name )
-	{
-		$CurrentHashTable[$property] = $Current.$property
-	}
-	$CurrentItems = $CurrentHashTable.Keys
+    # convert both objects to hashtables to make them easier to work with
+    $DefinitionHashTable = @{ }
+    foreach ( $property in $Definition.psobject.properties.name ) {
+        $DefinitionHashTable[$property] = $Definition.$property
+    }
+    $CurrentHashTable = @{ }
+    foreach ( $property in $Current.psobject.properties.name ) {
+        $CurrentHashTable[$property] = $Current.$property
+    }
+    $CurrentItems = $CurrentHashTable.Keys
 
     $differencePatch = @()
-    $arrayType       = @().GetType()
-    $objType         = @{}.GetType()
+    $arrayType = @().GetType()
+    $objType = @{ }.GetType()
 
-    foreach($item in $definitionHashTable.Keys) {
+    foreach ($item in $definitionHashTable.Keys) {
         if ($null -eq $definitionHashTable[$item]) {
             $thisType = $null
         }
@@ -431,30 +422,30 @@ $itemsToUpdate = Get-DifferencesBetweenDefinitionAndCurrent -Definition $entityF
             # get the type (cannot do this on a null
             $thisType = $definitionHashTable[$item].GetType()
         }
-		if ($thisType -ne $arrayType -and $thisType -ne $objType) {
-    		Write-Verbose "Field: $item"
-			if ($item -in $currentItems) {
+        if ($thisType -ne $arrayType -and $thisType -ne $objType) {
+            Write-Verbose "Field: $item"
+            if ($item -in $currentItems) {
                 if ($definitionHashTable[$item] -ne $currentHashTable[$item]) {
-					# difference, need to replace
-					Write-Verbose "$($definitionHashTable[$item]) <> $($($currentHashTable[$item]))"
-					$differencePatch += @{
-						"op"    = "Replace"
-						"path"  = "/$($item)"
-						"value" = $definitionHashTable[$item]
-					}
-				}
-			}
-			else {
-				# No field, add
-				Write-Verbose "Adding $($definitionHashTable[$item])"
-				$differencePatch += @{
-					"op"    = "Add"
-					"path"  = "/$($item)"
-					"value" = $definitionHashTable[$item]
-				}
-			}
-		}
-	}
+                    # difference, need to replace
+                    Write-Verbose "$($definitionHashTable[$item]) <> $($($currentHashTable[$item]))"
+                    $differencePatch += @{
+                        "op"    = "Replace"
+                        "path"  = "/$($item)"
+                        "value" = $definitionHashTable[$item]
+                    }
+                }
+            }
+            else {
+                # No field, add
+                Write-Verbose "Adding $($definitionHashTable[$item])"
+                $differencePatch += @{
+                    "op"    = "Add"
+                    "path"  = "/$($item)"
+                    "value" = $definitionHashTable[$item]
+                }
+            }
+        }
+    }
 	
-	return $differencePatch
+    return $differencePatch
 }
