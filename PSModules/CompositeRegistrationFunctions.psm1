@@ -419,30 +419,35 @@ $itemsToUpdate = Get-DifferencesBetweenDefinitionAndCurrent -Definition $entityF
 	}
 	$CurrentItems = $CurrentHashTable.Keys
 
-	$differencePatch = @()
+    $differencePatch = @()
+    $arrayType       = @().GetType()
+    $objType         = @{}.GetType()
 
-    foreach($item in $DefinitionHashTable.Keys) {
-		Write-Verbose "Field: $item"
-		if ($item -in $CurrentItems) {
-			if ($DefinitionHashTable[$item] -ne $CurrentHashTable[$item]) {
-				# difference, need to replace
-				Write-Verbose "$($DefinitionHashTable[$item]) <> $($($CurrentHashTable[$item]))"
+    foreach($item in $definitionHashTable.Keys) {
+        $thisType = $definitionHashTable[$item].GetType()
+		if ($thisType -ne $arrayType -and $thisType -ne $objType) {
+    		Write-Verbose "Field: $item"
+			if ($item -in $currentItems) {
+				if ($definitionHashTable[$item] -ne $currentHashTable[$item]) {
+					# difference, need to replace
+					Write-Verbose "$($definitionHashTable[$item]) <> $($($currentHashTable[$item]))"
+					$differencePatch += @{
+						"op"    = "Replace"
+						"path"  = "/$($item)"
+						"value" = $definitionHashTable[$item]
+					}
+				}
+			}
+			else {
+				# No field, add
+				Write-Verbose "Adding $($definitionHashTable[$item])"
 				$differencePatch += @{
-					"op"    = "Replace"
+					"op"    = "Add"
 					"path"  = "/$($item)"
-					"value" = $DefinitionHashTable[$item]
+					"value" = $definitionHashTable[$item]
 				}
 			}
 		}
-		else {
-			# No field, add
-			Write-Verbose "Adding $($DefinitionHashTable[$item])"
-			$differencePatch += @{
-				"op"    = "Add"
-				"path"  = "/$($item)"
-				"value" = $DefinitionHashTable[$item]
-			}
-	    }
 	}
 	
 	return $differencePatch

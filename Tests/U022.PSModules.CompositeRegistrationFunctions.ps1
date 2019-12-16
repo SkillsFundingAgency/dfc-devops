@@ -390,6 +390,33 @@ InModuleScope CompositeRegistrationFunctions {
                 $differences.value -contains "https://another-website/robots.txt" | Should Be $true
             }
         }
+
+        Context "When an array is in the definition object" {
+            $mockFileResult = New-Object PSObject -Property @{
+                "myArray" = @( "SomePath" )
+            }
+
+            $differences = Get-DifferencesBetweenDefinitionAndCurrent -Definition $mockFileResult -Current $mockApiResult
+
+            It "should not return the array (there should be no difference)" {
+                $differences.Count | Should Be 0
+            }
+        }
+
+        Context "When a sub object is in the definition object" {
+            $mockFileResult = New-Object PSObject -Property @{
+                "myArray" = @{ 
+                    Path  = "SomePath"
+                    Value = "Some value"
+                }
+            }
+
+            $differences = Get-DifferencesBetweenDefinitionAndCurrent -Definition $mockFileResult -Current $mockApiResult
+
+            It "should not return the sub object (there should be no difference)" {
+                $differences.Count | Should Be 0
+            }
+        }
     }
 }
 
