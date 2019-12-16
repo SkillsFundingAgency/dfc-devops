@@ -424,20 +424,17 @@ $itemsToUpdate = Get-DifferencesBetweenDefinitionAndCurrent -Definition $entityF
     $objType         = @{}.GetType()
 
     foreach($item in $definitionHashTable.Keys) {
-        $thisType = $definitionHashTable[$item].GetType()
+        if ($null -eq $definitionHashTable[$item]) {
+            $thisType = $null
+        }
+        else {
+            # get the type (cannot do this on a null
+            $thisType = $definitionHashTable[$item].GetType()
+        }
 		if ($thisType -ne $arrayType -and $thisType -ne $objType) {
     		Write-Verbose "Field: $item"
 			if ($item -in $currentItems) {
-                if ($null -eq $currentHashTable[$item]) {
-                    # current is a null
-					Write-Verbose "Current value is null"
-					$differencePatch += @{
-						"op"    = "Replace"
-						"path"  = "/$($item)"
-						"value" = $definitionHashTable[$item]
-					}
-                }
-                elseif ($definitionHashTable[$item] -ne $currentHashTable[$item]) {
+                if ($definitionHashTable[$item] -ne $currentHashTable[$item]) {
 					# difference, need to replace
 					Write-Verbose "$($definitionHashTable[$item]) <> $($($currentHashTable[$item]))"
 					$differencePatch += @{

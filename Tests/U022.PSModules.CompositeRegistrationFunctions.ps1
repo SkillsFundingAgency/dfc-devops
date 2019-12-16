@@ -314,6 +314,7 @@ InModuleScope CompositeRegistrationFunctions {
             "ExternalUrl" = "https://some-website/"
             "SitemapURL" = "https://some-website/sitemap.xml"
             "RobotsURL" = "https://some-website/robots.txt"
+            "NullReference" = $null
         }
 
         Context "When the objects are identical" {
@@ -415,6 +416,48 @@ InModuleScope CompositeRegistrationFunctions {
 
             It "should not return the sub object (there should be no difference)" {
                 $differences.Count | Should Be 0
+            }
+        }
+
+        Context "When the value of the definition field is null" {
+            $mockFileResult = New-Object PSObject -Property @{
+                "NullReference" = $null
+            }
+
+            $differences = Get-DifferencesBetweenDefinitionAndCurrent -Definition $mockFileResult -Current $mockApiResult
+
+            It "there should be no difference as the current is null" {
+                $differences.Count | Should Be 0
+            }
+        }
+
+        Context "When updating a null field" {
+            $mockFileResult = New-Object PSObject -Property @{
+                "NullReference" = "No longer a null reference"
+            }
+
+            $differences = Get-DifferencesBetweenDefinitionAndCurrent -Definition $mockFileResult -Current $mockApiResult
+
+            It "should still update the field" {
+                # Array of single PSObject will be flattened
+                $differences.op | Should Be "Replace"
+                $differences.path | Should Be "/NullReference"
+                $differences.value | Should Be "No longer a null reference"
+            }
+        }
+
+        Context "When a new field is specified" {
+            $mockFileResult = New-Object PSObject -Property @{
+                "NewField" = "Some value"
+            }
+
+            $differences = Get-DifferencesBetweenDefinitionAndCurrent -Definition $mockFileResult -Current $mockApiResult
+
+            It "should create the field" {
+                # Array of single PSObject will be flattened
+                $differences.op | Should Be "Add"
+                $differences.path | Should Be "/NewField"
+                $differences.value | Should Be "Some value"
             }
         }
     }
