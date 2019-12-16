@@ -428,7 +428,16 @@ $itemsToUpdate = Get-DifferencesBetweenDefinitionAndCurrent -Definition $entityF
 		if ($thisType -ne $arrayType -and $thisType -ne $objType) {
     		Write-Verbose "Field: $item"
 			if ($item -in $currentItems) {
-				if ($definitionHashTable[$item] -ne $currentHashTable[$item]) {
+                if ($null -eq $currentHashTable[$item]) {
+                    # current is a null
+					Write-Verbose "Current value is null"
+					$differencePatch += @{
+						"op"    = "Replace"
+						"path"  = "/$($item)"
+						"value" = $definitionHashTable[$item]
+					}
+                }
+                elseif ($definitionHashTable[$item] -ne $currentHashTable[$item]) {
 					# difference, need to replace
 					Write-Verbose "$($definitionHashTable[$item]) <> $($($currentHashTable[$item]))"
 					$differencePatch += @{
