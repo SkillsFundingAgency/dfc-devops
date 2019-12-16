@@ -1,0 +1,25 @@
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: owasp-agent
+spec:
+  replicas: 1
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  minReadySeconds: 5 
+  template:
+    metadata:
+      labels:
+        app: owasp-agent
+    spec:
+      nodeSelector:
+        "beta.kubernetes.io/os": linux
+      containers:
+      - name: owasp-agent
+        image: dfcdevsharedcr.azurecr.io/ncs.azuredevopsagents.owasp:__NCSAzureDevOpsAgentsOWASPTag__
+        resources:
+          limits:
+            cpu: 1000m
+            memory: "2G"
