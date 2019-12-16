@@ -352,6 +352,9 @@ Only fields in ItemsToUpdate will be changed.
 .PARAMETER Path
 The path of the region registration to update.
 
+.PARAMETER PageRegion
+The region to patch.
+
 .PARAMETER ItemsToPatch
 An array of hashtables describing what to patch.
 Each item must be in JSON Patch (http://jsonpatch.com/) format.
@@ -361,7 +364,7 @@ $ItemsToPatch = @(
     @{ op = "replace"; Path="/Layout"; Value = "1" }
 )
 
-Update-RegionRegistration -Path somePath -PathRegion 1 -ItemsToPatch $ItemsToPatch
+Update-RegionRegistration -Path somePath -PageRegion 1 -ItemsToPatch $ItemsToPatch
 #> 
     param(
         [Parameter(Mandatory=$true)]
@@ -421,7 +424,7 @@ Get-PatchDocuments -OriginalValues SomeValue -ReplacementValue AnotherValue
 
         $operation = "replace"
 
-        if($null -eq $OriginalValue -and $null -ne $ReplacementValues.$property) {
+        if($null -eq $OriginalValues.$property -and $null -ne $ReplacementValues.$property) {
             $operation = "add"
         }
 
