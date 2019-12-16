@@ -9,7 +9,7 @@ resources:
     type: github
     name: SkillsFundingAgency/dfc-devops
     endpoint: 'GitHub (ESFA)'
-    ref: refs/tags/v1.7.2
+    ref: refs/tags/v1.8.5
 
 pr:
   branches:
@@ -24,3 +24,14 @@ stages:
     parameters:
       AzureSubscription: 'SFA-CDH-Dev/Test (962cae10-2950-412a-93e3-d8ae92b17896)'
       CodeCoveragePercentage: 45
+
+- stage: BuildAndPublishContainers
+  condition: and(succeeded(), or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq(variables['Build.Reason'], 'PullRequest')))
+  variables:
+    - group: KeyVault - dfc-dev-shared-kv
+    - group: dfc-shared-dev
+  jobs:
+  - template: JobTemplates\BuildAndPublishLinuxContainers.yml
+    parameters:
+      ContainerRegistryAdminUser: $(ContainerRegistryAdminUser)
+      ContainerRegistryPassword: $(ContainerRegistryPassword)
