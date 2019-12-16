@@ -301,7 +301,7 @@ InModuleScope CompositeRegistrationFunctions {
         }
     }
     
-    Describe "Get-DifferencesBetweenPathObjects" -Tag "Unit" {
+    Describe "Get-DifferencesBetweenDefinitionAndCurrent" -Tag "Unit" {
 
         $mockApiResult = New-Object PSObject -Property @{
             "Path" = "SomePath"
@@ -330,7 +330,7 @@ InModuleScope CompositeRegistrationFunctions {
                 "RobotsURL" = "https://some-website/robots.txt"
             }
 
-            $differences = Get-DifferencesBetweenPathObjects -Left $mockApiResult -Right $mockFileResult
+            $differences = Get-DifferencesBetweenDefinitionAndCurrent -Definition $mockFileResult -Current $mockApiResult
 
             It "should not return any item" {
                 $differences.Count | Should Be 0
@@ -351,106 +351,46 @@ InModuleScope CompositeRegistrationFunctions {
                 "RobotsURL" = "https://another-website/robots.txt"
             }
 
-            $differences = Get-DifferencesBetweenPathObjects -Left $mockApiResult -Right $mockFileResult
+            $differences = Get-DifferencesBetweenDefinitionAndCurrent -Definition $mockFileResult -Current $mockApiResult
 
             It "should return an item per difference" {
                 $differences.Count | Should Be 9
             }
 
             It "should mark the top navigation text field as being changed" {
-                $differences.TopNavigationText | Should be "Different Navigation Text"                
+                $differences.value -contains "Different Navigation Text" | Should Be $true
             }
             It "should mark the top navigation order field as being changed" {
-                $differences.TopNavigationOrder | Should be 400
+                $differences.value -contains 400 | Should Be $true
             }
 
             It "should mark the layout field as being changed" {
-                $differences.Layout | Should be 3
+                $differences.value -contains 3 | Should Be $true
             }
 
             It "should mark the IsOnline field as being changed" {
-                $differences.IsOnline | Should be $false
+                $differences.value -contains $false | Should Be $true
             }
 
             It "should mark the OfflineHtml field as being changed" {
-                $differences.OfflineHtml | Should be "Different offline html"
+                $differences.value -contains "Different offline html" | Should Be $true
             }
 
             It "should mark the PhaseBannerHtml field as being changed" {
-                $differences.PhaseBannerHtml | Should be "Different Banner html"
+                $differences.value -contains "Different Banner html" | Should Be $true
             }
             
             It "should mark the ExternalUrl field as being changed" {
-                $differences.ExternalUrl | Should be "https://another-website/"
+                $differences.value -contains "https://another-website/" | Should Be $true
             }
             It "should mark the SitemapURL field as being changed" {
-                $differences.SitemapURL | Should be "https://another-website/sitemap.xml"
+                $differences.value -contains "https://another-website/sitemap.xml" | Should Be $true
             }
             It "should mark the RobotsURL field as being changed" {
-                $differences.RobotsURL | Should be "https://another-website/robots.txt"
+                $differences.value -contains "https://another-website/robots.txt" | Should Be $true
             }
         }
     }
-
-
-    Describe "Get-DifferencesBetweenRegionObjects" -Tag "Unit" {
-
-        $mockApiResult = New-Object PSObject -Property @{
-            "Path" = "SomePath"
-            "PageRegion" = 1
-            "IsHealthy" = $false
-            "RegionEndpoint" = "https://some-region-endpoint/pathOne"
-            "HealthCheckRequired" = $false
-            "OfflineHTML" = "SomeOfflineHtml"            
-        }
-
-        Context "When the objects are identical" {
-            $mockFileResult = New-Object PSObject -Property @{
-                "PageRegion" = 1
-                "IsHealthy" = $false
-                "RegionEndpoint" = "https://some-region-endpoint/pathOne"
-                "HealthCheckRequired" = $false
-                "OfflineHTML" = "SomeOfflineHtml"
-            }
-
-            $differences = Get-DifferencesBetweenRegionObjects -Left $mockApiResult -Right $mockFileResult
-
-            It "should not return any items" {
-                $differences.Count | Should Be 0
-            }
-        }
-
-        Context "When the objects are different" {
-            $mockFileResult = New-Object PSObject -Property @{
-                "PageRegion" = 1
-                "IsHealthy" = $true
-                "RegionEndpoint" = "https://some-region-endpoint/pathTwo"
-                "HealthCheckRequired" = $true
-                "OfflineHTML" = "Different Offline Html"
-            }
-
-            $differences = Get-DifferencesBetweenRegionObjects -Left $mockApiResult -Right $mockFileResult
-
-            It "should return an item per difference" {
-                $differences.Count | Should Be 4
-            }
-
-            It "should mark the IsHealthy field as being changed" {
-                $differences.IsHealthy | Should be $true 
-            }
-            It "should mark the RegionEndpoint field as being changed" {
-                $differences.RegionEndpoint | Should be "https://some-region-endpoint/pathTwo"
-            }
-
-            It "should mark the HealthCheckRequired field as being changed" {
-                $differences.HealthCheckRequired | Should be $true
-            }
-
-            It "should mark the OfflineHTML field as being changed" {
-                $differences.OfflineHTML | Should be "Different Offline Html"
-            }
-        }
-    }    
 }
 
 Pop-Location

@@ -49,7 +49,7 @@ foreach($path in $contentAsObject) {
         New-PathRegistration -Path $path
     } else {
         Write-Verbose "Path registration exists, checking to see if it needs updating."
-        $itemsToUpdate = Get-DifferencesBetweenPathObjects -Left $pathEntity -Right $path
+        $itemsToUpdate = Get-DifferencesBetweenDefinitionAndCurrent -Definition $path -Current $pathEntity
 
         if($itemsToUpdate.Count -gt 0) {
             Write-Verbose "Fields that require updates:  $($itemsToUpdate.Keys)"
@@ -67,7 +67,7 @@ foreach($path in $contentAsObject) {
             New-RegionRegistration -Path $path.Path -Region $region
         } else {
             Write-Verbose "Region registration exists, checking to see if it needs updating."
-            $itemsToUpdate = Get-DifferencesBetweenRegionObjects -Left $regionEntity -Right $region
+            $itemsToUpdate = Get-DifferencesBetweenDefinitionAndCurrent -Definition $region -Current $regionEntity
 
             if($itemsToUpdate.Count -gt 0) {
                 Write-Verbose "Fields that require updates:  $($itemsToUpdate.Keys)"
