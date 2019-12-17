@@ -50,10 +50,13 @@ foreach($path in $contentAsObject) {
     } else {
         Write-Verbose "Path registration exists, checking to see if it needs updating."
 
-        $patchDocuments = Get-PatchDocuments -OriginalValues $pathEntity -ReplacementValues $path
+        $apiPathAsHashtable = ConvertTo-HashTable -Object $pathEntity
+        $definitionPathAsHashtable = ConvertTo-HashTable -Object $path
+
+        $patchDocuments = Get-PatchDocuments -OriginalValues $apiPathAsHashtable -ReplacementValues $definitionPathAsHashtable
 
         if($patchDocuments.Count -gt 0) {
-            $propertiesToPatch = $patchDocuments | Select-Object -ExpandProperty Path
+            $propertiesToPatch = $patchDocuments | Foreach-Object { return $_.Path -Replace "/", "" }
             Write-Verbose "Fields that require updates:  $($propertiesToPatch)"
             Write-Verbose "Updating path registration."
             Update-PathRegistration -Path $path.Path -ItemsToPatch $patchDocuments | Out-Null
@@ -70,10 +73,13 @@ foreach($path in $contentAsObject) {
         } else {
             Write-Verbose "Region registration exists, checking to see if it needs updating."
 
-            $patchDocuments = Get-PatchDocuments -OriginalValues $regionEntity -ReplacementValues $region
+            $apiRegionAsHashtable = ConvertTo-Hashtable -Object $regionEntity
+            $definitionRegionAsHashtable = ConvertTo-Hashtable -Object $region
+
+            $patchDocuments = Get-PatchDocuments -OriginalValues $apiRegionAsHashtable -ReplacementValues $definitionRegionAsHashtable
 
             if($patchDocuments.Count -gt 0) {
-                $propertiesToPatch = $patchDocuments | Select-Object -ExpandProperty Path
+                $propertiesToPatch = $patchDocuments | Foreach-Object { return $_.Path -Replace "/", "" }
                 Write-Verbose "Fields that require updates:  $($propertiesToPatch)"
                 Write-Verbose "Updating region registration."
                 Update-RegionRegistration -Path $path.Path -PageRegion $region.PageRegion -ItemsToPatch $patchDocuments | Out-Null

@@ -522,6 +522,37 @@ InModuleScope CompositeRegistrationFunctions {
             }
         }
     }
+
+    Describe "ConvertTo-Hashtable" -Tag "Unit" {
+        Context "When converting an object to a hashtable" {
+
+            $customObject = [PSCustomObject]@{
+                StringProperty = "SomeValue"
+                IntProperty = 5
+                BoolProperty = $true
+                NullProperty = $null
+                ArrayProperty = @()
+                ObjectProperty = [PSCustomObject]@{}
+            }
+
+            $result = ConvertTo-Hashtable -Object $customObject
+
+            It "should return a hashtable" {
+                $result.GetType() | Should be "hashtable"
+            }
+
+            It "should convert properties" {
+                $result.Keys.Count| Should be 6
+
+                $result.Contains("StringProperty") | Should be $true
+                $result.Contains("IntProperty") | Should be $true
+                $result.Contains("BoolProperty") | Should be $true
+                $result.Contains("NullProperty") | Should be $true
+                $result.Contains("ArrayProperty") | Should be $true
+                $result.Contains("ObjectProperty") | Should be $true
+            }
+        }
+    }
 }
 
 Pop-Location

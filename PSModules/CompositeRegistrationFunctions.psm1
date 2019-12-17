@@ -395,10 +395,10 @@ If the values of a replacement property matches the original value,  patch gener
 Each patch document will generate the correct patch operation type depending on the values passed in
 via the OriginalValues and ReplacementValues parameters
 
-.PARAMETER OriginalValue
+.PARAMETER OriginalValues
 A hashtable containing the name/values of the original properties
 
-.PARAMETER ReplacementValue
+.PARAMETER ReplacementValues
 A hashtable containing the name/values of the replacement properties
 
 .EXAMPLE
@@ -415,8 +415,21 @@ Get-PatchDocuments -OriginalValues SomeValue -ReplacementValue AnotherValue
     )
 
     $patchDocuments = @()
+    $arrayType = @().GetType()
+    $objectType = @{}.GetType()
 
     foreach($property in $ReplacementValues.Keys) {
+        $thisType = $null
+
+        if($null -ne $ReplacementValues[$property]) {
+            $thisType = $ReplacementValues[$property].GetType()
+        }
+
+        if($thisType -eq $arrayType -or $thisType -eq $objectType) {
+            Write-Verbose "Array or object-like value for '$property' found, skipping"
+            continue
+        }
+
         if ($OriginalValues.$property -eq $ReplacementValues.$property) {
             Write-Verbose "Original and Replacement values for '$property' are the same, skipping."
             continue
@@ -436,4 +449,37 @@ Get-PatchDocuments -OriginalValues SomeValue -ReplacementValue AnotherValue
     }
 
     return ,$patchDocuments
+}
+
+
+function ConvertTo-HashTable {
+<#
+.SYNOPSIS
+Converts a PSCustomObject into a hashtable
+
+.DESCRIPTION
+Converts a PSCustomObject into a hashtable.
+
+Note that this only converts a single level - it does not recurse into inner properties!
+
+.PARAMETER Object
+The object to convert
+
+.EXAMPLE
+ConvertTo-HashTable -Object $SomeObject
+#>
+    [CmdletBinding()]
+    param (
+        [Parameter(Mandatory=$true)]
+        [PSCustomObject] $Object
+    )
+
+    $converted = @{}
+
+    foreach( $property in $Object.psobject.properties.name)
+    {
+        $converted[$property] = $Object.$property
+    }
+
+    return $converted
 }
