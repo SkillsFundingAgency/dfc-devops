@@ -13,4 +13,6 @@ jobs:
       ContainerRegistryAdminUser: ${{ parameters.ContainerRegistryAdminUser }}
       ContainerRegistryPassword: ${{ parameters.ContainerRegistryPassword }}
       DockerfileName: owasp-agent.Dockerfile
-      ImageName: NCS.AzureDevOpsAgents.OWASP:$(Build.BuildNumber)
+      ImageBaseName: NCS.AzureDevOpsAgents.OWASP
+      ImageTag: $(Build.BuildNumber)
+      ManifestFileName: owasp-agent.kubernetes.yml
