@@ -232,6 +232,130 @@ InModuleScope CompositeRegistrationFunctions {
                 }
             }
         }
+
+        Context "When creating a new path registration with optional fields" {
+            New-RegistrationContext -PathApiUrl https://path-api/api -RegionApiUrl https://region-api/api -ApiKey SomeApiKey
+            Mock Invoke-CompositeApiRegistrationRequest
+            Mock ConvertTo-Json
+
+            It "should not include any optional by default" {
+                New-PathRegistration -Path @{
+                    Path = "SomePath"
+                    Layout = 1
+                }
+
+                Assert-MockCalled ConvertTo-Json -Scope It -ParameterFilter {
+                    $InputObject.Keys.Count | Should Be 2
+                    $InputObject.Contains("Path")
+                    $InputObject.Contains("Layout")
+                }
+            }
+
+            It "should include the optional TopNavigationText field when specified" {
+                New-PathRegistration -Path @{
+                    Path = "SomePath"
+                    Layout = 1
+                    TopNavigationText = "Some Text"
+                }
+
+                Assert-MockCalled ConvertTo-Json -Scope It -ParameterFilter {
+                    $InputObject.Keys.Count | Should Be 3
+                    $InputObject.Contains("Path")
+                    $InputObject.Contains("Layout")
+                    $InputObject.Contains("TopNavigationText")
+                }
+            }
+
+            It "should include the optional TopNavigationOrder field when specified" {
+                New-PathRegistration -Path @{
+                    Path = "SomePath"
+                    Layout = 1
+                    TopNavigationOrder = "Some Text"
+                }
+
+                Assert-MockCalled ConvertTo-Json -Scope It -ParameterFilter {
+                    $InputObject.Keys.Count | Should Be 3
+                    $InputObject.Contains("Path")
+                    $InputObject.Contains("Layout")
+                    $InputObject.Contains("TopNavigationOrder")
+                }
+            }
+
+            It "should include the optional OfflineHtml field when specified" {
+                New-PathRegistration -Path @{
+                    Path = "SomePath"
+                    Layout = 1
+                    OfflineHtml = "Some HTML"
+                }
+
+                Assert-MockCalled ConvertTo-Json -Scope It -ParameterFilter {
+                    $InputObject.Keys.Count | Should Be 3
+                    $InputObject.Contains("Path")
+                    $InputObject.Contains("Layout")
+                    $InputObject.Contains("OfflineHtml")
+                }
+            }
+
+            It "should include the optional PhaseBannerHtml field when specified" {
+                New-PathRegistration -Path @{
+                    Path = "SomePath"
+                    Layout = 1
+                    PhaseBannerHtml = "Some HTML"
+                }
+
+                Assert-MockCalled ConvertTo-Json -Scope It -ParameterFilter {
+                    $InputObject.Keys.Count | Should Be 3
+                    $InputObject.Contains("Path")
+                    $InputObject.Contains("Layout")
+                    $InputObject.Contains("PhaseBannerHtml")
+                }
+            }
+
+            It "should include the optional ExternalUrl field when specified" {
+                New-PathRegistration -Path @{
+                    Path = "SomePath"
+                    Layout = 1
+                    ExternalUrl = "https://some/url"
+                }
+
+                Assert-MockCalled ConvertTo-Json -Scope It -ParameterFilter {
+                    $InputObject.Keys.Count | Should Be 3
+                    $InputObject.Contains("Path")
+                    $InputObject.Contains("Layout")
+                    $InputObject.Contains("ExternalUrl")
+                }
+            }
+
+            It "should include the optional SitemapUrl field when specified" {
+                New-PathRegistration -Path @{
+                    Path = "SomePath"
+                    Layout = 1
+                    SitemapUrl = "https://some/url"
+                }
+
+                Assert-MockCalled ConvertTo-Json -Scope It -ParameterFilter {
+                    $InputObject.Keys.Count | Should Be 3
+                    $InputObject.Contains("Path")
+                    $InputObject.Contains("Layout")
+                    $InputObject.Contains("SitemapUrl")
+                }
+            }
+
+            It "should include the optional RobotsUrl field when specified" {
+                New-PathRegistration -Path @{
+                    Path = "SomePath"
+                    Layout = 1
+                    RobotsUrl = "https://some/url"
+                }
+
+                Assert-MockCalled ConvertTo-Json -Scope It -ParameterFilter {
+                    $InputObject.Keys.Count | Should Be 3
+                    $InputObject.Contains("Path")
+                    $InputObject.Contains("Layout")
+                    $InputObject.Contains("RobotsUrl")
+                }
+            }
+        }
     }
 
     Describe "New-RegionRegistration" -Tag "Unit" {
@@ -245,7 +369,7 @@ InModuleScope CompositeRegistrationFunctions {
 
         Context "When creating a new region registration" {
             New-RegistrationContext -PathApiUrl https://path-api/api -RegionApiUrl https://region-api/api -ApiKey SomeApiKey
-            Mock Invoke-CompositeApiRegistrationRequest 
+            Mock Invoke-CompositeApiRegistrationRequest
             Mock ConvertTo-Json 
 
             New-RegionRegistration -Path SomePath -Region @{  PageRegion = 5 }
@@ -261,6 +385,55 @@ InModuleScope CompositeRegistrationFunctions {
                 }
             }
         }
+
+        Context "When creating a new region registration with optional fields" {
+            New-RegistrationContext -PathApiUrl https://path-api/api -RegionApiUrl https://region-api/api -ApiKey SomeApiKey
+            Mock Invoke-CompositeApiRegistrationRequest
+            Mock ConvertTo-Json
+
+            It "should not include any optional fields by default" {
+                New-RegionRegistration -Path SomePath -Region @{  PageRegion = 5 }
+
+                Assert-MockCalled ConvertTo-Json -Scope It -ParameterFilter {
+                    $InputObject.Keys.Count | Should Be 2
+                    $InputObject.Contains("Path")
+                    $InputObject.Contains("PageRegion")
+                }
+            }
+
+            It "should include the RegionEndpoint optional field when specified" {
+                New-RegionRegistration -Path SomePath -Region @{  PageRegion = 5; RegionEndpoint = "SomeEndpoint" }
+
+                Assert-MockCalled ConvertTo-Json -Scope It -ParameterFilter {
+                    $InputObject.Keys.Count | Should Be 3
+                    $InputObject.Contains("Path")
+                    $InputObject.Contains("PageRegion")
+                    $InputObject.Contains("RegionEndpoint")
+                }
+            }
+
+            It "should include the HealthCheckRequired optional field when specified" {
+                New-RegionRegistration -Path SomePath -Region @{  PageRegion = 5; HealthCheckRequired = $false }
+
+                Assert-MockCalled ConvertTo-Json -Scope It -ParameterFilter {
+                    $InputObject.Keys.Count | Should Be 3
+                    $InputObject.Contains("Path")
+                    $InputObject.Contains("PageRegion")
+                    $InputObject.Contains("HealthCheckRequired")
+                }
+            }
+
+            It "should include the OfflineHtml optional field when specified" {
+                New-RegionRegistration -Path SomePath -Region @{  PageRegion = 5; OfflineHtml = "Some mark-up" }
+
+                Assert-MockCalled ConvertTo-Json -Scope It -ParameterFilter {
+                    $InputObject.Keys.Count | Should Be 3
+                    $InputObject.Contains("Path")
+                    $InputObject.Contains("PageRegion")
+                    $InputObject.Contains("OfflineHtml")
+                }
+            }
+        }
     }
 
     Describe "Update-PathRegistration" -Tag "Unit" {
@@ -268,7 +441,7 @@ InModuleScope CompositeRegistrationFunctions {
         Mock Invoke-CompositeApiRegistrationRequest 
         Mock ConvertTo-Json 
     
-        Update-PathRegistration -Path SomePath -ItemsToUpdate @{ }
+        Update-PathRegistration -Path SomePath -ItemsToPatch @{ }
 
         It "should serialize the objects to update" { 
             Assert-MockCalled ConvertTo-Json -Exactly 1            
@@ -287,7 +460,7 @@ InModuleScope CompositeRegistrationFunctions {
         Mock Invoke-CompositeApiRegistrationRequest 
         Mock ConvertTo-Json 
     
-        Update-RegionRegistration -Path SomePath -PageRegion 5 -ItemsToUpdate @{}
+        Update-RegionRegistration -Path SomePath -PageRegion 5 -ItemsToPatch @{}
 
         It "should serialize the objects to update" { 
             Assert-MockCalled ConvertTo-Json -Exactly 1            
@@ -300,157 +473,86 @@ InModuleScope CompositeRegistrationFunctions {
             }
         }
     }
-    
-    Describe "Get-DifferencesBetweenPathObjects" -Tag "Unit" {
 
-        $mockApiResult = New-Object PSObject -Property @{
-            "Path" = "SomePath"
-            "TopNavigationText" = "Navigation Text"
-            "TopNagivationOrder" = 200
-            "Layout" = 4
-            "IsOnline" = $true
-            "OfflineHtml" = "Some offline html"
-            "PhaseBannerHtml" = "Banner html"
-            "ExternalUrl" = "https://some-website/"
-            "SitemapURL" = "https://some-website/sitemap.xml"
-            "RobotsURL" = "https://some-website/robots.txt"
-        }
+    Describe "Get-PatchDocuments" -Tag "Unit" {
+        Context "When generating properties and the values are equal" {
+            It "should not create any patch documents" {
+                $original = @{ "Property1" = "AValue" }
+                $replacement = @{ "Property1" = "AValue" }
 
-        Context "When the objects are identical" {
-            $mockFileResult = New-Object PSObject -Property @{
-                "Path" = "SomePath"
-                "TopNavigationText" = "Navigation Text"
-                "TopNagivationOrder" = 200
-                "Layout" = 4
-                "IsOnline" = $true
-                "OfflineHtml" = "Some offline html"
-                "PhaseBannerHtml" = "Banner html"
-                "ExternalUrl" = "https://some-website/"
-                "SitemapURL" = "https://some-website/sitemap.xml"
-                "RobotsURL" = "https://some-website/robots.txt"
-            }
+                $result = Get-PatchDocuments -OriginalValues $original -ReplacementValues $replacement
 
-            $differences = Get-DifferencesBetweenPathObjects -Left $mockApiResult -Right $mockFileResult
-
-            It "should not return any item" {
-                $differences.Count | Should Be 0
+                $result.Count | Should Be 0
             }
         }
 
-        Context "When the objects are different" {
-            $mockFileResult = New-Object PSObject -Property @{
-                "Path" = "SomePath"
-                "TopNavigationText" = "Different Navigation Text"
-                "TopNagivationOrder" = 400
-                "Layout" = 3
-                "IsOnline" = $false
-                "OfflineHtml" = "Different offline html"
-                "PhaseBannerHtml" = "Different Banner html"
-                "ExternalUrl" = "https://another-website/"
-                "SitemapURL" = "https://another-website/sitemap.xml"
-                "RobotsURL" = "https://another-website/robots.txt"
-            }
+        Context "When patching properties and the value does not exist in the original collection" {
+            It "should create an add document for a property" {
+                $result = Get-PatchDocuments -OriginalValues @{ } -ReplacementValues @{ "TestProp" = "AnotherValue"}
 
-            $differences = Get-DifferencesBetweenPathObjects -Left $mockApiResult -Right $mockFileResult
+                $result.Count | Should Be 1
 
-            It "should return an item per difference" {
-                $differences.Count | Should Be 9
+                $result[0].op | Should Be "add"
+                $result[0].path | Should Be "/TestProp"
+                $result[0].value | Should Be "AnotherValue"
             }
+        }
 
-            It "should mark the top navigation text field as being changed" {
-                $differences.TopNavigationText | Should be "Different Navigation Text"                
-            }
-            It "should mark the top navigation order field as being changed" {
-                $differences.TopNavigationOrder | Should be 400
-            }
+        Context "When generating properties and the value exists in the original collection, but differs" {
+            It "should create a replace document for a property" {
+                $result = Get-PatchDocuments -OriginalValues @{ "TestProp" = "OriginalValue" } -ReplacementValues @{ "TestProp" = "UpdatedValue" }
 
-            It "should mark the layout field as being changed" {
-                $differences.Layout | Should be 3
-            }
+                $result.Count | Should Be 1
 
-            It "should mark the IsOnline field as being changed" {
-                $differences.IsOnline | Should be $false
+                $result[0].op | Should Be "replace"
+                $result[0].path | Should Be "/TestProp"
+                $result[0].value | Should Be "UpdatedValue"
             }
+        }
 
-            It "should mark the OfflineHtml field as being changed" {
-                $differences.OfflineHtml | Should be "Different offline html"
-            }
+        Context "When patching multiple properties" {
+            It "should create a patch document for each property" {
+                $result = Get-PatchDocuments -OriginalValues @{ } -ReplacementValues @{
+                    "TestPropOne" = "UpdatedValue"
+                    "TestPropTwo" = "AnotherValue"
+                    "TestPropThree" = "ThirdValue"
+                }
 
-            It "should mark the PhaseBannerHtml field as being changed" {
-                $differences.PhaseBannerHtml | Should be "Different Banner html"
-            }
-            
-            It "should mark the ExternalUrl field as being changed" {
-                $differences.ExternalUrl | Should be "https://another-website/"
-            }
-            It "should mark the SitemapURL field as being changed" {
-                $differences.SitemapURL | Should be "https://another-website/sitemap.xml"
-            }
-            It "should mark the RobotsURL field as being changed" {
-                $differences.RobotsURL | Should be "https://another-website/robots.txt"
+                $result.Count | Should be 3
             }
         }
     }
 
+    Describe "ConvertTo-Hashtable" -Tag "Unit" {
+        Context "When converting an object to a hashtable" {
 
-    Describe "Get-DifferencesBetweenRegionObjects" -Tag "Unit" {
-
-        $mockApiResult = New-Object PSObject -Property @{
-            "Path" = "SomePath"
-            "PageRegion" = 1
-            "IsHealthy" = $false
-            "RegionEndpoint" = "https://some-region-endpoint/pathOne"
-            "HealthCheckRequired" = $false
-            "OfflineHTML" = "SomeOfflineHtml"            
-        }
-
-        Context "When the objects are identical" {
-            $mockFileResult = New-Object PSObject -Property @{
-                "PageRegion" = 1
-                "IsHealthy" = $false
-                "RegionEndpoint" = "https://some-region-endpoint/pathOne"
-                "HealthCheckRequired" = $false
-                "OfflineHTML" = "SomeOfflineHtml"
+            $customObject = [PSCustomObject]@{
+                StringProperty = "SomeValue"
+                IntProperty = 5
+                BoolProperty = $true
+                NullProperty = $null
+                ArrayProperty = @()
+                ObjectProperty = [PSCustomObject]@{}
             }
 
-            $differences = Get-DifferencesBetweenRegionObjects -Left $mockApiResult -Right $mockFileResult
+            $result = ConvertTo-Hashtable -Object $customObject
 
-            It "should not return any items" {
-                $differences.Count | Should Be 0
-            }
-        }
-
-        Context "When the objects are different" {
-            $mockFileResult = New-Object PSObject -Property @{
-                "PageRegion" = 1
-                "IsHealthy" = $true
-                "RegionEndpoint" = "https://some-region-endpoint/pathTwo"
-                "HealthCheckRequired" = $true
-                "OfflineHTML" = "Different Offline Html"
+            It "should return a hashtable" {
+                $result.GetType() | Should be "hashtable"
             }
 
-            $differences = Get-DifferencesBetweenRegionObjects -Left $mockApiResult -Right $mockFileResult
+            It "should convert properties" {
+                $result.Keys.Count| Should be 6
 
-            It "should return an item per difference" {
-                $differences.Count | Should Be 4
-            }
-
-            It "should mark the IsHealthy field as being changed" {
-                $differences.IsHealthy | Should be $true 
-            }
-            It "should mark the RegionEndpoint field as being changed" {
-                $differences.RegionEndpoint | Should be "https://some-region-endpoint/pathTwo"
-            }
-
-            It "should mark the HealthCheckRequired field as being changed" {
-                $differences.HealthCheckRequired | Should be $true
-            }
-
-            It "should mark the OfflineHTML field as being changed" {
-                $differences.OfflineHTML | Should be "Different Offline Html"
+                $result.Contains("StringProperty") | Should be $true
+                $result.Contains("IntProperty") | Should be $true
+                $result.Contains("BoolProperty") | Should be $true
+                $result.Contains("NullProperty") | Should be $true
+                $result.Contains("ArrayProperty") | Should be $true
+                $result.Contains("ObjectProperty") | Should be $true
             }
         }
-    }    
+    }
 }
 
 Pop-Location
