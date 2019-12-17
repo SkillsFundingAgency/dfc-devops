@@ -1,0 +1,21 @@
+# Warnings:
+# Your dotnet core app MUST have GeneratePackageOnBuild set to true in your build's main csproj file for this to work!
+# You need to have run one of the dotnet build templates prior to calling this template.
+
+parameters:
+  SolutionBaseName: ''
+
+steps:
+  - task: NuGetCommand@2
+    displayName: 'NuGet pack'
+    inputs:
+      command: pack
+      packagesToPack: '**/*.nuspec'
+      packDestination: '$(build.artifactstagingdirectory)\DeploymentPackages\Nuget'
+      versioningScheme: byEnvVar
+      versionEnvVar: GitVersion.MajorMinorPatch
+
+  - task: PublishPipelineArtifact@1
+    inputs:
+      targetPath: $(build.artifactstagingdirectory)\DeploymentPackages\Nuget
+      artifactName: $(SolutionBaseName).Nuget
