@@ -332,7 +332,7 @@ Update-PathRegistration -Path somePath -ItemsToPatch $ItemsToPatch
         [array] $ItemsToPatch
     )
 
-    $requestBodyText = ConvertTo-Json $ItemsToPatch
+    $requestBodyText = ConvertTo-Json -InputObject $ItemsToPatch -AsArray
 
     $finalUrl = "$($script:PathApiUrl)/paths/$Path"
     
@@ -375,7 +375,7 @@ Update-RegionRegistration -Path somePath -PageRegion 1 -ItemsToPatch $ItemsToPat
         [array] $ItemsToPatch
     )
 
-    $requestBodyText = $ItemsToPatch | ConvertTo-Json
+    $requestBodyText = ConvertTo-Json -InputObject $ItemsToPatch -AsArray
 
     $finalUrl = "$($script:RegionApiUrl)/paths/$($Path)/regions/$($PageRegion)"
 
