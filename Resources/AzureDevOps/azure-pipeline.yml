@@ -34,10 +34,24 @@ stages:
   condition: or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq(variables['Build.Reason'], 'PullRequest'))
   dependsOn: []
   variables:
-    - group: KeyVault - dfc-dev-shared-kv
-    - group: dfc-shared-dev
+  - group: KeyVault - dfc-dev-shared-kv
+  - group: dfc-shared-dev
   jobs:
   - template: JobTemplates\BuildAndPublishLinuxContainers.yml
     parameters:
       ContainerRegistryAdminUser: $(ContainerRegistryAdminUser)
       ContainerRegistryPassword: $(ContainerRegistryPassword)
+
+- stage: DeployAzureDevOpsContainers
+  condition: and(eq(variables['Build.SourceBranch'], 'refs/heads/master'), ne(variables['Build.Reason'], 'PullRequest'))
+  dependsOn: BuildAndPublishContainers
+  variables:
+  - group: dfc-shared-dev
+  - template: VariableTemplates\DevEnvironmentVariables.yml
+  jobs:
+  - template: JobTemplates\DeployContainers.yml
+    parameters:
+      AksResourceGroup: $(sharedResourceGroup)
+      AzureSubscriptionEndpoint: 'SFA-CDH-Dev/Test (962cae10-2950-412a-93e3-d8ae92b17896)'
+      Environment: DEV_SHARED
+      KubernetesCluster: $(sharedAksCluster)
