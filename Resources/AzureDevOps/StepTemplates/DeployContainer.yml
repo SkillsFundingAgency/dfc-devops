@@ -23,3 +23,9 @@ steps:
     namespace: 'default'
     command: 'apply'
     arguments: '--filename=${{ parameters.PathToManifest }}/${{ parameters.ManifestFileName }}'
+- task: DeleteFiles@1
+  displayName: 'Delete tokenised ${{ parameters.ManifestFileName }} file'
+  inputs:
+    SourceFolder: ${{ parameters.PathToManifest }}
+    Contents: ${{ parameters.ManifestFileName }}
+  condition: always()

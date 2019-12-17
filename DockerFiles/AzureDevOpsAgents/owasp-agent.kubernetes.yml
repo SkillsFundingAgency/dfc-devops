@@ -23,3 +23,12 @@ spec:
           limits:
             cpu: 1000m
             memory: "2G"
+        env:
+        - name: AZP_AGENT_NAME
+          value: ncs-owasp-__NCSAzureDevOpsAgentsOWASPTag__-agent-1
+        - name: AZP_POOL
+          value: 'NCS - OWASP'
+        - name: AZP_TOKEN
+          value: __AzureDevOpsOwaspAgentPatToken__
+        - name: AZP_URL
+          value: __AzureDevOpsUrl__
