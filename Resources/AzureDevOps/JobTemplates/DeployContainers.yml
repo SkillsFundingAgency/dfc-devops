@@ -1,0 +1,23 @@
+parameters:
+  AksResourceGroup: ''
+  AzureSubscriptionEndpoint: ''
+  Environment: ''
+  KubernetesCluster: ''
+
+jobs:
+- deployment: DeployToDev
+  pool:
+    name: 'NCS - CI and CD'
+  environment: ${{ parameters.Environment }}
+  strategy:
+    runOnce:
+      deploy:
+        steps:
+        # Deploy the NCS.AzureDevOpsAgents.OWASP docker image
+        - template: ..\StepTemplates\DeployContainer.yml
+          parameters:
+            AksResourceGroup: ${{ parameters.AksResourceGroup }}
+            AzureSubscriptionEndpoint: ${{ parameters.AzureSubscriptionEndpoint }}
+            KubernetesCluster: ${{ parameters.KubernetesCluster }}
+            ManifestFileName: owasp-agent.kubernetes.yml
+            PathToManifest: $(Pipeline.Workspace)/NCS.AzureDevOpsAgents.OWASP
