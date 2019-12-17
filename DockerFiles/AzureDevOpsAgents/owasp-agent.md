@@ -18,8 +18,7 @@ az acr login --name dfcdevsharedcr
 docker pull dfcdevsharedcr.azurecr.io/ncs.azuredevopsagents.owasp:<tag>
 ```
 
-In the Azure DevOps portal go to Organisation Settings > Agent Pools > Add Pool and add a pool called OwaspPool.  Then go to your user profile > Personal Access Tokens > New Token and create a token with Full Access. //TO DO: work out what permissions are required
-
+In the Azure DevOps portal go to Organisation Settings > Agent Pools > Add Pool and add a pool called 'NCS - OWASP'.  Then go to your user profile > Personal Access Tokens > New Token and create a token with Read and Manage permissions on Agent Pools.
 
 On a Windows host:
 
