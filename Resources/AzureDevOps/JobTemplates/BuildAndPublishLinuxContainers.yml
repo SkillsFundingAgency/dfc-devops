@@ -15,3 +15,4 @@ jobs:
       DockerfileName: owasp-agent.Dockerfile
       ImageBaseName: NCS.AzureDevOpsAgents.OWASP
       ImageTag: $(Build.BuildNumber)
+      ManifestFileName: owasp-agent.kubernetes.yml
