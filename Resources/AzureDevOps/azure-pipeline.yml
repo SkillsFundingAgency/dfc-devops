@@ -31,7 +31,7 @@ stages:
       CodeCoveragePercentage: 45
 
 - stage: BuildAndPublishContainers
-  condition: and(or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq(variables['Build.Reason'], 'PullRequest'))
+  condition: or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq(variables['Build.Reason'], 'PullRequest'))
   dependsOn: []
   variables:
     - group: KeyVault - dfc-dev-shared-kv
