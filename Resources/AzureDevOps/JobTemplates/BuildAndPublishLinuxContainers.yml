@@ -1,0 +1,16 @@
+parameters:
+  ContainerRegistryAdminUser: ''
+  ContainerRegistryPassword: ''
+
+jobs:
+- job: BuildAndPublishContainers
+  pool:
+    name: 'Hosted Ubuntu 1604'
+  steps:
+  # Build and publish the NCS.AzureDevOpsAgents.OWASP docker image
+  - template: ..\StepTemplates\BuildAndPublishContainer.yml
+    parameters:
+      ContainerRegistryAdminUser: ${{ parameters.ContainerRegistryAdminUser }}
+      ContainerRegistryPassword: ${{ parameters.ContainerRegistryPassword }}
+      DockerfileName: owasp-agent.Dockerfile
+      ImageName: NCS.AzureDevOpsAgents.OWASP:$(Build.BuildNumber)
