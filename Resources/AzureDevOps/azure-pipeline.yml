@@ -32,6 +32,7 @@ stages:
 
 - stage: BuildAndPublishContainers
   condition: and(succeeded(), or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq(variables['Build.Reason'], 'PullRequest')))
+  dependsOn: []
   variables:
     - group: KeyVault - dfc-dev-shared-kv
     - group: dfc-shared-dev
