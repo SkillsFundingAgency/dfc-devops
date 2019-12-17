@@ -23,7 +23,19 @@ RUN apt-get install -y --no-install-recommends \
 # curl install returns broken package error if installed alongside other packages
 RUN apt-get install -y --no-install-recommends curl
 
+# install PowerShell
+RUN wget -q https://packages.microsoft.com/config/ubuntu/18.04/packages-microsoft-prod.deb
+RUN dpkg -i packages-microsoft-prod.deb
+RUN apt-get update
+RUN add-apt-repository universe
+RUN apt-get install -y powershell
+
 RUN mkdir /zap/output
+RUN mkdir /zap/wrk
+WORKDIR /zap/wrk
+COPY Scripts/convert-report.ps1 .
+COPY Scripts/owasp-to-nunit3.xlst .
+RUN chmod +x convert-report.ps1
 
 WORKDIR /azp
 
