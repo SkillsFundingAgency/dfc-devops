@@ -24,14 +24,14 @@ steps:
   condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
 - task: CopyFiles@2
   displayName: 'Copy Manifest File to: $(Build.ArtifactStagingDirectory)\Manifest'
-  condition: ne(${{ parameters.ManifestFileName }}, '')
+  condition: ne('${{ parameters.ManifestFileName }}', '')
   inputs:
     Contents: 'DockerFiles/AzureDevOpsAgents/${{ parameters.ManifestFileName }}'
     TargetFolder: '$(Build.ArtifactStagingDirectory)\${{ parameters.ImageBaseName }}\Manifest'
     flattenFolders: true
 - task: PublishPipelineArtifact@0
   displayName: Publish Pipeline Artifact
-  condition: ne(${{ parameters.ManifestFileName }}, '')
+  condition: ne('${{ parameters.ManifestFileName }}', '')
   inputs:
     targetPath: $(Build.ArtifactStagingDirectory)\${{ parameters.ImageBaseName }}\Manifest
     artifactName: ${{ parameters.ImageBaseName }}
