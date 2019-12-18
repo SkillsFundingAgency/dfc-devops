@@ -8,7 +8,7 @@ jobs:
     name: 'Hosted Ubuntu 1604'
   steps:
   # Build and publish the NCS.AzureDevOpsAgents.OWASP docker image
-  - template: AzureDevOpsTemplates/Build/StepTemplates/dfc-docker-publish-k8smanifest.yml@dfc-devops
+  - template: ..\StepTemplates\BuildAndPublishContainer.yml
     parameters:
       ContainerRegistryAdminUser: ${{ parameters.ContainerRegistryAdminUser }}
       ContainerRegistryPassword: ${{ parameters.ContainerRegistryPassword }}

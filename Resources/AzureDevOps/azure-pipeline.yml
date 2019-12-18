@@ -9,7 +9,7 @@ resources:
     type: github
     name: SkillsFundingAgency/dfc-devops
     endpoint: 'GitHub (ESFA)'
-    ref: refs/heads/NCSD-2388-RefactorContainerStepsToTemplates
+    ref: refs/tags/1.8.5
 
 trigger:
   branches:
