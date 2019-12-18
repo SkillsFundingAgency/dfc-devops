@@ -14,7 +14,7 @@ jobs:
       deploy:
         steps:
         # Deploy the NCS.AzureDevOpsAgents.OWASP docker image
-        - template: ..\StepTemplates\DeployContainer.yml
+        - template: AzureDevOpsTemplates\Deploy\StepTemplates\dfc-kubernetes-deploy.yml@dfc-devops
           parameters:
             AksResourceGroup: ${{ parameters.AksResourceGroup }}
             AzureSubscriptionEndpoint: ${{ parameters.AzureSubscriptionEndpoint }}
