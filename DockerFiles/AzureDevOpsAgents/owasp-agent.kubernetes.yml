@@ -32,6 +32,9 @@ spec:
         - name: AZP_POOL
           value: 'NCS - OWASP'
         - name: AZP_TOKEN
-          value: __AzureDevOpsOwaspAgentPatToken__
+          valueFrom: 
+            secretKeyRef:
+              name: dfc-azuredevops-pat-token
+              key: pattokensecret
         - name: AZP_URL
           value: __AzureDevOpsUrl__
