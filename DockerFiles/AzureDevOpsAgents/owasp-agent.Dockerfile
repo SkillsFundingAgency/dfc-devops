@@ -33,13 +33,13 @@ RUN apt-get install -y powershell
 RUN mkdir /zap/output
 RUN mkdir /zap/wrk
 WORKDIR /zap/wrk
-COPY Scripts/convert-report.ps1 .
-COPY Scripts/owasp-to-nunit3.xlst .
+COPY OwaspScripts/convert-report.ps1 .
+COPY OwaspScripts/owasp-to-nunit3.xlst .
 RUN chmod +x convert-report.ps1
 
 WORKDIR /azp
 
-COPY Scripts/install-agent.sh .
+COPY AgentScripts/install-agent.sh .
 RUN chmod +x install-agent.sh
 
 CMD ["./install-agent.sh"]
