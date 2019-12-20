@@ -6,6 +6,7 @@ USER root
 ENV DEBIAN_FRONTEND=noninteractive
 RUN echo "APT::Get::Assume-Yes \"true\";" > /etc/apt/apt.conf.d/90assumeyes
 
+# Install dependencies for Azure DevOps agent
 RUN apt-get update 
 # Required to install libicu55 on Ubuntu versions > 16.04, the base image of owasp/zap2docker-stable at the time of writing is later than 16.04
 RUN apt-get install software-properties-common
@@ -22,6 +23,7 @@ RUN apt-get install -y --no-install-recommends \
     netcat
 # curl install returns broken package error if installed alongside other packages
 RUN apt-get install -y --no-install-recommends curl
+# Finished installing dependencies for Azure DevOps agent
 
 # install PowerShell
 RUN wget -q https://packages.microsoft.com/config/ubuntu/18.04/packages-microsoft-prod.deb
@@ -33,13 +35,13 @@ RUN apt-get install -y powershell
 RUN mkdir /zap/output
 RUN mkdir /zap/wrk
 WORKDIR /zap/wrk
-COPY Scripts/convert-report.ps1 .
-COPY Scripts/owasp-to-nunit3.xlst .
+COPY OwaspScripts/convert-report.ps1 .
+COPY OwaspScripts/owasp-to-nunit3.xlst .
 RUN chmod +x convert-report.ps1
 
 WORKDIR /azp
 
-COPY Scripts/install-agent.sh .
+COPY AgentScripts/install-agent.sh .
 RUN chmod +x install-agent.sh
 
 CMD ["./install-agent.sh"]

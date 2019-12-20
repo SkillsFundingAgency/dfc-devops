@@ -2,4 +2,4 @@
 
 #Shell scripts that are copied to docker images
 Dockerfiles/**/*.sh text eol=lf
-DockerFiles/AzureDevOpsAgents/Scripts/* text eol=lf
+DockerFiles/AzureDevOpsAgents/OwaspScripts/* text eol=lf
