@@ -35,7 +35,7 @@ RUN apt-get install -y powershell
 RUN mkdir /zap/output
 RUN mkdir /zap/wrk
 WORKDIR /zap/wrk
-COPY OwaspScripts/convert-report.ps1 .
+COPY AgentScripts/convert-report.ps1 .
 COPY OwaspScripts/owasp-to-nunit3.xlst .
 RUN chmod +x convert-report.ps1
 
