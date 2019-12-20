@@ -9,9 +9,6 @@ ENV JMETER_HOME /opt/apache-jmeter-${JMETER_VERSION}
 ENV	JMETER_BIN	${JMETER_HOME}/bin
 ENV	JMETER_DOWNLOAD_URL  https://archive.apache.org/dist/jmeter/binaries/apache-jmeter-${JMETER_VERSION}.tgz
 
-# Change TimeZone TODO: TZ still is not set!
-ARG TZ="Europe/Amsterdam"
-
 RUN apt-get update 
 RUN apt-get install --no-install-recommends \
     ca-certificates \
@@ -52,6 +49,9 @@ RUN apt-get install --no-install-recommends \
 # curl install returns broken package error if installed alongside other packages
 RUN apt-get install --no-install-recommends curl
 # Finished installing dependencies for Azure DevOps agent
+
+#Reference: https://www.gnu.org/software/libc/manual/html_node/TZ-Variable.html
+ENV TZ="Europe/London"
 
 WORKDIR /agent-init.d
 COPY JMeterScripts/startup.sh .
