@@ -28,6 +28,27 @@ cd /azp/agent
 
 export AGENT_ALLOW_RUNASROOT="1"
 
+
+# logging functions
+
+agentbootstrapper_log() {
+	local type="$1"; shift
+	printf '%s [%s] [Entrypoint]: %s\n' "$(date --rfc-3339=seconds)" "$type" "$*"
+}
+
+agentbootstrapper_note() {
+	agentbootstrapper_log Note "$@"
+}
+
+agentbootstrapper_warn() {
+	agentbootstrapper_log Warn "$@" >&2
+}
+
+agentbootstrapper_error() {
+	agentbootstrapper_log ERROR "$@" >&2
+	exit 1
+}
+
 cleanup() {
   if [ -e config.sh ]; then
     print_header "Cleanup. Removing Azure Pipelines agent..."
@@ -36,6 +57,22 @@ cleanup() {
       --auth PAT \
       --token $(cat "$AZP_TOKEN_FILE")
   fi
+}
+
+# adapted from https://github.com/docker-library/mariadb/blob/2345e98dc89edae8f11c35ad838887f45859de75/10.4/docker-entrypoint.sh
+# usage: docker_process_init_files [file [file [...]]]
+#    ie: docker_process_init_files /agent-initdb.d/*
+# process initializer files, based on file extensions
+docker_process_init_files() {
+	echo
+	local f
+	for f; do
+		case "$f" in
+			*.sh)     agentbootstrapper_note "$0: running $f"; . "$f" ;;
+			*)        agentbootstrapper_warn "$0: ignoring $f" ;;
+		esac
+		echo
+	done
 }
 
 print_header() {
@@ -89,7 +126,11 @@ print_header "3. Configuring Azure Pipelines agent..."
   --replace \
   --acceptTeeEula & wait $!
 
-print_header "4. Running Azure Pipelines agent..."
+print_header "4. Executing addition bootstrapping scripts..."
+
+docker_process_init_files /agent-init.d/*
+
+print_header "5. Running Azure Pipelines agent..."
 
 # `exec` the node runtime so it's aware of TERM and INT signals
 # AgentService.js understands how to handle agent self-update and restart

@@ -1,22 +1,27 @@
 #Developed from https://github.com/justb4/docker-jmeter/blob/master/Dockerfile (commit 6aa034c6c362f8e29cb81f7d51637560d29b2f24)
-FROM alpine:3.10
+FROM ubuntu:18.04
+
+ENV DEBIAN_FRONTEND=noninteractive
+RUN echo "APT::Get::Assume-Yes \"true\";" > /etc/apt/apt.conf.d/90assumeyes
 
 ARG JMETER_VERSION="5.1.1"
 ENV JMETER_HOME /opt/apache-jmeter-${JMETER_VERSION}
 ENV	JMETER_BIN	${JMETER_HOME}/bin
 ENV	JMETER_DOWNLOAD_URL  https://archive.apache.org/dist/jmeter/binaries/apache-jmeter-${JMETER_VERSION}.tgz
 
-# Install extra packages
-# See https://github.com/gliderlabs/docker-alpine/issues/136#issuecomment-272703023
 # Change TimeZone TODO: TZ still is not set!
 ARG TZ="Europe/Amsterdam"
-RUN    apk update \
-	&& apk upgrade \
-	&& apk add ca-certificates \
-	&& update-ca-certificates \
-	&& apk add --update openjdk8-jre tzdata curl unzip bash \
-	&& apk add --no-cache nss \
-	&& rm -rf /var/cache/apk/* \
+
+RUN apt-get update 
+RUN apt-get install --no-install-recommends \
+    ca-certificates \
+    default-jre \
+    tzdata \
+    curl \
+    unzip \
+    bash \
+    libnss3
+RUN rm -rf /var/cache/apk/* \
 	&& mkdir -p /tmp/dependencies  \
 	&& curl -L --silent ${JMETER_DOWNLOAD_URL} >  /tmp/dependencies/apache-jmeter-${JMETER_VERSION}.tgz  \
 	&& mkdir -p /opt  \
@@ -29,10 +34,31 @@ RUN    apk update \
 # Set global PATH such that "jmeter" command is found
 ENV PATH $PATH:$JMETER_BIN
 
-# Entrypoint has same signature as "jmeter" command
-COPY JMeterScripts/entrypoint.sh /
+# Install dependencies for Azure DevOps agent
+RUN apt-get update 
+# Required to install libicu55 on Ubuntu versions > 16.04, the base image of owasp/zap2docker-stable at the time of writing is later than 16.04
+RUN apt-get install software-properties-common
+RUN add-apt-repository "deb http://security.ubuntu.com/ubuntu xenial-security main"
 
-WORKDIR	${JMETER_HOME}
+RUN apt-get install --no-install-recommends \
+    ca-certificates \
+    jq \
+    git \
+    iputils-ping \
+    libcurl3 \
+    libicu55 \
+    libunwind8 \
+    netcat
+# curl install returns broken package error if installed alongside other packages
+RUN apt-get install --no-install-recommends curl
+# Finished installing dependencies for Azure DevOps agent
 
-ENTRYPOINT ["/entrypoint.sh"]
+WORKDIR /agent-init.d
+COPY JMeterScripts/startup.sh .
+
+WORKDIR /azp
+COPY AgentScripts/install-agent.sh .
+RUN chmod +x install-agent.sh
+
+CMD ["./install-agent.sh"]
 
