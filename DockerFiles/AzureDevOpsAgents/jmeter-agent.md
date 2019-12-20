@@ -1,6 +1,6 @@
 # jMeter Azure DevOps Agent
 
-An Azure DevOps agent that includes the jMeter utility and pluggins.  This image is developed from [justb4/jmeter](https://hub.docker.com/r/justb4/jmeter).
+An Azure DevOps agent that includes the jMeter utility (TBD) and pluggins.
 
 ## Instructions for use
 
@@ -12,7 +12,13 @@ If the container has been registered as an Azure DevOps agent you can run a test
 jmeter --nongui --testfile $(System.DefaultWorkingDirectory)/<path-to-jmeter-test>/<jmeter-test-file>.jmx --logfile result.jtl
 ```
 
-This assumes that you have stored the jMeter test in a repo and added that as an artifact to the pipeline or release.
+To convert the jMeter output to the JUnit format that can be uploaded to Azure DevOps add a PowerShell task with the following inline script
+
+```
+. /scripts/convert-report.ps1 -PathToTransformationFile /scripts/jmeter-to-junit.xlst -PathToInputReport $(System.DefaultWorkingDirectory)/<jmeter-test-file>.xml -PathToOutputReport $(System.DefaultWorkingDirectory)/<jmeter-test-file>_JUnit.xml
+```
+
+Then add a Publish Test Results task to publish the <jmeter-test-file>_JUnit.xml test output file.  This assumes that you have stored the jMeter test in a repo and added that as an artifact to the pipeline or release.
 
 ### Run locally
 
