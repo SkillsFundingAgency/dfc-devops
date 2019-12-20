@@ -24,3 +24,4 @@ jobs:
       DockerfileName: owasp-agent.Dockerfile
       ImageBaseName: NCS.AzureDevOpsAgents.JMeter
       ImageTag: $(Build.BuildNumber)
+      ManifestFileName: jmeter-agent.kubernetes.yml
