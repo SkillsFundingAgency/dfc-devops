@@ -12,6 +12,14 @@ productDisplayName (required) string
 
 The display name of the product.  The name of the product will be the same but any spaces will be replaced with dashes.
 
+productDescription (optional) string
+
+A textual description for the product. Displayed in the developer portal.
+
+productTerms (optional) string
+
+Terms of use for the product. Displayed in the developer portal.
+
 addDevelopers (optional) bool
 
 Defaults to false.  Adds the built in Developers user group to the API Access Control list.  This allows all registered users access to the API by default.
