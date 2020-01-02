@@ -3,7 +3,7 @@
 # demands: npm & grunt
 
 parameters:
-  displayPrefix: '' # Optional prefix to displayName (useful if this is bei)
+  displayPrefix: '' # Optional prefix to displayName (useful if this is being called multiple times from the same build)
   npmfolder: '' # folder containing packages.json and gruntfile
   gruntfile: 'gruntfile.js'
   publishpath: '' # path to publish (publish step does not run if not specified)
