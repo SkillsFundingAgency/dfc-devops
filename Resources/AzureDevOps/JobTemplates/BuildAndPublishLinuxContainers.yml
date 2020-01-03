@@ -21,7 +21,7 @@ jobs:
     parameters:
       ContainerRegistryAdminUser: ${{ parameters.ContainerRegistryAdminUser }}
       ContainerRegistryPassword: ${{ parameters.ContainerRegistryPassword }}
-      DockerfileName: owasp-agent.Dockerfile
+      DockerfileName: jmeter-agent.Dockerfile
       ImageBaseName: NCS.AzureDevOpsAgents.JMeter
       ImageTag: $(Build.BuildNumber)
       ManifestFileName: jmeter-agent.kubernetes.yml
