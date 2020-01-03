@@ -4,7 +4,8 @@ FROM ubuntu:18.04
 ENV DEBIAN_FRONTEND=noninteractive
 RUN echo "APT::Get::Assume-Yes \"true\";" > /etc/apt/apt.conf.d/90assumeyes
 
-ARG JMETER_VERSION="5.1.1"
+ARG JMETER_VERSION="5.2.1"
+ARG NEO4J_PLUGIN_VERSION="4.0.0"
 ENV JMETER_HOME /opt/apache-jmeter-${JMETER_VERSION}
 ENV	JMETER_BIN	${JMETER_HOME}/bin
 ENV	JMETER_DOWNLOAD_URL  https://archive.apache.org/dist/jmeter/binaries/apache-jmeter-${JMETER_VERSION}.tgz
@@ -25,8 +26,22 @@ RUN rm -rf /var/cache/apk/* \
 	&& tar -xzf /tmp/dependencies/apache-jmeter-${JMETER_VERSION}.tgz -C /opt  \
 	&& rm -rf /tmp/dependencies
 
-# TODO: plugins (later)
-# && unzip -oq "/tmp/dependencies/JMeterPlugins-*.zip" -d $JMETER_HOME
+# Install Plugin Manager
+RUN mkdir -p /tmp/dependencies \
+    && curl -L --silent https://jmeter-plugins.org/get/ > $JMETER_HOME/lib/ext/jmeter-plugins-manager.jar \
+    && java -cp $JMETER_HOME/lib/ext/jmeter-plugins-manager.jar org.jmeterplugins.repository.PluginManagerCMDInstaller \
+    && curl -L --silent http://search.maven.org/remotecontent?filepath=kg/apc/cmdrunner/2.2/cmdrunner-2.2.jar > $JMETER_HOME/lib/cmdrunner-2.2.jar \
+    && rm -rf /tmp/dependencies
+
+# Install additional plugins using Plugin Manager
+RUN $JMETER_BIN/PluginsManagerCMD.sh install jpgc-filterresults=2.2,jpgc-graphs-basic=2.0,jpgc-graphs-additional=2.0,jpgc-graphs-dist=2.0,jpgc-ggl=2.0,jpgc-synthesis=2.2
+
+# Install Neo4j driver
+RUN mkdir -p /tmp/dependencies \
+    && curl -L --silent https://github.com/neo4j/neo4j-java-driver/archive/${NEO4J_PLUGIN_VERSION}.tar.gz > /tmp/dependencies/neo4j-pluggin-${NEO4J_PLUGIN_VERSION}.tar.gz \
+    && tar -xzf /tmp/dependencies/neo4j-pluggin-${NEO4J_PLUGIN_VERSION}.tar.gz -C $JMETER_HOME/lib/ext \
+    && rm -rf /tmp/dependencies
+
 
 # Set global PATH such that "jmeter" command is found
 ENV PATH $PATH:$JMETER_BIN
