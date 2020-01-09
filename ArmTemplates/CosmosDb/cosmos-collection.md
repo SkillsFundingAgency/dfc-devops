@@ -28,7 +28,9 @@ When provisionRequestUnits is set to true, provisions the RU for the collection
 
 partitionKey (optional) string
 
-The partition key to configure the collection to use. Leave unset to deploy a partitionless collection.  This parameter is not option if the collection resides on a database with provisioned throughput.
+The partition key to configure the collection to use. Leave unset to deploy a partitionless collection.  Partition key paths must contain only valid characters and not contain a trailing slash or wildcard character.  They should start with a forward slash, eg /partitionKey
+
+This parameter is not optional if the collection resides on a database with provisioned throughput.
 
 timeToLive (optional) int
 
