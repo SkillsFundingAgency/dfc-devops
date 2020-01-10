@@ -15,7 +15,7 @@ The key to the storage account specified in the StorageAccountName parameter
 The name of the table to create
 
 .EXAMPLE
-New-KeyVault -KeyVaultName dfc-foo-kv -ResourceGroupName dfc-foo-rg
+New-TableOnStorageAccount.ps1 -StorageAccountName dfcfoostr -StorageAccountKey not-a-real-key -TableName aTableToCreate
 
 #>
 
