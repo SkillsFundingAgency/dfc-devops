@@ -1,7 +1,7 @@
 [CmdletBinding()]
 param(
     [Parameter(Mandatory=$false)]
-    [string]$EnvironmentName="dev"
+    [string[]]$EnvironmentNames = @("dev","lab","test")
 )
 
 class StorageAccountAudit {
@@ -16,7 +16,6 @@ class StorageAccountAudit {
 }
 
 class CrossEnvironmentStorageAccountAudit {
-    [string]$ResourceGroupServiceEnvironmentPrefix
     [string]$ServicePrefix
     [string]$SharedAccountNameSuffix
     [StorageAccountAudit[]]$StorageAccounts
@@ -24,18 +23,37 @@ class CrossEnvironmentStorageAccountAudit {
 
 $StorageAccountsAuditResults = @()
 
+$AccountNameRegEx = "^(\w*)($($EnvironmentNames -join "|"))(\w*)$"
+Write-Verbose "Using AccountNameRegEx $AccountNameRegEx"
+
 $StorageAccounts = Get-AzStorageAccount
+Write-Verbose "Retrieved $($StorageAccounts.Count) to audit"
 foreach ($StorageAccount in $StorageAccounts) {
 
-    $CrossEnvironmentStorageAccountAudit = New-Object -TypeName CrossEnvironmentStorageAccountAudit
 
-    $AccountNameContainsEnv = $StorageAccount.StorageAccountName -match "^(\w*)$EnvironmentName(\w*)$"
+    ##TO DO: fix error in regex - captures the 2nd 'test' in 'dfctesttemplatestr'
+    $AccountNameContainsEnv = $StorageAccount.StorageAccountName -match $AccountNameRegEx
+
+    $CrossEnvironmentStorageAccountAudit = New-Object -TypeName CrossEnvironmentStorageAccountAudit
+    foreach ($ExistingAuditResult in $StorageAccountsAuditResults) {
+
+        if ($ExistingAuditResult.SharedAccountNameSuffix -eq $Matches[3]) {
+
+            $CrossEnvironmentStorageAccountAudit = $ExistingAuditResult
+            break
+
+        }
+        $CrossEnvironmentStorageAccountAudit = New-Object -TypeName CrossEnvironmentStorageAccountAudit
+
+    }
+
     if ($AccountNameContainsEnv) {
 
-        $CrossEnvironmentStorageAccountAudit.ResourceGroupServiceEnvironmentPrefix = "$($Matches[1])$EnvironmentName"
+        Write-Verbose "$($Matches.Count) matches found"
+        Write-Verbose "ServicePrefix is $($Matches[1]), Environment is $($Matches[2])"
         $CrossEnvironmentStorageAccountAudit.ServicePrefix = $Matches[1]
-        Write-Verbose "Shared account name suffix is $($Matches[2])"
-        $CrossEnvironmentStorageAccountAudit.SharedAccountNameSuffix = $Matches[2]
+        Write-Verbose "Shared account name suffix is $($Matches[3])"
+        $CrossEnvironmentStorageAccountAudit.SharedAccountNameSuffix = $Matches[3]
         
     }
     else {
@@ -47,8 +65,6 @@ foreach ($StorageAccount in $StorageAccounts) {
     }
 
     $StorageAccountAuditResults = New-Object -TypeName StorageAccountAudit
-    $null = $StorageAccount.StorageAccountName -match "^($($CrossEnvironmentStorageAccountAudit.ServicePrefix))(\w*)($($CrossEnvironmentStorageAccountAudit.SharedAccountNameSuffix))$"
-    Write-Verbose "Environment name $($Matches[2]) extracted from StorageAccountName"
     $StorageAccountAuditResults.EnvironmentName = $Matches[2]
     $StorageAccountAuditResults.StorageAccountName = $StorageAccount.StorageAccountName
 
