@@ -27,7 +27,9 @@ Describe "New-TableOnStorageAccount unit tests" -Tag "Unit" {
     Context "When the table exists" {
     
         Mock Get-AzStorageTable -MockWith { 
-            return @{}
+            return @{
+                Uri = "https://some/uri"
+            }
         }
 
         ./New-TableOnStorageAccount -StorageAccountName SomeStorageAccount -StorageAccountKey aStorageAccountKey -TableName SomeTable

@@ -19,6 +19,7 @@ New-TableOnStorageAccount.ps1 -StorageAccountName dfcfoostr -StorageAccountKey n
 
 #>
 
+[CmdletBinding()]
 param(
     [Parameter(Mandatory=$true)]
     [string] $StorageAccountName,
@@ -34,7 +35,7 @@ $context = New-AzStorageContext -StorageAccountName $StorageAccountName -Storage
 Write-Verbose "Attempting to fetch table '$($TableName)'"
 $table = Get-AzStorageTable -Name $TableName -Context $context -ErrorAction SilentlyContinue
 
-if($null -eq $table) {
+if(!$table) {
     Write-Verbose "Table '$($TableName)' does not exist, creating"
     New-AzStorageTable -Context $context -Name $TableName
 } else {
