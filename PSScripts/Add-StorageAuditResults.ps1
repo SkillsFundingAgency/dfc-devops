@@ -1,14 +1,25 @@
 [CmdletBinding()]
-param()
+param(
+    [Parameter(Mandatory=$false)]
+    [string]$EnvironmentName="dev"
+)
 
 class StorageAccountAudit {
-    [string]$StorageAccountName;
-    [int]$ContainersCount;
-    [Nullable[DateTime]]$ContainersLastModifiedDate;
-    [int]$FileSharesCount;
+    [string]$EnvironmentName
+    [string]$StorageAccountName
+    [int]$ContainersCount
+    [Nullable[DateTime]]$ContainersLastModifiedDate
+    [int]$FileSharesCount
     [Nullable[DateTime]]$FileSharesLastModifiedDate
-    [int]$QueuesCount;
-    [int]$TablesCount;
+    [int]$QueuesCount
+    [int]$TablesCount
+}
+
+class CrossEnvironmentStorageAccountAudit {
+    [string]$ResourceGroupServiceEnvironmentPrefix
+    [string]$ServicePrefix
+    [string]$SharedAccountNameSuffix
+    [StorageAccountAudit[]]$StorageAccounts
 }
 
 $StorageAccountsAuditResults = @()
@@ -16,7 +27,29 @@ $StorageAccountsAuditResults = @()
 $StorageAccounts = Get-AzStorageAccount
 foreach ($StorageAccount in $StorageAccounts) {
 
+    $CrossEnvironmentStorageAccountAudit = New-Object -TypeName CrossEnvironmentStorageAccountAudit
+
+    $AccountNameContainsEnv = $StorageAccount.StorageAccountName -match "^(\w*)$EnvironmentName(\w*)$"
+    if ($AccountNameContainsEnv) {
+
+        $CrossEnvironmentStorageAccountAudit.ResourceGroupServiceEnvironmentPrefix = "$($Matches[1])$EnvironmentName"
+        $CrossEnvironmentStorageAccountAudit.ServicePrefix = $Matches[1]
+        Write-Verbose "Shared account name suffix is $($Matches[2])"
+        $CrossEnvironmentStorageAccountAudit.SharedAccountNameSuffix = $Matches[2]
+        
+    }
+    else {
+
+        ##TO DO: how \ whether to handle accounts with invalid names (ie missing environment)
+        Write-Warning "Account $($StorageAccount.StorageAccountName) doesn't contain environment name $EnvironmentName"
+        continue
+
+    }
+
     $StorageAccountAuditResults = New-Object -TypeName StorageAccountAudit
+    $null = $StorageAccount.StorageAccountName -match "^($($CrossEnvironmentStorageAccountAudit.ServicePrefix))(\w*)($($CrossEnvironmentStorageAccountAudit.SharedAccountNameSuffix))$"
+    Write-Verbose "Environment name $($Matches[2]) extracted from StorageAccountName"
+    $StorageAccountAuditResults.EnvironmentName = $Matches[2]
     $StorageAccountAuditResults.StorageAccountName = $StorageAccount.StorageAccountName
 
     $Context = New-AzStorageContext -StorageAccountName $StorageAccount.StorageAccountName -UseConnectedAccount
@@ -65,8 +98,9 @@ foreach ($StorageAccount in $StorageAccounts) {
     $StorageAccountAuditResults.TablesCount = $Tables.Count
     Write-Verbose "$($StorageAccount.StorageAccountName) contains $($Tables.Count) tables"
     
-    $StorageAccountsAuditResults += $StorageAccountAuditResults
+    $CrossEnvironmentStorageAccountAudit.StorageAccounts += $StorageAccountAuditResults
 
+    $StorageAccountsAuditResults += $CrossEnvironmentStorageAccountAudit
 }
 
-$StorageAccountsAuditResults | Format-Table
+$StorageAccountsAuditResults
