@@ -1,3 +1,22 @@
+<#
+.SYNOPSIS
+Audits high level usage of storage accounts.
+
+.DESCRIPTION
+Audits high level usage of storage accounts.  Outputs number of containers, file shares, queues and tables from multiple storage accounts.
+Can audit multiple environments within a subscription.  Can accept the output from a previous audit and append to this allowing audits to be ran across multiple subscriptions and tenants.
+
+.PARAMETER EnvironmentNames
+An array of environment names.  Assumes that the DFC naming convention for storage accounts is followed, ie <service><environment><project>str, eg dfcfooprojectbarstr
+
+.PARAMETER AppendToReport
+The output from a previous run of this cmdlet.  Must be of type CrossEnvironmentStorageAccountAudit[]
+
+.EXAMPLE
+Audits the dev and test environments, the output from that audit is then passed to the 2nd cmdlet which audits the lab environment and produces a consolidate report
+$AuditDevTest = .\PSScripts\Add-StorageAuditResults.ps1 -EnvironmentNames "dev", "test" -Verbose
+$AuditLab = .\PSScripts\Add-StorageAuditResults.ps1 -EnvironmentNames "lab" -AppendToReport $AuditDevTest  -Verbose
+#>
 [CmdletBinding()]
 param(
     [Parameter(Mandatory=$false)]
