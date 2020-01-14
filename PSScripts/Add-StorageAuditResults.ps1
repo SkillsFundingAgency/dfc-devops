@@ -1,7 +1,9 @@
 [CmdletBinding()]
 param(
     [Parameter(Mandatory=$false)]
-    [string[]]$EnvironmentNames = @("dev","lab","test")
+    [string[]]$EnvironmentNames = @("dev","lab","test"),
+    [Parameter(Mandatory=$false)]
+    [Object[]]$AppendToReport
 )
 
 class StorageAccountAudit {
@@ -21,7 +23,27 @@ class CrossEnvironmentStorageAccountAudit {
     [StorageAccountAudit[]]$StorageAccounts
 }
 
-$StorageAccountsAuditResults = @()
+if ($PSBoundParameters.ContainsKey('AppendToReport')) {
+
+    ##TO DO validate that $AppendToReport is of type CrossEnvironmentStorageAccountAudit[]
+    Write-Verbose "Appending results to existing audit"
+    ##TO DO fix or remove this loop.  Looping through the $AppendToReport object appears to change it's nature.  With this loop enabled exception 'Exception setting "StorageAccounts": "Cannot convert the "StorageAccountAudit" value of type "StorageAccountAudit" to type "StorageAccountAudit"."' is thrown at line 144
+    # foreach ($CrossEnvironmentStorageAccountAudit in $AppendToReport) {
+    #     if ($CrossEnvironmentStorageAccountAudit.GetType().ToString() -ne "CrossEnvironmentStorageAccountAudit") {
+
+    #         throw "Error validating input from AppendToReport parameter, a member of array is not ofo type [CrossEnvironmentStorageAccountAudit]`n$_)"
+
+    #     }
+    # }
+    CrossEnvironmentStorageAccountAudit[]$StorageAccountsAuditResults = $AppendToReport
+
+}
+else {
+
+    Write-Verbose "Creating new audit"
+    $StorageAccountsAuditResults = @()
+
+}
 
 $AccountNameRegEx = "^(\w*)($($EnvironmentNames -join "|"))(\w*)$"
 Write-Verbose "Using AccountNameRegEx $AccountNameRegEx"
@@ -30,31 +52,35 @@ $StorageAccounts = Get-AzStorageAccount
 Write-Verbose "Retrieved $($StorageAccounts.Count) to audit"
 foreach ($StorageAccount in $StorageAccounts) {
 
-
     ##TO DO: fix error in regex - captures the 2nd 'test' in 'dfctesttemplatestr'
     $AccountNameContainsEnv = $StorageAccount.StorageAccountName -match $AccountNameRegEx
-
-    $CrossEnvironmentStorageAccountAudit = New-Object -TypeName CrossEnvironmentStorageAccountAudit
-    foreach ($ExistingAuditResult in $StorageAccountsAuditResults) {
-
-        if ($ExistingAuditResult.SharedAccountNameSuffix -eq $Matches[3]) {
-
-            $CrossEnvironmentStorageAccountAudit = $ExistingAuditResult
-            break
-
-        }
-        $CrossEnvironmentStorageAccountAudit = New-Object -TypeName CrossEnvironmentStorageAccountAudit
-
-    }
+    Write-Verbose "$($StorageAccount.StorageAccountName) matches regex pattern.  $($Matches.Count) matches found"
 
     if ($AccountNameContainsEnv) {
 
-        Write-Verbose "$($Matches.Count) matches found"
         Write-Verbose "ServicePrefix is $($Matches[1]), Environment is $($Matches[2])"
-        $CrossEnvironmentStorageAccountAudit.ServicePrefix = $Matches[1]
         Write-Verbose "Shared account name suffix is $($Matches[3])"
-        $CrossEnvironmentStorageAccountAudit.SharedAccountNameSuffix = $Matches[3]
-        
+    
+        foreach ($ExistingAuditResult in $StorageAccountsAuditResults) {
+    
+            if ($ExistingAuditResult.SharedAccountNameSuffix -eq $Matches[3]) {
+    
+                Write-Verbose "Existing audit found with SharedAccountNameSuffix $($Matches[3]), appending results"
+                $CrossEnvironmentStorageAccountAudit = $ExistingAuditResult
+                break
+    
+            }
+    
+        }
+        if (!$CrossEnvironmentStorageAccountAudit) {
+            
+            Write-Verbose "No existing audit found with SharedAccountNameSuffix $($Matches[3]), creating new audit object"
+            $CrossEnvironmentStorageAccountAudit = New-Object -TypeName CrossEnvironmentStorageAccountAudit
+            $CrossEnvironmentStorageAccountAudit.ServicePrefix = $Matches[1]
+            $CrossEnvironmentStorageAccountAudit.SharedAccountNameSuffix = $Matches[3]
+
+        }
+
     }
     else {
 
@@ -114,9 +140,12 @@ foreach ($StorageAccount in $StorageAccounts) {
     $StorageAccountAuditResults.TablesCount = $Tables.Count
     Write-Verbose "$($StorageAccount.StorageAccountName) contains $($Tables.Count) tables"
     
+    Write-Verbose "CrossEnvironmentStorageAccountAudit.StorageAccounts: $($CrossEnvironmentStorageAccountAudit.StorageAccounts.GetType().ToString())"
+    Write-Verbose "StorageAccountAuditResults: $($StorageAccountAuditResults.GetType().ToString())"
     $CrossEnvironmentStorageAccountAudit.StorageAccounts += $StorageAccountAuditResults
 
     $StorageAccountsAuditResults += $CrossEnvironmentStorageAccountAudit
+    Remove-Variable -Name CrossEnvironmentStorageAccountAudit
 }
 
 $StorageAccountsAuditResults
