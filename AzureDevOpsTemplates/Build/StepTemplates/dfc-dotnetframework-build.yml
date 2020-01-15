@@ -11,12 +11,15 @@ steps:
    inputs:
      useConfigFile: true
      configFilePath: GitVersion.yml
+
  - task: NuGetToolInstaller@0
    displayName: 'Use NuGet 4.3.0'
+
  - task: NuGetCommand@2
    displayName: 'NuGet restore ${{ parameters.SolutionBaseName }}.sln'
    inputs:
      restoreSolution: '${{ parameters.SolutionBaseName }}.sln'
+
  - task: VSBuild@1
    displayName: 'Build solution ${{ parameters.SolutionBaseName }}.sln'
    inputs:
@@ -25,12 +28,14 @@ steps:
      msbuildArgs: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:PackageLocation="$(build.artifactstagingdirectory)\DeploymentPackages\\" /p:VersionPrefix="$(GitVersion.MajorMinorPatch)"'
      platform: '${{ parameters.BuildPlatform }}'
      configuration: '${{ parameters.BuildConfiguration }}'
+
  - task: CopyFiles@2
    displayName: 'Copy Files to: $(build.artifactstagingdirectory)/UnitTests'
    inputs:
      sourceFolder: '$(System.DefaultWorkingDirectory)'
      contents: '**\bin\Release\**'
      targetFolder: '$(build.artifactstagingdirectory)/UnitTests'
+
  - task: VSTest@2
    condition: ${{ parameters.RunTests }}
    displayName: 'VsTest - testAssemblies'
@@ -41,15 +46,9 @@ steps:
      codeCoverageEnabled: true
      platform: ${{ parameters.BuildPlatform }}
      configuration: ${{ parameters.BuildConfiguration }}
- - task: CopyFiles@2
-   displayName: 'Copy Files to: $(build.artifactstagingdirectory)/Azure'
-   inputs:
-     sourceFolder: 'Resources'
-     contents: '**'
-     targetFolder: '$(build.artifactstagingdirectory)/Azure'
- - task: PublishBuildArtifacts@1
+
+ - task: PublishPipelineArtifact@1
    displayName: 'Publish Artifact: ${{ parameters.SolutionBaseName }}'
    inputs:
-     pathtoPublish: $(build.artifactstagingdirectory)
+     targetPath: $(build.artifactstagingdirectory)
      artifactName: ${{ parameters.SolutionBaseName }}
-     publishLocation: container
