@@ -51,4 +51,4 @@ steps:
    displayName: 'Publish Artifact: ${{ parameters.SolutionBaseName }}'
    inputs:
      targetPath: $(build.artifactstagingdirectory)
-     artifactName: ${{ parameters.SolutionBaseName }}
+     artifactName: ${{ parameters.SolutionBaseName }}.DeploymentPackages
