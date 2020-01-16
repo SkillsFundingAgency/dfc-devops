@@ -24,23 +24,49 @@ param(
     [string] $DestinationKeyVaultName
 )
 
+$sourceKeyVault = Get-AzKeyVault -VaultName $SourceKeyVaultName
+if (!$sourceKeyVault) {
+    throw "Cannot find $SourceKeyVaultName"
+}
+
+$destinationKeyVault = Get-AzKeyVault -VaultName $destinationKeyVaultName
+if (!$destinationKeyVault) {
+    throw "Cannot find $destinationKeyVaultName"
+}
+
+function Import-Certificate {
+    param (
+        [Parameter(Mandatory=$true)]
+        $Certificate,
+        [Parameter(Mandatory=$true)]
+        $DestinationKeyVaultName
+    )
+    
+    $certName = $Certificate.Name
+    $certFile = Join-Path $PSScriptRoot -ChildPath "$CertName.blob"
+    Write-Verbose -Message "Temporary backup file $certFile"
+    Backup-AzKeyVaultCertificate -InputObject $Certificate -OutputFile $certFile -Force 
+    Restore-AzKeyVaultCertificate -VaultName $DestinationKeyVaultName -Inputfile $certFile
+    Remove-Item -Path $certFile 
+}
+
 Write-Verbose -Message "Synchronising $SourceKeyVaultName certificates to $DestinationKeyVaultName"
- 
+
 Get-AzKeyVaultCertificate -VaultName $SourceKeyVaultName | ForEach-Object { 
     $CertName = $_.Name 
-    $SourceCert = Get-AzKeyVaultCertificate -VaultName $SourceKeyVaultName -Name $CertName 
+    $SourceCert = Get-AzKeyVaultCertificate -VaultName $SourceKeyVaultName -Name $CertName
+    Write-Verbose -Message "Source cert $($SourceCert.name) updated on $($SourceCert.Updated)"
     $DestinationCert = Get-AzKeyVaultCertificate -VaultName $DestinationKeyVaultName -Name $CertName 
-    if (!($DestinationCert) -or ($DestinationCert.Updated -lt $SourceCert.Updated)) 
-    {
-        Write-Verbose -Message "Updating $CertName"
-        $certFile = Join-Path($PSScriptRoot,"$CertName.blob") 
-        Write-Verbose -Message "Temporary backup file $certFile"
-        $SourceCert | Backup-AzKeyVaultCertificate -OutputFile $certFile -Force 
-        Restore-AzKeyVaultCertificate -VaultName $SecondaryKVName -Inputfile $certFile
-        Remove-Item -Path $certFile 
+    Write-Verbose -Message "Destination cert $($DestinationCert.name) updated on $($DestinationCert.Updated)"
+    if (!($DestinationCert)) {
+        Write-Verbose -Message "Certificate $CertName does not exist in destination ... importing"
+        Import-Certificate -Certificate $SourceCert -DestinationKeyVaultName $DestinationKeyVaultName
+    }
+    elseif ($DestinationCert.Updated -lt $SourceCert.Updated) {
+        Write-Verbose -Message "Certificate $CertName has been updated ... importing"
+        Import-Certificate -Certificate $SourceCert -DestinationKeyVaultName $DestinationKeyVaultName
     } 
-    else 
-    { 
+    else { 
         Write-Verbose -Message "Cert $CertName already up to date"
     } 
 } 
