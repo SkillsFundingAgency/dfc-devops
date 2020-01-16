@@ -2,7 +2,6 @@ parameters:
   ArmTemplateRoot: ''
   SolutionBaseName: ''
   AzureSubscription: 'SFA-CDH-Dev/Test (962cae10-2950-412a-93e3-d8ae92b17896)'
-  PublishPipelineArtifact: false
   TestArmTemplateScriptUrl: https://raw.githubusercontent.com/SkillsFundingAgency/dfc-devops/master/PSScripts/Test-ArmTemplate.ps1
   TestArmTemplateScriptFilePath: $(System.DefaultWorkingDirectory)\Test-ArmTemplate.ps1
   TokenizeTestParameters: false
@@ -12,14 +11,16 @@ steps:
   condition: ${{ parameters.TokenizeTestParameters }}
   displayName: 'Tokenization: Transform file test-parameters.json'
   inputs:
-    SourcePath: '$(System.DefaultWorkingDirectory)\Resources'
-    TargetFileNames: test-parameters.json    
+    SourcePath: '${{ parameters.ArmTemplateRoot }}'
+    TargetFileNames: test-parameters.json
+
 - task: PowerShell@2
   name: DownloadTestArmTemplateScript
   displayName: 'Download Test-ArmTemplate script'
   inputs:
     targetType: 'inline'
     script: Invoke-WebRequest -Uri ${{ parameters.TestArmTemplateScriptUrl }} -OutFile ${{ parameters.TestArmTemplateScriptFilePath }}
+
 - task: AzurePowerShell@3
   displayName: 'Test Arm Template'
   inputs:
@@ -28,17 +29,9 @@ steps:
     scriptPath: ${{ parameters.TestArmTemplateScriptFilePath }}
     scriptArguments: -ParameterFile '${{ parameters.ArmTemplateRoot }}\test-parameters.json' -TemplateFile '${{ parameters.ArmTemplateRoot }}\template.json' -Verbose
     azurePowerShellVersion: LatestVersion
-- task: CopyFiles@2
-  displayName: 'Copy Arm Templates to Staging'
-  inputs:
-    SourceFolder: '${{ parameters.ArmTemplateRoot }}\'
-    Contents: |
-      **
-      !AzureDevOps\**
-    TargetFolder: $(build.artifactstagingdirectory)/Azure/ArmTemplates
+    
 - task: PublishPipelineArtifact@0
   displayName: Publish Pipeline Artifact
-  condition: ${{ parameters.PublishPipelineArtifact }}
   inputs:
-    targetPath: $(build.artifactstagingdirectory)/Azure/ArmTemplates
+    targetPath: ${{ parameters.ArmTemplateRoot}}
     artifactName: ${{ parameters.SolutionBaseName }}.Resources.ArmTemplates
