@@ -56,7 +56,7 @@ steps:
      projects: '${{ parameters.SolutionBaseName }}.${{ parameters.TestSuffix }}\${{ parameters.SolutionBaseName }}.${{ parameters.TestSuffix }}.csproj'
      arguments: '--configuration ${{ parameters.BuildConfiguration }} --collect "Code coverage"'
 
- - task: PublishBuildArtifacts@1
+ - task: PublishPipelineArtifact@1
    displayName: 'Publish Artifact: ${{ parameters.SolutionBaseName }}'
    inputs:
      targetPath: $(build.artifactstagingdirectory)\Artifact\${{ parameters.SolutionBaseName }}\DeploymentPackages\
