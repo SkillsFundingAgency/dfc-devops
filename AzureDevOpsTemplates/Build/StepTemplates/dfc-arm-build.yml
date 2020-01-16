@@ -33,5 +33,5 @@ steps:
 - task: PublishPipelineArtifact@0
   displayName: Publish Pipeline Artifact
   inputs:
-    targetPath: ${{ parameters.ArmTemplateRoot}}
+    targetPath: ${{ parameters.ArmTemplateRoot }}
     artifactName: ${{ parameters.SolutionBaseName }}.Resources.ArmTemplates
