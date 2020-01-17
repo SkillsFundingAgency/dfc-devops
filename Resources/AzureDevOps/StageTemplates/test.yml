@@ -17,6 +17,11 @@ stages:
         azurePowerShellVersion: LatestVersion
       continueOnError: true
 
+    - task: PublishTestResults@2
+      displayName: 'Publish Test Results'
+      inputs:
+        testResultsFormat: NUnit
+
     - task: PublishCodeCoverageResults@1
       displayName: 'Publish Code Coverage'
       inputs:
@@ -37,3 +42,8 @@ stages:
       inputs:
         filePath: '$(System.DefaultWorkingDirectory)/Tests/Invoke-Tests.ps1'
         arguments: '-TestType Quality'
+
+    - task: PublishTestResults@2
+      displayName: 'Publish Test Results'
+      inputs:
+        testResultsFormat: NUnit
