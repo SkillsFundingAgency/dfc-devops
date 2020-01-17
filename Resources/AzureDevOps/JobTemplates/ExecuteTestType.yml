@@ -12,6 +12,19 @@ jobs:
     inputs:
       azureSubscription: '${{ parameters.AzureSubscription }}'
       ScriptPath: '$(System.DefaultWorkingDirectory)/Tests/Invoke-Tests.ps1'
-      ScriptArguments: '-TestType {{ parameters.TestType }} -CodeCoveragePath $(System.DefaultWorkingDirectory)\PSScripts\*.ps1'
+      ScriptArguments: '-TestType ${{ parameters.TestType }} -CodeCoveragePath $(System.DefaultWorkingDirectory)\PSScripts\*.ps1'
       azurePowerShellVersion: LatestVersion
 
+  - task: CopyFiles@4
+    inputs:
+      targetFolder: $(Build.SourcesDirectory)
+      sourceFolder: $(Build.SourcesDirectory)/testfiles
+      contents: |
+        **/CODECOVERAGE-*.xml
+        **/Test-*.xml
+
+  - task: PublishPipelineArtifact@1
+    displayName: 'Publish test results'
+    inputs:
+      targetPath: $(Build.SourcesDirectory)/testfiles
+      artifactName:  dfc-devops-tests-{{ parameters.TestType }}
