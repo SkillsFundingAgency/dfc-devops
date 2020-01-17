@@ -14,7 +14,7 @@ stages:
         inputs:
           azureSubscription: '${{ parameters.AzureSubscription }}'
           ScriptPath: '$(System.DefaultWorkingDirectory)/Tests/Invoke-Tests.ps1'
-          ScriptArguments: '-ExcludeTag Quality -CodeCoveragePath $(System.DefaultWorkingDirectory)\PSScripts\*.ps1'
+          ScriptArguments: '-ExcludeTestType Quality -CodeCoveragePath $(System.DefaultWorkingDirectory)\PSScripts\*.ps1'
           azurePowerShellVersion: LatestVersion
 
       - task: PublishTestResults@2
@@ -43,7 +43,7 @@ stages:
         inputs:
           azureSubscription: '${{ parameters.AzureSubscription }}'
           ScriptPath: '$(System.DefaultWorkingDirectory)/Tests/Invoke-Tests.ps1'
-          ScriptArguments: '-ExcludeTag Quality'
+          ScriptArguments: '-TestType Quality'
           azurePowerShellVersion: LatestVersion
 
       - task: PublishTestResults@2
