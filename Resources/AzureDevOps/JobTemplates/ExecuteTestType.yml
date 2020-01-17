@@ -12,7 +12,7 @@ jobs:
     inputs:
       azureSubscription: '${{ parameters.AzureSubscription }}'
       ScriptPath: '$(System.DefaultWorkingDirectory)/Tests/Invoke-Tests.ps1'
-      ScriptArguments: '-TestType ${{ parameters.TestType }} -CodeCoveragePath $(System.DefaultWorkingDirectory)\PSScripts\*.ps1'
+      ScriptArguments: '-TestType ${{ parameters.TestType }}'
       azurePowerShellVersion: LatestVersion
 
   - task: CopyFiles@2
