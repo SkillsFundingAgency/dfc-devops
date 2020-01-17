@@ -1,8 +1,8 @@
 parameters:
   TestType:  ''
-  
+
 jobs:
-- job: Run{{ parameters.TestType }}Tests
+- job: Run${{ parameters.TestType }}Tests
   displayName: 'Run ${{ parameters.TestType }} tests'
   steps:
   - task: AzurePowerShell@3
