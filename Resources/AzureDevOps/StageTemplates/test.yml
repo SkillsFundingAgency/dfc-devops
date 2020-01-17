@@ -8,7 +8,7 @@ stages:
   - job: RunUnitAcceptanceTests
     displayName: 'Run Unit and Acceptance tests'
     steps:
-    - task:
+    - task: AzurePowerShell@4
       displayName: 'Azure PowerShell Script: Invoke-Tests'
       inputs:
         azureSubscription: ${{ parameters.AzureSubscription }}
