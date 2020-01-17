@@ -8,6 +8,9 @@ Test wrapper that invokes
 .PARAMETER TestType
 [Optional] The type of test that will be executed. The parameter value can be either All (default), Acceptance, Quality or Unit
 
+.PARAMETER ExcludeTestType
+[Optional] The type of test that will be excluded. The parameter value can be either be None (default), Acceptance, Quality or Unit
+
 .EXAMPLE
 Invoke-AcceptanceTests.ps1
 
@@ -21,6 +24,8 @@ Param (
     [Parameter(Mandatory = $false)]
     [ValidateSet("All", "Acceptance", "Quality", "Unit")]
     [String] $TestType = "All",
+    [ValidateSet("None", "Acceptance", "Quality", "Unit")]
+    [String] $ExcludeTestType = "None",
     [Parameter(Mandatory = $false)]
     [String] $CodeCoveragePath
 )
@@ -34,6 +39,11 @@ $TestParameters = @{
 if ($TestType -ne 'All') {
     $TestParameters['Tag'] = $TestType
 }
+
+if($TestType -ne "None") {
+    $TestParameters['ExcludeTag'] = $ExcludeTestType
+}
+
 if ($CodeCoveragePath) {
     $TestParameters['CodeCoverage'] = $CodeCoveragePath
     $TestParameters['CodeCoverageOutputFile'] = "$PSScriptRoot\CODECOVERAGE-$TestType.xml"

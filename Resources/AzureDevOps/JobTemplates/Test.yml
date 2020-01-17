@@ -1,6 +1,7 @@
 parameters:
   AzureSubscription: ''
   CodeCoveragePercentage: 80
+  ExcludeTestWithTag: 'None'
 
 jobs:
 - job: Test
@@ -12,7 +13,7 @@ jobs:
     inputs:
       azureSubscription: ${{ parameters.AzureSubscription }}
       ScriptPath: '$(System.DefaultWorkingDirectory)/Tests/Invoke-Tests.ps1'
-      ScriptArguments: '-CodeCoveragePath $(System.DefaultWorkingDirectory)\PSScripts\*.ps1'
+      ScriptArguments: '-ExcludeTestType ${{ parameters.ExcludeTestWithTag }} -CodeCoveragePath $(System.DefaultWorkingDirectory)\PSScripts\*.ps1'
       azurePowerShellVersion: LatestVersion
     continueOnError: true
   - task: PublishTestResults@2
