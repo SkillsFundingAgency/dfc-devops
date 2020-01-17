@@ -16,14 +16,16 @@ stages:
       TestType: Quality
 
   - job: PublishTestResults
-    displayName: PublishTestResults
+    displayName: 'Publish test and code coverage results'
     dependsOn:
     - RunUnitTests
     - RunAcceptanceTests
     - RunQualityTests
 
     steps:
-    - download: current
+    - task: DownloadPipelineArtifact@2
+      inputs:
+        source: 'current'
 
     - task: CopyFiles@2
       inputs:
