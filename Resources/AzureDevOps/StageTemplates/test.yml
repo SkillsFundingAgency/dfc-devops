@@ -1,0 +1,49 @@
+parameters:
+  AzureSubscription: ''
+  CodeCoveragePercentage: 80
+
+stages:
+- stage: Test
+  jobs:
+  - job: RunUnitAcceptanceTests
+    displayName: Run Unit and Acceptance tests
+    steps:
+    - task:
+      displayName: 'Azure PowerShell Script: Invoke-Tests'
+      inputs:
+        azureSubscription: ${{ parameters.AzureSubscription }}
+        ScriptPath: '$(System.DefaultWorkingDirectory)/Tests/Invoke-Tests.ps1'
+        ScriptArguments: '-ExcludeTestType Quality -CodeCoveragePath $(System.DefaultWorkingDirectory)\PSScripts\*.ps1'
+        azurePowerShellVersion: LatestVersion
+      continueOnError: true
+
+  - job: RunScriptAnalyzer
+    displayName: Run PSScriptAnalyzer
+    steps:
+    - task: PowerShell@2
+      displayName: 'Powershell: Invoke-Tests'
+      inputs:
+        ScriptPath: '$(System.DefaultWorkingDirectory)/Tests/Invoke-Tests.ps1'
+        ScriptArguments: '-TestType Quality -CodeCoveragePath $(System.DefaultWorkingDirectory)\PSScripts\*.ps1'
+
+  - job: PublishTests
+    dependsOn:
+      - RunUnitAcceptanceTests
+      - RunScriptAnalyzer
+    steps:
+      - task: PublishTestResults@2
+        displayName: 'Publish Test Results'
+        inputs:
+          testResultsFormat: NUnit
+
+      - task: PublishCodeCoverageResults@1
+        displayName: 'Publish Code Coverage'
+        inputs:
+          summaryFileLocation: '**/CODECOVERAGE-*.xml'
+
+      - task: PowerShell@2
+        displayName: 'PowerShell Script: Out-TestResults'
+        inputs:
+          targetType: filePath
+          filePath: '$(System.DefaultWorkingDirectory)/Tests/Out-TestResults.ps1'
+          arguments: '-CoveragePercent ${{ parameters.CodeCoveragePercentage }}'

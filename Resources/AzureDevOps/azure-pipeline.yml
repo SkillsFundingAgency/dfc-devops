@@ -29,16 +29,10 @@ pr:
     - master
 
 stages:
-
-- stage: Test
-  jobs:
-  - template: JobTemplates\Test.yml
-    parameters:
-      Name: "RunTests"
-      AzureSubscription: 'SFA-CDH-Dev/Test (962cae10-2950-412a-93e3-d8ae92b17896)'
-      CodeCoveragePercentage: 45
-
-  - template: JobTemplates\ScriptAnalyzer.yml
+- template: StageTemplates/test.yml
+  parameters:
+    AzureSubscription: 'SFA-CDH-Dev/Test (962cae10-2950-412a-93e3-d8ae92b17896)'
+    CodeCoveragePercentage: 45
 
 - stage: BuildAndPublishContainers
   condition: or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq(variables['Build.Reason'], 'PullRequest'))
