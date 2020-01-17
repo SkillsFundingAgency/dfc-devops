@@ -6,7 +6,7 @@ stages:
 - stage: Test
   jobs:
   - job: RunUnitAcceptanceTests
-    displayName: Run Unit and Acceptance tests
+    displayName: 'Run Unit and Acceptance tests'
     steps:
     - task:
       displayName: 'Azure PowerShell Script: Invoke-Tests'
@@ -18,7 +18,7 @@ stages:
       continueOnError: true
 
   - job: RunScriptAnalyzer
-    displayName: Run PSScriptAnalyzer
+    displayName: 'Run PSScriptAnalyzer'
     steps:
     - task: PowerShell@2
       displayName: 'Powershell: Invoke-Tests'
