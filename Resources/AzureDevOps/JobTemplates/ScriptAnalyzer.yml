@@ -1,20 +1,16 @@
 parameters:
-  Name: 'Test'
-  AzureSubscription: ''
   CodeCoveragePercentage: 80
-  ExcludeTestWithTag: 'None'
 
 jobs:
-- job: RunUnitAceeptanceTests
-  displayName: "Runs all unit and acceptance tests "
+- job: RunScriptAnalyzer
+  displayName: Run PSScriptAnalyzer
   steps:
-
-  - task: AzurePowerShell@3
-    displayName: 'Azure PowerShell Script: Invoke-Tests'
+  - task: PowerShell@2
+    displayName: 'Powershell: Invoke-Tests'
     inputs:
       azureSubscription: ${{ parameters.AzureSubscription }}
       ScriptPath: '$(System.DefaultWorkingDirectory)/Tests/Invoke-Tests.ps1'
-      ScriptArguments: '-ExcludeTestType Quality -CodeCoveragePath $(System.DefaultWorkingDirectory)\PSScripts\*.ps1'
+      ScriptArguments: '-TestType Quality -CodeCoveragePath $(System.DefaultWorkingDirectory)\PSScripts\*.ps1'
       azurePowerShellVersion: LatestVersion
     continueOnError: true
 
@@ -34,10 +30,3 @@ jobs:
       targetType: filePath
       filePath: '$(System.DefaultWorkingDirectory)/Tests/Out-TestResults.ps1'
       arguments: '-CoveragePercent ${{ parameters.CodeCoveragePercentage }}'
-
-
-
-
-
-
-

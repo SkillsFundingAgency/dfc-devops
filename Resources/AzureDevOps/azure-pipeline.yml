@@ -11,6 +11,12 @@ resources:
     endpoint: 'GitHub (ESFA)'
     ref: refs/tags/v1.9.0
 
+pool:
+  name: 'NCS - CI and CD'
+  demands:
+    powershell
+    AzurePowerShell
+
 trigger:
   branches:
     include:
@@ -31,11 +37,7 @@ stages:
       AzureSubscription: 'SFA-CDH-Dev/Test (962cae10-2950-412a-93e3-d8ae92b17896)'
       CodeCoveragePercentage: 45
 
-  - template: JobTemplates\Test.yml
-    parameters:
-      Name: "RunScriptAnalyzer"
-      AzureSubscription: 'SFA-CDH-Dev/Test (962cae10-2950-412a-93e3-d8ae92b17896)'
-      ExcludeTestWithTag: 'Quality'
+  - template: JobTemplates\ScriptAnalyzer.yml
 
 - stage: BuildAndPublishContainers
   condition: or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq(variables['Build.Reason'], 'PullRequest'))

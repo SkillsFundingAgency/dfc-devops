@@ -7,8 +7,6 @@ parameters:
 
 jobs:
 - deployment: DeployToDev
-  pool:
-    name: 'NCS - CI and CD'
   environment: ${{ parameters.Environment }}
   strategy:
     runOnce:
