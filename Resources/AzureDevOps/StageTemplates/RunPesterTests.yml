@@ -7,16 +7,18 @@ stages:
   jobs:
   - template: ../JobTemplates/ExecuteTestType.yml
     parameters:
-      TestType: Unit
-      AzureSubscription: ${{ parameters.AzureSubscription }}
+      TestType: 'Unit'
+      AzureSubscription: '${{ parameters.AzureSubscription }}'
+
   - template: ../JobTemplates/ExecuteTestType.yml
     parameters:
-      TestType: Acceptance
-      AzureSubscription: ${{ parameters.AzureSubscription }}
+      TestType: 'Acceptance'
+      AzureSubscription: '${{ parameters.AzureSubscription }}'
+
   - template: ../JobTemplates/ExecuteTestType.yml
     parameters:
-      TestType: Quality
-      AzureSubscription: ${{ parameters.AzureSubscription }}
+      TestType: 'Quality'
+      AzureSubscription: '${{ parameters.AzureSubscription }}'
 
   - job: PublishTestResults
     displayName: 'Publish test and code coverage results'
