@@ -1,0 +1,22 @@
+parameters:
+  TestType:  ''
+  
+jobs:
+- job: Run{{ parameters.TestType }}Tests
+  displayName: 'Run ${{ parameters.TestType }} tests'
+  steps:
+  - task: AzurePowerShell@3
+    displayName: 'Azure PowerShell Script: Invoke-Tests'
+    inputs:
+      azureSubscription: ${{ parameters.AzureSubscription }}
+      ScriptPath: '$(System.DefaultWorkingDirectory)/Tests/Invoke-Tests.ps1'
+      ScriptArguments: '-TestType {{ parameters.TestType }} -CodeCoveragePath $(System.DefaultWorkingDirectory)\PSScripts\*.ps1'
+      azurePowerShellVersion: LatestVersion
+    continueOnError: true
+
+  - task: PublishPipelineArtifact@1
+    displayName: 'Publish test results'
+    targetPath: |
+      **/CODECOVERAGE-*.xml
+      **/TEST-*.xml
+    artifactName:  dfc-devops-tests-{{ parameters.TestType }}

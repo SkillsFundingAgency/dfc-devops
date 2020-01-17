@@ -29,7 +29,7 @@ pr:
     - master
 
 stages:
-- template: StageTemplates/test.yml
+- template: StageTemplates/RunPesterTests.yml
   parameters:
     AzureSubscription: 'SFA-CDH-Dev/Test (962cae10-2950-412a-93e3-d8ae92b17896)'
     CodeCoveragePercentage: 45

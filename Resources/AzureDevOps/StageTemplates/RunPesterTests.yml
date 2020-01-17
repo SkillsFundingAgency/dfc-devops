@@ -1,0 +1,51 @@
+parameters:
+  AzureSubscription: ''
+  CodeCoveragePercentage: 45
+
+stages:
+- stage: Test
+  jobs:
+  - template: ../JobTemplates/ExecuteTestType.yml
+    parameters:
+      TestType: Unit
+  - template: ../JobTemplates/ExecuteTestType.yml
+    parameters:
+      TestType: Acceptance
+  - template: ../JobTemplates/ExecuteTestType.yml
+    parameters:
+      TestType: Quality
+
+  - job: PublishTestResults
+    displayName: PublishTestResults
+    dependsOn:
+    - RunUnitTests
+    - RunAcceptanceTests
+    - RunQualityTests
+
+    steps:
+    - download: current
+
+    - task: CopyFiles@2
+      inputs:
+        targetFolder: $(Build.WorkingDirectory)
+        sourceFolder: $(Pipeline.Workspace)
+        contents: |
+          **/CODECOVERAGE-*.xml
+          **/Test-*.xml
+    
+    - task: PublishTestResults@2
+      displayName: 'Publish Test Results'
+      inputs:
+        testResultsFormat: NUnit
+
+    - task: PublishCodeCoverageResults@1
+      displayName: 'Publish Code Coverage'
+      inputs:
+        summaryFileLocation: '**/CODECOVERAGE-*.xml'
+
+    - task: PowerShell@2
+      displayName: 'PowerShell Script: Out-TestResults'
+      inputs:
+        targetType: filePath
+        filePath: '$(System.DefaultWorkingDirectory)/Tests/Out-TestResults.ps1'
+        arguments: '-CoveragePercent ${{ parameters.CodeCoveragePercentage }}'
