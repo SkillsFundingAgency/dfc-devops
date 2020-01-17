@@ -24,5 +24,6 @@ jobs:
 
   - task: PublishPipelineArtifact@1
     displayName: 'Publish test results'
-    targetPath: $(Build.SourcesDirectory)/testfiles
-    artifactName:  dfc-devops-tests-{{ parameters.TestType }}
+    inputs:
+      targetPath: $(Build.SourcesDirectory)/testfiles
+      artifactName:  dfc-devops-tests-{{ parameters.TestType }}
