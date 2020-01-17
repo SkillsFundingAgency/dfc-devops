@@ -15,7 +15,7 @@ jobs:
       ScriptArguments: '-TestType ${{ parameters.TestType }} -CodeCoveragePath $(System.DefaultWorkingDirectory)\PSScripts\*.ps1'
       azurePowerShellVersion: LatestVersion
 
-  - task: CopyFiles@4
+  - task: CopyFiles@2
     inputs:
       targetFolder: $(Build.SourcesDirectory)
       sourceFolder: $(Build.SourcesDirectory)/testfiles
