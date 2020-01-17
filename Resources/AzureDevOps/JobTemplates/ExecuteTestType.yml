@@ -14,16 +14,3 @@ jobs:
       azurePowerShellVersion: LatestVersion
     continueOnError: true
 
-  - task: CopyFiles@4
-    inputs:
-      targetFolder: $(Build.SourcesDirectory)
-      sourceFolder: $(Build.SourcesDirectory)/testfiles
-      contents: |
-        **/CODECOVERAGE-*.xml
-        **/Test-*.xml
-
-  - task: PublishPipelineArtifact@1
-    displayName: 'Publish test results'
-    inputs:
-      targetPath: $(Build.SourcesDirectory)/testfiles
-      artifactName:  dfc-devops-tests-{{ parameters.TestType }}
