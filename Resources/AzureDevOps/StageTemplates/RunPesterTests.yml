@@ -1,58 +1,55 @@
 parameters:
   AzureSubscription: ''
-  CodeCoveragePercentage: 45
+  CodeCoveragePercentage: 80
 
 stages:
 - stage: Test
   jobs:
-  - template: ../JobTemplates/ExecuteTestType.yml
-    parameters:
-      TestType: 'Unit'
-      AzureSubscription: '${{ parameters.AzureSubscription }}'
+    - job: RunUnitTests
+      displayName: "Run unit and acceptance tests"
+      steps:
+      - task: AzurePowerShell@3
+        displayName: 'Azure PowerShell Script: Invoke-Tests'
+        continueOnError: true
+        inputs:
+          azureSubscription: '${{ parameters.AzureSubscription }}'
+          ScriptPath: '$(System.DefaultWorkingDirectory)/Tests/Invoke-Tests.ps1'
+          ScriptArguments: '-ExcludeTag Quality -CodeCoveragePath $(System.DefaultWorkingDirectory)\PSScripts\*.ps1'
+          azurePowerShellVersion: LatestVersion
 
-  - template: ../JobTemplates/ExecuteTestType.yml
-    parameters:
-      TestType: 'Acceptance'
-      AzureSubscription: '${{ parameters.AzureSubscription }}'
+      - task: PublishTestResults@2
+        displayName: 'Publish Test Results'
+        inputs:
+          testResultsFormat: NUnit
 
-  - template: ../JobTemplates/ExecuteTestType.yml
-    parameters:
-      TestType: 'Quality'
-      AzureSubscription: '${{ parameters.AzureSubscription }}'
+      - task: PublishCodeCoverageResults@1
+        displayName: 'Publish Code Coverage'
+        inputs:
+          summaryFileLocation: '**/CODECOVERAGE-*.xml'
 
-  - job: PublishTestResults
-    displayName: 'Publish test and code coverage results'
-    dependsOn:
-    - RunUnitTests
-    - RunAcceptanceTests
-    - RunQualityTests
+      - task: PowerShell@2
+        displayName: 'PowerShell Script: Out-TestResults'
+        inputs:
+          targetType: filePath
+          filePath: '$(System.DefaultWorkingDirectory)/Tests/Out-TestResults.ps1'
+          arguments: '-CoveragePercent ${{ parameters.CodeCoveragePercentage }}'
 
-    steps:
-    - task: DownloadPipelineArtifact@2
-      inputs:
-        source: 'current'
+    - job: RunQualityTests
+      displayName: "Run code quality tests"
+      steps:
+      - job: 'RunQualityTests'
+        displayName: 'Run ${{ parameters.TestType }} tests'
+        steps:
+        - task: AzurePowerShell@3
+          displayName: 'Azure PowerShell Script: Invoke-Tests'
+          continueOnError: true
+          inputs:
+            azureSubscription: '${{ parameters.AzureSubscription }}'
+            ScriptPath: '$(System.DefaultWorkingDirectory)/Tests/Invoke-Tests.ps1'
+            ScriptArguments: '-ExcludeTag Quality -CodeCoveragePath $(System.DefaultWorkingDirectory)\PSScripts\*.ps1'
+            azurePowerShellVersion: LatestVersion
 
-    - task: CopyFiles@2
-      inputs:
-        targetFolder: $(Build.WorkingDirectory)
-        sourceFolder: $(Pipeline.Workspace)
-        contents: |
-          **/CODECOVERAGE-*.xml
-          **/Test-*.xml
-    
-    - task: PublishTestResults@2
-      displayName: 'Publish Test Results'
-      inputs:
-        testResultsFormat: NUnit
-
-    - task: PublishCodeCoverageResults@1
-      displayName: 'Publish Code Coverage'
-      inputs:
-        summaryFileLocation: '**/CODECOVERAGE-*.xml'
-
-    - task: PowerShell@2
-      displayName: 'PowerShell Script: Out-TestResults'
-      inputs:
-        targetType: filePath
-        filePath: '$(System.DefaultWorkingDirectory)/Tests/Out-TestResults.ps1'
-        arguments: '-CoveragePercent ${{ parameters.CodeCoveragePercentage }}'
+        - task: PublishTestResults@2
+          displayName: 'Publish Test Results'
+          inputs:
+            testResultsFormat: NUnit
