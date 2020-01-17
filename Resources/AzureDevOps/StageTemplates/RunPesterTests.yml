@@ -37,19 +37,16 @@ stages:
     - job: RunQualityTests
       displayName: "Run code quality tests"
       steps:
-      - job: 'RunQualityTests'
-        displayName: 'Run ${{ parameters.TestType }} tests'
-        steps:
-        - task: AzurePowerShell@3
-          displayName: 'Azure PowerShell Script: Invoke-Tests'
-          continueOnError: true
-          inputs:
-            azureSubscription: '${{ parameters.AzureSubscription }}'
-            ScriptPath: '$(System.DefaultWorkingDirectory)/Tests/Invoke-Tests.ps1'
-            ScriptArguments: '-ExcludeTag Quality -CodeCoveragePath $(System.DefaultWorkingDirectory)\PSScripts\*.ps1'
-            azurePowerShellVersion: LatestVersion
+      - task: AzurePowerShell@3
+        displayName: 'Azure PowerShell Script: Invoke-Tests'
+        continueOnError: true
+        inputs:
+          azureSubscription: '${{ parameters.AzureSubscription }}'
+          ScriptPath: '$(System.DefaultWorkingDirectory)/Tests/Invoke-Tests.ps1'
+          ScriptArguments: '-ExcludeTag Quality'
+          azurePowerShellVersion: LatestVersion
 
-        - task: PublishTestResults@2
-          displayName: 'Publish Test Results'
-          inputs:
-            testResultsFormat: NUnit
+      - task: PublishTestResults@2
+        displayName: 'Publish Test Results'
+        inputs:
+          testResultsFormat: NUnit
