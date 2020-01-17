@@ -23,8 +23,8 @@ stages:
     - task: PowerShell@2
       displayName: 'Powershell: Invoke-Tests'
       inputs:
-        ScriptPath: '$(System.DefaultWorkingDirectory)/Tests/Invoke-Tests.ps1'
-        ScriptArguments: '-TestType Quality -CodeCoveragePath $(System.DefaultWorkingDirectory)\PSScripts\*.ps1'
+        filePath: '$(System.DefaultWorkingDirectory)/Tests/Invoke-Tests.ps1'
+        arguments: '-TestType Quality -CodeCoveragePath $(System.DefaultWorkingDirectory)\PSScripts\*.ps1'
 
   - job: PublishTests
     dependsOn:
