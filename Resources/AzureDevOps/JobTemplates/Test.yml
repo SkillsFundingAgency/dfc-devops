@@ -1,10 +1,11 @@
 parameters:
+  Name: 'Test'
   AzureSubscription: ''
   CodeCoveragePercentage: 80
   ExcludeTestWithTag: 'None'
 
 jobs:
-- job: Test
+- job: ${{ parameters.Name }}
   pool:
     name: 'NCS - CI and CD'
   steps:
