@@ -14,8 +14,9 @@ resources:
 pool:
   name: 'NCS - CI and CD'
   demands:
-    - powershell
-    - AzurePowerShell
+    - PowerShell
+    - AzurePS
+    - docker
 
 trigger:
   branches:
