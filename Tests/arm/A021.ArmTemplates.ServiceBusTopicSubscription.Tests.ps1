@@ -1,6 +1,6 @@
 # common variables
 $ResourceGroupName = "dfc-test-template-rg"
-$TemplateFile = "$PSScriptRoot\..\ArmTemplates\ServiceBus\servicebus-topic-subscription.json"
+$TemplateFile = "$PSScriptRoot\..\..\ArmTemplates\ServiceBus\servicebus-topic-subscription.json"
 
 Describe "Service Bus Topic Subscription Deployment Tests" -Tag "Acceptance" {
   

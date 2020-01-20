@@ -1,6 +1,6 @@
 # common variables
 $ResourceGroupName = "dfc-test-template-rg"
-$TemplateFile = "$PSScriptRoot\..\ArmTemplates\cosmos-db.json"
+$TemplateFile = "$PSScriptRoot\..\..\ArmTemplates\cosmos-db.json"
 
 Describe "Key Vault Deployment Tests" -Tag "Acceptance" {
   

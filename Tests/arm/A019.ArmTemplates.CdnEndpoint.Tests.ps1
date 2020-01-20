@@ -1,6 +1,6 @@
 # common variables
 $ResourceGroupName = "dfc-test-template-rg"
-$TemplateFile = "$PSScriptRoot\..\ArmTemplates\CDN\cdn-endpoint.json"
+$TemplateFile = "$PSScriptRoot\..\..\ArmTemplates\CDN\cdn-endpoint.json"
 $TemplateParametersDefault = @{
     cdnProfileName = "dfc-foo-shared-cdn"
     cdnEndPointName = "dfc-foo-bar-assets"

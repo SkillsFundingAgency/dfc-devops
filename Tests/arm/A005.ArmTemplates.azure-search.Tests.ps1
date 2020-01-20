@@ -1,6 +1,6 @@
 # common variables
 $ResourceGroupName = "dfc-test-template-rg"
-$TemplateFile = "$PSScriptRoot\..\ArmTemplates\azure-search.json"
+$TemplateFile = "$PSScriptRoot\..\..\ArmTemplates\azure-search.json"
 
 Describe "Azure Search Deployment Tests" -Tag "Acceptance" {
   

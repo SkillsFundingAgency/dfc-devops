@@ -1,6 +1,6 @@
 # common variables
 $ResourceGroupName = "dfc-test-template-rg"
-$TemplateFile = "$PSScriptRoot\..\ArmTemplates\APIM\apim-product.json"
+$TemplateFile = "$PSScriptRoot\..\..\ArmTemplates\APIM\apim-product.json"
 
 Describe "Apim Service Deployment Tests" -Tag "Acceptance" {
   

@@ -1,6 +1,6 @@
 # common variables
 $ResourceGroupName = "dfc-test-template-rg"
-$TemplateFile = "$PSScriptRoot\..\ArmTemplates\redis.json"
+$TemplateFile = "$PSScriptRoot\..\..\ArmTemplates\redis.json"
 
 Describe "Redis Cache Deployment Tests" -Tag "Acceptance" {
   

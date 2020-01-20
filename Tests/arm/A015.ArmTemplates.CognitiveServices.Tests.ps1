@@ -1,6 +1,6 @@
 # common variables
 $ResourceGroupName = "dfc-test-template-rg"
-$TemplateFile = "$PSScriptRoot\..\ArmTemplates\cognitive-services.json"
+$TemplateFile = "$PSScriptRoot\..\..\ArmTemplates\cognitive-services.json"
 
 Describe "Cognitive Services account Tests" -Tag "Acceptance" {
   

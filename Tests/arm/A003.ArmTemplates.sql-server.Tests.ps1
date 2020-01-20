@@ -1,6 +1,6 @@
 # common variables
 $ResourceGroupName = "dfc-test-template-rg"
-$TemplateFile = "$PSScriptRoot\..\ArmTemplates\sql-server.json"
+$TemplateFile = "$PSScriptRoot\..\..\ArmTemplates\sql-server.json"
 $TemplateParametersDefault = @{
   sqlServerName                         = "dfc-foo-bar-sql"
   sqlServerAdminPassword                = "Not-a-real-password"

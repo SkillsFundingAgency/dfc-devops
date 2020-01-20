@@ -1,6 +1,6 @@
 # common variables
 $ResourceGroupName = "dfc-test-template-rg"
-$TemplateFile = "$PSScriptRoot\..\ArmTemplates\app-service-plan.json"
+$TemplateFile = "$PSScriptRoot\..\..\ArmTemplates\app-service-plan.json"
 
 Describe "App Service Plan Deployment Tests" -Tag "Acceptance" {
   

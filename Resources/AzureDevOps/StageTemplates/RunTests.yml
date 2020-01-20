@@ -29,7 +29,7 @@ stages:
         continueOnError: true
         inputs:
           azureSubscription: '${{ parameters.AzureSubscription }}'
-          ScriptPath: '$(System.DefaultWorkingDirectory)/Tests/Invoke-Tests.ps1'
+          ScriptPath: '$(System.DefaultWorkingDirectory)/Tests/Invoke-QualityTests.ps1'
           ScriptArguments: '-TestType Quality'
           azurePowerShellVersion: LatestVersion
 
@@ -66,7 +66,7 @@ stages:
           arguments: '-CoveragePercent ${{ parameters.CodeCoveragePercentage }}'
 
     - job: RunPSCoreUnitTests
-      displayName: "Run Powershell 5.1 unit tests"
+      displayName: "Run Powershell core unit tests"
       steps:
       - task: PowerShell@2
         displayName: 'Powershell: Run powershell 5.1 unit tests'

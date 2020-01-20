@@ -1,6 +1,6 @@
 # common variables
 $ResourceGroupName = "dfc-test-template-rg"
-$TemplateFile = "$PSScriptRoot\..\ArmTemplates\certificate.json"
+$TemplateFile = "$PSScriptRoot\..\..\ArmTemplates\certificate.json"
 
 Describe "Certificate Deployment Tests" -Tag "Acceptance" {
   
