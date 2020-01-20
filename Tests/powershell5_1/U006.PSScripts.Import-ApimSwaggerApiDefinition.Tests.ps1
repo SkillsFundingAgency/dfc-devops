@@ -29,37 +29,6 @@ Describe "Import-ApimSwaggerApiDefinition unit tests" -Tag "Unit" {
         Assert-MockCalled Import-AzureRmApiManagementApi -Exactly 1 -Scope It
 
     }
-
-    # Unable to test Az cmdlets alongside AzureRm.  After ZDT deployments are implemented across all projects this script will no longer require the AzureRm code blocks
-    It "Should run with AZ cmdlets if a URL is supplied and UseAzModule is set to `$true but not create a file" -Skip {
-
-        Mock Invoke-RestMethod
-        Mock Set-Content
-        Mock Get-AzApiManagementApi { [PsCustomObject]
-            @{
-                ApiId = "bar"
-                Path = "bar"
-            }
-        }
-        Mock Import-AzApiManagementApi
-
-        $CmdletParameters = @{
-           ApimResourceGroup = "dfc-foo-bar-rg"
-           InstanceName = "dfc-foo-bar-apim"
-           ApiName = "bar"
-           SwaggerSpecificationUrl = "https://dfc-foo-bar-fa.azurewebsites.net/api/bar/bar-api-definition"
-           UseAzModule = $true
-       }
-
-        .\Import-ApimSwaggerApiDefinition @CmdletParameters
-
-        Assert-MockCalled Invoke-RestMethod -Exactly 0 -Scope It
-        Assert-MockCalled Set-Content -Exactly 0 -Scope It
-        Assert-MockCalled Get-AzApiManagementApi -Exactly 1 -Scope It
-        Assert-MockCalled Import-AzApiManagementApi -Exactly 1 -Scope It
-
-    }
-
 }
 
 Push-Location -Path $PSScriptRoot
