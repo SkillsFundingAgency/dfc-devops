@@ -30,6 +30,7 @@ The full path to the swagger defintion
 Import-ApimSwaggerApiDefinition -ApimResourceGroup dfc-foo-bar-rg -InstanceName dfc-foo-bar-apim -ApiName bar -SwaggerSpecificationUrl "https://dfc-foo-bar-fa.azurewebsites.net/api/bar/api-definition" -SwaggerSpecificationFile -OutputFilePath $(System.DefaultWorkingDirectory)/SwaggerFile -Verbose
 
 #>
+
 [CmdletBinding()]
 Param(
     [Parameter(Mandatory=$true)]
@@ -47,6 +48,8 @@ Param(
 	[Parameter(Mandatory=$false, ParameterSetName="File")]
     [String]$OutputFilePath
 )
+
+Import-Module Az.ApiManagement
 
 if ($PSCmdlet.ParameterSetName -eq "File") {
 

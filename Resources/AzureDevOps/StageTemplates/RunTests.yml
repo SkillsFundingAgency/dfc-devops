@@ -62,7 +62,7 @@ stages:
         displayName: 'PowerShell Script: Out-TestResults'
         inputs:
           targetType: filePath
-          filePath: '$(System.DefaultWorkingDirectory)/Tests/Execute-CodeCoverageCalculations.ps1'
+          filePath: '$(System.DefaultWorkingDirectory)/Tests/Out-TestAndCodeCoverageResults.ps1'
           arguments: '-CoveragePercent ${{ parameters.CodeCoveragePercentage }}'
 
     - job: RunPSCoreUnitTests
@@ -91,5 +91,6 @@ stages:
         displayName: 'PowerShell Script: Out-TestResults'
         inputs:
           targetType: filePath
-          filePath: '$(System.DefaultWorkingDirectory)/Tests/Execute-CodeCoverageCalculations.ps1'
+          filePath: '$(System.DefaultWorkingDirectory)/Tests/Out-TestAndCodeCoverageResults.ps1'
           arguments: '-CoveragePercent ${{ parameters.CodeCoveragePercentage }}'
+          pwsh: true
