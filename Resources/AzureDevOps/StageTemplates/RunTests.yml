@@ -1,0 +1,94 @@
+parameters:
+  AzureSubscription: ''
+  CodeCoveragePercentage: 80
+
+stages:
+- stage: Test
+  jobs:
+    - job: RunAcceptanceTests
+      displayName: "Run acceptance tests on ARM templates"
+      steps:
+      - task: AzurePowerShell@3
+        displayName: 'Azure PowerShell Script: Invoke-AcceptanceTests'
+        continueOnError: true
+        inputs:
+          azureSubscription: '${{ parameters.AzureSubscription }}'
+          ScriptPath: '$(System.DefaultWorkingDirectory)/Tests/Invoke-AcceptanceTests.ps1'
+          azurePowerShellVersion: LatestVersion
+
+      - task: PublishTestResults@2
+        displayName: 'Publish Test Results'
+        inputs:
+          testResultsFormat: NUnit
+
+    - job: RunQualityTests
+      displayName: "Run code quality tests"
+      steps:
+      - task: AzurePowerShell@3
+        displayName: 'Azure PowerShell Script: Invoke-Tests'
+        continueOnError: true
+        inputs:
+          azureSubscription: '${{ parameters.AzureSubscription }}'
+          ScriptPath: '$(System.DefaultWorkingDirectory)/Tests/Invoke-Tests.ps1'
+          ScriptArguments: '-TestType Quality'
+          azurePowerShellVersion: LatestVersion
+
+      - task: PublishTestResults@2
+        displayName: 'Publish Test Results'
+        inputs:
+          testResultsFormat: NUnit
+
+    - job: RunPS5UnitTests
+      displayName: "Run Powershell 5.1 unit tests"
+      steps:
+      - task: PowerShell@2
+        displayName: 'Powershell: Run powershell 5.1 unit tests'
+        continueOnError: true
+        inputs:
+          targetType: filePath
+          filePath:  '$(System.DefaultWorkingDirectory)/Tests/Invoke-UnitTests.ps1'
+
+      - task: PublishTestResults@2
+        displayName: 'Publish Test Results'
+        inputs:
+          testResultsFormat: NUnit
+
+      - task: PublishCodeCoverageResults@1
+        displayName: 'Publish Code Coverage'
+        inputs:
+          summaryFileLocation: '**/CODECOVERAGE-*.xml'
+
+      - task: PowerShell@2
+        displayName: 'PowerShell Script: Out-TestResults'
+        inputs:
+          targetType: filePath
+          filePath: '$(System.DefaultWorkingDirectory)/Tests/Execute-CodeCoverageCalculations.ps1'
+          arguments: '-CoveragePercent ${{ parameters.CodeCoveragePercentage }}'
+
+    - job: RunPSCoreUnitTests
+      displayName: "Run Powershell 5.1 unit tests"
+      steps:
+      - task: PowerShell@2
+        displayName: 'Powershell: Run powershell 5.1 unit tests'
+        continueOnError: true
+        inputs:
+          targetType: filePath
+          filePath:  '$(System.DefaultWorkingDirectory)/Tests/Invoke-UnitTests.ps1'
+          pwsh: true
+
+      - task: PublishTestResults@2
+        displayName: 'Publish Test Results'
+        inputs:
+          testResultsFormat: NUnit
+
+      - task: PublishCodeCoverageResults@1
+        displayName: 'Publish Code Coverage'
+        inputs:
+          summaryFileLocation: '**/CODECOVERAGE-*.xml'
+
+      - task: PowerShell@2
+        displayName: 'PowerShell Script: Out-TestResults'
+        inputs:
+          targetType: filePath
+          filePath: '$(System.DefaultWorkingDirectory)/Tests/Execute-CodeCoverageCalculations.ps1'
+          arguments: '-CoveragePercent ${{ parameters.CodeCoveragePercentage }}'

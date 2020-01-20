@@ -1,3 +1,9 @@
+###########################################################################################
+##                                    WARNING                                            ##
+## This script is for backwards compatibility.                                           ##
+## Please make any changes to the version of this script in the PSCoreScripts folder     ##
+###########################################################################################
+
 <#
 .SYNOPSIS
 Removes one (or more) apis from an API management instance
