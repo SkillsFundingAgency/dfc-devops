@@ -24,13 +24,13 @@ stages:
     - job: RunQualityTests
       displayName: "Run code quality tests"
       steps:
-      - task: AzurePowerShell@3
+      - task: Powershell@2
         displayName: 'PowerShell Script: Invoke-QualityTests'
         continueOnError: true
         inputs:
-          azureSubscription: '${{ parameters.AzureSubscription }}'
-          ScriptPath: '$(System.DefaultWorkingDirectory)/Tests/Invoke-QualityTests.ps1'
-          azurePowerShellVersion: LatestVersion
+          targetType: filePath
+          filePath: '$(System.DefaultWorkingDirectory)/Tests/Invoke-QualityTests.ps1'
+          pwsh: true
 
       - task: PublishTestResults@2
         condition: always()
