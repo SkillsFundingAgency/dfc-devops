@@ -35,27 +35,14 @@ $SiteAddressResolved = $false
 While (!$SiteAddressResolved) {
 
     Write-Verbose "Resolving $SiteAddress with PSVerion: $($PSVersionTable.PSVersion.Major)"
-    if ($PSVersionTable.PSVersion.Major -ge 6) {
-
-        $SiteAddressResolved = Test-Connection -TargetName $SiteAddress -ResolveDestination -TCPPort 80 -Quiet
-
-    }
-    else {
-
-        $SiteAddressResolved = Resolve-DnsName -Name $SiteAddress -ErrorAction SilentlyContinue
-
-    }
+    $SiteAddressResolved = Test-Connection -TargetName $SiteAddress -ResolveDestination -TCPPort 80 -Quiet
 
     if ($SiteAddressResolved) {
-
         Write-Verbose "Resovled address: $SiteAddress"
-
     }
     else {
 
         Write-Verbose "Address not resovled: $SiteAddress, waiting 30 seconds."
         Start-Sleep -Seconds 30
-
     }
-
 }
