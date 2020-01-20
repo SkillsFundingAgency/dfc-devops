@@ -24,24 +24,8 @@ stages:
     - job: RunQualityTests
       displayName: "Run code quality tests"
       steps:
-      - task: AzurePowerShell@3
-        displayName: 'Azure PowerShell Script: Invoke-Tests'
-        continueOnError: true
-        inputs:
-          azureSubscription: '${{ parameters.AzureSubscription }}'
-          ScriptPath: '$(System.DefaultWorkingDirectory)/Tests/Invoke-QualityTests.ps1'
-          azurePowerShellVersion: LatestVersion
-
-      - task: PublishTestResults@2
-        displayName: 'Publish Test Results'
-        inputs:
-          testResultsFormat: NUnit
-
-    - job: RunPS5UnitTests
-      displayName: "Run Powershell 5.1 unit tests"
-      steps:
-      - task: PowerShell@2
-        displayName: 'Powershell: Run powershell 5.1 unit tests'
+      - task: Powershell@2
+        displayName: 'PowerShell Script: Invoke-QualityTests'
         continueOnError: true
         inputs:
           targetType: filePath
@@ -52,10 +36,27 @@ stages:
         inputs:
           testResultsFormat: NUnit
 
+    - job: RunPS5UnitTests
+      displayName: "Run Powershell 5.1 unit tests"
+      steps:
+      - task: AzurePowerShell@3
+        displayName: 'Powershell: Run powershell 5.1 unit tests'
+        continueOnError: true
+        inputs:
+          azureSubscription: '${{ parameters.AzureSubscription }}'
+          ScriptPath: '$(System.DefaultWorkingDirectory)/Tests/Invoke-UnitTests.ps1'
+          azurePowerShellVersion: LatestVersion
+
+      - task: PublishTestResults@2
+        displayName: 'Publish Test Results'
+        inputs:
+          testResultsFormat: NUnit
+          testResultsFiles: '**/TEST-powershell.xml'
+
       - task: PublishCodeCoverageResults@1
         displayName: 'Publish Code Coverage'
         inputs:
-          summaryFileLocation: '**/CODECOVERAGE-*.xml'
+          summaryFileLocation: '**/CODECOVERAGE-powershell.xml'
 
       - task: PowerShell@2
         displayName: 'PowerShell Script: Out-TestResults'
@@ -68,7 +69,7 @@ stages:
       displayName: "Run Powershell core unit tests"
       steps:
       - task: PowerShell@2
-        displayName: 'Powershell: Run powershell 5.1 unit tests'
+        displayName: 'pwsh: Run powershellcore unit tests'
         continueOnError: true
         inputs:
           targetType: filePath
@@ -79,11 +80,12 @@ stages:
         displayName: 'Publish Test Results'
         inputs:
           testResultsFormat: NUnit
+          testResultsFiles: '**/TEST-pwsh.xml'
 
       - task: PublishCodeCoverageResults@1
         displayName: 'Publish Code Coverage'
         inputs:
-          summaryFileLocation: '**/CODECOVERAGE-*.xml'
+          summaryFileLocation: '**/CODECOVERAGE-pwsh.xml'
 
       - task: PowerShell@2
         displayName: 'PowerShell Script: Out-TestResults'
