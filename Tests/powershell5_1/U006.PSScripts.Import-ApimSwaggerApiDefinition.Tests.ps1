@@ -1,4 +1,4 @@
-Push-Location -Path $PSScriptRoot\..\PSScripts\
+Push-Location -Path $PSScriptRoot\..\..\PSScripts\
 
 Describe "Import-ApimSwaggerApiDefinition unit tests" -Tag "Unit" {
 
