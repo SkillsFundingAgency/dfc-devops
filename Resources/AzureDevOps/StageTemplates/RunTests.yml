@@ -30,7 +30,6 @@ stages:
         inputs:
           azureSubscription: '${{ parameters.AzureSubscription }}'
           ScriptPath: '$(System.DefaultWorkingDirectory)/Tests/Invoke-QualityTests.ps1'
-          ScriptArguments: '-TestType Quality'
           azurePowerShellVersion: LatestVersion
 
       - task: PublishTestResults@2
