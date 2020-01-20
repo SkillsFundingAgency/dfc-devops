@@ -4,6 +4,7 @@ Describe "Import-ApimSwaggerApiDefinition unit tests" -Tag "Unit" {
 
     It "Should run with AzureRM cmdlets if a URL is supplied but not create a file" {
 
+        Mock New-AzureRmApiManagementContext -MockWith { return @{} }
         Mock Invoke-RestMethod
         Mock Set-Content
         Mock Get-AzureRmApiManagementApi { [PsCustomObject]
