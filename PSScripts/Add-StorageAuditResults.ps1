@@ -44,17 +44,15 @@ class CrossEnvironmentStorageAccountAudit {
 
 if ($PSBoundParameters.ContainsKey('AppendToReport')) {
 
-    ##TO DO validate that $AppendToReport is of type CrossEnvironmentStorageAccountAudit[]
     Write-Verbose "Appending results to existing audit"
-    ##TO DO fix or remove this loop.  Looping through the $AppendToReport object appears to change it's nature.  With this loop enabled exception 'Exception setting "StorageAccounts": "Cannot convert the "StorageAccountAudit" value of type "StorageAccountAudit" to type "StorageAccountAudit"."' is thrown at line 144
-    # foreach ($CrossEnvironmentStorageAccountAudit in $AppendToReport) {
-    #     if ($CrossEnvironmentStorageAccountAudit.GetType().ToString() -ne "CrossEnvironmentStorageAccountAudit") {
+    foreach ($CrossEnvironmentStorageAccountAudit in $AppendToReport) {
+        if ($CrossEnvironmentStorageAccountAudit.GetType().ToString() -ne "CrossEnvironmentStorageAccountAudit") {
 
-    #         throw "Error validating input from AppendToReport parameter, a member of array is not ofo type [CrossEnvironmentStorageAccountAudit]`n$_)"
+            throw "Error validating input from AppendToReport parameter, a member of array is not ofo type [CrossEnvironmentStorageAccountAudit]`n$_)"
 
-    #     }
-    # }
-    CrossEnvironmentStorageAccountAudit[]$StorageAccountsAuditResults = $AppendToReport
+        }
+    }
+    $StorageAccountsAuditResults = $AppendToReport
 
 }
 else {
@@ -159,7 +157,7 @@ foreach ($StorageAccount in $StorageAccounts) {
     $StorageAccountAuditResults.TablesCount = $Tables.Count
     Write-Verbose "$($StorageAccount.StorageAccountName) contains $($Tables.Count) tables"
     
-    Write-Verbose "CrossEnvironmentStorageAccountAudit.StorageAccounts: $($CrossEnvironmentStorageAccountAudit.StorageAccounts.GetType().ToString())"
+    #Write-Verbose "CrossEnvironmentStorageAccountAudit.StorageAccounts: $($CrossEnvironmentStorageAccountAudit.StorageAccounts.GetType().ToString())"
     Write-Verbose "StorageAccountAuditResults: $($StorageAccountAuditResults.GetType().ToString())"
     $CrossEnvironmentStorageAccountAudit.StorageAccounts += $StorageAccountAuditResults
 
