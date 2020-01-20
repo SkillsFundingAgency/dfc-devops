@@ -37,8 +37,6 @@ param(
     [String]$ApimLoggerName
 )
 
-Import-Module Az.ApiManagement
-
 $Context = New-AzApiManagementContext -ResourceGroupName $ApimResourceGroup -ServiceName $InstanceName
 
 Write-Verbose "Adding api $ApiId to product $ApiProductId"

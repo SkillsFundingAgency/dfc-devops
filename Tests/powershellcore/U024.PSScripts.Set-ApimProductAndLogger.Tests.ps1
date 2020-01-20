@@ -1,7 +1,5 @@
 Push-Location -Path $PSScriptRoot\..\..\PSCoreScripts\
 
-Import-Module Az.ApiManagement
-
 Describe "Set-ApimProductAndLogger unit tests" -Tag "Unit" {
     Mock New-AzApiManagementContext
     Mock Add-AzApiManagementApiToProduct

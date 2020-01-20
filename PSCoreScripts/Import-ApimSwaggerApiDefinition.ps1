@@ -49,8 +49,6 @@ Param(
     [String]$OutputFilePath
 )
 
-Import-Module Az.ApiManagement
-
 if ($PSCmdlet.ParameterSetName -eq "File") {
 
     $Swagger = Invoke-RestMethod -Method GET -Uri $SwaggerSpecificationUrl -UseBasicParsing

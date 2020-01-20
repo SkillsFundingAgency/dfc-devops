@@ -1,8 +1,6 @@
 
 Push-Location -Path $PSScriptRoot\..\..\PSCoreScripts\
 
-Import-Module Az.ApiManagement
-
 Describe "Import-ApimSwaggerApiDefinition unit tests" -Tag "Unit" {
 
     It "Should not create a file"  {
