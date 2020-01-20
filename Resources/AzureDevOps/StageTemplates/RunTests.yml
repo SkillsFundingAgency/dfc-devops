@@ -65,7 +65,7 @@ stages:
         inputs:
           targetType: filePath
           filePath: '$(System.DefaultWorkingDirectory)/Tests/Out-TestAndCodeCoverageResults.ps1'
-          arguments: '-CoveragePercent 25'
+          arguments: '-CoveragePercent ${{ parameters.CodeCoveragePercentage }}'
 
     - job: RunPSCoreUnitTests
       displayName: "Run Powershell core unit tests"
@@ -94,5 +94,5 @@ stages:
         inputs:
           targetType: filePath
           filePath: '$(System.DefaultWorkingDirectory)/Tests/Out-TestAndCodeCoverageResults.ps1'
-          arguments: '-CoveragePercent ${{ parameters.CodeCoveragePercentage }}'
+          arguments: '-CoveragePercent 25'
           pwsh: true
