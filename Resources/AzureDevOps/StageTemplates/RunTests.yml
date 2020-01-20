@@ -32,6 +32,7 @@ stages:
           filePath:  '$(System.DefaultWorkingDirectory)/Tests/Invoke-UnitTests.ps1'
 
       - task: PublishTestResults@2
+        condition: always()
         displayName: 'Publish Test Results'
         inputs:
           testResultsFormat: NUnit
