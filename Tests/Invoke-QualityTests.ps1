@@ -30,5 +30,4 @@ $Result = Invoke-Pester @TestParameters
 # report failures
 if ($Result.FailedCount -ne 0) { 
     Write-Error "Pester returned $($result.FailedCount) errors"
-    throw "Pester returned $($result.FailedCount) errors"
 }
