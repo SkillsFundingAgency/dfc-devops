@@ -20,6 +20,7 @@ stages:
         displayName: 'Publish Test Results'
         inputs:
           testResultsFormat: NUnit
+          testResultsFiles: '**/TEST-Acceptance.xml'
           mergeTestResults: true
 
     - job: RunQualityTests
@@ -38,6 +39,7 @@ stages:
         displayName: 'Publish Test Results'
         inputs:
           testResultsFormat: NUnit
+          testResultsFiles: '**/TEST-Quality.xml'
           mergeTestResults: true
 
     - job: RunPS5UnitTests
