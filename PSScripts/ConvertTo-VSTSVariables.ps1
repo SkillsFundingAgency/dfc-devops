@@ -1,3 +1,9 @@
+###########################################################################################
+##                                    WARNING                                            ##
+## This script is for backwards compatibility.                                           ##
+## Please make any changes to the version of this script in the PSCoreScripts folder     ##
+###########################################################################################
+
 <#
 .SYNOPSIS
 Takes ARM template output and turns them into VSTS variables

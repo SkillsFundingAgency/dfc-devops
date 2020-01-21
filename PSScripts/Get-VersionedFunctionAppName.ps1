@@ -1,3 +1,9 @@
+###########################################################################################
+##                                    WARNING                                            ##
+## This script is for backwards compatibility.                                           ##
+## Please make any changes to the version of this script in the PSCoreScripts folder     ##
+###########################################################################################
+
 <#
     .SYNOPSIS
     Get a function app name and version from it's source branch
