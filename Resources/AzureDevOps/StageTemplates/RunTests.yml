@@ -8,6 +8,14 @@ stages:
     - job: RunAcceptanceTests
       displayName: "Run acceptance tests on ARM templates"
       steps:
+      - task: DeleteFiles@1
+        displayName: 'Remove old test and code coverage files'
+        inputs:
+          SourceFolder: '$(System.DefaultWorkingDirectory)/Tests'
+          Contents: |
+            **/TEST-*.xml
+            **/CODECOVERAGE-*.xml
+
       - task: AzurePowerShell@3
         displayName: 'Azure PowerShell Script: Invoke-AcceptanceTests'
         continueOnError: true
@@ -26,6 +34,14 @@ stages:
     - job: RunQualityTests
       displayName: "Run code quality tests"
       steps:
+      - task: DeleteFiles@1
+        displayName: 'Remove old test and code coverage files'
+        inputs:
+          SourceFolder: '$(System.DefaultWorkingDirectory)/Tests'
+          Contents: |
+            **/TEST-*.xml
+            **/CODECOVERAGE-*.xml
+
       - task: Powershell@2
         displayName: 'PowerShell Script: Invoke-QualityTests'
         continueOnError: true
@@ -45,6 +61,14 @@ stages:
     - job: RunPS5UnitTests
       displayName: "Run Powershell 5.1 unit tests"
       steps:
+      - task: DeleteFiles@1
+        displayName: 'Remove old test and code coverage files'
+        inputs:
+          SourceFolder: '$(System.DefaultWorkingDirectory)/Tests'
+          Contents: |
+            **/TEST-*.xml
+            **/CODECOVERAGE-*.xml
+
       - task: AzurePowerShell@3
         displayName: 'Powershell: Run powershell 5.1 unit tests'
         continueOnError: true
@@ -75,6 +99,14 @@ stages:
     - job: RunPSCoreUnitTests
       displayName: "Run Powershell core unit tests"
       steps:
+      - task: DeleteFiles@1
+        displayName: 'Remove old test and code coverage files'
+        inputs:
+          SourceFolder: '$(System.DefaultWorkingDirectory)/Tests'
+          Contents: |
+            **/TEST-*.xml
+            **/CODECOVERAGE-*.xml
+
       - task: PowerShell@2
         displayName: 'pwsh: Run powershellcore unit tests'
         continueOnError: true
