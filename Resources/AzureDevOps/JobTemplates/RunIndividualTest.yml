@@ -33,7 +33,7 @@ jobs:
       inputs:
         targetType: filePath
         filePath: '$(System.DefaultWorkingDirectory)/Tests/Invoke-${{ parameters.TestType }}Tests.ps1'
-        - ${{ if(parameters.UsePowershellCore) }}:
+        ${{ if(parameters.UsePowershellCore) }}:
           pwsh: true
 
   - task: PublishTestResults@2
@@ -47,9 +47,9 @@ jobs:
     - task: PublishCodeCoverageResults@1
       displayName: 'Publish Code Coverage'
       inputs:
-        - ${{ if(parameters.UsePowershellCore)}}:
+        ${{ if(parameters.UsePowershellCore)}}:
           summaryFileLocation: '**/CODECOVERAGE-powershellcore.xml'
-        - ${{ if(not(parameters.UsePowershellCore))}}:
+        ${{ if(not(parameters.UsePowershellCore))}}:
           summaryFileLocation: '**/CODECOVERAGE-powershell.xml'
 
     - task: PowerShell@2
