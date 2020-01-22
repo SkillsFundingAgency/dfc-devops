@@ -7,15 +7,15 @@ stages:
 - stage: Test
   jobs:
     - template: ../JobTemplates/RunIndividualTest.yml
-      parameters:      
-        RequiresAzurePowershell:  true
+      parameters:
+        RequiresAzurePowershell: true
         AzureSubscription: '${{ parameters.AzureSubscription }}'
         TestName: 'RunAcceptanceTests'
         TestType: 'Acceptance'
         ResultsFileSuffix: 'Acceptance'
 
     - template: ../JobTemplates/RunIndividualTest.yml
-      parameters:        
+      parameters:
         RequiresPowershellCore: true
         TestName: 'RunQualityTests'
         TestType: 'Quality'
@@ -23,7 +23,7 @@ stages:
 
     - template: ../JobTemplates/RunIndividualTest.yml
       parameters:
-        RequiresAzurePowershell:  true
+        RequiresAzurePowershell: true
         AzureSubscription: '${{ parameters.AzureSubscription }}'
         TestName: 'RunPowershell5UnitTests'
         TestType: 'Unit'

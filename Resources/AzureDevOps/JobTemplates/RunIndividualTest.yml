@@ -1,5 +1,5 @@
 parameters:
-  RequiresAzurePowershell:  false
+  RequiresAzurePowershell: false
   RequiresPowershellCore: false
   AzureSubscription: ''  
   TestType: ''  # One of 'Acceptance', 'Quality', "Unit"
@@ -18,7 +18,7 @@ jobs:
         **/TEST-${{ parameters.ResultsFileSuffix }}.xml
         **/CODECOVERAGE-${{ parameters.ResultsFileSuffix }}.xml
 
-  - ${{ if parameters.RequiresAzurePowershell }}:
+  - ${{ if eq(parameters.RequiresAzurePowershell, true) }}:
     - task: AzurePowerShell@3
       displayName: 'AzurePowershell: Invoke-${{ parameters.TestType }}Tests.ps1'
       continueOnError: true
@@ -27,7 +27,7 @@ jobs:
         ScriptPath: '$(System.DefaultWorkingDirectory)/Tests/Invoke-${{ parameters.TestType }}Tests.ps1'
         azurePowerShellVersion: LatestVersion
 
-  - ${{ if not(parameters.RequiresAzurePowershell) }}:
+  - ${{ if eq(parameters.RequiresAzurePowershell, false) }}:
     - task: Powershell@2
       displayName: 'PowerShell Script: Invoke-${{ parameters.TestType }}Tests.ps1'
       continueOnError: true
