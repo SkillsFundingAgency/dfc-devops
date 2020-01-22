@@ -33,7 +33,8 @@ stages:
 - template: StageTemplates/RunTests.yml
   parameters:
     AzureSubscription: 'SFA-CDH-Dev/Test (962cae10-2950-412a-93e3-d8ae92b17896)'
-    CodeCoveragePercentage: 45
+    Powershell5CodeCoveragePercentage: 45
+    PowershellCoreCodeCoveragePercentage: 25
 
 - stage: BuildAndPublishContainers
   condition: or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq(variables['Build.Reason'], 'PullRequest'))

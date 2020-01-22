@@ -1,135 +1,39 @@
 parameters:
   AzureSubscription: ''
-  CodeCoveragePercentage: 80
+  Powershell5CodeCoveragePercentage: 80
+  PowershellCoreCodeCoveragePercentage: 80
 
 stages:
 - stage: Test
   jobs:
-    - job: RunAcceptanceTests
-      displayName: "Run acceptance tests on ARM templates"
-      steps:
-      - task: DeleteFiles@1
-        displayName: 'Remove old test and code coverage files'
-        inputs:
-          SourceFolder: '$(System.DefaultWorkingDirectory)/Tests'
-          Contents: |
-            **/TEST-*.xml
-            **/CODECOVERAGE-*.xml
+    - template: ../JobTemplates/RunIndividualTest.yml
+      parameters:
+        RequiresAzurePowershell: true
+        AzureSubscription: '${{ parameters.AzureSubscription }}'
+        TestName: 'RunAcceptanceTests'
+        TestType: 'Acceptance'
+        ResultsFileSuffix: 'Acceptance'
 
-      - task: AzurePowerShell@3
-        displayName: 'Azure PowerShell Script: Invoke-AcceptanceTests'
-        continueOnError: true
-        inputs:
-          azureSubscription: '${{ parameters.AzureSubscription }}'
-          ScriptPath: '$(System.DefaultWorkingDirectory)/Tests/Invoke-AcceptanceTests.ps1'
-          azurePowerShellVersion: LatestVersion
+    - template: ../JobTemplates/RunIndividualTest.yml
+      parameters:
+        RequiresPowershellCore: true
+        TestName: 'RunQualityTests'
+        TestType: 'Quality'
+        ResultsFileSuffix: 'Quality'
 
-      - task: PublishTestResults@2
-        displayName: 'Publish Test Results'
-        inputs:
-          testResultsFormat: NUnit
-          testResultsFiles: '**/TEST-Acceptance.xml'
-          mergeTestResults: true
+    - template: ../JobTemplates/RunIndividualTest.yml
+      parameters:
+        RequiresAzurePowershell: true
+        AzureSubscription: '${{ parameters.AzureSubscription }}'
+        TestName: 'RunPowershell5UnitTests'
+        TestType: 'Unit'
+        ResultsFileSuffix: 'powershell'
+        CodeCoveragePercentage: ${{ parameters.Powershell5CodeCoveragePercentage }}
 
-    - job: RunQualityTests
-      displayName: "Run code quality tests"
-      steps:
-      - task: DeleteFiles@1
-        displayName: 'Remove old test and code coverage files'
-        inputs:
-          SourceFolder: '$(System.DefaultWorkingDirectory)/Tests'
-          Contents: |
-            **/TEST-*.xml
-            **/CODECOVERAGE-*.xml
-
-      - task: Powershell@2
-        displayName: 'PowerShell Script: Invoke-QualityTests'
-        continueOnError: true
-        inputs:
-          targetType: filePath
-          filePath: '$(System.DefaultWorkingDirectory)/Tests/Invoke-QualityTests.ps1'
-          pwsh: true
-
-      - task: PublishTestResults@2
-        displayName: 'Publish Test Results'
-        inputs:
-          testResultsFormat: NUnit
-          testResultsFiles: '**/TEST-Quality.xml'
-          mergeTestResults: true
-
-    - job: RunPS5UnitTests
-      displayName: "Run Powershell 5.1 unit tests"
-      steps:
-      - task: DeleteFiles@1
-        displayName: 'Remove old test and code coverage files'
-        inputs:
-          SourceFolder: '$(System.DefaultWorkingDirectory)/Tests'
-          Contents: |
-            **/TEST-*.xml
-            **/CODECOVERAGE-*.xml
-
-      - task: AzurePowerShell@3
-        displayName: 'Powershell: Run powershell 5.1 unit tests'
-        continueOnError: true
-        inputs:
-          azureSubscription: '${{ parameters.AzureSubscription }}'
-          ScriptPath: '$(System.DefaultWorkingDirectory)/Tests/Invoke-UnitTests.ps1'
-          azurePowerShellVersion: LatestVersion
-
-      - task: PublishTestResults@2
-        displayName: 'Publish Test Results'
-        inputs:
-          testResultsFormat: NUnit
-          testResultsFiles: '**/TEST-powershell.xml'
-          mergeTestResults: true
-
-      - task: PublishCodeCoverageResults@1
-        displayName: 'Publish Code Coverage'
-        inputs:
-          summaryFileLocation: '**/CODECOVERAGE-powershell.xml'
-
-      - task: PowerShell@2
-        displayName: 'PowerShell Script: Out-TestResults'
-        inputs:
-          targetType: filePath
-          filePath: '$(System.DefaultWorkingDirectory)/Tests/Out-TestAndCodeCoverageResults.ps1'
-          arguments: '-CoveragePercent ${{ parameters.CodeCoveragePercentage }}'
-
-    - job: RunPSCoreUnitTests
-      displayName: "Run Powershell core unit tests"
-      steps:
-      - task: DeleteFiles@1
-        displayName: 'Remove old test and code coverage files'
-        inputs:
-          SourceFolder: '$(System.DefaultWorkingDirectory)/Tests'
-          Contents: |
-            **/TEST-*.xml
-            **/CODECOVERAGE-*.xml
-
-      - task: PowerShell@2
-        displayName: 'pwsh: Run powershellcore unit tests'
-        continueOnError: true
-        inputs:
-          targetType: filePath
-          filePath:  '$(System.DefaultWorkingDirectory)/Tests/Invoke-UnitTests.ps1'
-          pwsh: true
-
-      - task: PublishTestResults@2
-        displayName: 'Publish Test Results'
-        inputs:
-          testResultsFormat: NUnit
-          testResultsFiles: '**/TEST-pwsh.xml'
-          mergeTestResults: true
-
-      - task: PublishCodeCoverageResults@1
-        displayName: 'Publish Code Coverage'
-        inputs:
-          summaryFileLocation: '**/CODECOVERAGE-pwsh.xml'
-
-      - task: PowerShell@2
-        displayName: 'PowerShell Script: Out-TestResults'
-        inputs:
-          targetType: filePath
-          filePath: '$(System.DefaultWorkingDirectory)/Tests/Out-TestAndCodeCoverageResults.ps1'
-          arguments: '-CoveragePercent 25'
-          pwsh: true
+    - template: ../JobTemplates/RunIndividualTest.yml
+      parameters:
+        RequiresPowershellCore: true
+        TestName: 'RunPowershellCoreUnitTests'
+        TestType: 'Unit'
+        ResultsFileSuffix: 'pwsh'
+        CodeCoveragePercentage: ${{ parameters.PowershellCoreCodeCoveragePercentage }}
