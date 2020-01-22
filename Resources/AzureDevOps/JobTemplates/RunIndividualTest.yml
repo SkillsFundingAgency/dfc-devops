@@ -1,12 +1,15 @@
 parameters:
   UseAzurePowershell:  false
   UsePowershellCore: false
-  AzureSubscription: ''  
+  AzureSubscription: ''
+  TestName: ''
   TestType: ''  # One of 'Acceptance', 'Quality', "Unit"
+  CoverageResultsFile: 'CODECOVERAGE-${{ parameters.TestType }}.xml'
+  TestResultsFile: 'TEST-${{ parameters.TestType }}.xml'
   CodeCoveragePercentage: 80
 
 jobs:
-- job: Run${{ parameters.TestType }}Tests
+- job: ${{ parameters.TestName }}
   displayName: 'Run ${{ parameters.TestType }} tests'
   steps:
   - task: DeleteFiles@1
@@ -14,43 +17,41 @@ jobs:
     inputs:
       SourceFolder: '$(System.DefaultWorkingDirectory)/Tests'
       Contents: |
-        **/TEST-${{ parameters.TestType }}.xml
-        **/CODECOVERAGE-${{ parameters.TestType }}.xml
+        **/${{ parameters.TestResultsFile }}
+        **/${{ parameters.CoverageResultsFile }}
 
   - ${{ if parameters.UseAzurePowershell }}:
     - task: AzurePowerShell@3
-      displayName: 'AzurePowershell:  Run ${{ parameters.TestType }} tests'
+      displayName: 'AzurePowershell: Invoke-${{ parametrers.TestType }}Tests.ps1'
       continueOnError: true
       inputs:
         azureSubscription: '${{ parameters.AzureSubscription }}'
-        ScriptPath: '$(System.DefaultWorkingDirectory)/Tests/Invoke-${{ parameters.TestType }}Tests.ps1'
+        ScriptPath: '$(System.DefaultWorkingDirectory)/Tests/Invoke-${{ parametrers.TestType }}Tests.ps1'
         azurePowerShellVersion: LatestVersion
 
   - ${{ if not(parameters.UseAzurePowershell) }}:
     - task: Powershell@2
-      displayName: 'PowerShell Script: Invoke-${{ parameters.TestType }} Tests'
+      displayName: 'PowerShell Script: Invoke-${{ parametrers.TestType }}Tests.ps1'
       continueOnError: true
       inputs:
         targetType: filePath
-        filePath: '$(System.DefaultWorkingDirectory)/Tests/Invoke-${{ parameters.TestType }}Tests.ps1'
+        filePath: '$(System.DefaultWorkingDirectory)/Tests/Invoke-${{ parametrers.TestType }}Tests.ps1'
         ${{ if parameters.UsePowershellCore }}:
           pwsh: true
 
-  - task: PublishTestResults@2
-    displayName: 'Publish Test Results'
-    inputs:
-      testResultsFormat: NUnit
-      testResultsFiles: '**/TEST-${{ parameters.TestType }}.xml'
-      mergeTestResults: true
+  - ${{ if ne(parameters.TestResultsFile, '') }}:
+    - task: PublishTestResults@2
+      displayName: 'Publish Test Results'
+      inputs:
+        testResultsFormat: NUnit
+        testResultsFiles: '**/${{ parameters.TestResultsFile }}'
+        mergeTestResults: true
 
-  - ${{ if eq(parameters.TestType, 'Unit') }}:
+  - ${{ if ne(parameters.CoverageResultsFile, '') }}:
     - task: PublishCodeCoverageResults@1
       displayName: 'Publish Code Coverage'
       inputs:
-        ${{ if parameters.UsePowershellCore }}:
-          summaryFileLocation: '**/CODECOVERAGE-powershellcore.xml'
-        ${{ if not(parameters.UsePowershellCore) }}:
-          summaryFileLocation: '**/CODECOVERAGE-powershell.xml'
+        summaryFileLocation: '${{ parameters.CoverageResultsFile }}'
 
     - task: PowerShell@2
       displayName: 'PowerShell Script: Out-TestResults'
