@@ -6,53 +6,56 @@ parameters:
   CodeCoveragePercentage: 80
 
 jobs:
-  - job: Run${{ parameters.TestType }}Tests
-    displayName: 'Run ${{ parameters.TestType }} tests'
-    steps:
-    - task: DeleteFiles@1
-      displayName: 'Remove old test and code coverage files'
-      inputs:
-        SourceFolder: '$(System.DefaultWorkingDirectory)/Tests'
-        Contents: |
-          **/TEST-${{ parameters.TestType }}.xml
-          **/CODECOVERAGE-${{ parameters.TestType }}.xml
+- job: Run${{ parameters.TestType }}Tests
+  displayName: 'Run ${{ parameters.TestType }} tests'
+  steps:
+  - task: DeleteFiles@1
+    displayName: 'Remove old test and code coverage files'
+    inputs:
+      SourceFolder: '$(System.DefaultWorkingDirectory)/Tests'
+      Contents: |
+        **/TEST-${{ parameters.TestType }}.xml
+        **/CODECOVERAGE-${{ parameters.TestType }}.xml
 
-    ${{ if(parameters.UseAzurePowershell) }}:
-      - task: AzurePowerShell@3
-        displayName: 'AzurePowershell:  Run ${{ parameters.TestType }} tests'
-        continueOnError: true
-        inputs:
-          azureSubscription: '${{ parameters.AzureSubscription }}'
-          ScriptPath: '$(System.DefaultWorkingDirectory)/Tests/Invoke-${{ parameters.TestType }}Tests.ps1'
-          azurePowerShellVersion: LatestVersion
+  ${{ if(parameters.UseAzurePowershell) }}:
+  - task: AzurePowerShell@3
+    displayName: 'AzurePowershell:  Run ${{ parameters.TestType }} tests'
+    continueOnError: true
+    inputs:
+      azureSubscription: '${{ parameters.AzureSubscription }}'
+      ScriptPath: '$(System.DefaultWorkingDirectory)/Tests/Invoke-${{ parameters.TestType }}Tests.ps1'
+      azurePowerShellVersion: LatestVersion
 
-    ${{ if(not(parameters.UseAzurePowershell)) }}:
-      - task: Powershell@2
-        displayName: 'PowerShell Script: Invoke-${{ parameters.TestType }} Tests'
-        continueOnError: true
-        inputs:
-          targetType: filePath
-          filePath: '$(System.DefaultWorkingDirectory)/Tests/Invoke-${{ parameters.TestType }}Tests.ps1'
-          ${{ if(parameters.UsePowershellCore) }}:
-            pwsh: true
+  ${{ if(not(parameters.UseAzurePowershell)) }}:
+  - task: Powershell@2
+    displayName: 'PowerShell Script: Invoke-${{ parameters.TestType }} Tests'
+    continueOnError: true
+    inputs:
+      targetType: filePath
+      filePath: '$(System.DefaultWorkingDirectory)/Tests/Invoke-${{ parameters.TestType }}Tests.ps1'
+      ${{ if(parameters.UsePowershellCore) }}:
+        pwsh: true
 
-    - task: PublishTestResults@2
-      displayName: 'Publish Test Results'
-      inputs:
-        testResultsFormat: NUnit
-        testResultsFiles: '**/TEST-${{ parameters.TestType }}.xml'
-        mergeTestResults: true
+  - task: PublishTestResults@2
+    displayName: 'Publish Test Results'
+    inputs:
+      testResultsFormat: NUnit
+      testResultsFiles: '**/TEST-${{ parameters.TestType }}.xml'
+      mergeTestResults: true
 
-    ${{ if(eq(parameters.TestType, 'Unit')) }}:
-      - task: PublishCodeCoverageResults@1
-        displayName: 'Publish Code Coverage'
-        inputs:
-          summaryFileLocation: '**/CODECOVERAGE-${{ parameters.TestType }}.xml'
+  ${{ if(eq(parameters.TestType, 'Unit')) }}:
+  - task: PublishCodeCoverageResults@1
+    displayName: 'Publish Code Coverage'
+    inputs:
+      ${{ if(parameters.UsePowershellCore)}}:
+        summaryFileLocation: '**/CODECOVERAGE-powershellcore.xml'
+      ${{ if(not(parameters.UsePowershellCore))}}:
+        summaryFileLocation: '**/CODECOVERAGE-powershell.xml'
 
-      - task: PowerShell@2
-        displayName: 'PowerShell Script: Out-TestResults'
-        inputs:
-          targetType: filePath
-          filePath: '$(System.DefaultWorkingDirectory)/Tests/Out-TestAndCodeCoverageResults.ps1'
-          arguments: '-CoveragePercent ${{ parameters.CodeCoveragePercentage }}'
-          pwsh: true
+  - task: PowerShell@2
+    displayName: 'PowerShell Script: Out-TestResults'
+    inputs:
+      targetType: filePath
+      filePath: '$(System.DefaultWorkingDirectory)/Tests/Out-TestAndCodeCoverageResults.ps1'
+      arguments: '-CoveragePercent ${{ parameters.CodeCoveragePercentage }}'
+      pwsh: true
