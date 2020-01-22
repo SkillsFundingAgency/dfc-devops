@@ -43,7 +43,7 @@ jobs:
       testResultsFormat: NUnit
       testResultsFiles: '**/TEST-${{ parameters.ResultsFileSuffix }}.xml'
       mergeTestResults: true
-      testRunTitle: '${{ ResultsFileSuffix }} - Test Results'
+      testRunTitle: '${{ parameters.ResultsFileSuffix }} - Test Results'
 
   - ${{ if eq(parameters.TestType, 'Unit') }}:
     - task: PublishCodeCoverageResults@1
