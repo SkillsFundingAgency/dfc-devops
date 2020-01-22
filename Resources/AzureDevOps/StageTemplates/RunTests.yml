@@ -6,26 +6,26 @@ parameters:
 stages:
 - stage: Test
   jobs:
-    - template: ../JobTemplates/RunInvididualTest.yml
+    - template: ../JobTemplates/RunIndividualTest.yml
       parameters:
         UseAzurePowershell:  true
         AzureSubscription: '${{ parameters.AzureSubscription }}'
         TestType: 'Acceptance'
 
-    - template: ../JobTemplates/RunInvididualTest.yml
+    - template: ../JobTemplates/RunIndividualTest.yml
       parameters:
         UseAzurePowershell:  false
         UsePowershellCore: true
         TestType: 'Quality'
 
-    - template: ../JobTemplates/RunInvididualTest.yml
+    - template: ../JobTemplates/RunIndividualTest.yml
       parameters:
         UseAzurePowershell:  true
         AzureSubscription: '${{ parameters.AzureSubscription }}'
         TestType: 'Unit'
         CodeCoveragePercentage: ${{ parameters.Powershell5CodeCoveragePercentage }}
 
-    - template: ../JobTemplates/RunInvididualTest.yml
+    - template: ../JobTemplates/RunIndividualTest.yml
       parameters:
         UseAzurePowershell:  false
         UsePowershellCore: true
