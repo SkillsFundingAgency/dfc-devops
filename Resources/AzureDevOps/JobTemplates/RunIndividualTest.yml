@@ -43,7 +43,7 @@ jobs:
       testResultsFiles: '**/TEST-${{ parameters.TestType }}.xml'
       mergeTestResults: true
 
-  - ${{ if(eq(parameters.TestType, 'Unit')) }}:
+  - ${{ if eq(parameters.TestType, 'Unit') }}:
     - task: PublishCodeCoverageResults@1
       displayName: 'Publish Code Coverage'
       inputs:
