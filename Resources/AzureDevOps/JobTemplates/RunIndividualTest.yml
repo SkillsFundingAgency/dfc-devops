@@ -1,7 +1,8 @@
 parameters:
   RequiresAzurePowershell: false
   RequiresPowershellCore: false
-  AzureSubscription: ''  
+  AzureSubscription: ''
+  TestName: ''
   TestType: ''  # One of 'Acceptance', 'Quality', "Unit"
   ResultsFileSuffix: ''
   CodeCoveragePercentage: 80
