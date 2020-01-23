@@ -28,7 +28,7 @@ Param(
     [String] $ReleaseNumber
 )
 
-Import-Module Az.Resources
+# Import-Module Az.Resources
 
 # if fqdn passed in, extract name
 if ($ServerName.Contains('.')) {
