@@ -1,9 +1,9 @@
 <#
 .SYNOPSIS
-...
+Copies a Sitefinity database as part of blue-green deployment
 
 .DESCRIPTION
-...
+Looks at the web app to get the current production version of the Sitefinity database and copies that with the latest release number
 
 .PARAMETER AppServiceName
 Resource Group containing the Service Bus namespace
@@ -27,6 +27,8 @@ Param(
     [Parameter(Mandatory = $false)]
     [String] $ReleaseNumber
 )
+
+Import-Module Az.Resources
 
 # if fqdn passed in, extract name
 if ($ServerName.Contains('.')) {
