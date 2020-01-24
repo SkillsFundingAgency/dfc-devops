@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
 Set a value within Shared Configuration
 
