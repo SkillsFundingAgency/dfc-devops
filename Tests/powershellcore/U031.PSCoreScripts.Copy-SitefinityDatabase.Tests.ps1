@@ -158,7 +158,8 @@ Describe "Copy-SitefinityDatabase unit tests" -Tag "Unit" {
                 $ResourceGroupName -eq "dfc-foo-rg" -and `
                 $ServerName -eq "dfc-foo-sql" -and `
                 $DatabaseName -eq "dfc-foo-sitefinitydb" -and `
-                $CopyDatabaseName -eq "dfc-foo-sitefinitydb-r123"
+                $CopyDatabaseName -eq "dfc-foo-sitefinitydb-r123" -and `
+                $ElasticPoolName -eq $null
             }
         }
 
