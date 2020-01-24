@@ -6,17 +6,16 @@ Copies a Sitefinity database as part of blue-green deployment
 Looks at the web app to get the current production version of the Sitefinity database and copies that with the latest release number
 
 .PARAMETER AppServiceName
-Resource Group containing the Service Bus namespace
+Name of the app service; this should have an app setting called DatabaseVersion
 
 .PARAMETER ServerName
 The name of the SQL server (accepts name or FQDN)
 
 .PARAMETER ReleaseNumber
-[Optional]
+[Optional] release number; looks for an environment variable RELEASE_RELEASENAME if not specified
 
 .EXAMPLE
-Copy-SitefinityDatabase -AppServiceName someApp -ServerName SQLserver
-
+Copy-SitefinityDatabase -AppServiceName someApp -ServerName someSQLserver
 #>
 [CmdletBinding()]
 Param(
@@ -28,9 +27,7 @@ Param(
     [String] $ReleaseNumber
 )
 
-# Import-Module Az.Resources
-
-# if fqdn passed in, extract name
+# if fqdn passed in, extract name part
 if ($ServerName.Contains('.')) {
     $ServerName = $ServerName.Substring(0, $ServerName.IndexOf("."))
     Write-Verbose "Using SQL server name $($ServerName)"
