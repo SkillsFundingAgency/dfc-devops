@@ -17,7 +17,7 @@ Name of the resource group the storage account is
 .PARAMETER PartitionKey
 Storage table partition key
 
-.PARAMETER ResourceGroupName
+.PARAMETER RowKey
 Storage table row key
 
 .PARAMETER JsonString
@@ -27,7 +27,7 @@ JSON value in string format
 JSON configuration as a file
 
 .EXAMPLE
-Set-SharedConfigValue ...
+Set-SharedConfigValue -StorageAccountName aStorageAccount -ResourceGroupName aResourceGroup -TableName aTable -PartitionKey testApplication -RowKey SecretKey -Value "SomeData"
 #>
 [CmdletBinding()]
 param(
