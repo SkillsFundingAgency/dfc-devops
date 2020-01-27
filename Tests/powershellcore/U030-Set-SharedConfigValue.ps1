@@ -48,6 +48,14 @@ Describe "Set-SharedConfigValue unit tests" -Tag "Unit" {
             Assert-MockCalled Get-Content -Exactly 0
         }
 
+        It "should attempt to get the table row by partition and row key" {
+            Assert-MockCalled Get-AzTableRow -Exactly 1 -ParameterFilter {
+                $TableName -eq "someTable" -and `
+                $PartitionKey -eq "aPartitionKey" -and `
+                $RowKey -eq "aRowKey"
+            }
+        }
+
         It "should add a new row to the storage table" {
             Assert-MockCalled Add-AzTableRow -Exactly 1 -ParameterFilter {
                 $PartitionKey -eq "aPartitionKey" -and `
@@ -91,6 +99,14 @@ Describe "Set-SharedConfigValue unit tests" -Tag "Unit" {
             Assert-MockCalled Get-Content -Exactly 0
         }
 
+        It "should attempt to get the table row by partition and row key" {
+            Assert-MockCalled Get-AzTableRow -Exactly 1 -ParameterFilter {
+                $TableName -eq "someTable" -and `
+                $PartitionKey -eq "aPartitionKey" -and `
+                $RowKey -eq "aRowKey"
+            }
+        }
+
         It "should not add any new rows to the storage table" {
             Assert-MockCalled Add-AzTableRow -Exactly 0
         }
@@ -128,6 +144,14 @@ Describe "Set-SharedConfigValue unit tests" -Tag "Unit" {
 
         It "should get the contents of the file" {
             Assert-MockCalled Get-Content -Exactly 1 -ParameterFilter { $Path -eq "/Path/To/File.json" }
+        }
+
+        It "should attempt to get the table row by partition and row key" {
+            Assert-MockCalled Get-AzTableRow -Exactly 1 -ParameterFilter {
+                $TableName -eq "someTable" -and `
+                $PartitionKey -eq "aPartitionKey" -and `
+                $RowKey -eq "aRowKey"
+            }
         }
 
         It "should add a new row to the storage table" {
@@ -173,6 +197,14 @@ Describe "Set-SharedConfigValue unit tests" -Tag "Unit" {
 
         It "should get the contents of the file" {
             Assert-MockCalled Get-Content -Exactly 1 -ParameterFilter { $Path -eq "/Path/To/File.json" }
+        }
+
+        It "should attempt to get the table row by partition and row key" {
+            Assert-MockCalled Get-AzTableRow -Exactly 1 -ParameterFilter {
+                $TableName -eq "someTable" -and `
+                $PartitionKey -eq "aPartitionKey" -and `
+                $RowKey -eq "aRowKey"
+            }
         }
 
         It "should not add a new row to the storage table" {

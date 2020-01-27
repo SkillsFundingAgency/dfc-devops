@@ -45,6 +45,7 @@ Describe "Copy-SitefinityDatabase unit tests" -Tag "Unit" {
     Mock Get-AzSqlDatabase -MockWith { return $null }
     Mock New-AzSqlDatabaseCopy
 
+
     Context "When the Azure resources do not exist" {
 
         Mock Get-AzWebApp -MockWith { return @{
@@ -81,7 +82,78 @@ Describe "Copy-SitefinityDatabase unit tests" -Tag "Unit" {
                 ./Copy-SitefinityDatabase -AppServiceName dfc-foo-as -ServerName dfc-foo-sql -ReleaseNumber 123
             } | Should throw "Could not find the current database dfc-foo-sitefinitydb"
         }
+    }
 
+    Context "When not specifying the release number and the environment variable is set" {
+
+        Mock Get-AzWebApp -MockWith { return @{
+            Name          = 'dfc-foo-as'
+            Kind          = 'app'
+            ResourceGroup = 'dfc-foo-rg'
+            Type          = 'Microsoft.Web/sites'
+            Id            = '/subscriptions/mock-sub/resourceGroups/dfc-foo-rg/providersMicrosoft.Web/sites/dfc-foo-as'
+            SiteConfig    = @{ AppSettings = @(
+                @{ Name = 'DatabaseVersion'; Value = 'dfc-foo-sitefinitydb' }
+            ) }
+        } }
+
+        Mock Get-AzSqlDatabase -ParameterFilter { $DatabaseName -eq "dfc-foo-sitefinitydb" } -MockWith { return @{
+            DatabaseName      = 'dfc-foo-sitefinitydb'
+            ServerName        = 'dfc-foo-sql'
+            ResourceGroupName = 'dfc-foo-rg'
+            ResourceId        = '/subscriptions/mock-sub/resourceGroups/dfc-foo-rg/providers/Microsoft.Sql/servers/dfc-foo-sql/databases/dfc-foo-sitefinitydb'
+            SkuName           = 'Standard'
+            ElasticPoolName   = $null
+        } }
+
+        Mock Get-AzSqlDatabase -ParameterFilter { $DatabaseName -eq "dfc-foo-sitefinitydb-r123" } -MockWith { return $null }
+
+        $env:RELEASE_RELEASENAME =  "199-2"
+
+        ./Copy-SitefinityDatabase -AppServiceName dfc-foo-as -ServerName dfc-foo-sql
+
+        Remove-Item Env:\RELEASE_RELEASENAME
+
+        It "should get the sql server resource description" {
+            Assert-MockCalled Get-AzResource -Exactly 1 -ParameterFilter { $Name -eq "dfc-foo-sql" }
+        }
+
+        It "should get the web app resource description" {
+            Assert-MockCalled Get-AzResource -Exactly 1 -ParameterFilter { $Name -eq "dfc-foo-as" }
+        }
+
+        It "should get the web app details" {
+            Assert-MockCalled Get-AzWebApp -Exactly 1 -ParameterFilter {
+                $Name -eq "dfc-foo-as" -and `
+                $ResourceGroupName -eq "dfc-foo-rg"
+            }
+        }
+
+        It "should get the existing table" {
+            Assert-MockCalled Get-AzSqlDatabase -Exactly 1 -ParameterFilter {
+                $ResourceGroupName -eq "dfc-foo-rg" -and `
+                $ServerName -eq "dfc-foo-sql" -and `
+                $DatabaseName -eq "dfc-foo-sitefinitydb"
+            }
+        }
+
+        It "should look for a copy database called dfc-foo-sitefinitydb-r199" {
+            Assert-MockCalled Get-AzSqlDatabase -Exactly 1 -ParameterFilter {
+                $ResourceGroupName -eq "dfc-foo-rg" -and `
+                $ServerName -eq "dfc-foo-sql" -and `
+                $DatabaseName -eq "dfc-foo-sitefinitydb-r199"
+            }
+        }
+
+        It "Should copy dfc-foo-sitefinitydb to dfc-foo-sitefinitydb-r199" {
+            Assert-MockCalled New-AzSqlDatabaseCopy -Exactly 1 -ParameterFilter {
+                $ResourceGroupName -eq "dfc-foo-rg" -and `
+                $ServerName -eq "dfc-foo-sql" -and `
+                $DatabaseName -eq "dfc-foo-sitefinitydb" -and `
+                $CopyDatabaseName -eq "dfc-foo-sitefinitydb-r199" -and `
+                $ElasticPoolName -eq $null
+            }
+        }
     }
 
     Context "When the web app does not have a DatabaseVersion app setting" {
