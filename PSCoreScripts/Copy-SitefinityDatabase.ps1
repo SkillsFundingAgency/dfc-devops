@@ -42,7 +42,7 @@ if (!$SqlServerResource) {
 
 # extract the build number if it is not provided
 if (!$PSBoundParameters.ContainsKey("ReleaseNumber")) {
-    if ($ReleaseNumber -eq $ENV:RELEASE_RELEASENAME) {
+    if ($ENV:RELEASE_RELEASENAME) {
     $ReleaseNumber = $ENV:RELEASE_RELEASENAME.Split("-")[0]
     Write-Verbose "Using release number $ReleaseNumber"
     } else {
