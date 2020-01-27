@@ -22,7 +22,6 @@ jobs:
   - ${{ if eq(parameters.RequiresAzurePowershell, true) }}:
     - task: AzurePowerShell@3
       displayName: 'AzurePowershell: Invoke-${{ parameters.TestType }}Tests.ps1'
-      continueOnError: true
       inputs:
         azureSubscription: '${{ parameters.AzureSubscription }}'
         ScriptPath: '$(System.DefaultWorkingDirectory)/Tests/Invoke-${{ parameters.TestType }}Tests.ps1'
@@ -40,6 +39,7 @@ jobs:
 
   - task: PublishTestResults@2
     displayName: 'Publish Test Results'
+    condition: always()
     inputs:
       testResultsFormat: NUnit
       testResultsFiles: '**/TEST-${{ parameters.ResultsFileSuffix }}.xml'

@@ -42,7 +42,7 @@ if (!$SqlServerResource) {
 
 # extract the build number if it is not provided
 if (!$PSBoundParameters.ContainsKey("ReleaseNumber")) {
-    if ($ReleaseNumber = $ENV:RELEASE_RELEASENAME) {
+    if ($ENV:RELEASE_RELEASENAME) {
     $ReleaseNumber = $ENV:RELEASE_RELEASENAME.Split("-")[0]
     Write-Verbose "Using release number $ReleaseNumber"
     } else {
@@ -92,13 +92,12 @@ if (!$databaseCopyAlreadyExists) {
         CopyDatabaseName  = $CopyDatabaseName
     }
     if ($currentDatabase.SkuName -eq 'ElasticPool') {
-        $DatabaseCopyParameters['ElasticPoolName'] = $currentDatabase.ElasticPoolName 
+        $DatabaseCopyParameters['ElasticPoolName'] = $currentDatabase.ElasticPoolName
     }
     $StopWatch = [System.Diagnostics.StopWatch]::StartNew()
     $null = New-AzSqlDatabaseCopy @DatabaseCopyParameters
     $ElapsedTime = $StopWatch.Elapsed.ToString('hh\:mm\:ss')
     Write-Output "Database copy completed in $ElapsedTime"
-   
 }
 else {
     Write-Output "A database copy with name $CopyDatabaseName exists. Skipping"
