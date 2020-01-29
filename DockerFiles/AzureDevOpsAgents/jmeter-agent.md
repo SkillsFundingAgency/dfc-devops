@@ -36,7 +36,7 @@ az acr login --name dfcdevsharedcr
 docker pull dfcdevsharedcr.azurecr.io/ncs.azuredevopsagents.jmeter:<tag>
 ```
 
-In the Azure DevOps portal go to Organisation Settings > Agent Pools > Add Pool and add a pool called 'NCS - JMeter'.  Then go to your user profile > Personal Access Tokens > New Token and create a token with Read and Manage permissions on Agent Pools.
+In the Azure DevOps portal go to Organisation Settings > Agent Pools > Add Pool and add a pool called 'NCS - JMeter'.  Then go to your user profile > Personal Access Tokens > New Token and create a token with Read and Manage permissions on Agent Pools and Read on Builds.
 
 #### On a Windows host:
 
