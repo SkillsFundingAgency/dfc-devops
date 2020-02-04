@@ -3,7 +3,7 @@
 
 parameters:
   AzureSubscription: ''
-  ImportApimSwaggerApiDefinitionScriptPath: '$(Agent.BuildDirectory)/s/dfc-devops/PSScripts/Import-ApimSwaggerApiDefinition.ps1'
+  ImportApimSwaggerApiDefinitionScriptPath: '$(Agent.BuildDirectory)/s/dfc-devops/PSScripts'
   ApimResourceGroup: ''
   ApimInstanceName: ''
   ApiName: ''
@@ -15,6 +15,6 @@ steps:
   inputs:
     azureSubscription: ${{ parameters.AzureSubscription }}
     scriptType: filePath
-    ScriptPath: '${{ parameters.ImportApimSwaggerApiDefinitionScriptPath }}'
+    ScriptPath: '${{ parameters.ImportApimSwaggerApiDefinitionScriptPath }}/Import-ApimSwaggerApiDefinition.ps1'
     ScriptArguments: '-ApimResourceGroup ${{ parameters.ApimResourceGroup }} -InstanceName ${{ parameters.ApimInstanceName }} -ApiName ${{ parameters.ApiName }} -SwaggerSpecificationUrl ${{ parameters.SwaggerSpecificationUrl }}'
     azurePowerShellVersion: LatestVersion
