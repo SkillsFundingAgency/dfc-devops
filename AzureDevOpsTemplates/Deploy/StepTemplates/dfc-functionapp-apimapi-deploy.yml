@@ -1,0 +1,52 @@
+﻿# This template requires the dfc-devops repo has already been checked out into s/dfc-devops in a prior step.
+# If it's in a different location, please pass the PSScriptsPath parameter with it's location.
+parameters:
+  AzureSubscription: ''
+  FunctionAppName: ''
+  FunctionResourceGroup: ''
+  FunctionPackage: ''
+  PSScriptsPath: '$(Agent.BuildDirectory)/s/dfc-devops/PSScripts'
+  ApimResourceGroup: ''
+  ApimInstanceName: ''
+  ApimLoggerName: ''
+  ApimProductId: ''
+  ApiName: ''
+  SwaggerSpecificationUrl: ''
+
+steps:
+- task: AzureFunctionApp@1
+  displayName: 'Azure Function App Deploy: ${{ parameters.FunctionAppName }}'
+  inputs:
+    azureSubscription: '${{ parameters.AzureSubscription }}'
+    appType: functionApp
+    appName: '${{ parameters.FunctionAppName }}'
+    deployToSlotOrASE: true
+    resourceGroupName: '${{ parameters.FunctionResourceGroup }}'
+    slotName: staging
+    package: '${{ parameters.FunctionPackage }}'
+
+- task: AzureAppServiceManage@0
+  displayName: 'Swap Slots: ${{ parameters.FunctionAppName }} to staging'
+  inputs:
+    azureSubscription: '${{ parameters.AzureSubscription }}'
+    WebAppName: '${{ parameters.FunctionAppName }}'
+    ResourceGroupName: '${{ parameters.FunctionResourceGroup }}'
+    SourceSlot: staging
+
+- task: AzurePowerShell@4
+  displayName: 'Import Swagger Doc'
+  inputs:
+    azureSubscription: '${{ parameters.AzureSubscription }}'
+    scriptType: filePath
+    ScriptPath: '${{ parameters.PSScriptsPath }}/Import-ApimSwaggerApiDefinition.ps1'
+    ScriptArguments: '-ApimResourceGroup ${{ parameters.ApimResourceGroup }} -InstanceName ${{ parameters.ApimInstanceName }} -ApiName ${{ parameters.ApiName }} -SwaggerSpecificationUrl ${{ parameters.SwaggerSpecificationUrl }} -UseAzModule $true -Verbose'
+    azurePowerShellVersion: LatestVersion
+
+- task: AzurePowerShell@4
+  condition: ne( '${{ parameters.ApimLoggerName }}', '')
+  displayName: 'Azure PowerShell script: Set-ApimProductAndLogger'
+  inputs:
+    azureSubscription: '${{ parameters.AzureSubscription }}'
+    ScriptPath: '${{ parameters.PSScriptsPath }}/Set-ApimProductAndLogger.ps1'
+    ScriptArguments: '-ApimResourceGroup ${{ parameters.ApimResourceGroup }} -InstanceName ${{ parameters.ApimInstanceName }} -ApiId ${{ parameters.ApiName }} -ApiProductId ${{ parameters.ApimProductId }} -ApimLoggerName ${{ parameters.ApimLoggerName }}'
+    azurePowerShellVersion: LatestVersion
