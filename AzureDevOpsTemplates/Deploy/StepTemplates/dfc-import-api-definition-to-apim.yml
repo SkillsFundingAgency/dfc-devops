@@ -1,0 +1,20 @@
+﻿# This template requires the dfc-devops repo has already been checked out into s/dfc-devops in a prior step.
+# If it's in a different location, please pass the ImportApimSwaggerApiDefinitionScriptPath parameter with it's location.
+
+parameters:
+  AzureSubscription: ''
+  ImportApimSwaggerApiDefinitionScriptPath: '$(Agent.BuildDirectory)/s/dfc-devops/PSScripts/Import-ApimSwaggerApiDefinition.ps1'
+  ApimResourceGroup: ''
+  ApimInstanceName: ''
+  ApiName: ''
+  SwaggerSpecificationUrl: ''
+
+steps:
+- task: AzurePowerShell@3
+  displayName: 'Refresh API definition in APIM'
+  inputs:
+    azureSubscription: ${{ parameters.AzureSubscription }}
+    scriptType: filePath
+    ScriptPath: '${{ parameters.ImportApimSwaggerApiDefinitionScriptPath }}'
+    ScriptArguments: '-ApimResourceGroup ${{ parameters.ApimResourceGroup }} -InstanceName ${{ parameters.ApimInstanceName }} -ApiName ${{ parameters.ApiName }} -SwaggerSpecificationUrl ${{ parameters.SwaggerSpecificationUrl }}'
+    azurePowerShellVersion: LatestVersion
