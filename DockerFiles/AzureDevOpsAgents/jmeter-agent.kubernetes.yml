@@ -38,3 +38,5 @@ spec:
               key: pattokensecret
         - name: AZP_URL
           value: __AzureDevOpsUrl__
+        securityContext:
+          allowPrivilegeEscalation: false
