@@ -11,11 +11,14 @@ The name of the secret that the certificate has been stored in.  This will be sa
 .PARAMETER FileShare
 The name of the FileShare that the pem files will be saved to.  The directory that the files will be saved into must be specified in the OutputDirectory parameter, the directory must be created seperately.
 
+.PARAMETER FullChainOutputDirectories
+An array of directories in the FileShare that the fullchain.pem file will be saved to.  This must be created separately.
+
 .PARAMETER KeyVaultName
 The name of the KeyVault that holds the certificate and associated secret.
 
-.PARAMETER OutputDirectory
-The directory in the FileShare that the pem files will be saved to.  This must be created separately.
+.PARAMETER PrivKeyOutputDirectories
+An array of directories in the FileShare that the privkey.pem file will be saved to.  This must be created separately.
 
 .PARAMETER StorageAccountName
 The name of the Storage Account that contains the FileShare.
@@ -33,9 +36,11 @@ param(
     [Parameter(Mandatory=$true)]
     [String]$FileShare,
     [Parameter(Mandatory=$true)]
+    [String[]]$FullChainOutputDirectories,
+    [Parameter(Mandatory=$true)]
     [String]$KeyVaultName,
     [Parameter(Mandatory=$true)]
-    [String]$OutputDirectory,
+    [String[]]$PrivKeyOutputDirectories,
     [Parameter(Mandatory=$true)]
     [String]$StorageAccountName,
     [Parameter(Mandatory=$true)]
@@ -125,8 +130,16 @@ Invoke-OpenSSLCommand -OpenSslArguments "pkcs12 -in $PfxFilePath -out $PrivKeyTe
 Write-Verbose "Saving pem files to FileShare $FileShare"
 try {
 
-    Set-AzStorageFileContent -ShareName $FileShare -Path $OutputDirectory -Source $FullChainTempFile -Context $StorageContext
-    Set-AzStorageFileContent -ShareName $FileShare -Path $OutputDirectory -Source $PrivKeyTempFile -Context $StorageContext
+    foreach ($OutputDirectory in $FullChainOutputDirectories) {
+
+        Set-AzStorageFileContent -ShareName $FileShare -Path $OutputDirectory -Source $FullChainTempFile -Context $StorageContext
+
+    }
+    foreach ($OutputDirectory in $PrivKeyOutputDirectories) {
+
+        Set-AzStorageFileContent -ShareName $FileShare -Path $OutputDirectory -Source $PrivKeyTempFile -Context $StorageContext
+
+    }
 
 }
 catch {
