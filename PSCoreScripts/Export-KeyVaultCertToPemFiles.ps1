@@ -125,8 +125,8 @@ Invoke-OpenSSLCommand -OpenSslArguments "pkcs12 -in $PfxFilePath -out $PrivKeyTe
 Write-Verbose "Saving pem files to FileShare $FileShare"
 try {
 
-    Set-AzStorageFileContent -ShareName $FileShare -Directory $OutputDirectory -Source $FullChainTempFile
-    Set-AzStorageFileContent -ShareName $FileShare -Directory $OutputDirectory -Source $PrivKeyTempFile
+    Set-AzStorageFileContent -ShareName $FileShare -Path $OutputDirectory -Source $FullChainTempFile
+    Set-AzStorageFileContent -ShareName $FileShare -Path $OutputDirectory -Source $PrivKeyTempFile
 
 }
 catch {
