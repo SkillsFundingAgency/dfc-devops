@@ -131,7 +131,7 @@ try {
 }
 catch {
 
-    Write-Error "Error saving pem files to FileShare $FileShare in directory $OutputDirectory`$_"
+    Write-Error "Error saving pem files to FileShare $FileShare in directory $OutputDirectory `n$_"
 
 }
 finally {
