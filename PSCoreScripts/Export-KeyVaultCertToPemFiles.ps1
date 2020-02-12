@@ -100,7 +100,7 @@ if(!$StorageAccountKeys) {
 }
 $AccountKey = ($StorageAccountKeys | Where-Object { $_.keyName -eq "key1" }).Value
 Write-Verbose "Creating storage context"
-$Context = New-AzStorageContext -StorageAccountName $StorageAccountName -StorageAccountKey $AccountKey
+$StorageContext = New-AzStorageContext -StorageAccountName $StorageAccountName -StorageAccountKey $AccountKey
 
 Write-Verbose "Getting $CertificateSecretName from $KeyVaultName"
 $Cert = Get-AzKeyVaultSecret -VaultName $KeyVaultName -Name $CertificateSecretName
@@ -125,8 +125,8 @@ Invoke-OpenSSLCommand -OpenSslArguments "pkcs12 -in $PfxFilePath -out $PrivKeyTe
 Write-Verbose "Saving pem files to FileShare $FileShare"
 try {
 
-    Set-AzStorageFileContent -ShareName $FileShare -Path $OutputDirectory -Source $FullChainTempFile
-    Set-AzStorageFileContent -ShareName $FileShare -Path $OutputDirectory -Source $PrivKeyTempFile
+    Set-AzStorageFileContent -ShareName $FileShare -Path $OutputDirectory -Source $FullChainTempFile -Context $StorageContext
+    Set-AzStorageFileContent -ShareName $FileShare -Path $OutputDirectory -Source $PrivKeyTempFile -Context $StorageContext
 
 }
 catch {
