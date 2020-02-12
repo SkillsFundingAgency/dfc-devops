@@ -52,7 +52,7 @@ function Invoke-OpenSSLCommand {
     $Cmd = "openssl $OpenSslArguments"
     try {
 
-        Write-Verbose "Invoking command: $Cmd"
+        Write-Verbose "Invoking command: $($Cmd -replace "(pass:)(\w*)", '$1***')"
         $Result = Invoke-Expression $Cmd
 
     }
