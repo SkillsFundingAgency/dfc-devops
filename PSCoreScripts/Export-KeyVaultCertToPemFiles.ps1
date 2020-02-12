@@ -120,7 +120,7 @@ Write-Warning "This script will export certificate $CertificateSecretName in an 
 $FullChainTempFile = "$PSScriptRoot\fullchain.pem"
 Invoke-OpenSSLCommand -OpenSslArguments "pkcs12 -in $PfxFilePath -out $FullChainTempFile -nokeys -password pass:$Password"
 $PrivKeyTempFile = "$PSScriptRoot\privkey.pem"
-Invoke-OpenSSLCommand -OpenSslArguments "openssl pkcs12 -in $PfxFilePath -out $PrivKeyTempFile -nocerts -nodes -password pass:$Password"
+Invoke-OpenSSLCommand -OpenSslArguments "pkcs12 -in $PfxFilePath -out $PrivKeyTempFile -nocerts -nodes -password pass:$Password"
 
 Write-Verbose "Saving pem files to FileShare $FileShare"
 try {
@@ -136,7 +136,9 @@ catch {
 }
 finally {
 
+    Write-Verbose "Deleting pem file $FullChainTempFile"
     Remove-Item -Path $FullChainTempFile -Force
+    Write-Verbose "Deleting pem file $PrivKeyTempFile"
     Remove-Item -Path $PrivKeyTempFile -Force
 
 }
