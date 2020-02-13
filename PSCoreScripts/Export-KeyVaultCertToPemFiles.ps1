@@ -123,7 +123,7 @@ Write-Verbose "Writing certificate to pfx file $PfxFilePath"
 
 Write-Warning "This script will export certificate $CertificateSecretName in an insecure format.  Ensure that the $FileShare is adequately secured."
 $FullChainTempFile = "$PSScriptRoot\fullchain.pem"
-Invoke-OpenSSLCommand -OpenSslArguments "pkcs12 -in $PfxFilePath -out $FullChainTempFile -nokeys -password pass:$Password"
+Invoke-OpenSSLCommand -OpenSslArguments "pkcs12 -in $PfxFilePath -out $FullChainTempFile --chain -nokeys -password pass:$Password"
 $PrivKeyTempFile = "$PSScriptRoot\privkey.pem"
 Invoke-OpenSSLCommand -OpenSslArguments "pkcs12 -in $PfxFilePath -out $PrivKeyTempFile -nocerts -nodes -password pass:$Password"
 
