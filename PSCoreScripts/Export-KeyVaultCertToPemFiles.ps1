@@ -132,12 +132,12 @@ try {
 
     foreach ($OutputDirectory in $FullChainOutputDirectories) {
 
-        Set-AzStorageFileContent -ShareName $FileShare -Path $OutputDirectory -Source $FullChainTempFile -Context $StorageContext
+        Set-AzStorageFileContent -ShareName $FileShare -Path $OutputDirectory -Source $FullChainTempFile -Context $StorageContext -Force
 
     }
     foreach ($OutputDirectory in $PrivKeyOutputDirectories) {
 
-        Set-AzStorageFileContent -ShareName $FileShare -Path $OutputDirectory -Source $PrivKeyTempFile -Context $StorageContext
+        Set-AzStorageFileContent -ShareName $FileShare -Path $OutputDirectory -Source $PrivKeyTempFile -Context $StorageContext -Force
 
     }
 
