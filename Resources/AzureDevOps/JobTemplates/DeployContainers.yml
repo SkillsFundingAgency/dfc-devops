@@ -1,0 +1,43 @@
+parameters:
+  AksResourceGroup: ''
+  AzurePatToken: ''
+  AzureSubscriptionEndpoint: ''
+  Environment: ''
+  KubernetesCluster: ''
+
+jobs:
+- deployment: DeployToDev
+  environment: ${{ parameters.Environment }}
+  strategy:
+    runOnce:
+      deploy:
+        steps:
+        # Create PAT token secret
+        - task: Kubernetes@1
+          displayName: kubectl create pat token secret
+          inputs:
+            connectionType: Azure Resource Manager
+            azureSubscriptionEndpoint: ${{ parameters.AzureSubscriptionEndpoint }}
+            azureResourceGroup: ${{ parameters.AksResourceGroup }}
+            kubernetesCluster: ${{ parameters.KubernetesCluster }}
+            useClusterAdmin: true
+            namespace: 'default'
+            secretType: generic
+            secretArguments: --from-literal=pattokensecret=${{ parameters.AzurePatToken }}
+            secretName: dfc-azuredevops-pat-token
+        # Deploy the NCS.AzureDevOpsAgents.OWASP docker image
+        - template: AzureDevOpsTemplates\Deploy\StepTemplates\dfc-kubernetes-deploy.yml@dfc-devops
+          parameters:
+            AksResourceGroup: ${{ parameters.AksResourceGroup }}
+            AzureSubscriptionEndpoint: ${{ parameters.AzureSubscriptionEndpoint }}
+            KubernetesCluster: ${{ parameters.KubernetesCluster }}
+            ManifestFileName: owasp-agent.kubernetes.yml
+            PathToManifest: $(Pipeline.Workspace)/NCS.AzureDevOpsAgents.OWASP
+        # Deploy the NCS.AzureDevOpsAgents.JMeter docker image
+        - template: AzureDevOpsTemplates\Deploy\StepTemplates\dfc-kubernetes-deploy.yml@dfc-devops
+          parameters:
+            AksResourceGroup: ${{ parameters.AksResourceGroup }}
+            AzureSubscriptionEndpoint: ${{ parameters.AzureSubscriptionEndpoint }}
+            KubernetesCluster: ${{ parameters.KubernetesCluster }}
+            ManifestFileName: jmeter-agent.kubernetes.yml
+            PathToManifest: $(Pipeline.Workspace)/NCS.AzureDevOpsAgents.JMeter

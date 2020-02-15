@@ -1,0 +1,6 @@
+#Files that will always have LF line endings on checkout (ie not converted to CRLF on Windows)
+
+#Shell scripts that are copied to docker images
+Dockerfiles/**/*.sh text eol=lf
+DockerFiles/AzureDevOpsAgents/OwaspScripts/* text eol=lf
+DockerFiles/AzureDevOpsAgents/JMeterScripts/* text eol=lf

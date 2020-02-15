@@ -1,3 +1,10 @@
+###########################################################################################
+##                                    WARNING                                            ##
+## This script is for backwards compatibility.                                           ##
+## Please make any changes to the version of this script in the PSCoreScripts folder     ##
+###########################################################################################
+
+
 <#
 .SYNOPSIS
 Adds/Updates page and region registrations for an application into the composite ui.
@@ -11,7 +18,7 @@ Url to the Composite Page Registration Api
 .PARAMETER RegionApiUrl
 Url to the Composite Region Registration Api
 
-.PARAMETER RegistrationFile 
+.PARAMETER RegistrationFile
 Path to the json file describing the applications registrations
 
 .PARAMETER ApiKey
@@ -22,7 +29,7 @@ New-RegistrationContext -PathApiUrl https://page-registration-url/api -RegionApi
 
 #>
 
-param(    
+param(
     [Parameter(Mandatory=$true)]
     [string] $PathApiUrl,
     [Parameter(Mandatory=$true)]
@@ -43,18 +50,23 @@ New-RegistrationContext -PathApiUrl $PathApiUrl -RegionApiUrl $RegionApiUrl -Api
 foreach($path in $contentAsObject) {
     Write-Verbose "Getting path registration for Path $($path.Path)."
     $pathEntity = Get-PathRegistration -Path $path.Path
-    
+
     if($null -eq $pathEntity) {
         Write-Verbose "Path registration does not exist, creating new path registration."
         New-PathRegistration -Path $path
     } else {
         Write-Verbose "Path registration exists, checking to see if it needs updating."
-        $itemsToUpdate = Get-DifferencesBetweenPathObjects -Left $pathEntity -Right $path
 
-        if($itemsToUpdate.Count -gt 0) {
-            Write-Verbose "Fields that require updates:  $($itemsToUpdate.Keys)"
+        $apiPathAsHashtable = ConvertTo-HashTable -Object $pathEntity
+        $definitionPathAsHashtable = ConvertTo-HashTable -Object $path
+
+        $patchDocuments = Get-PatchDocuments -OriginalValues $apiPathAsHashtable -ReplacementValues $definitionPathAsHashtable
+
+        if($patchDocuments.Count -gt 0) {
+            $propertiesToPatch = $patchDocuments | Foreach-Object { return $_.Path -Replace "/", "" }
+            Write-Verbose "Fields that require updates:  $($propertiesToPatch)"
             Write-Verbose "Updating path registration."
-            Update-PathRegistration -Path $path.Path -ItemsToUpdate $itemsToUpdate | Out-Null
+            Update-PathRegistration -Path $path.Path -ItemsToPatch $patchDocuments | Out-Null
         }
     }
 
@@ -67,12 +79,17 @@ foreach($path in $contentAsObject) {
             New-RegionRegistration -Path $path.Path -Region $region
         } else {
             Write-Verbose "Region registration exists, checking to see if it needs updating."
-            $itemsToUpdate = Get-DifferencesBetweenRegionObjects -Left $regionEntity -Right $region
 
-            if($itemsToUpdate.Count -gt 0) {
-                Write-Verbose "Fields that require updates:  $($itemsToUpdate.Keys)"
+            $apiRegionAsHashtable = ConvertTo-Hashtable -Object $regionEntity
+            $definitionRegionAsHashtable = ConvertTo-Hashtable -Object $region
+
+            $patchDocuments = Get-PatchDocuments -OriginalValues $apiRegionAsHashtable -ReplacementValues $definitionRegionAsHashtable
+
+            if($patchDocuments.Count -gt 0) {
+                $propertiesToPatch = $patchDocuments | Foreach-Object { return $_.Path -Replace "/", "" }
+                Write-Verbose "Fields that require updates:  $($propertiesToPatch)"
                 Write-Verbose "Updating region registration."
-                Update-RegionRegistration -Path $path.Path -PageRegion $region.PageRegion -ItemsToUpdate $itemsToUpdate | Out-Null
+                Update-RegionRegistration -Path $path.Path -PageRegion $region.PageRegion -ItemsToPatch $patchDocuments | Out-Null
             }
         }
     }

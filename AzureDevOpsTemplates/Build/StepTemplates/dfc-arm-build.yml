@@ -1,0 +1,37 @@
+parameters:
+  ArmTemplateRoot: ''
+  SolutionBaseName: ''
+  AzureSubscription: 'SFA-CDH-Dev/Test (962cae10-2950-412a-93e3-d8ae92b17896)'
+  TestArmTemplateScriptUrl: https://raw.githubusercontent.com/SkillsFundingAgency/dfc-devops/master/PSScripts/Test-ArmTemplate.ps1
+  TestArmTemplateScriptFilePath: $(System.DefaultWorkingDirectory)\Test-ArmTemplate.ps1
+  TokenizeTestParameters: false
+
+steps:
+- task: esfadevops.Tokenization.custom-build-task.Tokenization@0
+  condition: ${{ parameters.TokenizeTestParameters }}
+  displayName: 'Tokenization: Transform file test-parameters.json'
+  inputs:
+    SourcePath: '${{ parameters.ArmTemplateRoot }}'
+    TargetFileNames: test-parameters.json
+
+- task: PowerShell@2
+  name: DownloadTestArmTemplateScript
+  displayName: 'Download Test-ArmTemplate script'
+  inputs:
+    targetType: 'inline'
+    script: Invoke-WebRequest -Uri ${{ parameters.TestArmTemplateScriptUrl }} -OutFile ${{ parameters.TestArmTemplateScriptFilePath }}
+
+- task: AzurePowerShell@3
+  displayName: 'Test Arm Template'
+  inputs:
+    azureSubscription: ${{ parameters.AzureSubscription }}
+    scriptType: filePath
+    scriptPath: ${{ parameters.TestArmTemplateScriptFilePath }}
+    scriptArguments: -ParameterFile '${{ parameters.ArmTemplateRoot }}\test-parameters.json' -TemplateFile '${{ parameters.ArmTemplateRoot }}\template.json' -Verbose
+    azurePowerShellVersion: LatestVersion
+    
+- task: PublishPipelineArtifact@0
+  displayName: Publish Pipeline Artifact
+  inputs:
+    targetPath: ${{ parameters.ArmTemplateRoot }}
+    artifactName: ${{ parameters.SolutionBaseName }}.Resources.ArmTemplates

@@ -1,0 +1,31 @@
+parameters:
+  AksResourceGroup: ''
+  AzureSubscriptionEndpoint: ''
+  KubernetesCluster: ''
+  ManifestFileName: ''
+  PathToManifest: ''
+
+steps:
+- task: esfadevops.Tokenization.custom-build-task.Tokenization@0
+  displayName: 'Tokenization: Transform file ${{ parameters.ManifestFileName }}'
+  inputs:
+    SourcePath: ${{ parameters.PathToManifest }}
+    TargetFileNames: ${{ parameters.ManifestFileName }}
+# deploy manifest
+- task: Kubernetes@1
+  displayName: kubectl deploy manifest
+  inputs:
+    connectionType: Azure Resource Manager
+    azureSubscriptionEndpoint: ${{ parameters.AzureSubscriptionEndpoint }}
+    azureResourceGroup: ${{ parameters.AksResourceGroup }}
+    kubernetesCluster: ${{ parameters.KubernetesCluster }}
+    useClusterAdmin: true
+    namespace: 'default'
+    command: 'apply'
+    arguments: '--filename=${{ parameters.PathToManifest }}/${{ parameters.ManifestFileName }}'
+- task: DeleteFiles@1
+  displayName: 'Delete tokenised ${{ parameters.ManifestFileName }} file'
+  inputs:
+    SourceFolder: ${{ parameters.PathToManifest }}
+    Contents: ${{ parameters.ManifestFileName }}
+  condition: always()

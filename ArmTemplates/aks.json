@@ -1,0 +1,172 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "clusterName": {
+            "type": "string",
+            "metadata": {
+                "description": "The name of the Managed Cluster resource."
+            }
+        },
+        "dnsServiceIp": {
+            "type": "string"
+        },
+        "kubernetesVersion": {
+            "type": "string",
+            "metadata": {
+                "description": "The version of Kubernetes."
+            }
+        },
+        "nodeResourceGroup": {
+            "type": "string",
+            "metadata": {
+                "description": "The name of the resource group used for nodes"
+            }
+        },
+        "rbacClientAppId": {
+            "type": "string"
+        },
+        "rbacServerAppId": {
+            "type": "string"
+        },
+        "rbacServerAppSecret": {
+            "type": "securestring"
+        },
+        "rbacTenantId": {
+            "type": "string"
+        },
+        "serviceCidr": {
+            "type": "string"
+        },
+        "servicePrincipalClientId": {
+            "type": "string"
+        },
+        "servicePrincipalSecret": {
+            "type": "securestring"
+        },
+        "subnetName": {
+            "type": "string",
+            "metadata": {
+                "description": "Subnet name that will contain the aks CLUSTER"
+            }
+        },
+        "virtualNetworkName": {
+            "type": "string",
+            "metadata": {
+                "description": "Name of an existing VNET that will contain this AKS deployment."
+            }
+        },
+        "virtualNetworkResourceGroup": {
+            "type": "string",
+            "metadata": {
+                "description": "Name of the existing VNET resource group"
+            }
+        },
+        "agentNodeCount": {
+            "type": "int",
+            "defaultValue": 3,
+            "metadata": {
+                "description": "The number of nodes for the cluster."
+            },
+            "minValue": 1,
+            "maxValue": 50
+        },
+        "agentPoolName": {
+            "type": "string",
+            "defaultValue": "agentpool",
+            "metadata": {
+                "description": "The name of the default agent pool"
+            }
+        },
+        "agentVMSize": {
+            "type": "string",
+            "defaultValue": "Standard_DS2_v2",
+            "metadata": {
+                "description": "The sku of the machines that will be used for the default agentpool."
+            }
+        },
+        "dockerBridgeCidr": {
+            "type": "string",
+            "defaultValue": "172.17.0.1/16"
+        },
+        "logAnalyticsResourceGroupName": {
+            "type": "string",
+            "defaultValue": "",
+            "metadata": {
+                "description": "The name of the resource group for log analytics"
+            }
+        },
+        "logAnalyticsWorkspaceName": {
+            "type": "string",
+            "defaultValue": "",
+            "metadata": {
+                "description": "The name of the log analytics workspace that will be used for monitoring"
+            }
+        },
+        "podCidr": {
+            "type": "string",
+            "defaultValue": "10.244.0.0/16"
+        }
+    },
+    "variables": {
+        "vnetSubnetId": "[resourceId(parameters('virtualNetworkResourceGroup'),'Microsoft.Network/virtualNetworks/subnets',parameters('virtualNetworkName'),parameters('subnetName'))]",
+        "logAnalyticsId": "[resourceId(parameters('logAnalyticsResourceGroupName'), 'Microsoft.OperationalInsights/workspaces', parameters('logAnalyticsWorkspaceName'))]",
+        "addOnObject": {
+            "noAddons": "[json('null')]",
+            "omsAddon": {
+                "omsagent": {
+                    "enabled": true,
+                    "config": {
+                        "logAnalyticsWorkspaceResourceID": "[variables('logAnalyticsId')]"
+                    }
+                }
+            }
+        }
+
+    },
+    "resources": [
+        {
+            "apiVersion": "2019-06-01",
+            "type": "Microsoft.ContainerService/managedClusters",
+            "location": "[resourceGroup().location]",
+            "name": "[parameters('clusterName')]",
+            "properties": {
+                "kubernetesVersion": "[parameters('kubernetesVersion')]",
+                "dnsPrefix": "[parameters('clusterName')]",
+                "agentPoolProfiles": [
+                    {
+                        "name": "[parameters('agentPoolName')]",
+                        "count": "[parameters('agentNodeCount')]",
+                        "vmSize": "[parameters('agentVMSize')]",
+                        "osType": "Linux",
+                        "vnetSubnetID": "[variables('vnetSubnetID')]",
+                        "type": "VirtualMachineScaleSets",
+                        "storageProfile": "ManagedDisks"
+                    }
+                ],
+                "addonProfiles": "[if(equals(parameters('logAnalyticsWorkspaceName'), ''), variables('addOnObject').noAddons, variables('addOnObject').omsAddon)]",
+                "nodeResourceGroup": "[parameters('nodeResourceGroup')]",
+                "enableRBAC": true,
+                "servicePrincipalProfile": {
+                    "clientId": "[parameters('servicePrincipalClientId')]",
+                    "secret": "[parameters('servicePrincipalSecret')]"
+                },
+                "aadProfile": {
+                    "clientAppID": "[parameters('rbacClientAppId')]",
+                    "serverAppID": "[parameters('rbacServerAppId')]",
+                    "serverAppSecret": "[parameters('rbacServerAppSecret')]",
+                    "tenantID": "[parameters('rbacTenantId')]"
+                },
+                "networkProfile": {
+                    "networkPlugin": "kubenet",
+                    "serviceCidr": "[parameters('serviceCidr')]",
+                    "dnsServiceIP": "[parameters('dnsServiceIp')]",
+                    "podCidr": "[parameters('podCidr')]",
+                    "dockerBridgeCidr": "[parameters('dockerBridgeCidr')]"
+                }
+            }
+        }
+    ],
+    "outputs": {
+    }
+}

@@ -1,0 +1,37 @@
+parameters:
+  ContainerRegistryAdminUser: ''
+  ContainerRegistryPassword: ''
+  DockerfileName: ''
+  ImageBaseName: ''
+  ImageTag: ''
+  ManifestFileName: ''
+
+steps:
+- script: |
+    cd ./DockerFiles/AzureDevOpsAgents
+    ImageName=${{ parameters.ImageBaseName }}:${{ parameters.ImageTag }}
+    # Lowercase the AppImage name to conform to Docker Image naming constraints
+    ImageName=${ImageName,,}
+    docker build -t ${{ parameters.ContainerRegistryAdminUser }}.azurecr.io/$ImageName --file ${{ parameters.DockerfileName }} .
+  displayName: 'Build ${{ parameters.ImageBaseName }}:${{ parameters.ImageTag }} image'
+- script: |
+    docker login -u ${{ parameters.ContainerRegistryAdminUser }} -p ${{ parameters.ContainerRegistryPassword }} ${{ parameters.ContainerRegistryAdminUser }}.azurecr.io
+    ImageName=${{ parameters.ImageBaseName }}:${{ parameters.ImageTag }}
+    # Lowercase the AppImage name to conform to Docker Image naming constraints
+    ImageName=${ImageName,,}
+    docker push ${{ parameters.ContainerRegistryAdminUser }}.azurecr.io/$ImageName
+  displayName: 'Publish ${{ parameters.ImageBaseName }}:${{ parameters.ImageTag }} image'
+  condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
+- task: CopyFiles@2
+  displayName: 'Copy Manifest File to: $(Build.ArtifactStagingDirectory)\Manifest'
+  condition: ne('${{ parameters.ManifestFileName }}', '')
+  inputs:
+    Contents: 'DockerFiles/AzureDevOpsAgents/${{ parameters.ManifestFileName }}'
+    TargetFolder: '$(Build.ArtifactStagingDirectory)\${{ parameters.ImageBaseName }}\Manifest'
+    flattenFolders: true
+- task: PublishPipelineArtifact@0
+  displayName: Publish Pipeline Artifact
+  condition: ne('${{ parameters.ManifestFileName }}', '')
+  inputs:
+    targetPath: $(Build.ArtifactStagingDirectory)\${{ parameters.ImageBaseName }}\Manifest
+    artifactName: ${{ parameters.ImageBaseName }}

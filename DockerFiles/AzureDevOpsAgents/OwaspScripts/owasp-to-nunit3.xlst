@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xsl:stylesheet version="2.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:msxsl="urn:schemas-microsoft-com:xslt" exclude-result-prefixes="msxsl">
+  <xsl:output method="xml" indent="yes"/>
+  <xsl:param name="sourceFolder"/>
+  <xsl:variable name="NumberOfItems" select="count(OWASPZAPReport/site/alerts/alertitem)"/>
+  <xsl:variable name="generatedDateTime" select="OWASPZAPReport/generated"/>
+  <xsl:template match="/">
+    <test-run id="1" name="OWASPReport" fullname="OWASPConvertReport" testcasecount="" result="Failed" total="{$NumberOfItems}" passed="0" failed="{$NumberOfItems}" inconclusive="0" skipped="0" asserts="{$NumberOfItems}" engine-version="" clr-version="" start-time="{$generatedDateTime}" end-time="{$generatedDateTime}" duration="0">
+      <command-line>a</command-line>
+      <test-suite type="Assembly" id="0-1000" name="OWASP" fullname="OWASP" runstate="Runnable" testcasecount="{$NumberOfItems}" result="Failed" site="Child" start-time="{$generatedDateTime}" end-time="{$generatedDateTime}" duration="0.352610" total="{$NumberOfItems}" passed="0" failed="{$NumberOfItems}" warnings="0" inconclusive="0" skipped="0" asserts="{$NumberOfItems}">
+        <environment framework-version="" clr-version="" os-version="" platform="" cwd="" machine-name="DFC Kubernetes Hosted Agent" user="" user-domain="EUROPE" culture="en-GB" uiculture="en-GB" os-architecture="" />
+        <test-suite type="TestSuite" id="0-1000" name="OWASP" fullname="NCS.AzureDevOpsAgents.OWASP" runstate="Runnable" testcasecount="2" result="Failed" site="Child" start-time="{$generatedDateTime}" end-time="" duration="0.0" total="0" passed="0" failed="{$NumberOfItems}" warnings="0" inconclusive="0" skipped="0" asserts="1{$NumberOfItems}">
+          <test-suite type="TestFixture" id="0-1000" name="OWASP" fullname="NCS.AzureDevOpsAgents.OWASP" classname="NCS.AzureDevOpsAgents.OWASP" runstate="Runnable" testcasecount="2" result="Failed" site="Child" start-time="{$generatedDateTime}" end-time="" duration="0.0" total="0" passed="0" failed="{$NumberOfItems}" warnings="0" inconclusive="0" skipped="0" asserts="{$NumberOfItems}">
+            <xsl:for-each select="OWASPZAPReport/site/alerts/alertitem">
+            <test-case id="0-1000" name="{name}" fullname="{name}" methodname="Stub" classname="NCS.AzureDevOpsAgents.OWASP" runstate="NotRunnable" seed="" result="Failed" label="Invalid" start-time="{$generatedDateTime}" end-time="" duration="0" asserts="0">
+              <failure>
+                <message>
+                  <xsl:value-of select="desc"/>. 
+                  <xsl:value-of select="solution"/>
+                </message>
+                <stack-trace>
+                  <xsl:for-each select="instances/instance">
+                    <xsl:value-of select="uri"/>, <xsl:value-of select="method"/>, <xsl:value-of select="param"/>,
+                  </xsl:for-each>
+                </stack-trace>
+              </failure>
+            </test-case>
+            </xsl:for-each>
+          </test-suite>
+        </test-suite>
+      </test-suite>
+    </test-run>
+  </xsl:template>
+</xsl:stylesheet>

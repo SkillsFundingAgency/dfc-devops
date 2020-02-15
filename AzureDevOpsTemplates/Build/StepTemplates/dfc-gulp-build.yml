@@ -1,0 +1,44 @@
+# dfc-gulp-build steps template
+# Runs gulp task runner and optionally publish output
+# demands: npm & gulp
+
+parameters:
+  displayPrefix: '' # Optional prefix to displayName (useful if this is being called multiple times from the same build)
+  npmfolder: '' # folder containing packages.json and gulpfile
+  gulpfile: 'gulpfile.js'
+  publishpath: '' # path to publish (publish step does not run if not specified)
+  publishname: 'gulp_artifact'
+
+steps:
+
+# version check
+- task: Npm@1
+  displayName: '${{ parameters.displayPrefix }} Show npm version'
+  inputs:
+    command: custom
+    workingDir: '${{ parameters.npmfolder }}'
+    verbose: false
+    customCommand: version
+
+# install node packages from packages.json
+- task: Npm@1
+  displayName: '${{ parameters.displayPrefix }} npm install'
+  inputs:
+    command: install
+    workingDir: '${{ parameters.npmfolder }}'
+
+# run gulp
+- task: gulp@1
+  displayName: '${{ parameters.displayPrefix }} gulp'
+  inputs:
+    gulpFile: '${{ parameters.npmfolder }}/${{ parameters.gulpfile }}'
+    workingDirectory: '${{ parameters.npmfolder }}/node_modules/gulp/'
+
+# Publish step only if a publish path has been provided
+- ${{ if parameters.publishpath }}:
+  # publish
+  - task: PublishBuildArtifacts@1
+    displayName: '${{ parameters.displayPrefix }} Publish Artifact: ${{ parameters.publishname }}'
+    inputs:
+      pathtoPublish: '${{ parameters.npmfolder }}/${{ parameters.publishpath }}'
+      artifactName: '${{ parameters.publishname }}'

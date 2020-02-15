@@ -1,0 +1,95 @@
+# GitVersion: if a GitVersion config file is required this should be stored at the root of the repo.  If the file doesn't exist GitVersion defaults will be used - https://gitversion.readthedocs.io/en/latest/
+parameters:
+  SolutionBaseName: ''
+  BuildPlatform: 'any cpu'
+  BuildConfiguration: 'release'
+  DotNetCoreVersion: ''
+  IncludePreviewVersions: false
+  PublishWebApp: 'false'
+  TestSuffix: Tests
+  TestBranchFeaturesScriptUrl: https://raw.githubusercontent.com/SkillsFundingAgency/dfc-devops/master/PSScripts/Test-BranchFeatures.ps1
+  TestBranchFeaturesScriptFilePath: $(System.DefaultWorkingDirectory)\Test-BranchFeatures.ps1
+
+steps:
+ - task: PowerShell@2
+   name: DownloadTestBranchFeaturesScript
+   displayName: 'Download Test-BranchFeatures script'
+   inputs:
+     targetType: 'inline'
+     script: Invoke-WebRequest -Uri '${{ parameters.TestBranchFeaturesScriptUrl }}' -OutFile '${{ parameters.TestBranchFeaturesScriptFilePath }}'
+
+ - task: PowerShell@2
+   name: ExecuteTestBranchFeaturesScript
+   displayName: Test-BranchFeatures
+   inputs:
+     targetType: 'filePath'
+     filePath: '${{ parameters.TestBranchFeaturesScriptFilePath }}'
+
+ - task: UseDotNet@2
+   displayName: 'Use .NET Core sdk ${{ parameters.DotNetCoreVersion }}'
+   condition: ne('', '${{ parameters.DotNetCoreVersion }}')
+   inputs:
+     version: ${{ parameters.DotNetCoreVersion }}
+     IncludePreviewVersions: ${{ parameters.IncludePreviewVersions }}
+
+ - task: gittools.gitversion.gitversion-task.GitVersion@5
+   displayName: GitVersion
+   inputs:
+     useConfigFile: true
+     configFilePath: GitVersion.yml
+
+ - task: SonarCloudPrepare@1
+   displayName: 'Prepare analysis on SonarCloud'
+   condition: and(succeeded(), variables['ShouldRunSonarCloud'], 'True')
+   inputs:
+    # The Service Endpoint (DFC-SonarCloud) will need to be configured using a GitHub account that has been added to SonarCloud.  
+    # That account will need to be granted "Execute Analysis" and "Create Projects" permissions in SonarCloud.  This needs to be granted in the organization where the results will be published.
+    # It does not need any permissions in GitHub but does need to be a member of the organisation that holds the repos to be scanned (eg SkillsFundingAgency).
+    SonarCloud: 'DFC-SonarCloud'
+    organization: educationandskillsfundingagency
+    projectKey: 'SonarCloud.SkillsFundingAgency.$(Build.DefinitionName)'
+    projectName: $(Build.DefinitionName)
+
+ # tasks to package a function app
+ - task: DotNetCoreCLI@2
+   displayName: 'dotnet build application'
+   condition: not(${{ parameters.PublishWebApp }})
+   inputs:
+     command: 'build'
+     projects: '${{ parameters.SolutionBaseName }}\${{ parameters.SolutionBaseName }}.csproj'
+     arguments: '-o $(build.artifactstagingdirectory)\Build\  -c ${{ parameters.BuildConfiguration }}'
+
+ - task: ArchiveFiles@2
+   displayName: 'Archive Application'
+   condition: not(${{ parameters.PublishWebApp }})
+   inputs: 
+     rootFolderOrFile: $(build.artifactstagingdirectory)\Build\
+     archiveFile: $(build.artifactstagingdirectory)\Artifact\${{ parameters.SolutionBaseName }}\DeploymentPackages\$(SolutionBaseName).zip
+     includeRootFolder: false
+
+# task to package a web app
+ - task: DotNetCoreCLI@2
+   displayName: 'dotnet publish application'
+   condition: ${{ parameters.PublishWebApp }}
+   inputs:
+     command: 'publish'
+     projects: '${{ parameters.SolutionBaseName }}\${{ parameters.SolutionBaseName }}.csproj'
+     arguments: '-o $(build.artifactstagingdirectory)\Artifact\${{ parameters.SolutionBaseName }}\DeploymentPackages\  -c ${{ parameters.BuildConfiguration }}'
+     publishWebProjects: false #set to false as this setting (which defaults to true) will parse the entire repo for web projects
+
+ - task: DotNetCoreCLI@2
+   displayName: Test
+   inputs:
+     command: test
+     projects: '${{ parameters.SolutionBaseName }}*${{ parameters.TestSuffix }}\${{ parameters.SolutionBaseName }}*${{ parameters.TestSuffix }}.csproj'
+     arguments: '--configuration ${{ parameters.BuildConfiguration }} --collect "Code coverage"'
+
+ - task: SonarCloudAnalyze@1
+   displayName: 'Run Code Analysis'
+   condition: and(succeeded(), variables['ShouldRunSonarCloud'], 'True')
+
+ - task: PublishPipelineArtifact@1
+   displayName: 'Publish Artifact: ${{ parameters.SolutionBaseName }}'
+   inputs:
+     targetPath: $(build.artifactstagingdirectory)\Artifact\${{ parameters.SolutionBaseName }}\DeploymentPackages
+     artifactName: ${{ parameters.SolutionBaseName }}.DeploymentPackages

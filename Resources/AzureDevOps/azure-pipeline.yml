@@ -1,0 +1,66 @@
+variables:
+- name: SolutionBaseName
+  value: Dfc.DevOps
+
+resources:
+  repositories:
+  - repository: self
+  - repository: dfc-devops
+    type: github
+    name: SkillsFundingAgency/dfc-devops
+    endpoint: 'GitHub (ESFA)'
+    ref: refs/tags/v1.9.0
+
+pool:
+  name: 'NCS - CI and CD'
+  demands:
+    - PowerShell
+    - AzurePS
+    - docker
+
+trigger:
+  branches:
+    include:
+    - master
+
+pr:
+  branches:
+    include:
+    - master
+
+
+stages:
+- template: StageTemplates/RunTests.yml
+  parameters:
+    AzureSubscription: 'SFA-CDH-Dev/Test (962cae10-2950-412a-93e3-d8ae92b17896)'
+    Powershell5CodeCoveragePercentage: 45
+    PowershellCoreCodeCoveragePercentage: 25
+
+- stage: BuildAndPublishContainers
+  condition: or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq(variables['Build.Reason'], 'PullRequest'))
+  dependsOn: []
+  variables:
+  - group: KeyVault - dfc-dev-shared-kv
+  - group: dfc-shared-dev
+  jobs:
+  - template: JobTemplates\BuildAndPublishLinuxContainers.yml
+    parameters:
+      ContainerRegistryAdminUser: $(ContainerRegistryAdminUser)
+      ContainerRegistryPassword: $(ContainerRegistryPassword)
+
+- stage: DeployAzureDevOpsContainers
+  condition: and(succeeded('BuildAndPublishContainers'), eq(variables['Build.SourceBranch'], 'refs/heads/master'), ne(variables['Build.Reason'], 'PullRequest'))
+  dependsOn: BuildAndPublishContainers
+  variables:
+  - template: VariableTemplates\SharedEnvironmentVariables.yml
+  - template: VariableTemplates\DevEnvironmentVariables.yml
+  - group: KeyVault - dfc-dev-shared-kv
+  - group: dfc-shared-dev
+  jobs:
+  - template: JobTemplates\DeployContainers.yml
+    parameters:
+      AksResourceGroup: $(sharedResourceGroup)
+      AzurePatToken: $(AzureDevOpsAgentPatToken)
+      AzureSubscriptionEndpoint: 'SFA-CDH-Dev/Test (962cae10-2950-412a-93e3-d8ae92b17896)'
+      Environment: DEV_SHARED
+      KubernetesCluster: $(sharedAksCluster)

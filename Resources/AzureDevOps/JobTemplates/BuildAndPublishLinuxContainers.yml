@@ -1,0 +1,27 @@
+parameters:
+  ContainerRegistryAdminUser: ''
+  ContainerRegistryPassword: ''
+
+jobs:
+- job: BuildAndPublishContainers
+  pool:
+    name: 'Hosted Ubuntu 1604'
+  steps:
+  # Build and publish the NCS.AzureDevOpsAgents.OWASP docker image
+  - template: AzureDevOpsTemplates/Build/StepTemplates/dfc-docker-publish-k8smanifest.yml@dfc-devops
+    parameters:
+      ContainerRegistryAdminUser: ${{ parameters.ContainerRegistryAdminUser }}
+      ContainerRegistryPassword: ${{ parameters.ContainerRegistryPassword }}
+      DockerfileName: owasp-agent.Dockerfile
+      ImageBaseName: NCS.AzureDevOpsAgents.OWASP
+      ImageTag: $(Build.BuildNumber)
+      ManifestFileName: owasp-agent.kubernetes.yml
+  # Build and publish the NCS.AzureDevOpsAgents.JMeter docker image
+  - template: AzureDevOpsTemplates/Build/StepTemplates/dfc-docker-publish-k8smanifest.yml@dfc-devops
+    parameters:
+      ContainerRegistryAdminUser: ${{ parameters.ContainerRegistryAdminUser }}
+      ContainerRegistryPassword: ${{ parameters.ContainerRegistryPassword }}
+      DockerfileName: jmeter-agent.Dockerfile
+      ImageBaseName: NCS.AzureDevOpsAgents.JMeter
+      ImageTag: $(Build.BuildNumber)
+      ManifestFileName: jmeter-agent.kubernetes.yml

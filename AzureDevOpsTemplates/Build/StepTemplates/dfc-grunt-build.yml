@@ -1,0 +1,44 @@
+# dfc-grunt-build steps template
+# Runs grunt task runner and optionally publish output
+# demands: npm & grunt
+
+parameters:
+  displayPrefix: '' # Optional prefix to displayName (useful if this is being called multiple times from the same build)
+  npmfolder: '' # folder containing packages.json and gruntfile
+  gruntfile: 'gruntfile.js'
+  publishpath: '' # path to publish (publish step does not run if not specified)
+  publishname: 'grunt_artifact'
+
+steps:
+
+# version check
+- task: Npm@1
+  displayName: '${{ parameters.displayPrefix }} Show npm version'
+  inputs:
+    command: custom
+    workingDir: '${{ parameters.npmfolder }}'
+    verbose: false
+    customCommand: version
+
+# install node packages from packages.json
+- task: Npm@1
+  displayName: '${{ parameters.displayPrefix }} npm install'
+  inputs:
+    command: install
+    workingDir: '${{ parameters.npmfolder }}'
+
+# run grunt
+- task: Grunt@0
+  displayName: '${{ parameters.displayPrefix }} grunt'
+  inputs:
+    gruntFile: '${{ parameters.npmfolder }}/${{ parameters.gruntfile }}'
+    workingDirectory: '${{ parameters.npmfolder }}/node_modules/grunt/'
+
+# Publish step only if a publish path has been provided
+- ${{ if parameters.publishpath }}:
+  # publish
+  - task: PublishBuildArtifacts@1
+    displayName: '${{ parameters.displayPrefix }} Publish Artifact: ${{ parameters.publishname }}'
+    inputs:
+      pathtoPublish: '${{ parameters.npmfolder }}/${{ parameters.publishpath }}'
+      artifactName: '${{ parameters.publishname }}'

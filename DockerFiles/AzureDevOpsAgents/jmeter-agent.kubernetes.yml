@@ -1,0 +1,42 @@
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: jmeter-agent
+spec:
+  replicas: 1
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  minReadySeconds: 5 
+  template:
+    metadata:
+      labels:
+        app: jmeter-agent
+    spec:
+      nodeSelector:
+        "beta.kubernetes.io/os": linux
+      containers:
+      - name: jmeter-agent
+        image: dfcdevsharedcr.azurecr.io/ncs.azuredevopsagents.jmeter:__NCSAzureDevOpsAgentsJMeterTag__
+        resources:
+          requests:
+            cpu: 500m
+            memory: "1G"
+          limits:
+            cpu: 2000m
+            memory: "4G"
+        env:
+        - name: AZP_AGENT_NAME
+          value: ncs-jmeter-__NCSAzureDevOpsAgentsJMeterTag__-agent-1
+        - name: AZP_POOL
+          value: 'NCS - jMeter'
+        - name: AZP_TOKEN
+          valueFrom: 
+            secretKeyRef:
+              name: dfc-azuredevops-pat-token
+              key: pattokensecret
+        - name: AZP_URL
+          value: __AzureDevOpsUrl__
+        securityContext:
+          allowPrivilegeEscalation: false

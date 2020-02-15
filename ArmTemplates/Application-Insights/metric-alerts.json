@@ -76,12 +76,22 @@
         "actionGroupName": {
             "type": "string"
         },
+        "actionGroupResourceGroup": {
+            "type": "string",
+            "defaultValue": "",
+            "metadata": {
+                "description": "The name of the resource containing the action group. Leave empty for the same resource group."
+            }
+        },
         "resourceId": {
             "type": "string",
             "metadata": {
                 "description": "The id of the resource to attach the alert to"
             }
         }
+    },
+    "variables": {
+        "actionGroupResourceGroup": "[if(empty(parameters('actionGroupResourceGroup')),  resourceGroup().Name, parameters('actionGroupResourceGroup'))]"
     },
     "resources": [
         {
@@ -114,7 +124,7 @@
                 },
                 "actions": [
                     {
-                        "actionGroupId": "[resourceId(resourceGroup().name, 'microsoft.insights/actionGroups', parameters('actionGroupName'))]"
+                        "actionGroupId": "[resourceId(variables('actionGroupResourceGroup'), 'microsoft.insights/actionGroups', parameters('actionGroupName'))]"
                     }
                 ]
             }

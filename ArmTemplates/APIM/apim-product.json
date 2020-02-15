@@ -8,6 +8,20 @@
         "productDisplayName": {
             "type": "string"
         },
+        "productDescription": {
+            "type": "string",
+            "defaultValue": "",
+            "metadata": {
+                "description": "An optional textual description of the product"
+            }
+        },
+        "productTerms": {
+            "type": "string",
+            "defaultValue": "",
+            "metadata": {
+                "description": "An optional terms of use for the product"
+            }
+        },
         "addDevelopers": {
             "type": "bool",
             "defaultValue":false,
@@ -29,14 +43,19 @@
             "anonAccess": {
                 "subscriptionRequired": false,
                 "state": "published",
-                "displayName": "[parameters('productDisplayName')]"
+                "displayName": "[parameters('productDisplayName')]",
+                "description": "[parameters('productDescription')]",
+                "terms": "[parameters('productTerms')]"
+
             },
             "controlledAccess": {
                 "subscriptionRequired": true,
                 "approvalRequired": "[not(parameters('addDevelopers'))]",
                 "subscriptionsLimit": 1,
                 "state": "published",
-                "displayName": "[parameters('productDisplayName')]"
+                "displayName": "[parameters('productDisplayName')]",
+                "description": "[parameters('productDescription')]",
+                "terms": "[parameters('productTerms')]"
             }
         }
     },

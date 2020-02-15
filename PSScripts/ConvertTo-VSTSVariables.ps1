@@ -1,3 +1,9 @@
+###########################################################################################
+##                                    WARNING                                            ##
+## This script is for backwards compatibility.                                           ##
+## Please make any changes to the version of this script in the PSCoreScripts folder     ##
+###########################################################################################
+
 <#
 .SYNOPSIS
 Takes ARM template output and turns them into VSTS variables
@@ -7,7 +13,7 @@ Takes the ARM template output (usually from the Azure Deployment task in VSTS) a
 
 .PARAMETER ARMOutput
 The JSON output from the ARM template to convert into variables.
-If using the Azure Deployment task in an Azure Pipeline, you can set the output to a variable by specifying `Advanced > Deployment outputs`.  
+If using the Azure Deployment task in an Azure Pipeline, you can set the output to a variable by specifying `Advanced > Deployment outputs`.
 This variable must be wrapped in single quotes when passing to this parameter in an Azure DevOps task.
 
 .PARAMETER Rename
@@ -37,7 +43,7 @@ catch {
 
     Write-Debug "Unable to convert ARMOutput to JSON:`n$ARMOutput"
     throw "Unable to convert ARMOutput to JSON.  Add Debug switch to view ARMOutput."
-    
+
 }
 
 # the outputs with be of type noteproperty, get a list of all of them

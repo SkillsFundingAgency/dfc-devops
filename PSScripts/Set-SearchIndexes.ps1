@@ -118,5 +118,5 @@ foreach ($Index in $IndexConfiguration) {
         }
         ApiRequest -Method PUT -Url "$Url/$($Index.name)" -ApiKey $SearchResourceKeys.PrimaryKey -Body $UpdatedIndex
     }
-    
+
 }

@@ -1,0 +1,42 @@
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: owasp-agent
+spec:
+  replicas: 1
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  minReadySeconds: 5 
+  template:
+    metadata:
+      labels:
+        app: owasp-agent
+    spec:
+      nodeSelector:
+        "beta.kubernetes.io/os": linux
+      containers:
+      - name: owasp-agent
+        image: dfcdevsharedcr.azurecr.io/ncs.azuredevopsagents.owasp:__NCSAzureDevOpsAgentsOWASPTag__
+        resources:
+          requests:
+            cpu: 500m
+            memory: "1G"
+          limits:
+            cpu: 2000m
+            memory: "4G"
+        env:
+        - name: AZP_AGENT_NAME
+          value: ncs-owasp-__NCSAzureDevOpsAgentsOWASPTag__-agent-1
+        - name: AZP_POOL
+          value: 'NCS - OWASP'
+        - name: AZP_TOKEN
+          valueFrom: 
+            secretKeyRef:
+              name: dfc-azuredevops-pat-token
+              key: pattokensecret
+        - name: AZP_URL
+          value: __AzureDevOpsUrl__
+        securityContext:
+          allowPrivilegeEscalation: false

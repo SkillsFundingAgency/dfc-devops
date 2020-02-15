@@ -17,11 +17,17 @@ The name of the API to update
 .PARAMETER SwaggerSpecificationUrl
 The full path to the swagger defintion
 
+.PARAMETER ApiPath
+(optional) The URL suffix that APIM will apply to the API URL.  If this has not been set via an ARM template then it must be passed in as a parameter
+
 .PARAMETER SwaggerSpecificationFile
 (optional)  Switch, specifies whether the swagger file should be saved to a local directory before importing in APIM.
 
 .PARAMETER OutputFilePath
 (optional)  The path to save the swagger file to if SwaggerSpecificationFile switch is used.
+
+.PARAMETER UseAzModule
+(optional)  Defaults to false.  Set this parameter to $true to use the Az cmdlets for zero downtime deployments.  This parameter can be removed at a later date when the AzureRm cmdlets are no longer required.
 
 .EXAMPLE
 Import-ApimSwaggerApiDefinition -ApimResourceGroup dfc-foo-bar-rg -InstanceName dfc-foo-bar-apim -ApiName bar -SwaggerSpecificationUrl "https://dfc-foo-bar-fa.azurewebsites.net/api/bar/api-definition" -SwaggerSpecificationFile -OutputFilePath $(System.DefaultWorkingDirectory)/SwaggerFile -Verbose
@@ -37,10 +43,14 @@ Param(
     [String]$ApiName,
     [Parameter(Mandatory=$true)]
     [String]$SwaggerSpecificationUrl,
+    [Parameter(Mandatory=$false)]
+    [String]$ApiPath,
     [Parameter(Mandatory=$false, ParameterSetName="File")]
     [Switch]$SwaggerSpecificationFile,
 	[Parameter(Mandatory=$false, ParameterSetName="File")]
-	[string]$OutputFilePath
+    [String]$OutputFilePath,
+    [Parameter(Mandatory=$false)]
+    [bool]$UseAzModule = $false
 )
 
 if ($PSCmdlet.ParameterSetName -eq "File") {
@@ -59,36 +69,87 @@ if ($PSCmdlet.ParameterSetName -eq "File") {
 
 }
 
-try {
-    # --- Build context and retrieve apiid
-    Write-Host "Building APIM context for $ApimResourceGroup\$InstanceName"
-    $Context = New-AzureRmApiManagementContext -ResourceGroupName $ApimResourceGroup -ServiceName $InstanceName
-    Write-Host "Retrieving ApiId for API $ApiName"
-    $Api = Get-AzureRmApiManagementApi -Context $Context -ApiId $ApiName
+#if ($PSVersionTable.PSVersion -ge [System.Version]::new("6.0.0")) {
+if ($UseAzModule) {
 
-    # --- Throw if Api is null
-    if (!$Api) {
+    Write-Verbose "PSVersion is $($PSVersionTable.PSVersion), executing with Az cmdlets"
+    try {
+        # --- Build context and retrieve apiid
+        Write-Verbose "Building APIM context for $ApimResourceGroup\$InstanceName"
+        $Context = New-AzApiManagementContext -ResourceGroupName $ApimResourceGroup -ServiceName $InstanceName
+        Write-Verbose "Retrieving ApiId for API $ApiName"
+        $Api = Get-AzApiManagementApi -Context $Context -ApiId $ApiName -ErrorAction SilentlyContinue
 
-        throw "Could not retrieve Api for API $ApiName"
+        if (!$Api.Path -and !$ApiPath) {
+
+            throw "API Path is not set and has not been passed in as a parameter"
+
+        }
+
+        if (!$ApiPath) {
+
+            $ApiPath = $Api.Path
+
+        }
+
+        # --- Import swagger definition
+
+        if ($PSCmdlet.ParameterSetName -eq "File") {
+
+            Write-Verbose "Updating API $InstanceName\$($Api.ApiId) from definition $($OutputFile.FullName)"
+            Import-AzApiManagementApi -Context $Context -SpecificationFormat "Swagger" -SpecificationPath $($OutputFile.FullName) -ApiId $ApiName -Path $ApiPath -ErrorAction Stop -Verbose:$VerbosePreference
+
+        }
+        else {
+
+            Write-Verbose "Updating API $InstanceName\$($Api.ApiId) from definition $SwaggerSpecificationUrl"
+            Import-AzApiManagementApi -Context $Context -SpecificationFormat "Swagger" -SpecificationUrl $SwaggerSpecificationUrl -ApiId $ApiName -Path $ApiPath -ErrorAction Stop -Verbose:$VerbosePreference
+
+        }
 
     }
+    catch {
 
-    # --- Import swagger definition
-
-    if ($PSCmdlet.ParameterSetName -eq "File") {
-
-        Write-Host "Updating API $InstanceName\$($Api.ApiId) from definition $($OutputFile.FullName)"
-        Import-AzureRmApiManagementApi -Context $Context -SpecificationFormat "Swagger" -SpecificationPath $($OutputFile.FullName) -ApiId $($Api.ApiId) -Path $($Api.Path) -ErrorAction Stop -Verbose:$VerbosePreference
-
-    }
-    else {
-
-        Write-Host "Updating API $InstanceName\$($Api.ApiId) from definition $SwaggerSpecificationUrl"
-        Import-AzureRmApiManagementApi -Context $Context -SpecificationFormat "Swagger" -SpecificationUrl $SwaggerSpecificationUrl -ApiId $($Api.ApiId) -Path $($Api.Path) -ErrorAction Stop -Verbose:$VerbosePreference
+        throw $_
 
     }
 
 }
-catch {
-   throw $_
+else {
+
+    Write-Verbose "PSVersion is $($PSVersionTable.PSVersion), executing with AzureRm cmdlets"
+    try {
+        # --- Build context and retrieve apiid
+        Write-Verbose "Building APIM context for $ApimResourceGroup\$InstanceName"
+        $Context = New-AzureRmApiManagementContext -ResourceGroupName $ApimResourceGroup -ServiceName $InstanceName
+        Write-Verbose "Retrieving ApiId for API $ApiName"
+        $Api = Get-AzureRmApiManagementApi -Context $Context -ApiId $ApiName
+
+        # --- Throw if Api is null
+        if (!$Api) {
+
+            throw "Could not retrieve Api for API $ApiName"
+
+        }
+
+        # --- Import swagger definition
+
+        if ($PSCmdlet.ParameterSetName -eq "File") {
+
+            Write-Verbose "Updating API $InstanceName\$($Api.ApiId) from definition $($OutputFile.FullName)"
+            Import-AzureRmApiManagementApi -Context $Context -SpecificationFormat "Swagger" -SpecificationPath $($OutputFile.FullName) -ApiId $($Api.ApiId) -Path $($Api.Path) -ErrorAction Stop -Verbose:$VerbosePreference
+
+        }
+        else {
+
+            Write-Verbose "Updating API $InstanceName\$($Api.ApiId) from definition $SwaggerSpecificationUrl"
+            Import-AzureRmApiManagementApi -Context $Context -SpecificationFormat "Swagger" -SpecificationUrl $SwaggerSpecificationUrl -ApiId $($Api.ApiId) -Path $($Api.Path) -ErrorAction Stop -Verbose:$VerbosePreference
+
+        }
+
+    }
+    catch {
+       throw $_
+    }
+
 }

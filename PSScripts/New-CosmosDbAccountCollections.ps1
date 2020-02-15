@@ -235,8 +235,8 @@ foreach ($Collection in $CosmosDbConfiguration.Collections) {
             else {
 
                 $SetCosmosDbCollectionParameters['DefaultTimeToLive'] = $Collection.DefaultTtl
-                Write-Verbose "Updating Time To Live (TTL) to $($SetCosmosDbCollectionParameters.DefaultTimeToLive)"  
-                            
+                Write-Verbose "Updating Time To Live (TTL) to $($SetCosmosDbCollectionParameters.DefaultTimeToLive)"
+
             }
 
         }
@@ -260,18 +260,18 @@ foreach ($Collection in $CosmosDbConfiguration.Collections) {
             if ($Result | Get-Member -Name DefaultTtl) {
 
                 Write-Verbose "Time To Live (TTL) set to $($Result.DefaultTtl)"
-    
+
             }
             else {
-    
+
                 Write-Verbose "Time To Live (TTL) not set"
-    
+
             }
-            
+
             foreach ($Property in $Result.indexingPolicy | Get-Member -MemberType NoteProperty) {
-    
+
                 Write-Verbose "IndexingPolicy.$($Property.Name) set to $($Result.indexingPolicy | Select-Object -ExpandProperty $Property.Name)"
-    
+
             }
 
         }
