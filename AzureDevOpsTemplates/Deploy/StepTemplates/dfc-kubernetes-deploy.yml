@@ -6,7 +6,7 @@ parameters:
   PathToManifest: ''
 
 steps:
-- task: esfadevops.Tokenization.custom-build-task.Tokenization@0
+- task: TotalALM.totalalm-tokenization.tokenization-build-task.Tokenization@2
   displayName: 'Tokenization: Transform file ${{ parameters.ManifestFileName }}'
   inputs:
     SourcePath: ${{ parameters.PathToManifest }}

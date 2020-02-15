@@ -12,7 +12,7 @@ parameters:
   SetTagsScriptFilePath: '$(System.DefaultWorkingDirectory)\Set-EsfaResourceGroupTags.ps1'
 
 steps:
-- task: esfadevops.Tokenization.custom-build-task.Tokenization@0
+- task: TotalALM.totalalm-tokenization.tokenization-build-task.Tokenization@2
   displayName: 'Tokenization: Transform file parameters.json'
   inputs:
     SourcePath: ${{ parameters.ArmTemplateRoot }}

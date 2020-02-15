@@ -7,7 +7,7 @@ parameters:
   TokenizeTestParameters: false
 
 steps:
-- task: esfadevops.Tokenization.custom-build-task.Tokenization@0
+- task: TotalALM.totalalm-tokenization.tokenization-build-task.Tokenization@2
   condition: ${{ parameters.TokenizeTestParameters }}
   displayName: 'Tokenization: Transform file test-parameters.json'
   inputs:
