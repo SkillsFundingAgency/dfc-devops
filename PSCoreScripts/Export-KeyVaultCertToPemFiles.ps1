@@ -122,6 +122,8 @@ Write-Verbose "Writing certificate to pfx file $PfxFilePath"
 [System.IO.File]::WriteAllBytes($PfxFilePath, $ProtectedCertificateBytes)
 
 Write-Warning "This script will export certificate $CertificateSecretName in an insecure format.  Ensure that the $FileShare is adequately secured."
+$CertTempFile = "$PSScriptRoot\cert.pem"
+Invoke-OpenSSLCommand -OpenSslArguments "pkcs12 -in $PfxFilePath -out $CertTempFile -nokeys -clcerts -password pass:$Password"
 $FullChainTempFile = "$PSScriptRoot\fullchain.pem"
 Invoke-OpenSSLCommand -OpenSslArguments "pkcs12 -in $PfxFilePath -out $FullChainTempFile --chain -nokeys -password pass:$Password"
 $PrivKeyTempFile = "$PSScriptRoot\privkey.pem"
@@ -132,6 +134,7 @@ try {
 
     foreach ($OutputDirectory in $FullChainOutputDirectories) {
 
+        Set-AzStorageFileContent -ShareName $FileShare -Path $OutputDirectory -Source $CertTempFile -Context $StorageContext -Force
         Set-AzStorageFileContent -ShareName $FileShare -Path $OutputDirectory -Source $FullChainTempFile -Context $StorageContext -Force
 
     }
@@ -149,6 +152,8 @@ catch {
 }
 finally {
 
+    Write-Verbose "Deleting pem file $CertTempFile"
+    Remove-Item -Path $CertTempFile -Force
     Write-Verbose "Deleting pem file $FullChainTempFile"
     Remove-Item -Path $FullChainTempFile -Force
     Write-Verbose "Deleting pem file $PrivKeyTempFile"
