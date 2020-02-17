@@ -58,7 +58,7 @@ function Invoke-OpenSSLCommand {
     try {
 
         Write-Verbose "Invoking command: $($Cmd -replace "(pass:)(\w*)", '$1***')"
-        $Result = Invoke-Expression $Cmd
+        $Result = Invoke-Expression -Command $Cmd
 
     }
     catch {
@@ -70,7 +70,7 @@ function Invoke-OpenSSLCommand {
 
 }
 
-function New-Password{
+function New-Password {
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseShouldProcessForStateChangingFunctions", "", Justification="This function doesn't change system state it merely returns a random string for use as a password.")]
     [CmdletBinding()]
     param(
@@ -89,6 +89,29 @@ function New-Password{
         New-Password -length $Length
 
 	}
+}
+
+function New-PfxFileFromKeyVaultSecret {
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory=$true)]
+        [Object]$KeyVaultSecret,
+        [Parameter(Mandatory=$true)]
+        [String]$Password,
+        [Parameter(Mandatory=$true)]
+        [String]$PfxFilePath
+    )
+
+    Write-Verbose "Converting certificate secret to pfx file"
+    $CertBytes = [System.Convert]::FromBase64String($KeyVaultSecret.SecretValueText)
+    $CertCollection = New-Object System.Security.Cryptography.X509Certificates.X509Certificate2Collection
+    $CertCollection.Import($CertBytes,$null,[System.Security.Cryptography.X509Certificates.X509KeyStorageFlags]::Exportable)
+
+    $Password = New-Password -Length 20
+    
+    $ProtectedCertificateBytes = $CertCollection.Export([System.Security.Cryptography.X509Certificates.X509ContentType]::Pkcs12, $Password)
+    Write-Verbose "Writing certificate to pfx file $PfxFilePath"
+    [System.IO.File]::WriteAllBytes($PfxFilePath, $ProtectedCertificateBytes)
 }
 
 # Check that OpenSSL is installed
@@ -110,16 +133,9 @@ $StorageContext = New-AzStorageContext -StorageAccountName $StorageAccountName -
 Write-Verbose "Getting $CertificateSecretName from $KeyVaultName"
 $Cert = Get-AzKeyVaultSecret -VaultName $KeyVaultName -Name $CertificateSecretName
 
-Write-Verbose "Converting certificate secret to pfx file"
-$CertBytes = [System.Convert]::FromBase64String($Cert.SecretValueText)
-$CertCollection = New-Object System.Security.Cryptography.X509Certificates.X509Certificate2Collection
-$CertCollection.Import($CertBytes,$null,[System.Security.Cryptography.X509Certificates.X509KeyStorageFlags]::Exportable)
-
 $Password = New-Password -Length 20
 $PfxFilePath = "$PSScriptRoot\PsExportedPfx.pfx"
-$ProtectedCertificateBytes = $CertCollection.Export([System.Security.Cryptography.X509Certificates.X509ContentType]::Pkcs12, $Password)
-Write-Verbose "Writing certificate to pfx file $PfxFilePath"
-[System.IO.File]::WriteAllBytes($PfxFilePath, $ProtectedCertificateBytes)
+New-PfxFileFromKeyVaultSecret -KeyVaultSecret $Cert -Password $Password -PfxFilePath $PfxFilePath
 
 Write-Warning "This script will export certificate $CertificateSecretName in an insecure format.  Ensure that the $FileShare is adequately secured."
 $CertTempFile = "$PSScriptRoot\cert.pem"
