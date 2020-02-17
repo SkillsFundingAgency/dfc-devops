@@ -107,8 +107,6 @@ function New-PfxFileFromKeyVaultSecret {
     $CertCollection = New-Object System.Security.Cryptography.X509Certificates.X509Certificate2Collection
     $CertCollection.Import($CertBytes,$null,[System.Security.Cryptography.X509Certificates.X509KeyStorageFlags]::Exportable)
 
-    $Password = New-Password -Length 20
-    
     $ProtectedCertificateBytes = $CertCollection.Export([System.Security.Cryptography.X509Certificates.X509ContentType]::Pkcs12, $Password)
     Write-Verbose "Writing certificate to pfx file $PfxFilePath"
     [System.IO.File]::WriteAllBytes($PfxFilePath, $ProtectedCertificateBytes)
