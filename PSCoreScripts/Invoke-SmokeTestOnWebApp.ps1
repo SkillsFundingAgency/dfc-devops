@@ -29,7 +29,7 @@ Optional, defaults to 10 seconds
 
 .PARAMETER AttemptsBeforeFailure
 The number of attempts before the smoke test is marked as failing.
-Optiona, defaults to 5
+Optional, defaults to 5
 
 .EXAMPLE
 ./Invoke-SmokeTestOnWebApp -AppName SomeWebApp -ResourceGroup SomeResourceGroup -Path /PathToTest
