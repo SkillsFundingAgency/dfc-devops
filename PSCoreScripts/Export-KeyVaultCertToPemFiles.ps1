@@ -56,7 +56,7 @@ function Invoke-OpenSSLCommand {
         [Parameter(Mandatory=$true)]
         [String]$OpenSslArguments
     )
-    
+
     $Cmd = "openssl $OpenSslArguments"
     try {
 
@@ -95,6 +95,7 @@ function New-Password {
 }
 
 function New-PfxFileFromKeyVaultSecret {
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseShouldProcessForStateChangingFunctions", "", Justification="This function creates a cert, which requires system state changes")]
     [CmdletBinding()]
     param(
         [Parameter(Mandatory=$true)]

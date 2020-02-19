@@ -12,7 +12,7 @@ The name of the web/function app to smoke test
 The resource group the web app is in
 
 .PARAMETER Slot
-The slot to test. 
+The slot to test.
 Optional, defaults to "production"
 
 .PARAMETER Path
