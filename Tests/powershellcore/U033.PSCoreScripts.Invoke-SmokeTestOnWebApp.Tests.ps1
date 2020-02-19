@@ -1,10 +1,6 @@
 ﻿Push-Location -Path $PSScriptRoot\..\..\PSCoreScripts\
 
-Describe "Invoke-SmokeTests unit tests" -Tag "Unit" {
-
-    function Invoke-WebRequest { param($Method, $Uri, $MaximumRedirection, $TimeoutSec, [switch] $UseBasicParsing) }
-    function Get-AzWebAppSlot { param($ResourceGroupName, $Name, $Slot)}
-
+Describe "Invoke-SmokeTestsOnWebApp unit tests" -Tag "Unit" {
     Mock Start-Sleep
     Mock Invoke-WebRequest -MockWith {
         return @{ StatusCode = 200 }

@@ -4,6 +4,7 @@ Perform a smoke test on a given web app
 
 .DESCRIPTION
 This script performs a smoke test on the URL a web app/function app is hosted at, appending a specified path onto the url.
+The site being smoke tested must return any 2xx status code for it to be counted as valid and redirects are not followed.
 
 .PARAMETER AppName
 The name of the web/function app to smoke test
@@ -64,7 +65,7 @@ function Invoke-SingleSmokeTest
     try {
         Write-Verbose "Performing Invoke-WebRequest on Uri '$Url'.."
         $result = Invoke-WebRequest -Method Get -Uri $Url -MaximumRedirection 0 -TimeoutSec $TimeoutInSecs -UseBasicParsing
-        return $result.StatusCode -eq 200
+        return $result.StatusCode -ge 200 -and $result.StatusCode -le 299
     }
     catch {
         return $false
@@ -88,7 +89,7 @@ function Get-SmokeTestUrl {
     $webApp = Get-AzWebAppSlot -ResourceGroupName $ResourceGroup -Name $AppName -Slot $Slot
 
     if(-not $Path.StartsWith("/")) {
-        $Path = "/$($Path)"
+        $Path = "/$Path"
     }
 
     return "https://$($webApp.DefaultHostName)$($Path)"
