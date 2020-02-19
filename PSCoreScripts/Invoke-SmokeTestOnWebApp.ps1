@@ -105,7 +105,7 @@ $siteUrl = Get-SmokeTestUrl -AppName $AppName `
 do {
     $attemptCount++
 
-    Write-Verbose "Running smoke test against $($site),  attempt $($attemptCount)/$($AttemptsBeforeFailure)"
+    Write-Verbose "Running smoke test against $($siteUrl),  attempt $($attemptCount)/$($AttemptsBeforeFailure)"
 
     $wasSuccessful = Invoke-SingleSmokeTest -Url $siteUrl -TimeoutInSecs $TimeoutInSecs
 
