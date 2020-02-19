@@ -110,7 +110,7 @@ do {
     $wasSuccessful = Invoke-SingleSmokeTest -Url $siteUrl -TimeoutInSecs $TimeoutInSecs
 
     if(-not $wasSuccessful) {
-        if($attemptCount -ge $AttemptsBeforeFailure) { 
+        if($attemptCount -ge $AttemptsBeforeFailure) {
             throw "Smoke test exhausted all retry attempts and is still not responding"
         }
 
