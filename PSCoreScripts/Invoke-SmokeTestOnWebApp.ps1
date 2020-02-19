@@ -109,11 +109,11 @@ do {
 
     $wasSuccessful = Invoke-SingleSmokeTest -Url $siteUrl -TimeoutInSecs $TimeoutInSecs
 
-    if($attemptCount -ge $AttemptsBeforeFailure) {
-        throw "Smoke test exhausted all retry attempts and is still not responding"
-    }
-
     if(-not $wasSuccessful) {
+        if($attemptCount -ge $AttemptsBeforeFailure) { 
+            throw "Smoke test exhausted all retry attempts and is still not responding"
+        }
+
         Write-Verbose "Smoke test was not successful, sleeping before retrying."
         Start-Sleep -Seconds $BackOffPeriodInSecs
     }
