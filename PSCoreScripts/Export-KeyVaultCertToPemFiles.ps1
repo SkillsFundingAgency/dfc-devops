@@ -26,6 +26,8 @@ The name of the Storage Account that contains the FileShare.
 .PARAMETER StorageResourceGroupName
 The name of the Resource Group that contains the Storage Account.
 
+.EXAMPLE
+./Export-KeyVaultCertToPemFiles.ps1 -CertificateSecretName aSecret -FileShare SomeFileShare -FullChainOutputDirectories @( "dir1", "dir2") -PrivKeyOutputDirectories @( "dir3", "dir4") -StorageAccountName aStorageAccount -StorageResourceGroupName AResourceGroup
 .NOTES
 This script has been tested with certificates ordered from a KeyVault integrated CA.  Certificates ordered using other processes may not be exported as expected using this script.
 #>
@@ -48,9 +50,10 @@ param(
 )
 
 function Invoke-OpenSSLCommand {
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSAvoidUsingInvokeExpression", "", Justification="This function needs to execute openssl")]
     [CmdletBinding()]
     param(
-        [Parameter(Mandatory=$true)]    
+        [Parameter(Mandatory=$true)]
         [String]$OpenSslArguments
     )
     

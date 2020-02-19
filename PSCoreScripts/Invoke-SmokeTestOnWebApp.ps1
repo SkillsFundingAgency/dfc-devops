@@ -1,4 +1,41 @@
-﻿param(
+﻿<#
+.SYNOPSIS
+Perform a smoke test on a given web app
+
+.DESCRIPTION
+This script performs a smoke test on the URL a web app/function app is hosted at, appending a specified path onto the url.
+
+.PARAMETER AppName
+The name of the web/function app to smoke test
+
+.PARAMETER ResourceGroup
+The resource group the web app is in
+
+.PARAMETER Slot
+The slot to test. 
+Optional, defaults to "production"
+
+.PARAMETER Path
+The path to smoke test
+
+.PARAMETER TimeoutInSecs
+A timeout for the smoke test requests.
+Optional, defaults to 5 seconds
+
+.PARAMETER BackOffPeriodInSecs
+A backoff period in between smoke test requests.
+Optional, defaults to 10 seconds
+
+.PARAMETER AttemptsBeforeFailure
+The number of attempts before the smoke test is marked as failing.
+Optiona, defaults to 5
+
+.EXAMPLE
+./Invoke-SmokeTestOnWebApp -AppName SomeWebApp -ResourceGroup SomeResourceGroup -Path /PathToTest
+
+#>
+
+param(
     [Parameter(Mandatory=$true)]
     [string] $AppName,
     [Parameter(Mandatory=$true)]
@@ -26,7 +63,7 @@ function Invoke-SingleSmokeTest
 
     try {
         Write-Verbose "Performing Invoke-WebRequest on Uri '$Url'.."
-        $result = Invoke-WebRequest -Method Get -Uri $Url -MaximumRedirection 0 -TimeoutSec $TimeoutInSecs -UseBasicParsing 
+        $result = Invoke-WebRequest -Method Get -Uri $Url -MaximumRedirection 0 -TimeoutSec $TimeoutInSecs -UseBasicParsing
         return $result.StatusCode -eq 200
     }
     catch {
@@ -81,4 +118,4 @@ do {
         Start-Sleep -Seconds $BackOffPeriodInSecs
     }
 }
-while($wasSuccessful -eq $false) 
+while($wasSuccessful -eq $false)
