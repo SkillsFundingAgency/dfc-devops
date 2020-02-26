@@ -117,7 +117,7 @@ $AADConn = Connect-AzureAD -AadAccessToken $Token.AccessToken -AccountId $Contex
 Write-Verbose "Connected to AzureAD tenant domain $($AADConn.TenantDomain)"
 
 Write-Verbose "Getting API Service Principal ..."
-$ApiServicePrincipal = Get-AzureADServicePrincipal -SearchString $ApiName
+$ApiServicePrincipal = Get-AzureADServicePrincipal -Filter "DisplayName eq '$ApiName'"
 if (!$ApiServicePrincipal) {
 
     throw "$ApiName Service Principal is not registered"
