@@ -35,10 +35,10 @@ dimensions (optional)
 
 A list of dimensions to pass to the metrics query.
 
-This enables you to limit displaying requests by status codes by passing in a dimension of
+An example of this would be to only alert for a given type of status code: 
 
 ```json
-[
+"dimensions": [
   {
      "name": "StatusCode",
      "operator": "Include",
