@@ -2,6 +2,10 @@
 
 Create an azure monitor metric alert on a resource
 
+There are two types of criterion for a metric alert: static threshold and dynamic threshold, with the difference being that a dynamic threshold "learns" the usual behaviour for the application and alerts on deviation from that baseline, and allows you to have a single alert for multiple metrics at once.
+
+This template hard codes the criterion to be a "static" threshold.
+
 ## Parameters
 
 enabled (optional)
@@ -26,6 +30,26 @@ operator (optional)
 
 An operator for the comparison with the `threshold`.
 This defaults to `GreaterThan` if not otherwise defined
+
+dimensions (optional)
+
+A list of dimensions to pass to the metrics query.
+
+An example of this would be to only alert for a given type of status code: 
+
+```json
+"dimensions": [
+  {
+     "name": "StatusCode",
+     "operator": "Include",
+     "values": [  "429"  ]
+   }
+]
+```
+
+More information can be found in the [documentation](https://docs.microsoft.com/en-us/azure/templates/microsoft.insights/2018-03-01/metricalerts)
+
+Defaults to an empty array
 
 threshold (optional)
 
