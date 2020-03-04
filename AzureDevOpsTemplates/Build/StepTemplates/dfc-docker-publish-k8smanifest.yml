@@ -5,7 +5,7 @@ parameters:
   DockerfileName: ''
   ImageBaseName: ''
   ImageTag: ''
-  ManifestFileName: ''
+  ManifestFilePath: ''
 
 steps:
 - script: |
@@ -25,14 +25,14 @@ steps:
   condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
 - task: CopyFiles@2
   displayName: 'Copy Manifest File to: $(Build.ArtifactStagingDirectory)\Manifest'
-  condition: ne('${{ parameters.ManifestFileName }}', '')
+  condition: ne('${{ parameters.ManifestFilePath }}', '')
   inputs:
-    Contents: 'DockerFiles/AzureDevOpsAgents/${{ parameters.ManifestFileName }}'
+    Contents: ${{ parameters.ManifestFilePath }}
     TargetFolder: '$(Build.ArtifactStagingDirectory)\${{ parameters.ImageBaseName }}\Manifest'
     flattenFolders: true
 - task: PublishPipelineArtifact@0
   displayName: Publish Pipeline Artifact
-  condition: ne('${{ parameters.ManifestFileName }}', '')
+  condition: ne('${{ parameters.ManifestFilePath }}', '')
   inputs:
     targetPath: $(Build.ArtifactStagingDirectory)\${{ parameters.ImageBaseName }}\Manifest
     artifactName: ${{ parameters.ImageBaseName }}
