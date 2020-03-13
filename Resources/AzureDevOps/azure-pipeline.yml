@@ -57,7 +57,7 @@ stages:
   - group: KeyVault - dfc-dev-shared-kv
   - group: dfc-shared-dev
   jobs:
-  - template: JobTemplates\DeployContainers.yml
+  - template: JobTemplates\DeployAzureDevOpsContainers.yml
     parameters:
       AksResourceGroup: $(sharedResourceGroup)
       AzurePatToken: $(AzureDevOpsAgentPatToken)
