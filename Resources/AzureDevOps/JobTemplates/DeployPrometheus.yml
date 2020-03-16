@@ -29,7 +29,7 @@ jobs:
     runOnce:
       deploy:
         steps:
-        - template: AzureDevOpsTemplates/Deploy/StepTemplates/dfc-helm-upgrade.yml@yml
+        - template: AzureDevOpsTemplates/Deploy/StepTemplates/dfc-helm-upgrade.yml@dfc-devops
           parameters:
             azureSubscription: ${{ parameters.AzureSubscriptionEndpoint }}
             aksResourceGroupName: ${{ parameters.AksResourceGroup }}
