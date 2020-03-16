@@ -23,7 +23,7 @@ steps:
     kubernetesCluster: '${{parameters.aksClusterName}}'
     useClusterAdmin: true
     command: repo
-    arguments: update
+    arguments: add stable https://kubernetes-charts.storage.googleapis.com/
 - task: HelmDeploy@0
   displayName: 'helm upgrade ${{parameters.additionalUpgradeAgs}}'
   inputs:
