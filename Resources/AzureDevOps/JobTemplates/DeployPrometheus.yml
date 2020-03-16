@@ -1,8 +1,8 @@
 parameters:
-  AksResourceGroup
-  AzureSubscriptionEndpoint
-  Environment
-  KubernetesCluster
+  AksResourceGroup:
+  AzureSubscriptionEndpoint:
+  Environment:
+  KubernetesCluster:
 
 jobs:
 - job: ValidatePrometheus
