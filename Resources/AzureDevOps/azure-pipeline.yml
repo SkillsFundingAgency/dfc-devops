@@ -64,3 +64,15 @@ stages:
       AzureSubscriptionEndpoint: 'SFA-CDH-Dev/Test (962cae10-2950-412a-93e3-d8ae92b17896)'
       Environment: DEV_SHARED
       KubernetesCluster: $(sharedAksCluster)
+
+- stage: DeployMonitoringToolsToDev
+  condition: and(eq(variables['Build.SourceBranch'], 'refs/heads/master'), ne(variables['Build.Reason'], 'PullRequest'))
+  variables:
+  - group: dfc-shared-dev
+  jobs:
+  - template: JobTemplates\DeployPrometheus.yml
+    parameters:
+      AksResourceGroup: $(sharedResourceGroup)
+      AzureSubscriptionEndpoint: 'SFA-CDH-Dev/Test (962cae10-2950-412a-93e3-d8ae92b17896)'
+      Environment: DEV_SHARED
+      KubernetesCluster: $(sharedAksCluster)

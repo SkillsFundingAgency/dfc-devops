@@ -1,0 +1,30 @@
+fullnameOverride: "pom"
+prometheusOperator:
+  admissionWebhooks:
+    patch:
+      nodeSelector:
+        agentpool: default
+
+prometheus:
+  prometheusSpec:
+    enableAdminAPI: true
+    nodeSelector:
+      agentpool: default
+    serviceMonitorSelectorNilUsesHelmValues: false
+    storageSpec:
+      volumeClaimTemplate:
+        metadata:
+          name: pv-prometheus-db
+        spec:
+          storageClassName: azure-disk-standard-ssd-lrs
+          accessModes: ["ReadWriteOnce"]
+          persistentVolumeReclaimPolicy: Retain
+          resources:
+            requests:
+              storage: 30Gi
+        selector: {}
+
+kubeProxy:
+  service:
+    selector:
+      component: kube-proxy

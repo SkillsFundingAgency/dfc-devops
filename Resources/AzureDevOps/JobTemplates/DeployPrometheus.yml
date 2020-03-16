@@ -1,0 +1,40 @@
+parameters:
+  AksResourceGroup
+  AzureSubscriptionEndpoint
+  Environment
+  KubernetesCluster
+
+jobs:
+- job: ValidatePrometheus
+  steps:
+  - template: AzureDevOpsTemplates/Deploy/StepTemplates/dfc-helm-upgrade.yml@dfc-devops
+    parameters:
+      azureSubscription: ${{ parameters.AzureSubscriptionEndpoint }}
+      aksResourceGroupName: ${{ parameters.AksResourceGroup }}
+      aksClusterName: ${{ parameters.KubernetesCluster }}
+      additionalUpgradeAgs: '--dry-run'
+      chartName: stable/prometheus-operator
+      releaseName: monitoring
+      valuesFile: DockerFiles/Prometheus/prometheus-operator-values.yml
+      namespace: default
+  - task: PublishPipelineArtifact@1
+    displayName: 'Publish Pipeline Artifacts'
+    inputs:
+      path: ${{ parameters.appRoot }}
+      artifactName: 'Dfc.DevOps.Prometheus'
+- deployment: DeployPrometheus
+  condition: and(succeeded('validate'), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+  environment: ${{ parameters.Environment }}
+  strategy:
+    runOnce:
+      deploy:
+        steps:
+        - template: AzureDevOpsTemplates/Deploy/StepTemplates/dfc-helm-upgrade.yml@yml
+          parameters:
+            azureSubscription: ${{ parameters.AzureSubscriptionEndpoint }}
+            aksResourceGroupName: ${{ parameters.AksResourceGroup }}
+            aksClusterName: ${{ parameters.KubernetesCluster }}
+            chartName: stable/prometheus-operator
+            releaseName: monitoring
+            valuesFile: $(Pipeline.Workspace)/Dfc.DevOps.Prometheus/prometheus-operator-values.yml
+            namespace: default

@@ -1,0 +1,39 @@
+parameters:
+  azureSubscription:
+  aksResourceGroupName:
+  aksClusterName:
+  additionalUpgradeAgs: ' '
+  chartName:
+  releaseName:
+  valuesFile: ''
+  namespace: default
+
+steps:
+- task: KubectlInstaller@0
+  displayName: 'Install Kubectl latest'
+- task: HelmInstaller@1
+  displayName: 'Install Helm'
+  inputs:
+    helmVersionToInstall: 2.14.3
+- task: HelmDeploy@0
+  displayName: 'helm init'
+  inputs:
+    azureSubscription: '${{parameters.azureSubscription}}'
+    azureResourceGroup: '${{parameters.aksResourceGroupName}}'
+    kubernetesCluster: '${{parameters.aksClusterName}}'
+    useClusterAdmin: true
+    command: init
+    arguments: '--service-account tiller --history-max 200 --force-upgrade'
+- task: HelmDeploy@0
+  displayName: 'helm upgrade ${{parameters.additionalUpgradeAgs}}'
+  inputs:
+    azureSubscription: '${{parameters.azureSubscription}}'
+    azureResourceGroup: '${{parameters.aksResourceGroupName}}'
+    kubernetesCluster: '${{parameters.aksClusterName}}'
+    useClusterAdmin: true
+    command: upgrade
+    namespace: '${{parameters.namespace}}'
+    chartName: '${{parameters.chartName}}'
+    releaseName: '${{parameters.releaseName}}'
+    valueFile: '${{parameters.valuesFile}}'
+    arguments: '${{parameters.additionalUpgradeAgs}}'
