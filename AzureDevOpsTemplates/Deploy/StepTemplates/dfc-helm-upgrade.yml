@@ -16,6 +16,15 @@ steps:
   inputs:
     helmVersionToInstall: latest
 - task: HelmDeploy@0
+  displayName: 'helm repo update'
+  inputs:
+    azureSubscription: '${{parameters.azureSubscription}}'
+    azureResourceGroup: '${{parameters.aksResourceGroupName}}'
+    kubernetesCluster: '${{parameters.aksClusterName}}'
+    useClusterAdmin: true
+    command: repo
+    arguments: update
+- task: HelmDeploy@0
   displayName: 'helm upgrade ${{parameters.additionalUpgradeAgs}}'
   inputs:
     azureSubscription: '${{parameters.azureSubscription}}'
