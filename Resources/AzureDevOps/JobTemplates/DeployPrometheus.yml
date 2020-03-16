@@ -15,7 +15,7 @@ jobs:
       additionalUpgradeAgs: '--dry-run'
       chartName: stable/prometheus-operator
       releaseName: monitoring
-      valuesFile: DockerFiles/Prometheus/prometheus-operator-values.yml
+      #valuesFile: DockerFiles/Prometheus/prometheus-operator-values.yml
       namespace: default
   - task: PublishPipelineArtifact@1
     displayName: 'Publish Pipeline Artifacts'
@@ -36,5 +36,5 @@ jobs:
             aksClusterName: ${{ parameters.KubernetesCluster }}
             chartName: stable/prometheus-operator
             releaseName: monitoring
-            valuesFile: $(Pipeline.Workspace)/Dfc.DevOps.Prometheus/prometheus-operator-values.yml
+            #valuesFile: $(Pipeline.Workspace)/Dfc.DevOps.Prometheus/prometheus-operator-values.yml
             namespace: default
