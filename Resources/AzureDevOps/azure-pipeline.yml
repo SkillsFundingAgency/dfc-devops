@@ -9,7 +9,8 @@ resources:
     type: github
     name: SkillsFundingAgency/dfc-devops
     endpoint: 'GitHub (ESFA)'
-    ref: refs/tags/v1.9.0
+    ##TO DO: revert to tag
+    ref: refs/heads/NCSD-3023-AddPrometheusK8sDeploymemt
 
 pool:
   name: 'NCS - CI and CD'
