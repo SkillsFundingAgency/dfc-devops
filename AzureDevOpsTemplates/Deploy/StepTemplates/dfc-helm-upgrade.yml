@@ -14,16 +14,7 @@ steps:
 - task: HelmInstaller@1
   displayName: 'Install Helm'
   inputs:
-    helmVersionToInstall: 2.14.3
-- task: HelmDeploy@0
-  displayName: 'helm init'
-  inputs:
-    azureSubscription: '${{parameters.azureSubscription}}'
-    azureResourceGroup: '${{parameters.aksResourceGroupName}}'
-    kubernetesCluster: '${{parameters.aksClusterName}}'
-    useClusterAdmin: true
-    command: init
-    arguments: '--service-account tiller --history-max 200 --force-upgrade'
+    helmVersionToInstall: latest
 - task: HelmDeploy@0
   displayName: 'helm upgrade ${{parameters.additionalUpgradeAgs}}'
   inputs:
