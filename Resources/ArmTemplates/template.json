@@ -1,0 +1,46 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "aksNodesResourceGroup": {
+            "type": "string"
+        },
+        "environment": {
+            "type": "string"
+        }
+    },
+    "variables": {
+        "deploymentUrlBase": "https://raw.githubusercontent.com/SkillsFundingAgency/dfc-devops/master/ArmTemplates/",
+        "publicIpAddressName": "[concat(variables('resourcePrefix'), '-ip')]",
+        "resourcePrefix": "[tolower(concat('dfc-', parameters('environment'), '-stax-database'))]"
+    },
+    "resources": [
+        {
+            "name": "grafanaPublicIp",
+            "type": "Microsoft.Resources/deployments",
+            "resourceGroup": "[parameters('aksNodesResourceGroup')]",
+            "apiVersion": "2017-05-10",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[concat(variables('deploymentUrlBase'),'public-ip.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "ipAddressName": {
+                        "value": "[variables('publicIpAddressName')]"
+                    },
+                    "ipAddressSku": {
+                        "value": "Basic"
+                    },
+                    "allocationMethod": {
+                        "value": "Static"
+                    },
+                    "publicDnsLabel": {
+                        "value": "[variables('resourcePrefix')]"
+                    }
+                }
+            }
+        }
+    ]
+}

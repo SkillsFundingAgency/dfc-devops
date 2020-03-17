@@ -1,6 +1,8 @@
 variables:
 - name: SolutionBaseName
   value: Dfc.DevOps
+- name: ServiceOffering
+  value: 'Digital First Career Service (DFCS) Website'
 
 resources:
   repositories:
@@ -37,6 +39,14 @@ stages:
     Powershell5CodeCoveragePercentage: 45
     PowershellCoreCodeCoveragePercentage: 25
 
+- stage: BuildResources
+  dependsOn: []
+  jobs:
+  - template: JobTemplates/BuildResources.yml
+    parameters:
+      ArmTemplateRoot: '$(Build.SourcesDirectory)\Resources\ArmTemplates'
+      SolutionBaseName: ${{ variables.SolutionBaseName }}
+
 - stage: BuildAndPublishContainers
   condition: or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq(variables['Build.Reason'], 'PullRequest'))
   dependsOn: []
@@ -71,6 +81,7 @@ stages:
   #condition: and(eq(variables['Build.SourceBranch'], 'refs/heads/master'), ne(variables['Build.Reason'], 'PullRequest'))
   dependsOn: []
   variables:
+  - group: dfc-shared-all
   - group: dfc-shared-dev
   jobs:
   - template: JobTemplates\DeployPrometheus.yml
@@ -78,4 +89,9 @@ stages:
       AksResourceGroup: $(sharedResourceGroup)
       AzureSubscriptionEndpoint: 'SFA-CDH-Dev/Test (962cae10-2950-412a-93e3-d8ae92b17896)'
       Environment: DEV_SHARED
+      EnvironmentTag: $(EnvironmentTag)
       KubernetesCluster: $(sharedAksCluster)
+      ParentBusinessTag: $(ParentBusiness)
+      ResourceGroup: $(AksNodeResourceGroupName)
+      ServiceOfferingTag: ${{ variables.ServiceOffering }}
+      
