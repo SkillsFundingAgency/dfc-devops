@@ -42,10 +42,14 @@ stages:
 - stage: BuildResources
   dependsOn: []
   jobs:
-  - template: JobTemplates/BuildResources.yml
-    parameters:
-      ArmTemplateRoot: '$(Build.SourcesDirectory)\Resources\ArmTemplates'
-      SolutionBaseName: ${{ variables.SolutionBaseName }}
+  - job: TestAndPublishArmTemplates
+    displayName: Test and Publish Arm Templates
+    steps:
+    - template: AzureDevOpsTemplates/Build/StepTemplates/dfc-arm-build.yml@dfc-devops
+      parameters:
+        ArmTemplateRoot: ${{ parameters.ArmTemplateRoot }}
+        SolutionBaseName: ${{ parameters.SolutionBaseName }}
+        PublishPipelineArtifact: true
 
 - stage: BuildAndPublishContainers
   condition: or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq(variables['Build.Reason'], 'PullRequest'))
