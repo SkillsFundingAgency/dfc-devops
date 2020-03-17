@@ -2,11 +2,12 @@ parameters:
   azureSubscription:
   aksResourceGroupName:
   aksClusterName:
-  additionalUpgradeAgs: ' '
   chartName:
   releaseName:
-  valuesFile: ''
+  additionalUpgradeAgs: ' '
+  continueOnError: false
   namespace: default
+  valuesFile: ''
 
 steps:
 - task: KubectlInstaller@0
@@ -16,7 +17,7 @@ steps:
   inputs:
     helmVersionToInstall: latest
 - task: HelmDeploy@0
-  displayName: 'helm repo update'
+  displayName: 'helm repo add stable charts'
   inputs:
     azureSubscription: '${{parameters.azureSubscription}}'
     azureResourceGroup: '${{parameters.aksResourceGroupName}}'
@@ -37,3 +38,4 @@ steps:
     releaseName: '${{parameters.releaseName}}'
     valueFile: '${{parameters.valuesFile}}'
     arguments: '${{parameters.additionalUpgradeAgs}}'
+  continueOnError: ${{ parameters.continueOnError }}

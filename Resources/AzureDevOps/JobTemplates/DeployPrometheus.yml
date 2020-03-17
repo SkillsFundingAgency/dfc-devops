@@ -12,10 +12,11 @@ jobs:
       azureSubscription: ${{ parameters.AzureSubscriptionEndpoint }}
       aksResourceGroupName: ${{ parameters.AksResourceGroup }}
       aksClusterName: ${{ parameters.KubernetesCluster }}
-      additionalUpgradeAgs: '--dry-run'
+      additionalUpgradeAgs: '--dry-run --set prometheusOperator.createCustomResource=false'
       chartName: stable/prometheus-operator
       releaseName: monitoring
-      #valuesFile: DockerFiles/Prometheus/prometheus-operator-values.yml
+      valuesFile: DockerFiles/Prometheus/prometheus-operator-values.yml
+      continueOnError: true
       namespace: default
   - task: PublishPipelineArtifact@1
     displayName: 'Publish Pipeline Artifacts'
@@ -34,7 +35,8 @@ jobs:
             azureSubscription: ${{ parameters.AzureSubscriptionEndpoint }}
             aksResourceGroupName: ${{ parameters.AksResourceGroup }}
             aksClusterName: ${{ parameters.KubernetesCluster }}
+            additionalUpgradeAgs: '--set prometheusOperator.createCustomResource=false'
             chartName: stable/prometheus-operator
             releaseName: monitoring
-            #valuesFile: $(Pipeline.Workspace)/Dfc.DevOps.Prometheus/prometheus-operator-values.yml
+            valuesFile: $(Pipeline.Workspace)/Dfc.DevOps.Prometheus/prometheus-operator-values.yml
             namespace: default
