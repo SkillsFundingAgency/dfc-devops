@@ -47,8 +47,8 @@ stages:
     steps:
     - template: AzureDevOpsTemplates/Build/StepTemplates/dfc-arm-build.yml@dfc-devops
       parameters:
-        ArmTemplateRoot: ${{ parameters.ArmTemplateRoot }}
-        SolutionBaseName: ${{ parameters.SolutionBaseName }}
+        ArmTemplateRoot: '$(Build.SourcesDirectory)\Resources\ArmTemplates'
+        SolutionBaseName: ${{ variables.SolutionBaseName }}
         PublishPipelineArtifact: true
 
 - stage: BuildAndPublishContainers
