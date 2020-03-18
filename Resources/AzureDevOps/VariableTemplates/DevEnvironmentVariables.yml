@@ -3,5 +3,7 @@ variables:
   value: $(Build.BuildNumber)
 - name: NCSAzureDevOpsAgentsJMeterTag
   value: $(Build.BuildNumber)
+- name: ReleaseEnvironmentName
+  value: DEV
 - name: ResourceGroup
   value: dfc-dev-devops-rg
