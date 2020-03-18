@@ -38,7 +38,7 @@ jobs:
             azureSubscription: ${{ parameters.AzureSubscriptionEndpoint }}
             aksResourceGroupName: ${{ parameters.AksResourceGroup }}
             aksClusterName: ${{ parameters.KubernetesCluster }}
-            additionalUpgradeAgs: '--set prometheusOperator.createCustomResource=false --set grafana.service.annotations=service.beta.kubernetes.io/neo4j-escodb-resource-group:${{ parameters.GrafanaPublicIpAddressResourceGroup }} --set grafana.service.loadBalancerIP=${{ parameters.GrafanaPublicIpAddress }}'
+            additionalUpgradeAgs: '--set prometheusOperator.createCustomResource=false --set "grafana.service.annotations=service.beta.kubernetes.io/neo4j-escodb-resource-group: ${{ parameters.GrafanaPublicIpAddressResourceGroup }}" --set grafana.service.loadBalancerIP=${{ parameters.GrafanaPublicIpAddress }}'
             chartName: stable/prometheus-operator
             releaseName: monitoring
             valuesFile: $(Pipeline.Workspace)/Dfc.DevOps.Prometheus/prometheus-operator-values.yml
