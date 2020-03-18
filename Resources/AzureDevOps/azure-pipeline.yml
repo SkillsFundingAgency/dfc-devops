@@ -89,6 +89,7 @@ stages:
   variables:
   - group: dfc-shared-all
   - group: dfc-shared-dev
+  - template: VariableTemplates\DevEnvironmentVariables.yml
   - name: AzureSubscriptionEndpoint
     value: 'SFA-CDH-Dev/Test (962cae10-2950-412a-93e3-d8ae92b17896)'
   jobs:
