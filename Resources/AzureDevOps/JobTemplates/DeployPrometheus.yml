@@ -2,8 +2,8 @@ parameters:
   AksResourceGroup:
   AzureSubscriptionEndpoint:
   Environment:
-  GrafanaPublicIpAddress
-  GrafanaPublicIpAddressResourceGroup
+  GrafanaPublicIpAddress:
+  GrafanaPublicIpAddressResourceGroup:
   KubernetesCluster:
 
 jobs:

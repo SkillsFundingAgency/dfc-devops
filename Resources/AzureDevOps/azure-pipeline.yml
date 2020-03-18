@@ -92,14 +92,16 @@ stages:
   - name: AzureSubscriptionEndpoint
     value: 'SFA-CDH-Dev/Test (962cae10-2950-412a-93e3-d8ae92b17896)'
   jobs:
-  - template: AzureDevOpsTemplates/Deploy/StepTemplates/dfc-arm-deploy.yml@dfc-devops
-    parameters:
-      ArmTemplateRoot: ${{ variables.ArmTemplateRoot }}
-      AzureSubscription: ${{ variables.AzureSubscriptionEndpoint }}
-      EnvironmentTag: $(EnvironmentTag)
-      ParentBusinessTag: $(ParentBusiness)
-      ResourceGroup: $(ResourceGroup)
-      ServiceOfferingTag: ${{ variables.ServiceOffering }}
+  - job: DeployArmResourcesToDev
+    steps:
+    - template: AzureDevOpsTemplates/Deploy/StepTemplates/dfc-arm-deploy.yml@dfc-devops
+      parameters:
+        ArmTemplateRoot: ${{ variables.ArmTemplateRoot }}
+        AzureSubscription: ${{ variables.AzureSubscriptionEndpoint }}
+        EnvironmentTag: $(EnvironmentTag)
+        ParentBusinessTag: $(ParentBusiness)
+        ResourceGroup: $(ResourceGroup)
+        ServiceOfferingTag: ${{ variables.ServiceOffering }}
   - template: JobTemplates\DeployPrometheus.yml
     parameters:
       AksResourceGroup: $(sharedResourceGroup)
