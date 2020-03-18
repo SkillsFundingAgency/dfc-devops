@@ -1,4 +1,6 @@
 variables:
+- name: ArmTemplateRoot
+  value: '$(Pipeline.Workspace)/Dfc.Devops.Resources.ArmTemplates'
 - name: SolutionBaseName
   value: Dfc.DevOps
 - name: ServiceOffering
@@ -80,22 +82,30 @@ stages:
       Environment: DEV_SHARED
       KubernetesCluster: $(sharedAksCluster)
 
-- stage: DeployMonitoringToolsToDev
+- stage: DeployToolsToDev
   ##TO DO: decide where to place condition and reinstate
   #condition: and(eq(variables['Build.SourceBranch'], 'refs/heads/master'), ne(variables['Build.Reason'], 'PullRequest'))
   dependsOn: BuildResources
   variables:
   - group: dfc-shared-all
   - group: dfc-shared-dev
+  - name: AzureSubscriptionEndpoint
+    value: 'SFA-CDH-Dev/Test (962cae10-2950-412a-93e3-d8ae92b17896)'
   jobs:
+  - template: AzureDevOpsTemplates/Deploy/StepTemplates/dfc-arm-deploy.yml@dfc-devops
+    parameters:
+      ArmTemplateRoot: ${{ variables.ArmTemplateRoot }}
+      AzureSubscription: ${{ variables.AzureSubscriptionEndpoint }}
+      EnvironmentTag: $(EnvironmentTag)
+      ParentBusinessTag: $(ParentBusiness)
+      ResourceGroup: $(ResourceGroup)
+      ServiceOfferingTag: ${{ variables.ServiceOffering }}
   - template: JobTemplates\DeployPrometheus.yml
     parameters:
       AksResourceGroup: $(sharedResourceGroup)
-      AzureSubscriptionEndpoint: 'SFA-CDH-Dev/Test (962cae10-2950-412a-93e3-d8ae92b17896)'
+      AzureSubscriptionEndpoint: ${{ variables.AzureSubscriptionEndpoint }}
       Environment: DEV_SHARED
-      EnvironmentTag: $(EnvironmentTag)
+      GrafanaPublicIpAddress: $(GrafanaPublicIpAddress)
+      GrafanaPublicIpAddressResourceGroup: $(AksNodeResourceGroupName)
       KubernetesCluster: $(sharedAksCluster)
-      ParentBusinessTag: $(ParentBusiness)
-      ResourceGroup: $(AksNodeResourceGroupName)
-      ServiceOfferingTag: ${{ variables.ServiceOffering }}
       
