@@ -92,22 +92,28 @@ stages:
   - template: VariableTemplates\DevEnvironmentVariables.yml
   - name: AzureSubscriptionEndpoint
     value: 'SFA-CDH-Dev/Test (962cae10-2950-412a-93e3-d8ae92b17896)'
+  - name: Environment
+    value: DEV_SHARED
   jobs:
-  - job: DeployArmResourcesToDev
-    steps:
-    - template: AzureDevOpsTemplates/Deploy/StepTemplates/dfc-arm-deploy.yml@dfc-devops
-      parameters:
-        ArmTemplateRoot: ${{ variables.ArmTemplateRoot }}
-        AzureSubscription: ${{ variables.AzureSubscriptionEndpoint }}
-        EnvironmentTag: $(EnvironmentTag)
-        ParentBusinessTag: $(ParentBusiness)
-        ResourceGroup: ${{ variables.ResourceGroup }}
-        ServiceOfferingTag: ${{ variables.ServiceOffering }}
+  - deployment: DeployArmResourcesToDev
+    environment: ${{ variables.Environment }}
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - template: AzureDevOpsTemplates/Deploy/StepTemplates/dfc-arm-deploy.yml@dfc-devops
+            parameters:
+              ArmTemplateRoot: ${{ variables.ArmTemplateRoot }}
+              AzureSubscription: ${{ variables.AzureSubscriptionEndpoint }}
+              EnvironmentTag: $(EnvironmentTag)
+              ParentBusinessTag: $(ParentBusiness)
+              ResourceGroup: ${{ variables.ResourceGroup }}
+              ServiceOfferingTag: ${{ variables.ServiceOffering }}
   - template: JobTemplates\DeployPrometheus.yml
     parameters:
       AksResourceGroup: $(sharedResourceGroup)
       AzureSubscriptionEndpoint: ${{ variables.AzureSubscriptionEndpoint }}
-      Environment: DEV_SHARED
+      Environment: ${{ variables.Environment }}
       GrafanaPublicIpAddress: $(GrafanaPublicIpAddress)
       GrafanaPublicIpAddressResourceGroup: $(AksNodeResourceGroupName)
       KubernetesCluster: $(sharedAksCluster)
