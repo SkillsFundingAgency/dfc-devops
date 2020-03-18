@@ -29,7 +29,8 @@ jobs:
       path: ${{ parameters.appRoot }}
       artifactName: 'Dfc.DevOps.Prometheus'
 - deployment: DeployPrometheus
-  condition: and(succeeded('validate'), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+  ##TO DO: decide where to place condition and reinstate
+  #condition: and(succeeded('validate'), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
   environment: ${{ parameters.Environment }}
   strategy:
     runOnce:

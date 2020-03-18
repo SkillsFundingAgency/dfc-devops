@@ -24,6 +24,15 @@ prometheus:
               storage: 30Gi
         selector: {}
 
+grafana:
+  service:
+    type: LoadBalancer
+    port: 443
+    annotations:
+      service.beta.kubernetes.io/neo4j-escodb-resource-group: __StaxDbPublicIpAddressResourceGroup__
+    loadBalancerIP: 
+
+
 kubeProxy:
   service:
     selector:
