@@ -100,7 +100,7 @@ stages:
         AzureSubscription: ${{ variables.AzureSubscriptionEndpoint }}
         EnvironmentTag: $(EnvironmentTag)
         ParentBusinessTag: $(ParentBusiness)
-        ResourceGroup: $(ResourceGroup)
+        ResourceGroup: ${{ variables.ResourceGroup }}
         ServiceOfferingTag: ${{ variables.ServiceOffering }}
   - template: JobTemplates\DeployPrometheus.yml
     parameters:
