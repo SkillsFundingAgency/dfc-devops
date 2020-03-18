@@ -11,7 +11,7 @@
     },
     "variables": {
         "deploymentUrlBase": "https://raw.githubusercontent.com/SkillsFundingAgency/dfc-devops/master/ArmTemplates/",
-        "grafanaPublicIpAddressName": "[concat(variables('resourcePrefix'), 'grafana-ip')]",
+        "grafanaPublicIpAddressName": "[concat(variables('resourcePrefix'), '-grafana-ip')]",
         "resourcePrefix": "[tolower(concat('dfc-', parameters('environment'), '-devops'))]"
     },
     "resources": [
