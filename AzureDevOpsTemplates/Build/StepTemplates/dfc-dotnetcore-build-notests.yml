@@ -4,6 +4,7 @@ parameters:
   BuildPlatform: 'any cpu'
   BuildConfiguration: 'release'
   DotNetCoreVersion: ''
+  GitVersionConfigFilePath: Resources/AzureDevOps/GitVersion.yml
   IncludePreviewVersions: false
   PublishWebApp: 'false'
 
