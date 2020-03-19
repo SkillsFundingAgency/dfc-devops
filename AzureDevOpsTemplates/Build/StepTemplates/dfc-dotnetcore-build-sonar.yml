@@ -38,9 +38,8 @@ steps:
    displayName: GitVersion
    inputs:
      useConfigFile: true
-     configFilePath: GitVersion.yml
-     versionSpec: '5.2.4'
      configFilePath: ${{ parameters.GitVersionConfigFilePath }}
+     versionSpec: '5.2.4'
 
  - task: SonarCloudPrepare@1
    displayName: 'Prepare analysis on SonarCloud'
