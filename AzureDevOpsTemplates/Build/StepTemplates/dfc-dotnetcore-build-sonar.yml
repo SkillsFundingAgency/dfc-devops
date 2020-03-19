@@ -33,7 +33,7 @@ steps:
      IncludePreviewVersions: ${{ parameters.IncludePreviewVersions }}
      installationPath: $(Agent.TempDirectory)/dotnet
 
- - task: gittools.gitversion.gitversion-task.GitVersion@5
+ - task: UseGitVersion@5
    displayName: GitVersion
    inputs:
      useConfigFile: true
