@@ -38,6 +38,7 @@ steps:
    inputs:
      useConfigFile: true
      configFilePath: GitVersion.yml
+     versionSpec: '5.x'
 
  - task: SonarCloudPrepare@1
    displayName: 'Prepare analysis on SonarCloud'
