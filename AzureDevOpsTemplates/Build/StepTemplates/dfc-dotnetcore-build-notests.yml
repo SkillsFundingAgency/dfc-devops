@@ -4,6 +4,7 @@ parameters:
   BuildPlatform: 'any cpu'
   BuildConfiguration: 'release'
   DotNetCoreVersion: ''
+  GitVersionConfigFilePath: Resources/AzureDevOps/GitVersion.yml
   IncludePreviewVersions: false
   PublishWebApp: 'false'
 
@@ -14,12 +15,14 @@ steps:
    inputs:
      version: ${{ parameters.DotNetCoreVersion }}
      IncludePreviewVersions: ${{ parameters.IncludePreviewVersions }}
+     installationPath: $(Agent.TempDirectory)/dotnet
  
- - task: gittools.gitversion.gitversion-task.GitVersion@5
+ - task: UseGitVersion@5
    displayName: GitVersion
    inputs:
      useConfigFile: true
-     configFilePath: GitVersion.yml
+     configFilePath: ${{ parameters.GitVersionConfigFilePath }}
+     versionSpec: '5.x'
 
  # tasks to package a function app
  - task: DotNetCoreCLI@2
