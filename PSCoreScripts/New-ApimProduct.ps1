@@ -1,9 +1,3 @@
-###########################################################################################
-##                                    WARNING                                            ##
-## This script is for backwards compatibility.                                           ##
-## Please make any changes to the version of this script in the PSCoreScripts folder     ##
-###########################################################################################
-
 <#
 .SYNOPSIS
 Creates an APIM Product if one does not already exist
@@ -24,7 +18,7 @@ The ApiProductId within APIM of the Product to add; different to the display nam
 [Optional] Api Product Title (display name) within APIM of the Product to add; defaults to the ApiProductId if not specified
 
 .EXAMPLE
-Set-ApimProductAndLogger -ApimResourceGroup dfc-foo-shared-rg -InstanceName dfc-foo-shared-apim -ApiProductId bar-product
+Set-ApimProduct -ApimResourceGroup dfc-foo-shared-rg -InstanceName dfc-foo-shared-apim -ApiProductId bar-product
 #>
 [CmdletBinding()]
 param(
