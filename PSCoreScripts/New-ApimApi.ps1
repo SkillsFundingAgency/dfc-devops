@@ -26,6 +26,18 @@ Root Uri of the Api to call; the path from this root is then used as the endpoin
 .PARAMETER ApiProductId
 The ApiProductId within APIM of the Product to add the API to
 
+.PARAMETER ApiPath
+[Optional] The path prefix to apply to the URL; defaults to the ApiId if not specified
+
+.PARAMETER ApiName
+[Optional] The API name; defaults to the ApiId if not specified
+
+.PARAMETER ApiVersionSetId
+[Versioned API only] The name of the version set to apply to this API; this resource must already be created
+
+.PARAMETER ApiVersion
+[Versioned API only] The version name (ie v1)
+
 .EXAMPLE
 Set-ApimApi -ApimResourceGroup dfc-foo-shared-rg -InstanceName dfc-foo-shared-apim -ApiId bar-api -ApiServiceUrl "https://dfc-foo-api-bar-fa.azurewebsites.net/" -ApiProductId bar-product
 #>
