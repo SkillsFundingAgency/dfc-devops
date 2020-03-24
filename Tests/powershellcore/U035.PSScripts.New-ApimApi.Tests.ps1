@@ -13,7 +13,6 @@ Describe "New-ApimApi unit tests" -Tag "Unit" {
         ApimResourceGroup = "dfc-foo-bar-rg"
         InstanceName = "dfc-foo-bar-apim"
         ApiId = "bar-api"
-        ApiProductId = "bar-product"
         ApiServiceUrl = "https://dfc-foo-api-bar-fa.azurewebsites.net/"
     }
 

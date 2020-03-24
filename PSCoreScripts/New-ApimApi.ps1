@@ -23,9 +23,6 @@ Api ID of product to add
 .PARAMETER ApiServiceUrl
 Root Uri of the Api to call; the path from this root is then used as the endpoint
 
-.PARAMETER ApiProductId
-The ApiProductId within APIM of the Product to add the API to
-
 .PARAMETER ApiPath
 [Optional] The path prefix to apply to the URL; defaults to the ApiId if not specified
 
@@ -51,8 +48,6 @@ param(
     [String]$ApiId,
     [Parameter(Mandatory=$true)]
     [String]$ApiServiceUrl,
-    [Parameter(Mandatory=$true)]
-    [String]$ApiProductId,
     [Parameter(Mandatory=$false)]
     [String]$ApiPath = $ApiId,
     [Parameter(Mandatory=$false)]
@@ -74,13 +69,13 @@ if (!$Api) {
 
         Write-Output "Creating versioned API $ApiId"
         $VersionSet = Get-AzApiManagementApiVersionSet -Context $Context -ApiVersionSetId $ApiVersionSetId
-        $Api = New-AzApiManagementApi -Context $Context -ApiId $ApiId -Name $ApiName -ServiceUrl $ApiServiceUrl -Protocols @("https") -ProductIds @( $ApiProductId ) -Path $ApiPath -ApiVersionSetId $versionSet.ApiVersionSetId -ApiVersion $ApiVersion
+        $Api = New-AzApiManagementApi -Context $Context -ApiId $ApiId -Name $ApiName -ServiceUrl $ApiServiceUrl -Protocols @("https") -Path $ApiPath -ApiVersionSetId $versionSet.ApiVersionSetId -ApiVersion $ApiVersion
 
     }
     else {
 
         Write-Output "Creating standard API $ApiId"
-        $Api = New-AzApiManagementApi -Context $Context -ApiId $ApiId -Name $ApiName -ServiceUrl $ApiServiceUrl -Protocols @("https") -ProductIds @( $ApiProductId ) -Path $ApiPath
+        $Api = New-AzApiManagementApi -Context $Context -ApiId $ApiId -Name $ApiName -ServiceUrl $ApiServiceUrl -Protocols @("https") -Path $ApiPath
 
     }
 
