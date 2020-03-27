@@ -1,0 +1,122 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "appServiceName": {
+            "type": "string",
+            "metadata": {
+                "description": "App Service name to be created"
+            }
+        },
+        "appServicePlanName": {
+            "type": "string",
+            "metadata": {
+                "description": "App Service Plan to put the app service inside"
+            }
+        },
+        "appServicePlanResourceGroup": {
+            "type": "string",
+            "defaultValue": "[resourceGroup().name]",
+            "metadata": {
+                "description": "Resource group the App Service Plan is within"
+            }
+        },
+        "appServiceType": {
+            "type": "string",
+            "allowedValues": [
+                "app",
+                "functionapp"
+            ],
+            "defaultValue": "app",
+            "metadata": {
+                "description": "Type of site, either (web)app or functionapp"
+            }
+        },
+        "appServiceAppSettings": {
+            "type": "array",
+            "defaultValue": [],
+            "metadata": {
+                "description": "Array of app settings to be created"
+            }
+        },
+        "appServiceConnectionStrings": {
+            "type": "array",
+            "defaultValue": [],
+            "metadata": {
+                "description": "Array of connection strings to be created"
+            }
+        },
+        "customHostName": {
+            "type": "string",
+            "defaultValue": ""
+        },
+        "certificateThumbprint": {
+            "type": "string",
+            "defaultValue": "",
+            "metadata": {
+                "description": ""
+            }
+        },
+        "clientAffinity": {
+            "type": "bool",
+            "defaultValue": false
+        }
+    },
+    "variables": {
+        "useCustomHostname": "[greater(length(parameters('customHostname')), 0)]",
+        "appServicePlanId": "[resourceId(parameters('appServicePlanResourceGroup'), 'Microsoft.Web/serverfarms', parameters('appServicePlanName'))]"
+    },
+    "resources": [
+        {
+            "name": "[parameters('appServiceName')]",
+            "type": "Microsoft.Web/sites",
+            "apiVersion": "2018-11-01",
+            "kind": "[parameters('appServiceType')]",
+            "location": "[resourceGroup().location]",
+            "properties": {
+                "serverFarmId": "[variables('appServicePlanId')]",
+                "clientAffinityEnabled": "[parameters('clientAffinity')]",
+                "siteConfig": {
+                    "alwaysOn": true,
+                    "phpVersion": "off"
+                },
+                "httpsOnly": true
+            },
+            "resources": [
+                {
+                    "name": "staging",
+                    "type": "slots",
+                    "apiVersion": "2018-11-01",
+                    "location": "[resourceGroup().location]",
+                    "properties": {
+                        "clientAffinityEnabled": "[parameters('clientAffinity')]",
+                        "siteConfig": {
+                            "appSettings": "[parameters('appServiceAppSettings')]",
+                            "connectionStrings": "[parameters('appServiceConnectionStrings')]",
+                            "phpVersion": "off"
+                        }
+                    },
+                    "dependsOn": [
+                        "[parameters('appServiceName')]"
+                    ]
+                }
+            ],
+            "dependsOn": []
+        },
+        {
+            "type": "Microsoft.Web/sites/hostnameBindings",
+            "condition": "[variables('UseCustomHostname')]",
+            "name": "[concat(parameters('appServiceName'), '/', if(variables('useCustomHostname'), parameters('customHostname'), 'placeholder'))]",
+            "apiVersion": "2016-08-01",
+            "location": "[resourceGroup().location]",
+            "properties": {
+                "sslState": "SniEnabled",
+                "thumbprint": "[parameters('certificateThumbprint')]"
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('appServiceName'))]"
+            ]
+        }
+    ],
+    "outputs": {}
+}
