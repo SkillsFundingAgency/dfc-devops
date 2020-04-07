@@ -34,7 +34,7 @@ RUN mkdir -p /tmp/dependencies \
     && rm -rf /tmp/dependencies
 
 # Install additional plugins using Plugin Manager
-RUN $JMETER_BIN/PluginsManagerCMD.sh install jpgc-filterresults=2.2,jpgc-graphs-basic=2.0,jpgc-graphs-additional=2.0,jpgc-graphs-dist=2.0,jpgc-ggl=2.0,jpgc-synthesis=2.2
+RUN $JMETER_BIN/PluginsManagerCMD.sh install jpgc-filterresults=2.2,jpgc-graphs-basic=2.0,jpgc-graphs-additional=2.0,jpgc-graphs-dist=2.0,jpgc-ggl=2.0,jpgc-synthesis=2.2,jpgc-casutg=2.9
 
 # Install Neo4j driver
 RUN mkdir -p /tmp/dependencies \
