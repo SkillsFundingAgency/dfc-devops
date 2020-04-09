@@ -25,7 +25,7 @@ jobs:
       ImageBaseName: NCS.AzureDevOpsAgents.JMeter
       ImageTag: $(Build.BuildNumber)
       ManifestFileName: jmeter-agent.kubernetes.yml
-  # Build and publish the NCS.AzureDevOpsAgents.JMeter docker image
+  # Build and publish the NCS.AzureDevOpsAgents.JMeterSlave docker image
   - template: AzureDevOpsTemplates/Build/StepTemplates/dfc-docker-publish-k8smanifest.yml@dfc-devops
     parameters:
       ContainerRegistryAdminUser: ${{ parameters.ContainerRegistryAdminUser }}
