@@ -24,7 +24,7 @@ spec:
         "beta.kubernetes.io/os": linux
       containers:
       - name: jmeter-slave
-        image: dfcdevsharedcr.azurecr.io/ncs.azuredevopsagents.jmeter:__NCSAzureDevOpsAgentsJMeterTag__
+        image: dfcdevsharedcr.azurecr.io/ncs.azuredevopsagents.jmeterslaves:__NCSAzureDevOpsAgentsJMeterTag__
         resources:
           requests:
             cpu: 500m
