@@ -31,5 +31,6 @@ jobs:
       ContainerRegistryAdminUser: ${{ parameters.ContainerRegistryAdminUser }}
       ContainerRegistryPassword: ${{ parameters.ContainerRegistryPassword }}
       DockerfileName: jmeter-slave.Dockerfile
-      ImageBaseName: NCS.AzureDevOpsAgents.JMeterSlave
+      ImageBaseName: NCS.AzureDevOpsAgents.JMeterSlaves
       ImageTag: $(Build.BuildNumber)
+      ManifestFileName: jmeter-slaves.kubernetes.yml
