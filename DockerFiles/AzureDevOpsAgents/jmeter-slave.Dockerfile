@@ -9,7 +9,7 @@ ARG NEO4J_PLUGIN_VERSION="4.0.0"
 ENV JMETER_HOME /opt/apache-jmeter-${JMETER_VERSION}
 ENV	JMETER_BIN	${JMETER_HOME}/bin
 ENV	JMETER_DOWNLOAD_URL  https://archive.apache.org/dist/jmeter/binaries/apache-jmeter-${JMETER_VERSION}.tgz
-ENV HEAP "-Xms1g -Xmx3g -XX:MaxMetaspaceSize=768m"
+ENV JVM_ARGS "-Xms1g -Xmx3g -XX:MaxMetaspaceSize=768m"
 
 RUN apt-get update 
 RUN apt-get install --no-install-recommends \
