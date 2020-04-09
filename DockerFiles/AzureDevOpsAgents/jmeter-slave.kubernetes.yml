@@ -12,12 +12,13 @@ spec:
       maxUnavailable: 1
   minReadySeconds: 5 
   selector:
-  matchLabels:
-    jmeter_mode: slave
+    matchLabels:
+      jmeter_mode: slave
   template:
     metadata:
       labels:
         app: jmeter-slave
+        jmeter_mode: slave
     spec:
       nodeSelector:
         "beta.kubernetes.io/os": linux
@@ -27,7 +28,7 @@ spec:
         resources:
           requests:
             cpu: 500m
-            memory: "1G"
+            memory: "500M"
           limits:
             cpu: 500m
             memory: "2G"
