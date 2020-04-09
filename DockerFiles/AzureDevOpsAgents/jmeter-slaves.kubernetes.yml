@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jmeter-slaves
+  labels:
+    jmeter_mode: slave
+spec:
+  replicas: 1
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  minReadySeconds: 5 
+  selector:
+    matchLabels:
+      jmeter_mode: slave
+  template:
+    metadata:
+      labels:
+        app: jmeter-slave
+        jmeter_mode: slave
+    spec:
+      nodeSelector:
+        "beta.kubernetes.io/os": linux
+      containers:
+      - name: jmeter-slave
+        image: dfcdevsharedcr.azurecr.io/ncs.azuredevopsagents.jmeterslaves:__NCSAzureDevOpsAgentsJMeterTag__
+        resources:
+          requests:
+            cpu: 500m
+            memory: "500M"
+          limits:
+            cpu: 500m
+            memory: "2G"
+        ports:
+        - containerPort: 1099
+        - containerPort: 50000
+        securityContext:
+          allowPrivilegeEscalation: false
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: jmeter-slaves-svc
+  labels:
+    jmeter_mode: slave
+spec:
+  clusterIP: None
+  ports:
+    - port: 1099
+      name: first
+      targetPort: 1099
+    - port: 50000
+      name: second
+      targetPort: 50000
+  selector:
+    jmeter_mode: slave

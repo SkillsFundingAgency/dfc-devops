@@ -20,6 +20,13 @@ To convert the jMeter output to the JUnit format that can be uploaded to Azure D
 
 Then add a Publish Test Results task to publish the <jmeter-test-file>_JUnit.xml test output file.  This assumes that you have stored the jMeter test in a repo and added that as an artifact to the pipeline or release.
 
+#### Running tests using jMeter slaves
+
+As part of the DeployContainers job a Kubernetes Deployment and Service are created that deploy additional jMeter Pods that can act as slaves to the master jMeter instance running on the Azure DevOps agent.  Using the basic command above you can run jMeter tests directly on the Azure DevOps agent.  To run tests using the slaves add the following parameters to the command:
+```
+-Dserver.rmi.ssl.disable=true -R `getent ahostsv4 jmeter-slaves-svc | cut -d' ' -f1 | sort -u | awk -v ORS=, '{print $1}' | sed 's/,$//'`
+```
+
 ### Run locally
 
 From the root of this repo you can build the image locally

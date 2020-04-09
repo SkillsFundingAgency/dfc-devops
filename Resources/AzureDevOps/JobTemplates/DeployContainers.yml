@@ -41,3 +41,11 @@ jobs:
             KubernetesCluster: ${{ parameters.KubernetesCluster }}
             ManifestFileName: jmeter-agent.kubernetes.yml
             PathToManifest: $(Pipeline.Workspace)/NCS.AzureDevOpsAgents.JMeter
+        # Deploy the NCS.AzureDevOpsAgents.JMeterSlaves pod and service
+        - template: AzureDevOpsTemplates\Deploy\StepTemplates\dfc-kubernetes-deploy.yml@dfc-devops
+          parameters:
+            AksResourceGroup: ${{ parameters.AksResourceGroup }}
+            AzureSubscriptionEndpoint: ${{ parameters.AzureSubscriptionEndpoint }}
+            KubernetesCluster: ${{ parameters.KubernetesCluster }}
+            ManifestFileName: jmeter-slaves.kubernetes.yml
+            PathToManifest: $(Pipeline.Workspace)/NCS.AzureDevOpsAgents.JMeterSlaves
