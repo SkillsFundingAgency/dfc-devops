@@ -31,7 +31,7 @@ spec:
             memory: "500M"
           limits:
             cpu: 500m
-            memory: "2G"
+            memory: "4G"
         ports:
         - containerPort: 1099
         - containerPort: 50000
