@@ -34,3 +34,7 @@ There are also some generalised quality tests (filename starts with Q and tests 
 These tests run on all groups of files of the same type and ensure standards and quality are maintained across all files checked-in.
 
 Additional document for creating tests and details of the quality tests can be [found here](ArmTemplates/README.md).
+
+## Kubernetes Tooling
+
+The pipeline associated with this repo deploys various tools into the dfc-dev-shared-aks AKS cluster such as container based Azure DevOps agents and Prometheus.  One useful tool for accessing the data exposed by Prometheus is [Lens](https://k8slens.dev/).  To configure this to access the metrics exposed by Prometheus right click a cluster in Lens > Settings > Prometheus service address > set this to `default/prometheus-operated:9090`.  **Do not use Features > Metrics > Install,** this will install additional resources into the cluster that may conflict with existing resources.
