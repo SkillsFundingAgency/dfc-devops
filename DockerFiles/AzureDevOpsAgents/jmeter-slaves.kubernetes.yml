@@ -5,7 +5,7 @@ metadata:
   labels:
     jmeter_mode: slave
 spec:
-  replicas: 2
+  replicas: __JMeterSlaveReplicasPerNode__
   strategy:
     rollingUpdate:
       maxSurge: 1
