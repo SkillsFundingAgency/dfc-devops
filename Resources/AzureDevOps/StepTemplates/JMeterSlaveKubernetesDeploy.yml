@@ -12,6 +12,7 @@ steps:
     SourceFolder: ${{ parameters.PathToManifest }}
     Contents: ${{ parameters.ManifestFileName }}
     TargetFolder: ${{ parameters.PathToManifest }}/temp
+- pwsh: Write-Output "##vso[task.setvariable variable=JMeterSlaves]jmeter-slaves-1"
 - pwsh: Write-Output "##vso[task.setvariable variable=JMeterSlaveDeploymentNodeSelector]$(JMeterSlaveDeploymentNodeSelector1)"
 - task: esfadevops.Tokenization.custom-build-task.Tokenization@0
   displayName: 'Tokenization: Transform file ${{ parameters.ManifestFileName }}'
@@ -37,6 +38,7 @@ steps:
     SourceFolder: ${{ parameters.PathToManifest }}
     Contents: ${{ parameters.ManifestFileName }}
     TargetFolder: ${{ parameters.PathToManifest }}/temp
+- pwsh: Write-Output "##vso[task.setvariable variable=JMeterSlaves]jmeter-slaves-2"
 - pwsh: Write-Output "##vso[task.setvariable variable=JMeterSlaveDeploymentNodeSelector]$(JMeterSlaveDeploymentNodeSelector2)"
 - task: esfadevops.Tokenization.custom-build-task.Tokenization@0
   displayName: 'Tokenization: Transform file ${{ parameters.ManifestFileName }}'

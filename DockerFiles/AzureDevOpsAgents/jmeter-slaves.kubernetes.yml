@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: jmeter-slaves
+  name: __JMeterSlaves__
   labels:
     jmeter_mode: slave
 spec:
