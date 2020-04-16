@@ -17,7 +17,7 @@ spec:
       nodeSelector:
         "beta.kubernetes.io/os": linux
         ##Create Azure DevOps variable JMeterMasterDeploymentNodeSelector and set to aks-agentpool-37356019-vmss000000
-        kubernetes.io/hostname=__JMeterMasterDeploymentNodeSelector__
+        kubernetes.io/hostname: __JMeterMasterDeploymentNodeSelector__
       containers:
       - name: jmeter-agent
         image: dfcdevsharedcr.azurecr.io/ncs.azuredevopsagents.jmeter:__NCSAzureDevOpsAgentsJMeterTag__
