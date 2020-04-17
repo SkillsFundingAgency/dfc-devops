@@ -16,6 +16,7 @@ spec:
     spec:
       nodeSelector:
         "beta.kubernetes.io/os": linux
+        kubernetes.io/hostname: __JMeterMasterDeploymentNodeSelector__
       containers:
       - name: jmeter-agent
         image: dfcdevsharedcr.azurecr.io/ncs.azuredevopsagents.jmeter:__NCSAzureDevOpsAgentsJMeterTag__
