@@ -89,7 +89,7 @@ if(!$AdServicePrincipal) {
         try {
 
             Write-Verbose "Registering service principal ..."
-            $AdServicePrincipal = New-AzureRmADServicePrincipal -DisplayName $AppRegistrationName -Password $SecurePassword -EndDate $([DateTime]::new(2299, 12, 31)) -ErrorAction Stop
+            $AdServicePrincipal = New-AzureRmADServicePrincipal -DisplayName $AppRegistrationName -Password $SecurePassword -EndDate $([DateTime]::new(2299, 12, 31)) -ErrorAction Stop -SkipAssignment
 
         }
         catch {
@@ -106,7 +106,7 @@ if(!$AdServicePrincipal) {
     else {
 
         Write-Verbose "Registering service principal ..."
-        $AdServicePrincipal = New-AzureRmADServicePrincipal -DisplayName $AppRegistrationName
+        $AdServicePrincipal = New-AzureRmADServicePrincipal -DisplayName $AppRegistrationName -SkipAssignment
 
     }
 

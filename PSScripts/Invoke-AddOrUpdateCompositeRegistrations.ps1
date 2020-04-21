@@ -1,3 +1,10 @@
+###########################################################################################
+##                                    WARNING                                            ##
+## This script is for backwards compatibility.                                           ##
+## Please make any changes to the version of this script in the PSCoreScripts folder     ##
+###########################################################################################
+
+
 <#
 .SYNOPSIS
 Adds/Updates page and region registrations for an application into the composite ui.

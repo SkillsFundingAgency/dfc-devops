@@ -16,6 +16,7 @@ spec:
     spec:
       nodeSelector:
         "beta.kubernetes.io/os": linux
+        kubernetes.io/hostname: __JMeterMasterDeploymentNodeSelector__
       containers:
       - name: jmeter-agent
         image: dfcdevsharedcr.azurecr.io/ncs.azuredevopsagents.jmeter:__NCSAzureDevOpsAgentsJMeterTag__
@@ -24,8 +25,8 @@ spec:
             cpu: 500m
             memory: "1G"
           limits:
-            cpu: 2000m
-            memory: "4G"
+            cpu: 500m
+            memory: "2G"
         env:
         - name: AZP_AGENT_NAME
           value: ncs-jmeter-__NCSAzureDevOpsAgentsJMeterTag__-agent-1
@@ -38,3 +39,5 @@ spec:
               key: pattokensecret
         - name: AZP_URL
           value: __AzureDevOpsUrl__
+        securityContext:
+          allowPrivilegeEscalation: false

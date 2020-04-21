@@ -38,6 +38,13 @@
                 "description": "Operator comparing the current value with the threshold value."
             }
         },
+        "dimensions": {
+            "type": "array",
+            "defaultValue": [],
+            "metadata": {
+                "description": "an array of objects (containing name, operator, and values) that represent the dimensions to attach to the metric alert."
+            }
+        },
         "threshold": {
             "type": "string",
             "defaultValue": "0",
@@ -115,10 +122,11 @@
                         {
                             "name": "metric critria",
                             "metricName": "[parameters('metricName')]",
-                            "dimensions": [],
+                            "dimensions": "[parameters('dimensions')]",
                             "operator": "[parameters('operator')]",
                             "threshold": "[parameters('threshold')]",
-                            "timeAggregation": "[parameters('aggregation')]"
+                            "timeAggregation": "[parameters('aggregation')]",
+                            "criterionType": "StaticThresholdCriterion"
                         }
                     ]
                 },

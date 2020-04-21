@@ -4,6 +4,7 @@ parameters:
   BuildPlatform: 'any cpu'
   BuildConfiguration: 'release'
   DotNetCoreVersion: ''
+  GitVersionConfigFilePath: Resources/AzureDevOps/GitVersion.yml
   IncludePreviewVersions: false
   PublishWebApp: 'false'
   TestSuffix: Tests
@@ -31,12 +32,14 @@ steps:
    inputs:
      version: ${{ parameters.DotNetCoreVersion }}
      IncludePreviewVersions: ${{ parameters.IncludePreviewVersions }}
+     installationPath: $(Agent.TempDirectory)/dotnet
 
- - task: gittools.gitversion.gitversion-task.GitVersion@5
+ - task: UseGitVersion@5
    displayName: GitVersion
    inputs:
      useConfigFile: true
-     configFilePath: GitVersion.yml
+     configFilePath: ${{ parameters.GitVersionConfigFilePath }}
+     versionSpec: '5.x'
 
  - task: SonarCloudPrepare@1
    displayName: 'Prepare analysis on SonarCloud'
@@ -64,7 +67,7 @@ steps:
    condition: not(${{ parameters.PublishWebApp }})
    inputs: 
      rootFolderOrFile: $(build.artifactstagingdirectory)\Build\
-     archiveFile: $(build.artifactstagingdirectory)\Artifact\DeploymentPackages\$(SolutionBaseName).zip
+     archiveFile: $(build.artifactstagingdirectory)\Artifact\${{ parameters.SolutionBaseName }}\DeploymentPackages\$(SolutionBaseName).zip
      includeRootFolder: false
 
 # task to package a web app
@@ -74,7 +77,7 @@ steps:
    inputs:
      command: 'publish'
      projects: '${{ parameters.SolutionBaseName }}\${{ parameters.SolutionBaseName }}.csproj'
-     arguments: '-o $(build.artifactstagingdirectory)\Artifact\DeploymentPackages\  -c ${{ parameters.BuildConfiguration }}'
+     arguments: '-o $(build.artifactstagingdirectory)\Artifact\${{ parameters.SolutionBaseName }}\DeploymentPackages\  -c ${{ parameters.BuildConfiguration }}'
      publishWebProjects: false #set to false as this setting (which defaults to true) will parse the entire repo for web projects
 
  - task: DotNetCoreCLI@2
@@ -88,16 +91,8 @@ steps:
    displayName: 'Run Code Analysis'
    condition: and(succeeded(), variables['ShouldRunSonarCloud'], 'True')
 
- - task: CopyFiles@2
-   displayName: 'Copy Files to: $(build.artifactstagingdirectory)\Artifact\Azure'
-   inputs:
-     sourceFolder: 'Resources'
-     contents: '**'
-     targetFolder: '$(build.artifactstagingdirectory)\Artifact\Azure'
-
- - task: PublishBuildArtifacts@1
+ - task: PublishPipelineArtifact@1
    displayName: 'Publish Artifact: ${{ parameters.SolutionBaseName }}'
    inputs:
-     pathtoPublish: $(build.artifactstagingdirectory)\Artifact\
-     artifactName: ${{ parameters.SolutionBaseName }}
-     publishLocation: container
+     targetPath: $(build.artifactstagingdirectory)\Artifact\${{ parameters.SolutionBaseName }}\DeploymentPackages
+     artifactName: ${{ parameters.SolutionBaseName }}.DeploymentPackages

@@ -4,6 +4,7 @@ parameters:
   BuildPlatform: 'any cpu'
   BuildConfiguration: 'release'
   DotNetCoreVersion: ''
+  GitVersionConfigFilePath: Resources/AzureDevOps/GitVersion.yml
   IncludePreviewVersions: false
   PublishWebApp: 'false'
   TestSuffix: Tests
@@ -15,12 +16,14 @@ steps:
    inputs:
      version: ${{ parameters.DotNetCoreVersion }}
      IncludePreviewVersions: ${{ parameters.IncludePreviewVersions }}
+     installationPath: $(Agent.TempDirectory)/dotnet
 
- - task: gittools.gitversion.gitversion-task.GitVersion@5
+ - task: UseGitVersion@5
    displayName: GitVersion
    inputs:
      useConfigFile: true
-     configFilePath: GitVersion.yml
+     configFilePath: ${{ parameters.GitVersionConfigFilePath }}
+     versionSpec: '5.x'
 
  # tasks to package a function app
  - task: DotNetCoreCLI@2
@@ -56,16 +59,8 @@ steps:
      projects: '${{ parameters.SolutionBaseName }}.${{ parameters.TestSuffix }}\${{ parameters.SolutionBaseName }}.${{ parameters.TestSuffix }}.csproj'
      arguments: '--configuration ${{ parameters.BuildConfiguration }} --collect "Code coverage"'
 
- - task: CopyFiles@2
-   displayName: 'Copy Files to: $(build.artifactstagingdirectory)\Artifact\${{ parameters.SolutionBaseName }}\Azure'
-   inputs:
-     sourceFolder: 'Resources'
-     contents: '**'
-     targetFolder: '$(build.artifactstagingdirectory)\Artifact\${{ parameters.SolutionBaseName }}\Azure'
-
- - task: PublishBuildArtifacts@1
+ - task: PublishPipelineArtifact@1
    displayName: 'Publish Artifact: ${{ parameters.SolutionBaseName }}'
    inputs:
-     pathtoPublish: $(build.artifactstagingdirectory)\Artifact\${{ parameters.SolutionBaseName }}\
-     artifactName: ${{ parameters.SolutionBaseName }}
-     publishLocation: container
+     targetPath: $(build.artifactstagingdirectory)\Artifact\${{ parameters.SolutionBaseName }}\DeploymentPackages\
+     artifactName: ${{ parameters.SolutionBaseName }}.DeploymentPackages

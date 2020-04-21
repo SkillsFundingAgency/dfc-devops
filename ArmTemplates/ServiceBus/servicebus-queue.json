@@ -1,0 +1,75 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2018-05-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "serviceBusNamespaceName": {
+            "type": "string",
+            "metadata": {
+                "description": "Name of an existing Service Bus namespace to add the topic to"
+            }
+        },
+        "queueName": {
+            "type": "string",
+            "metadata": {
+                "description": "Queue name to add to Service Bus"
+            }
+        },
+        "MessageLockDuration": {
+            "type": "string",
+            "defaultValue": "PT1M",
+            "metadata": {
+                "description": "Lock duration in seconds. (as ISO8601 timespan)"
+            }
+        },
+        "MaxSizeInMegabytes": {
+            "type": "int",
+            "defaultValue": 1024,
+            "metadata": {
+                "description": "The maximum size of the queue in MB."
+            }
+        },
+        "EnableDuplicateDetection": {
+            "type": "bool",
+            "defaultValue": false,
+            "metadata": {
+                "description": "A value indicating if this queue requires duplicate detection."
+            }
+        },
+        "EnableSessions": {
+            "type": "bool",
+            "defaultValue": false,
+            "metadata": {
+                "description": "A value that indicates if the queue supports sessions."
+            }
+        },
+        "EnableDeadLettering": {
+            "type": "bool",
+            "defaultValue": true,
+            "metadata": {
+                "description": "When true,  messages are sent to a dead letter queue when they expire."
+            }
+        },
+        "MaxDeliveryCount": {
+            "type": "int",
+            "defaultValue": 10,
+            "metadata": {
+                "description": "The maximum number of times a message is delivered before it is expired"
+            }
+        }
+    },
+    "resources": [
+        {
+            "name": "[concat(parameters('serviceBusNamespaceName'), '/', parameters('queueName'))]",
+            "type": "Microsoft.ServiceBus/namespaces/queues",
+            "apiVersion": "2017-04-01",
+            "properties": {
+                "lockDuration": "[parameters('MessageLockDuration')]",
+                "maxSizeInMegabytes": "[parameters('MaxSizeInMegabytes')]",
+                "requiresDuplicateDetection": "[parameters('EnableDuplicateDetection')]",
+                "requiresSession":  "[parameters('EnableSessions')]",
+                "deadLetteringOnMessageExpiration": "[parameters('EnableDeadLettering')]",
+                "maxDeliveryCount": "[parameters('MaxDeliveryCount')]"
+            }
+        }
+    ]
+}

@@ -1,0 +1,61 @@
+parameters:
+  RequiresAzurePowershell: false
+  RequiresPowershellCore: false
+  AzureSubscription: ''
+  TestName: ''
+  TestType: ''  # One of 'Acceptance', 'Quality', "Unit"
+  ResultsFileSuffix: ''
+  CodeCoveragePercentage: 80
+
+jobs:
+- job: ${{ parameters.TestName }}
+  displayName: 'Run ${{ parameters.TestType }} tests'
+  steps:
+  - task: DeleteFiles@1
+    displayName: 'Remove old test and code coverage files'
+    inputs:
+      SourceFolder: '$(System.DefaultWorkingDirectory)/Tests'
+      Contents: |
+        **/TEST-${{ parameters.ResultsFileSuffix }}.xml
+        **/CODECOVERAGE-${{ parameters.ResultsFileSuffix }}.xml
+
+  - ${{ if eq(parameters.RequiresAzurePowershell, true) }}:
+    - task: AzurePowerShell@3
+      displayName: 'AzurePowershell: Invoke-${{ parameters.TestType }}Tests.ps1'
+      inputs:
+        azureSubscription: '${{ parameters.AzureSubscription }}'
+        ScriptPath: '$(System.DefaultWorkingDirectory)/Tests/Invoke-${{ parameters.TestType }}Tests.ps1'
+        azurePowerShellVersion: LatestVersion
+
+  - ${{ if eq(parameters.RequiresAzurePowershell, false) }}:
+    - task: Powershell@2
+      displayName: 'PowerShell Script: Invoke-${{ parameters.TestType }}Tests.ps1'
+      continueOnError: true
+      inputs:
+        targetType: filePath
+        filePath: '$(System.DefaultWorkingDirectory)/Tests/Invoke-${{ parameters.TestType }}Tests.ps1'
+        ${{ if parameters.RequiresPowershellCore }}:
+          pwsh: true
+
+  - task: PublishTestResults@2
+    displayName: 'Publish Test Results'
+    condition: always()
+    inputs:
+      testResultsFormat: NUnit
+      testResultsFiles: '**/TEST-${{ parameters.ResultsFileSuffix }}.xml'
+      mergeTestResults: true
+      testRunTitle: '${{ parameters.ResultsFileSuffix }} - Test Results'
+
+  - ${{ if eq(parameters.TestType, 'Unit') }}:
+    - task: PublishCodeCoverageResults@1
+      displayName: 'Publish Code Coverage'
+      inputs:
+        summaryFileLocation: '**/CODECOVERAGE-${{ parameters.ResultsFileSuffix }}.xml'
+
+    - task: PowerShell@2
+      displayName: 'PowerShell Script: Out-TestResults'
+      inputs:
+        targetType: filePath
+        filePath: '$(System.DefaultWorkingDirectory)/Tests/Out-TestAndCodeCoverageResults.ps1'
+        arguments: '-CoveragePercent ${{ parameters.CodeCoveragePercentage }}'
+        pwsh: true
