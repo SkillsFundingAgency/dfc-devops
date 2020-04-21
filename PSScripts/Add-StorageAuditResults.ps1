@@ -48,7 +48,7 @@ if ($PSBoundParameters.ContainsKey('AppendToReport')) {
     foreach ($CrossEnvironmentStorageAccountAudit in $AppendToReport) {
         if ($CrossEnvironmentStorageAccountAudit.GetType().ToString() -ne "CrossEnvironmentStorageAccountAudit") {
 
-            throw "Error validating input from AppendToReport parameter, a member of array is not ofo type [CrossEnvironmentStorageAccountAudit]`n$_)"
+            throw "Error validating input from AppendToReport parameter, a member of array is not of type [CrossEnvironmentStorageAccountAudit]`n$_)"
 
         }
     }
@@ -69,7 +69,6 @@ $StorageAccounts = Get-AzStorageAccount
 Write-Verbose "Retrieved $($StorageAccounts.Count) to audit"
 foreach ($StorageAccount in $StorageAccounts) {
 
-    ##TO DO: fix error in regex - captures the 2nd 'test' in 'dfctesttemplatestr'
     $AccountNameContainsEnv = $StorageAccount.StorageAccountName -match $AccountNameRegEx
     Write-Verbose "$($StorageAccount.StorageAccountName) matches regex pattern.  $($Matches.Count) matches found"
 
