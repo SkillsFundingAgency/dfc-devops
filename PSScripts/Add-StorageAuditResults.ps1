@@ -13,7 +13,7 @@ An array of environment names.  Assumes that the DFC naming convention for stora
 The output from a previous run of this cmdlet.  Must be of type CrossEnvironmentStorageAccountAudit[]
 
 .EXAMPLE
-Audits the dev and test environments, the output from that audit is then passed to the 2nd cmdlet which audits the lab environment and produces a consolidate report
+Audits the dev and test environments, the output from that audit is then passed to the 2nd cmdlet which audits the lab environment and produces a consolidated report
 $AuditDevTest = .\PSScripts\Add-StorageAuditResults.ps1 -EnvironmentNames "dev", "test" -Verbose
 $AuditLab = .\PSScripts\Add-StorageAuditResults.ps1 -EnvironmentNames "lab" -AppendToReport $AuditDevTest  -Verbose
 #>
@@ -62,7 +62,7 @@ else {
 
 }
 
-$AccountNameRegEx = "^(\w*)($($EnvironmentNames -join "|"))(\w*)$"
+$AccountNameRegEx = "^(\w{3})($($EnvironmentNames -join "|"))(\w+)$"
 Write-Verbose "Using AccountNameRegEx $AccountNameRegEx"
 
 $StorageAccounts = Get-AzStorageAccount
