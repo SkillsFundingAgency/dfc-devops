@@ -49,6 +49,10 @@
             ],
             "defaultValue": "Developer"
         },
+        "capacity": {
+            "type": "int",
+            "defaultValue": 1
+        },
         "subnetName": {
             "type": "string",
             "defaultValue": ""
@@ -103,7 +107,7 @@
             },
             "sku": {
                 "name": "[parameters('skuTier')]",
-                "capacity": 1
+                "capacity": "[parameters('capacity')]"
             },
             "identity": {
                 "type": "SystemAssigned"

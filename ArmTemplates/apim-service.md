@@ -36,6 +36,10 @@ skuTier (optional) string
 
 Select from Developer, Basic, Standard or Premium.  Defaults to Developer.
 
+capacity (optional) int
+
+Number of units in the primary location. Defaults to 1.
+
 subnetName (optional) string
 
 If network restrictions need to be implemented this parameter is required.  The Azure Subnet must already exist.
