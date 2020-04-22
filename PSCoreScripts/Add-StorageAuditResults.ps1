@@ -76,13 +76,15 @@ foreach ($StorageAccount in $StorageAccounts) {
 
         Write-Verbose "ServicePrefix is $($Matches[1]), Environment is $($Matches[2])"
         Write-Verbose "Shared account name suffix is $($Matches[3])"
+        $AppendToExistingResult = $false
     
         foreach ($ExistingAuditResult in $StorageAccountsAuditResults) {
     
-            if ($ExistingAuditResult.SharedAccountNameSuffix -eq $Matches[3]) {
+            if ($ExistingAuditResult.ServicePrefix -eq $Matches[1] -and $ExistingAuditResult.SharedAccountNameSuffix -eq $Matches[3]) {
     
-                Write-Verbose "Existing audit found with SharedAccountNameSuffix $($Matches[3]), appending results"
+                Write-Verbose "Existing audit found with ServicePrefix $($Matches[1]) and SharedAccountNameSuffix $($Matches[3]), appending results"
                 $CrossEnvironmentStorageAccountAudit = $ExistingAuditResult
+                $AppendToExistingResult = $true
                 break
     
             }
@@ -90,7 +92,7 @@ foreach ($StorageAccount in $StorageAccounts) {
         }
         if (!$CrossEnvironmentStorageAccountAudit) {
             
-            Write-Verbose "No existing audit found with SharedAccountNameSuffix $($Matches[3]), creating new audit object"
+            Write-Verbose "No existing audit found with ServicePrefix $($Matches[1]) and SharedAccountNameSuffix $($Matches[3]), creating new audit object"
             $CrossEnvironmentStorageAccountAudit = New-Object -TypeName CrossEnvironmentStorageAccountAudit
             $CrossEnvironmentStorageAccountAudit.ServicePrefix = $Matches[1]
             $CrossEnvironmentStorageAccountAudit.SharedAccountNameSuffix = $Matches[3]
@@ -160,7 +162,9 @@ foreach ($StorageAccount in $StorageAccounts) {
     Write-Verbose "StorageAccountAuditResults: $($StorageAccountAuditResults.GetType().ToString())"
     $CrossEnvironmentStorageAccountAudit.StorageAccounts += $StorageAccountAuditResults
 
-    $StorageAccountsAuditResults += $CrossEnvironmentStorageAccountAudit
+    if (!$AppendToExistingResult) {
+        $StorageAccountsAuditResults += $CrossEnvironmentStorageAccountAudit
+    }
     Remove-Variable -Name CrossEnvironmentStorageAccountAudit
 }
 
