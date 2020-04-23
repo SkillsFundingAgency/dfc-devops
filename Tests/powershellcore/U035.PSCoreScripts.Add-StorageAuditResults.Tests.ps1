@@ -2,6 +2,9 @@ Push-Location -Path $PSScriptRoot\..\..\PSCoreScripts\
 
 Describe "Add-StorageAuditResults unit tests" -Tag "Unit" {
 
+    $LatestDateTimeOffset = [System.DateTimeOffset]::new("12/26/2019 11:00:00")
+    $OlderDateTimeOffset = [System.DateTimeOffset]::new("12/25/2019 09:00:00")
+
     Mock Get-AzStorageAccount -MockWith { return @(
         @{
             StorageAccountName = "dfcfoosharedstr"
@@ -20,11 +23,11 @@ Describe "Add-StorageAuditResults unit tests" -Tag "Unit" {
     Mock Get-AzStorageContainer -MockWith { return @(
         @{
             Name = "foo-container"
-            LastModified = [System.DateTimeOffset]::new("12/25/2019 11:00:00")
+            LastModified = $LatestDateTimeOffset
         },
         @{
             Name = "bar-container"
-            LastModified = [System.DateTimeOffset]::new("12/25/2019 09:00:00")
+            LastModified = $OlderDateTimeOffset
         }
     )}
     Mock Get-AzStorageAccountKey -MockWith { return @(
@@ -44,14 +47,14 @@ Describe "Add-StorageAuditResults unit tests" -Tag "Unit" {
         @{
             Name = "foo-share"
             Properties = @{
-                LastModified = [System.DateTimeOffset]::new("12/26/2019 11:00:00")
+                LastModified = $LatestDateTimeOffset
             }
             
         },
         @{
             Name = "bar-share"
             Properties = @{
-                LastModified = [System.DateTimeOffset]::new("12/26/2019 09:00:00")
+                LastModified = $OlderDateTimeOffset
             }
         }
     )}
@@ -96,32 +99,32 @@ Describe "Add-StorageAuditResults unit tests" -Tag "Unit" {
             $VerboseOutput | Where-Object { $_.Message -eq "ServicePrefix is dss, Environment is foo" } | Should -Not -Be $null
             $VerboseOutput | Where-Object { $_.Message -eq "ServicePrefix is dfc, Environment is bar" } | Should -Not -Be $null
         }
-   
+
         It "should output the LastModified property of the most recently modified container" {
             $Output = .\Add-StorageAuditResults.ps1 @Params
-            $Output[0].StorageAccounts[0].ContainersLastModifiedDate.ToString() | Should -Be "25/12/2019 11:00:00"
+            $Output[0].StorageAccounts[0].ContainersLastModifiedDate | Should -Be $LatestDateTimeOffset
         }
-    
+
         It "should output a count of the number of containers in each storage account" {
             $Output = .\Add-StorageAuditResults.ps1 @Params
             $Output[0].StorageAccounts[0].ContainersCount | Should -Be 2
         }
-    
+
         It "should output the LastModified property of the most recently modified fileshare" {
             $Output = .\Add-StorageAuditResults.ps1 @Params
-            $Output[0].StorageAccounts[0].FileSharesLastModifiedDate.ToString() | Should -Be "26/12/2019 11:00:00"
+            $Output[0].StorageAccounts[0].FileSharesLastModifiedDate | Should -Be $LatestDateTimeOffset
         }
-    
+
         It "should output a count of the number of fileshares in each storage account" {
             $Output = .\Add-StorageAuditResults.ps1 @Params
             $Output[0].StorageAccounts[0].FileSharesCount | Should -Be 2
         }
-    
+
         It "should output a count of the number of queues in each storage account" {
             $Output = .\Add-StorageAuditResults.ps1 @Params
             $Output[0].StorageAccounts[0].QueuesCount | Should -Be 2
         }
-    
+
         It "should output a count of the number of tables in each storage account" {
             $Output = .\Add-StorageAuditResults.ps1 @Params
             $Output[0].StorageAccounts[0].TablesCount | Should -Be 2
@@ -166,6 +169,6 @@ Describe "Add-StorageAuditResults unit tests" -Tag "Unit" {
             $SecondTenant[0].StorageAccounts.Count | Should -Be 4
             $SecondTenant[1].StorageAccounts.Count | Should -Be 2
         }
-    
+
     }
 }
