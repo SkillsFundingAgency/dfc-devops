@@ -10,7 +10,10 @@ Can audit multiple environments within a subscription.  Can accept the output fr
 An array of environment names.  Assumes that the DFC naming convention for storage accounts is followed, ie <service><environment><project>str, eg dfcfooprojectbarstr
 
 .PARAMETER AppendToReport
-The output from a previous run of this cmdlet.  Must be of type CrossEnvironmentStorageAccountAudit[]
+(optional) The output from a previous run of this cmdlet.  Must be of type CrossEnvironmentStorageAccountAudit[]
+
+.PARAMETER ServicePrefixes
+(optional) A list of service prefixes, useful when running in subscriptions shared with other services
 
 .EXAMPLE
 Audits the dev and test environments, the output from that audit is then passed to the 2nd cmdlet which audits the lab environment and produces a consolidated report
@@ -19,10 +22,12 @@ $AuditLab = .\PSScripts\Add-StorageAuditResults.ps1 -EnvironmentNames "lab" -App
 #>
 [CmdletBinding()]
 param(
+    [Parameter(Mandatory=$true)]
+    [string[]]$EnvironmentNames,
     [Parameter(Mandatory=$false)]
-    [string[]]$EnvironmentNames = @("dev","lab","test"),
+    [Object[]]$AppendToReport,
     [Parameter(Mandatory=$false)]
-    [Object[]]$AppendToReport
+    [string[]]$ServicePrefixes
 )
 
 class StorageAccountAudit {
@@ -62,11 +67,19 @@ else {
 
 }
 
+$StorageAccounts = Get-AzStorageAccount
+if ($PSBoundParameters.ContainsKey('ServicePrefixes')) {
+
+    $ServiceNameRegEx = "^($($ServicePrefixes -join "|"))(\w+)$"
+    Write-Verbose "Using ServiceNameRegEx $ServiceNameRegEx"
+    $StorageAccounts = $StorageAccounts | Where-Object { $_.StorageAccountName -match $ServiceNameRegEx }
+
+}
+Write-Verbose "Retrieved $($StorageAccounts.Count) to audit"
+
 $AccountNameRegEx = "^(\w{3})($($EnvironmentNames -join "|"))(\w+)$"
 Write-Verbose "Using AccountNameRegEx $AccountNameRegEx"
 
-$StorageAccounts = Get-AzStorageAccount
-Write-Verbose "Retrieved $($StorageAccounts.Count) to audit"
 foreach ($StorageAccount in $StorageAccounts) {
 
     $AccountNameContainsEnv = $StorageAccount.StorageAccountName -match $AccountNameRegEx

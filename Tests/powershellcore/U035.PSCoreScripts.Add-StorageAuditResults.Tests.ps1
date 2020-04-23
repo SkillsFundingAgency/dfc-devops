@@ -79,7 +79,7 @@ Describe "Add-StorageAuditResults unit tests" -Tag "Unit" {
         EnvironmentNames = @("foo", "bar")
     }
 
-    Context "When AppendToReport parameter used and object passed in is not of type CrossEnvironmentStorageAccountAudit" {
+    Context "AppendToReport parameter used and object passed in is not of type CrossEnvironmentStorageAccountAudit" {
 
         $Params["AppendToReport"] = New-Object -TypeName Object
 
@@ -89,7 +89,7 @@ Describe "Add-StorageAuditResults unit tests" -Tag "Unit" {
 
     }
 
-    Context "When AppendToReport parameter is not used and valid environment names are used" {
+    Context "AppendToReport parameter is not used and valid environment names are used" {
 
         $Params.Remove("AppendToReport")
 
@@ -138,7 +138,7 @@ Describe "Add-StorageAuditResults unit tests" -Tag "Unit" {
 
     }
     
-    Context "When AppendToReport parameter used and object passed in is of type CrossEnvironmentStorageAccountAudit" {
+    Context "AppendToReport parameter used and object passed in is of type CrossEnvironmentStorageAccountAudit" {
 
         It "should append output to AppendToReport object" {
             $Params.Remove("AppendToReport")
@@ -168,6 +168,39 @@ Describe "Add-StorageAuditResults unit tests" -Tag "Unit" {
             $SecondTenant.Count | Should -Be 2
             $SecondTenant[0].StorageAccounts.Count | Should -Be 4
             $SecondTenant[1].StorageAccounts.Count | Should -Be 2
+        }
+    
+    }
+
+    Context "Running in a subscription with multiple services using ServicePrefixes parameter" {
+
+        $Params.Remove("AppendToReport")
+        $Params["ServicePrefixes"] = @("dfc", "dss")
+
+        Mock Get-AzStorageAccount -MockWith { return @(
+            @{
+                StorageAccountName = "dfcfoosharedstr"
+                ResourceGroupName = "dfc-foo-shared-rg"
+            },
+            @{
+                StorageAccountName = "dssfoosharedstr"
+                ResourceGroupName = "dss-foo-shared-rg"
+            },
+            @{
+                StorageAccountName = "dfcbarsharedstr"
+                ResourceGroupName = "dfc-bar-shared-rg"
+            },
+            @{
+                StorageAccountName = "dasbarsharedstr"
+                ResourceGroupName = "das-bar-shared-rg"
+            }
+        )}
+
+        It "should only return results where the Storage Account Name starts with the values passed in using ServicePrefixes" {
+            $Output = .\Add-StorageAuditResults.ps1 @Params
+            $Output.Count | Should -Be 2
+            $Output[0].StorageAccounts.Count | Should -Be 2
+            $Output[1].StorageAccounts.Count | Should -Be 1
         }
 
     }
