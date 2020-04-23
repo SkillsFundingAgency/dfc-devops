@@ -128,7 +128,6 @@ Describe "Add-StorageAuditResults unit tests" -Tag "Unit" {
         }
 
         It "should group the results of audits for storage accounts whose names are the same except for the environment name segment" {
-            ##TO DO: test failure caused bug in script, fix it.  accounts with different service names are getting lumped together when they have the same suffixes
             $Output = .\Add-StorageAuditResults.ps1 @Params
             $Output[0].StorageAccounts.Count | Should -Be 2
             $Output[1].StorageAccounts.Count | Should -Be 1
@@ -139,6 +138,7 @@ Describe "Add-StorageAuditResults unit tests" -Tag "Unit" {
     Context "When AppendToReport parameter used and object passed in is of type CrossEnvironmentStorageAccountAudit" {
 
         It "should append output to AppendToReport object" {
+            $Params.Remove("AppendToReport")
             $FirstTenant = .\Add-StorageAuditResults.ps1 @Params
 
             Mock Get-AzStorageAccount -MockWith { return @(
@@ -161,10 +161,10 @@ Describe "Add-StorageAuditResults unit tests" -Tag "Unit" {
                 AppendToReport = $FirstTenant
             }
 
-            ##TO DO: test failure caused bug in script, fix it.  accounts with different service names are getting lumped together when they have the same suffixes
             $SecondTenant = .\Add-StorageAuditResults.ps1 @Params
-            $SecondTenant[0].StorageAccounts.Count | Should -Be 2
-            $SecondTenant[1].StorageAccounts.Count | Should -Be 1
+            $SecondTenant.Count | Should -Be 2
+            $SecondTenant[0].StorageAccounts.Count | Should -Be 4
+            $SecondTenant[1].StorageAccounts.Count | Should -Be 2
         }
     
     }
