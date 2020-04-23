@@ -113,7 +113,7 @@ foreach ($StorageAccount in $StorageAccounts) {
     $StorageAccountAuditResults.StorageAccountName = $StorageAccount.StorageAccountName
 
     $Context = New-AzStorageContext -StorageAccountName $StorageAccount.StorageAccountName -UseConnectedAccount
-    
+
     # Get the Blob Containers for this account
     $Containers = Get-AzStorageContainer -Context $Context
     if ($Containers.Count -gt 0) {
@@ -136,7 +136,7 @@ foreach ($StorageAccount in $StorageAccounts) {
     $FileShares = Get-AzStorageShare -Context $KeyContext
     if ($FileShares.Count -gt 0) {
 
-        $AccountShareLastModifiedDate = ($FileShares | Select-Object -ExpandProperty Properties | Sort-Object -Property LastModified -Descending | Select-Object -Property LastModified -First 1).LastModified.ToString("yyyy-MM-dd HH:mm") 
+        $AccountShareLastModifiedDate = ($FileShares | Select-Object -ExpandProperty Properties | Sort-Object -Property LastModified -Descending | Select-Object -Property LastModified -First 1).LastModified.ToString("yyyy-MM-dd HH:mm")
 
     }
     else {
@@ -158,7 +158,6 @@ foreach ($StorageAccount in $StorageAccounts) {
     $StorageAccountAuditResults.TablesCount = $Tables.Count
     Write-Verbose "$($StorageAccount.StorageAccountName) contains $($Tables.Count) tables"
 
-    #Write-Verbose "CrossEnvironmentStorageAccountAudit.StorageAccounts: $($CrossEnvironmentStorageAccountAudit.StorageAccounts.GetType().ToString())"
     Write-Verbose "StorageAccountAuditResults: $($StorageAccountAuditResults.GetType().ToString())"
     $CrossEnvironmentStorageAccountAudit.StorageAccounts += $StorageAccountAuditResults
 
