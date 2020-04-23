@@ -77,21 +77,21 @@ foreach ($StorageAccount in $StorageAccounts) {
         Write-Verbose "ServicePrefix is $($Matches[1]), Environment is $($Matches[2])"
         Write-Verbose "Shared account name suffix is $($Matches[3])"
         $AppendToExistingResult = $false
-    
+
         foreach ($ExistingAuditResult in $StorageAccountsAuditResults) {
-    
+
             if ($ExistingAuditResult.ServicePrefix -eq $Matches[1] -and $ExistingAuditResult.SharedAccountNameSuffix -eq $Matches[3]) {
-    
+
                 Write-Verbose "Existing audit found with ServicePrefix $($Matches[1]) and SharedAccountNameSuffix $($Matches[3]), appending results"
                 $CrossEnvironmentStorageAccountAudit = $ExistingAuditResult
                 $AppendToExistingResult = $true
                 break
-    
+
             }
-    
+
         }
         if (!$CrossEnvironmentStorageAccountAudit) {
-            
+
             Write-Verbose "No existing audit found with ServicePrefix $($Matches[1]) and SharedAccountNameSuffix $($Matches[3]), creating new audit object"
             $CrossEnvironmentStorageAccountAudit = New-Object -TypeName CrossEnvironmentStorageAccountAudit
             $CrossEnvironmentStorageAccountAudit.ServicePrefix = $Matches[1]
@@ -157,7 +157,7 @@ foreach ($StorageAccount in $StorageAccounts) {
     $Tables = Get-AzStorageTable -Context $KeyContext
     $StorageAccountAuditResults.TablesCount = $Tables.Count
     Write-Verbose "$($StorageAccount.StorageAccountName) contains $($Tables.Count) tables"
-    
+
     #Write-Verbose "CrossEnvironmentStorageAccountAudit.StorageAccounts: $($CrossEnvironmentStorageAccountAudit.StorageAccounts.GetType().ToString())"
     Write-Verbose "StorageAccountAuditResults: $($StorageAccountAuditResults.GetType().ToString())"
     $CrossEnvironmentStorageAccountAudit.StorageAccounts += $StorageAccountAuditResults
