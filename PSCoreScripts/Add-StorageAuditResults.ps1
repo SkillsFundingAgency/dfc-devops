@@ -128,7 +128,13 @@ foreach ($StorageAccount in $StorageAccounts) {
     $Context = New-AzStorageContext -StorageAccountName $StorageAccount.StorageAccountName -UseConnectedAccount
 
     # Get the Blob Containers for this account
-    $Containers = Get-AzStorageContainer -Context $Context
+    try {
+        $Containers = Get-AzStorageContainer -Context $Context
+    }
+    catch {
+        Write-Warning "Error retrieving StorageContainers for $($StorageAccount.StorageAccountName)`n$_"
+    }
+    
     if ($Containers.Count -gt 0) {
 
         $AccountBlobLastModifiedDate = ($Containers | Sort-Object -Property LastModified -Descending | Select-Object -Property LastModified -First 1).LastModified.UtcDateTime
@@ -146,7 +152,13 @@ foreach ($StorageAccount in $StorageAccounts) {
     # Get the File Shares for this account
     $Key =  (Get-AzStorageAccountKey -ResourceGroupName $StorageAccount.ResourceGroupName -Name $StorageAccount.StorageAccountName)[0].Value
     $KeyContext = New-AzStorageContext -StorageAccountName $StorageAccount.StorageAccountName -StorageAccountKey $Key
-    $FileShares = Get-AzStorageShare -Context $KeyContext
+    try {
+        $FileShares = Get-AzStorageShare -Context $KeyContext
+    }
+    catch {
+        Write-Warning "Error retrieving FileShares for $($StorageAccount.StorageAccountName)`n$_"
+    }
+    
     if ($FileShares.Count -gt 0) {
 
         $AccountShareLastModifiedDate = ($FileShares | Select-Object -ExpandProperty Properties | Sort-Object -Property LastModified -Descending | Select-Object -Property LastModified -First 1).LastModified.ToString("yyyy-MM-dd HH:mm")
@@ -162,12 +174,24 @@ foreach ($StorageAccount in $StorageAccounts) {
     Write-Verbose "$($StorageAccount.StorageAccountName) contains $($FileShares.Count) file shares"
 
     # Get the Queues for this account
-    $Queues = Get-AzStorageQueue -Context $Context
+    try {
+        $Queues = Get-AzStorageQueue -Context $Context
+    }
+    catch {
+        Write-Warning "Error retrieving Queues for $($StorageAccount.StorageAccountName)`n$_"
+    }
+    
     $StorageAccountAuditResults.QueuesCount = $Queues.Count
     Write-Verbose "$($StorageAccount.StorageAccountName) contains $($Queues.Count) queues"
 
     # Get the Tables for this account
-    $Tables = Get-AzStorageTable -Context $KeyContext
+    try {
+        $Tables = Get-AzStorageTable -Context $KeyContext
+    }
+    catch {
+        Write-Warning "Error retrieving Tables for $($StorageAccount.StorageAccountName)`n$_"
+    }
+    
     $StorageAccountAuditResults.TablesCount = $Tables.Count
     Write-Verbose "$($StorageAccount.StorageAccountName) contains $($Tables.Count) tables"
 
