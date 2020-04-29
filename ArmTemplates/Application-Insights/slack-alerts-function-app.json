@@ -68,6 +68,7 @@
                 "[variables('hostingPlanName')]"                            
             ],
             "properties": {
+                "httpsOnly": "true",
                 "siteConfig": {
                     "appSettings": [
                         {
