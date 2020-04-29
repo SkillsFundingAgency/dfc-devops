@@ -60,14 +60,15 @@
         {
             "name": "[variables('functionAppName')]",
             "apiVersion": "2018-11-01",
-            "type": "Microsoft.Web/sites",            
+            "type": "Microsoft.Web/sites",
             "location": "[resourceGroup().location]",
             "kind": "functionapp",
             "dependsOn": [
                 "[variables('appInsightsName')]",
-                "[variables('hostingPlanName')]"                            
+                "[variables('hostingPlanName')]"
             ],
             "properties": {
+                "httpsOnly": true,
                 "siteConfig": {
                     "appSettings": [
                         {
