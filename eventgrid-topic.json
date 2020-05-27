@@ -1,0 +1,30 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "eventgrid_topic_name": {
+            "type": "String"
+        },
+        "eventgrid_topic_sku": {
+            "type": "String"
+        }
+    },
+    "variables": {},
+    "resources": [
+        {
+            "type": "Microsoft.EventGrid/topics",
+            "apiVersion": "2020-04-01-preview",
+            "name": "[parameters('eventgrid_topic_name')]",
+            "location": "[resourceGroup().location]",
+            "tags": {},
+            "sku": {
+                "name": "[parameters('eventgrid_topic_sku')]"
+            },
+            "properties": {
+                "inputSchema": "EventGridSchema",
+                "publicNetworkAccess": "Disabled",
+                "inboundIpRules": []
+            }
+        }
+    ]
+}
