@@ -73,12 +73,16 @@
             "apiVersion": "2018-11-01",
             "kind": "[parameters('appServiceType')]",
             "location": "[resourceGroup().location]",
+            "Identity": {
+                "type": "SystemAssigned"
+            },
             "properties": {
                 "serverFarmId": "[variables('appServicePlanId')]",
                 "clientAffinityEnabled": "[parameters('clientAffinity')]",
                 "siteConfig": {
                     "alwaysOn": true,
-                    "phpVersion": "off"
+                    "phpVersion": "off",
+                    "minTlsVersion": "1.2"
                 },
                 "httpsOnly": true
             },
