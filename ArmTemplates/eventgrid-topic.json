@@ -22,7 +22,7 @@
             },
             "properties": {
                 "inputSchema": "EventGridSchema",
-                "publicNetworkAccess": "Disabled",
+                "publicNetworkAccess": "Enabled",
                 "inboundIpRules": []
             }
         }
