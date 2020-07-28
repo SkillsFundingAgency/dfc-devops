@@ -33,19 +33,3 @@ jobs:
             KubernetesCluster: ${{ parameters.KubernetesCluster }}
             ManifestFileName: owasp-agent.kubernetes.yml
             PathToManifest: $(Pipeline.Workspace)/NCS.AzureDevOpsAgents.OWASP
-        # Deploy the NCS.AzureDevOpsAgents.JMeter docker image
-        - template: AzureDevOpsTemplates\Deploy\StepTemplates\dfc-kubernetes-deploy.yml@dfc-devops
-          parameters:
-            AksResourceGroup: ${{ parameters.AksResourceGroup }}
-            AzureSubscriptionEndpoint: ${{ parameters.AzureSubscriptionEndpoint }}
-            KubernetesCluster: ${{ parameters.KubernetesCluster }}
-            ManifestFileName: jmeter-agent.kubernetes.yml
-            PathToManifest: $(Pipeline.Workspace)/NCS.AzureDevOpsAgents.JMeter
-        # Deploy multiple NCS.AzureDevOpsAgents.JMeterSlaves deployments and the service
-        - template: ..\StepTemplates\JMeterSlaveKubernetesDeploy.yml
-          parameters:
-            AksResourceGroup: ${{ parameters.AksResourceGroup }}
-            AzureSubscriptionEndpoint: ${{ parameters.AzureSubscriptionEndpoint }}
-            KubernetesCluster: ${{ parameters.KubernetesCluster }}
-            ManifestFileName: jmeter-slaves.kubernetes.yml
-            PathToManifest: $(Pipeline.Workspace)/NCS.AzureDevOpsAgents.JMeterSlaves
