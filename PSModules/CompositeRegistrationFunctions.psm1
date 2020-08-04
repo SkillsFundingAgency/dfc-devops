@@ -219,6 +219,10 @@ New-PathRegistration -Path $pathObject
         $requestBody.TopNavigationOrder = $Path.TopNavigationOrder
     }
 
+    if($null -ne $Path.IsOnline) {
+        $requestBody.IsOnline = $Path.IsOnline
+    }
+
     if($null -ne $Path.OfflineHtml) {
         $requestBody.OfflineHtml = $Path.OfflineHtml
     }
@@ -293,6 +297,10 @@ New-RegionRegistration -Path somePath -Region $regionObject
 
     if($null -ne $Region.OfflineHtml) {
         $requestBody.OfflineHTML = $Region.OfflineHtml
+    }
+
+    if($null -ne $Region.IsHealthy) {
+        $requestBody.IsHealthy = $Region.IsHealthy
     }
 
     $requestBodyText = $requestBody | ConvertTo-Json
