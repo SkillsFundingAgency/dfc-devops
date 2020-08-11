@@ -13,7 +13,7 @@ steps:
     ImageName=${{ parameters.ImageBaseName }}:${{ parameters.ImageTag }}
     # Lowercase the AppImage name to conform to Docker Image naming constraints
     ImageName=${ImageName,,}
-    docker build -t ${{ parameters.ContainerRegistryAdminUser }}.azurecr.io/$ImageName --file ${{ parameters.DockerfileName }} .
+    docker build -t ${{ parameters.ContainerRegistryAdminUser }}.azurecr.io/$ImageName --file ${{ parameters.DockerfileName }}
   displayName: 'Build ${{ parameters.ImageBaseName }}:${{ parameters.ImageTag }} image'
 - script: |
     docker login -u ${{ parameters.ContainerRegistryAdminUser }} -p ${{ parameters.ContainerRegistryPassword }} ${{ parameters.ContainerRegistryAdminUser }}.azurecr.io
