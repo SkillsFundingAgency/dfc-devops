@@ -23,7 +23,7 @@ steps:
    inputs:
      useConfigFile: true
      configFilePath: ${{ parameters.GitVersionConfigFilePath }}
-     versionSpec: '5.x'
+     versionSpec: '5.3.x'
 
  # tasks to package a function app
  - task: DotNetCoreCLI@2
