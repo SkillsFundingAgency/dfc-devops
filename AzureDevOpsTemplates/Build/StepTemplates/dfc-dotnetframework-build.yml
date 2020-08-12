@@ -11,6 +11,7 @@ steps:
    inputs:
      useConfigFile: true
      configFilePath: GitVersion.yml
+     versionSpec: '5.3.x'
 
  - task: NuGetToolInstaller@0
    displayName: 'Use NuGet 4.3.0'
