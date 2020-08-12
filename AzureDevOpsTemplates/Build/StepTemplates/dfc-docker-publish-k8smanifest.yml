@@ -1,7 +1,7 @@
 parameters:
   ContainerRegistryAdminUser: ''
   ContainerRegistryPassword: ''
-  DockerfileContext: ''
+  #DockerfileContext: ''
   DockerfileName: ''
   ImageBaseName: ''
   ImageTag: ''
@@ -9,7 +9,7 @@ parameters:
 
 steps:
 - script: |
-    cd ${{ parameters.DockerfileContext }}
+    cd ./DockerFiles/AzureDevOpsAgents
     ImageName=${{ parameters.ImageBaseName }}:${{ parameters.ImageTag }}
     # Lowercase the AppImage name to conform to Docker Image naming constraints
     ImageName=${ImageName,,}
