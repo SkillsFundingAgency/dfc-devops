@@ -9,7 +9,7 @@ parameters:
 
 steps:
 - script: |
-    cd $(Build.SourcesDirectory)/DockerFiles/AzureDevOpsAgents
+    cd ${{ parameters.DockerfileContext }}
     ImageName=${{ parameters.ImageBaseName }}:${{ parameters.ImageTag }}
     # Lowercase the AppImage name to conform to Docker Image naming constraints
     ImageName=${ImageName,,}

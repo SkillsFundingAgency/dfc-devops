@@ -9,7 +9,7 @@ resources:
     type: github
     name: SkillsFundingAgency/dfc-devops
     endpoint: 'GitHub (ESFA)'
-    ref: refs/tags/v1.11.2
+    ref: refs/tags/v1.9.0
 
 pool:
   name: 'NCS - CI and CD'
