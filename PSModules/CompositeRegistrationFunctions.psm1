@@ -292,7 +292,7 @@ New-RegionRegistration -Path somePath -Region $regionObject
     }
 
     if($null -ne $Region.HealthCheckRequired) {
-        $requestBody.HeathCheckRequired = $Region.HealthCheckRequired
+        $requestBody.HealthCheckRequired = $Region.HealthCheckRequired
     }
 
     if($null -ne $Region.OfflineHtml) {
