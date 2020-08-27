@@ -75,6 +75,12 @@
             "keyVaultId": "[parameters('portalKeyVaultCertificatePath')]",
             "negotiateClientCertificate": false
         },
+        "apimNewPortalHostnameProperties": {
+            "type": "DeveloperPortal",
+            "hostName": "[variables('apimPortalHostname')]",
+            "keyVaultId": "[parameters('portalKeyVaultCertificatePath')]",
+            "negotiateClientCertificate": false
+        },
         "apimProxyHostnameProperties":  {
             "type": "Proxy",
             "hostName": "[variables('apimProxyHostname')]",
@@ -82,7 +88,7 @@
             "defaultSslBinding": true,
             "negotiateClientCertificate": false
         },
-        "apimHostnameProperties": "[if(equals(parameters('hostnameRoot'), ''), array(json('[]')), createarray(variables('apimPortalHostnameProperties'), variables('apimProxyHostnameProperties')))]",
+        "apimHostnameProperties": "[if(equals(parameters('hostnameRoot'), ''), array(json('[]')), createarray(variables('apimPortalHostnameProperties'), variables('apimProxyHostnameProperties'), variables('apimNewPortalHostnameProperties')))]",
         "apimSubnetId": "[if(equals(parameters('subnetName'), ''), '',concat(variables('apimVnetId'), '/subnets/', parameters('subnetName')))]",
         "apimSubnetConfig": {
             "withSubnet": {
