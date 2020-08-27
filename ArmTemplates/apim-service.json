@@ -102,7 +102,7 @@
         {
             "name": "[parameters('apimServiceName')]",
             "type": "Microsoft.ApiManagement/service",
-            "apiVersion": "2018-01-01",
+            "apiVersion": "2019-01-01",
             "tags": {},
             "properties": {
                 "hostnameConfigurations": "[variables('apimHostnameProperties')]",
