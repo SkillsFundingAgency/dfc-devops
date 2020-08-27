@@ -69,12 +69,6 @@
     "variables": {
         "apimPortalHostname": "[if(equals(parameters('environmentName'), 'PRD'), concat('portal.', parameters('hostnameRoot')), concat(toLower(parameters('environmentName')), '-portal.', parameters('hostnameRoot')))]",
         "apimProxyHostname": "[if(equals(parameters('environmentName'), 'PRD'), concat(parameters('hostnameRoot')), concat(toLower(parameters('environmentName')), '.', parameters('hostnameRoot')))]",
-        "apimPortalHostnameProperties": {
-            "type": "Portal",
-            "hostName": "[variables('apimPortalHostname')]",
-            "keyVaultId": "[parameters('portalKeyVaultCertificatePath')]",
-            "negotiateClientCertificate": false
-        },
         "apimNewPortalHostnameProperties": {
             "type": "DeveloperPortal",
             "hostName": "[variables('apimPortalHostname')]",
@@ -88,7 +82,7 @@
             "defaultSslBinding": true,
             "negotiateClientCertificate": false
         },
-        "apimHostnameProperties": "[if(equals(parameters('hostnameRoot'), ''), array(json('[]')), createarray(variables('apimPortalHostnameProperties'), variables('apimProxyHostnameProperties'), variables('apimNewPortalHostnameProperties')))]",
+        "apimHostnameProperties": "[if(equals(parameters('hostnameRoot'), ''), array(json('[]')), createarray(variables('apimProxyHostnameProperties'), variables('apimNewPortalHostnameProperties')))]",
         "apimSubnetId": "[if(equals(parameters('subnetName'), ''), '',concat(variables('apimVnetId'), '/subnets/', parameters('subnetName')))]",
         "apimSubnetConfig": {
             "withSubnet": {
