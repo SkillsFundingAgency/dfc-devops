@@ -56,7 +56,7 @@ stages:
   - template: VariableTemplates\DevEnvironmentVariables.yml
   - group: KeyVault - dfc-dev-shared-kv
   - group: dfc-shared-dev
-  - group: dfc-devops-dev
+  - group: dfc-jmeter-all
   jobs:
   - template: JobTemplates\DeployContainers.yml
     parameters:
