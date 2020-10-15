@@ -15,7 +15,7 @@ The API key for the App Registry Api endpoint
 Path to the json file describing the applications registrations
 
 .EXAMPLE
-Invoke-AddOrUpdateAppRegistry -AppRegistryApiUrl https://page-registration-url -AppRegistryApiKey <key> -RegistrationFile c:\Path\To\Registration\File.json
+Invoke-AddOrUpdateCompositeRegistrations -AppRegistryApiUrl https://page-registration-url -AppRegistryApiKey <key> -RegistrationFile c:\Path\To\Registration\File.json
 #>
 
 param(
