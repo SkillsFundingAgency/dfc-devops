@@ -1,54 +1,48 @@
 <#
 .SYNOPSIS
-Adds/Updates page and region registrations for an application into the composite ui.
+Adds/Updates page registrations for an application in composite ui.
 
 .DESCRIPTION
-Adds/Updates page and region registrations for an application into the composite ui.
+Adds/Updates page registrations for an application in composite ui.
 
-.PARAMETER PathApiUrl
-Url to the Composite Page Registration Api
+.PARAMETER AppRegistryApiUrl
+Url to the App Registry Api
 
-.PARAMETER RegionApiUrl
-Url to the Composite Region Registration Api
+.PARAMETER AppRegistryApiKey
+The API key for the App Registry Api endpoint
 
 .PARAMETER RegistrationFile
 Path to the json file describing the applications registrations
 
-.PARAMETER ApiKey
-The API key for the page and registration Api endpoints
-
 .EXAMPLE
-New-RegistrationContext -PathApiUrl https://page-registration-url/api -RegionApiUrl https://region-registration-url/api -RegistrationFile c:\Path\To\Registration\File.json
-
+Invoke-AddOrUpdateAppRegistry -AppRegistryApiUrl https://page-registration-url -AppRegistryApiKey <key> -RegistrationFile c:\Path\To\Registration\File.json
 #>
 
 param(
     [Parameter(Mandatory=$true)]
-    [string] $PathApiUrl,
+    [string] $AppRegistryApiUrl,
     [Parameter(Mandatory=$true)]
-    [string] $RegionApiUrl,
-    [Parameter(Mandatory=$true)]
-    [string] $ApiKey,
+    [string] $AppRegistryApiKey,
     [Parameter(Mandatory=$true)]
     [string] $RegistrationFile
 )
 
-Import-Module ../PSModules/CompositeRegistrationFunctions -Force
+Import-Module ../PSModules/CompositeRegistrationFunctionsv2 -Force
 
 $content = Get-Content -Path $RegistrationFile -Raw
 $contentAsObject = ConvertFrom-Json -InputObject $content
 
-New-RegistrationContext -PathApiUrl $PathApiUrl -RegionApiUrl $RegionApiUrl -ApiKey $ApiKey
+New-RegistrationContext -AppRegistryApiUrl $AppRegistryApiUrl -AppRegistryApiKey $AppRegistryApiKey
 
 foreach($path in $contentAsObject) {
-    Write-Verbose "Getting path registration for Path $($path.Path)."
+    Write-Output "Getting path registration for Path $($path.Path)."
     $pathEntity = Get-PathRegistration -Path $path.Path
 
     if($null -eq $pathEntity) {
-        Write-Verbose "Path registration does not exist, creating new path registration."
+        Write-Output "Path registration does not exist, creating new path registration."
         New-PathRegistration -Path $path
     } else {
-        Write-Verbose "Path registration exists, checking to see if it needs updating."
+        Write-Output "Path registration exists, checking to see if it needs updating."
 
         $apiPathAsHashtable = ConvertTo-HashTable -Object $pathEntity
         $definitionPathAsHashtable = ConvertTo-HashTable -Object $path
@@ -57,33 +51,9 @@ foreach($path in $contentAsObject) {
 
         if($patchDocuments.Count -gt 0) {
             $propertiesToPatch = $patchDocuments | Foreach-Object { return $_.Path -Replace "/", "" }
-            Write-Verbose "Fields that require updates:  $($propertiesToPatch)"
-            Write-Verbose "Updating path registration."
+            Write-Output "Fields that require updates:  $($propertiesToPatch)"
+            Write-Output "Updating path registration."
             Update-PathRegistration -Path $path.Path -ItemsToPatch $patchDocuments | Out-Null
-        }
-    }
-
-    foreach($region in $path.Regions) {
-        Write-Verbose "Getting region registration for Path $($path.Path), PageRegion $($region.PageRegion)."
-        $regionEntity = Get-RegionRegistration -Path $path.Path -PageRegion $region.PageRegion
-
-        if($null -eq $regionEntity) {
-            Write-Verbose "Region registration does not exist, creating new region registration."
-            New-RegionRegistration -Path $path.Path -Region $region
-        } else {
-            Write-Verbose "Region registration exists, checking to see if it needs updating."
-
-            $apiRegionAsHashtable = ConvertTo-Hashtable -Object $regionEntity
-            $definitionRegionAsHashtable = ConvertTo-Hashtable -Object $region
-
-            $patchDocuments = Get-PatchDocuments -OriginalValues $apiRegionAsHashtable -ReplacementValues $definitionRegionAsHashtable
-
-            if($patchDocuments.Count -gt 0) {
-                $propertiesToPatch = $patchDocuments | Foreach-Object { return $_.Path -Replace "/", "" }
-                Write-Verbose "Fields that require updates:  $($propertiesToPatch)"
-                Write-Verbose "Updating region registration."
-                Update-RegionRegistration -Path $path.Path -PageRegion $region.PageRegion -ItemsToPatch $patchDocuments | Out-Null
-            }
         }
     }
 }
