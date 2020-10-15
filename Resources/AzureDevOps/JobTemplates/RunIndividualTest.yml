@@ -20,7 +20,7 @@ jobs:
         **/CODECOVERAGE-${{ parameters.ResultsFileSuffix }}.xml
 
   - ${{ if eq(parameters.RequiresAzurePowershell, true) }}:
-    - task: AzurePowerShell@3
+    - task: AzurePowerShell@5
       displayName: 'AzurePowershell: Invoke-${{ parameters.TestType }}Tests.ps1'
       inputs:
         azureSubscription: '${{ parameters.AzureSubscription }}'
