@@ -134,7 +134,7 @@ foreach ($StorageAccount in $StorageAccounts) {
     catch {
         Write-Warning "Error retrieving StorageContainers for $($StorageAccount.StorageAccountName)`n$_"
     }
-    
+
     if ($Containers.Count -gt 0) {
 
         $AccountBlobLastModifiedDate = ($Containers | Sort-Object -Property LastModified -Descending | Select-Object -Property LastModified -First 1).LastModified.UtcDateTime
@@ -158,7 +158,7 @@ foreach ($StorageAccount in $StorageAccounts) {
     catch {
         Write-Warning "Error retrieving FileShares for $($StorageAccount.StorageAccountName)`n$_"
     }
-    
+
     if ($FileShares.Count -gt 0) {
 
         $AccountShareLastModifiedDate = ($FileShares | Select-Object -ExpandProperty Properties | Sort-Object -Property LastModified -Descending | Select-Object -Property LastModified -First 1).LastModified.ToString("yyyy-MM-dd HH:mm")
@@ -180,7 +180,7 @@ foreach ($StorageAccount in $StorageAccounts) {
     catch {
         Write-Warning "Error retrieving Queues for $($StorageAccount.StorageAccountName)`n$_"
     }
-    
+
     $StorageAccountAuditResults.QueuesCount = $Queues.Count
     Write-Verbose "$($StorageAccount.StorageAccountName) contains $($Queues.Count) queues"
 
@@ -191,7 +191,7 @@ foreach ($StorageAccount in $StorageAccounts) {
     catch {
         Write-Warning "Error retrieving Tables for $($StorageAccount.StorageAccountName)`n$_"
     }
-    
+
     $StorageAccountAuditResults.TablesCount = $Tables.Count
     Write-Verbose "$($StorageAccount.StorageAccountName) contains $($Tables.Count) tables"
 
