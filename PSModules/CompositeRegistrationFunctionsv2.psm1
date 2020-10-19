@@ -163,7 +163,7 @@ New-PathRegistration -Path $pathObject
 #> 
     param(
         [Parameter(Mandatory=$true)]
-        [string] $PathObject
+        [object] $PathObject
     )
 
     if($null -eq $PathObject.Path) { throw "Path not specified" }
@@ -198,7 +198,7 @@ Update-PathRegistration -Path somePath
         [Parameter(Mandatory=$true)]
         [string] $PathName,
         [Parameter(Mandatory=$true)]
-        [string] $PathObject
+        [object] $PathObject
     )
 
     $requestBody = $PathObject
