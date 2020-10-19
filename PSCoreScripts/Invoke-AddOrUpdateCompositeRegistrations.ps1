@@ -36,24 +36,15 @@ New-RegistrationContext -AppRegistryApiUrl $AppRegistryApiUrl -AppRegistryApiKey
 
 foreach($path in $contentAsObject) {
     Write-Output "Getting path registration for Path $($path.Path)."
-    $pathEntity = Get-PathRegistration -Path $path.Path
+    $pathEntity = Get-PathRegistration -PathName $path.Path
 
     if($null -eq $pathEntity) {
         Write-Output "Path registration does not exist, creating new path registration."
-        New-PathRegistration -Path $path
+
+        New-PathRegistration -PathObject $path -verbose
     } else {
-        Write-Output "Path registration exists, checking to see if it needs updating."
+        Write-Output "Path registration exists, replacing path registration."
 
-        $apiPathAsHashtable = ConvertTo-HashTable -Object $pathEntity
-        $definitionPathAsHashtable = ConvertTo-HashTable -Object $path
-
-        $patchDocuments = Get-PatchDocuments -OriginalValues $apiPathAsHashtable -ReplacementValues $definitionPathAsHashtable
-
-        if($patchDocuments.Count -gt 0) {
-            $propertiesToPatch = $patchDocuments | Foreach-Object { return $_.Path -Replace "/", "" }
-            Write-Output "Fields that require updates:  $($propertiesToPatch)"
-            Write-Output "Updating path registration."
-            Update-PathRegistration -Path $path.Path -ItemsToPatch $patchDocuments | Out-Null
-        }
+        Update-PathRegistration -PathName $path.Path -PathObject $path -verbose| Out-Null
     }
 }
