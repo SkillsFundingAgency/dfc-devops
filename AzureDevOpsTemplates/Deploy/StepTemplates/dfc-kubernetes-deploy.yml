@@ -4,6 +4,7 @@ parameters:
   KubernetesCluster: ''
   ManifestFileName: ''
   PathToManifest: ''
+  Namespace: 'default'
 
 steps:
 - task: esfadevops.Tokenization.custom-build-task.Tokenization@0
@@ -20,7 +21,7 @@ steps:
     azureResourceGroup: ${{ parameters.AksResourceGroup }}
     kubernetesCluster: ${{ parameters.KubernetesCluster }}
     useClusterAdmin: true
-    namespace: 'default'
+    namespace: '${{ parameters.Namespace }}'
     command: 'apply'
     arguments: '--filename=${{ parameters.PathToManifest }}/${{ parameters.ManifestFileName }}'
 - task: DeleteFiles@1
