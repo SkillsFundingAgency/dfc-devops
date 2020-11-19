@@ -1,0 +1,49 @@
+parameters:
+  SolutionBaseName: ''
+  BuildPlatform: 'any cpu'
+  BuildConfiguration: 'release'
+
+steps:
+ - task: gittools.gitversion.gitversion-task.GitVersion@5
+   displayName: GitVersion
+   inputs:
+     useConfigFile: true
+     configFilePath: GitVersion.yml
+     versionSpec: '5.3.x'
+
+ - task: NuGetToolInstaller@0
+   displayName: 'Use NuGet 4.3.0'
+   inputs:
+     versionSpec: '5.x'
+
+ - task: NuGetCommand@2
+   displayName: 'NuGet restore ${{ parameters.SolutionBaseName }}.sln'
+   inputs:
+     restoreSolution: '${{ parameters.SolutionBaseName }}.sln'
+
+ - task: DotNetCoreCLI@2
+   displayName: 'dotnet build'
+   inputs:
+     command: 'build'
+     arguments: '-o "$(build.artifactstagingdirectory)\Build\\"'
+
+ - task: ArchiveFiles@2
+   displayName: ArchiveFunctionApp
+   inputs: 
+     rootFolderOrFile: $(build.artifactstagingdirectory)\Build\
+     archiveFile: $(build.artifactstagingdirectory)\DeploymentPackages\$(SolutionBaseName).zip
+     includeRootFolder: false
+
+ - task: CopyFiles@2
+   displayName: 'Copy Files to: $(build.artifactstagingdirectory)/Azure'
+   inputs:
+     sourceFolder: 'Resources'
+     contents: '**'
+     targetFolder: '$(build.artifactstagingdirectory)/Azure'
+
+ - task: PublishBuildArtifacts@1
+   displayName: 'Publish Artifact: ${{ parameters.SolutionBaseName }}'
+   inputs:
+     pathtoPublish: $(build.artifactstagingdirectory)
+     artifactName: ${{ parameters.SolutionBaseName }}
+     publishLocation: container
