@@ -12,7 +12,7 @@ steps:
      versionSpec: '5.3.x'
 
  - task: NuGetToolInstaller@0
-   displayName: 'Use NuGet 4.3.0'
+   displayName: 'Use NuGet'
    inputs:
      versionSpec: '5.x'
 
