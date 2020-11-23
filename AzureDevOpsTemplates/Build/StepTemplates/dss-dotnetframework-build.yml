@@ -1,0 +1,55 @@
+parameters:
+  SolutionBaseName: ''
+  BuildPlatform: 'any cpu'
+  BuildConfiguration: 'release'
+
+steps:
+ - task: gittools.gitversion.gitversion-task.GitVersion@4
+   displayName: GitVersion
+   inputs:
+     useConfigFile: true
+     configFilePath: GitVersion.yml
+     versionSpec: '5.3.x'
+ - task: NuGetToolInstaller@0
+   displayName: 'Use NuGet'
+   inputs:
+     versionSpec: '5.x'
+ - task: NuGetCommand@2
+   displayName: 'NuGet restore ${{ parameters.SolutionBaseName }}.sln'
+   inputs:
+     restoreSolution: '${{ parameters.SolutionBaseName }}.sln'
+ - task: VSBuild@1
+   displayName: 'Build solution ${{ parameters.SolutionBaseName }}.sln'
+   inputs:
+     solution: '${{ parameters.SolutionBaseName }}.sln'
+     vsVersion: 15.0
+     msbuildArgs: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:PackageLocation="$(build.artifactstagingdirectory)\DeploymentPackages\\" /p:VersionPrefix="$(GitVersion.MajorMinorPatch)"'
+     platform: '${{ parameters.BuildPlatform }}'
+     configuration: '${{ parameters.BuildConfiguration }}'
+ - task: CopyFiles@2
+   displayName: 'Copy Files to: $(build.artifactstagingdirectory)/UnitTests'
+   inputs:
+     sourceFolder: '$(System.DefaultWorkingDirectory)'
+     contents: '**\bin\Release\**'
+     targetFolder: '$(build.artifactstagingdirectory)/UnitTests'
+ - task: VSTest@2
+   displayName: 'VsTest - testAssemblies'
+   inputs:
+     testSelector: 'testAssemblies'
+     testAssemblyVer2: '**\${{ parameters.SolutionBaseName }}.Tests.dll'
+     searchFolder: '$(build.artifactstagingdirectory)/UnitTests'
+     codeCoverageEnabled: true
+     platform: ${{ parameters.BuildPlatform }}
+     configuration: ${{ parameters.BuildConfiguration }}
+ - task: CopyFiles@2
+   displayName: 'Copy Files to: $(build.artifactstagingdirectory)/Azure'
+   inputs:
+     sourceFolder: 'Resources'
+     contents: '**'
+     targetFolder: '$(build.artifactstagingdirectory)/Azure'
+ - task: PublishBuildArtifacts@1
+   displayName: 'Publish Artifact: ${{ parameters.SolutionBaseName }}'
+   inputs:
+     pathtoPublish: $(build.artifactstagingdirectory)
+     artifactName: ${{ parameters.SolutionBaseName }}
+     publishLocation: container
