@@ -79,7 +79,7 @@ switch ($PolicyScope) {
     }
     'product' {
         Write-Output "Applying policy at product scope. ProductId = $ProductId"
-        
+
         Set-AzApiManagementPolicy `
             -Context $Context `
             -Format application/vnd.ms-azure-apim.policy.raw+xml `
@@ -89,7 +89,7 @@ switch ($PolicyScope) {
     }
     'api' {
         Write-Output "Applying policy at api scope. ApiId = $ApiId"
-        
+
         Set-AzApiManagementPolicy `
             -Context $Context `
             -Format application/vnd.ms-azure-apim.policy.raw+xml `
@@ -99,7 +99,7 @@ switch ($PolicyScope) {
     }
     'operation' {
         Write-Output "Applying policy at operation scope. ApiId = $ApiId, OperationId = $OperationId"
-        
+
         Set-AzApiManagementPolicy `
             -Context $Context `
             -Format application/vnd.ms-azure-apim.policy.raw+xml `
