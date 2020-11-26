@@ -1,6 +1,6 @@
 <#
 .SYNOPSIS
-Creates EventGrid Subscription.  
+Creates EventGrid Subscription.
 
 .DESCRIPTION
 Creates EventGrid Subscription.  The topic and function app must already exist along with their resourcegroups
@@ -16,6 +16,9 @@ The name of the Topic
 
 .PARAMETER SubscriptionEndPoint
 The name of theSubscription EndPoint
+
+.EXAMPLE
+New-EventGridSubscription -EventGridSubscriptionName EventGridSubscriptionName -TopicResourceGroup TopicResourceGroup -Topic Topic -SubscriptionEndPoint SubscriptionEndPoint
 #>
 
 [CmdletBinding()]
