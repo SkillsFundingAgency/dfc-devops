@@ -101,6 +101,6 @@ switch ($PolicyScope) {
             }
         }
 
-        $results
+        $results | Sort-Object Product_Id, Api_Id, Operation_Id
     }
 }
