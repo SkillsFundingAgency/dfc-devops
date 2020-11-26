@@ -1,6 +1,6 @@
 <#
 .SYNOPSIS
-Creates EventGrid Subscription.  
+Creates EventGrid Subscription.
 
 .DESCRIPTION
 Creates EventGrid Subscription.  The topic and function app must already exist along with their resourcegroups
