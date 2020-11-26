@@ -16,6 +16,9 @@ The name of the Topic
 
 .PARAMETER SubscriptionEndPoint
 The name of theSubscription EndPoint
+
+.EXAMPLE
+New-EventGridSubscription -EventGridSubscriptionName EventGridSubscriptionName -TopicResourceGroup TopicResourceGroup -Topic Topic -SubscriptionEndPoint SubscriptionEndPoint
 #>
 
 [CmdletBinding()]
