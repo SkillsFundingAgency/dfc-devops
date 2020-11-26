@@ -50,41 +50,68 @@ Param(
     [String]$OperationId
 )
 
-$context = New-AzApiManagementContext -ResourceGroupName $ApimResourceGroup -ServiceName $ApimServiceName
+$context = New-AzApiManagementContext `
+    -ResourceGroupName $ApimResourceGroup `
+    -ServiceName $ApimServiceName
 
 switch ($PolicyScope) {
     'tenant' {
         Write-Output "Applying policy at tenant scope"
 
-        Set-AzApiManagementPolicy -Context $Context -Format application/vnd.ms-azure-apim.policy.raw+xml -PolicyFilePath $PolicyFilePath -Verbose
+        Set-AzApiManagementPolicy `
+            -Context $Context `
+            -Format application/vnd.ms-azure-apim.policy.raw+xml `
+            -PolicyFilePath $PolicyFilePath `
+            -Verbose
     }
     'product' {
         Write-Output "Applying policy at product scope. ProductId = $ProductId"
         
-        Set-AzApiManagementPolicy -Context $Context -Format application/vnd.ms-azure-apim.policy.raw+xml -PolicyFilePath $PolicyFilePath -ProductId $ProductId -Verbose
+        Set-AzApiManagementPolicy `
+            -Context $Context `
+            -Format application/vnd.ms-azure-apim.policy.raw+xml `
+            -PolicyFilePath $PolicyFilePath `
+            -ProductId $ProductId `
+            -Verbose
     }
     'api' {
         Write-Output "Applying policy at api scope. ApiId = $ApiId"
         
-        Set-AzApiManagementPolicy -Context $Context -Format application/vnd.ms-azure-apim.policy.raw+xml -PolicyFilePath $PolicyFilePath -ApiId $ApiId -Verbose
+        Set-AzApiManagementPolicy `
+            -Context $Context `
+            -Format application/vnd.ms-azure-apim.policy.raw+xml `
+            -PolicyFilePath $PolicyFilePath `
+            -ApiId $ApiId `
+            -Verbose
     }
     'operation' {
         Write-Output "Applying policy at operation scope. ApiId = $ApiId, OperationId = $OperationId"
         
-        Set-AzApiManagementPolicy -Context $Context -Format application/vnd.ms-azure-apim.policy.raw+xml -PolicyFilePath $PolicyFilePath -ApiId $ApiId -OperationId $OperationId -Verbose
+        Set-AzApiManagementPolicy `
+            -Context $Context `
+            -Format application/vnd.ms-azure-apim.policy.raw+xml `
+            -PolicyFilePath $PolicyFilePath `
+            -ApiId $ApiId `
+            -OperationId $OperationId `
+            -Verbose
     }
     'listavailable' {
         write-output "Products, APIs and Operations available in supplied APIM service..."
 
         $results = @()
 
-        $apis = Get-AzApiManagementApi -Context $context
+        $apis = Get-AzApiManagementApi `
+            -Context $context
 
         foreach ($api in $apis) {
 
-            $productId = Get-AzApiManagementProduct -Context $context -ApiId $api.ApiId | select-object ProductId
+            $productId = Get-AzApiManagementProduct `
+                -Context $context `
+                -ApiId $api.ApiId | select-object ProductId
 
-            $operations = Get-AzApiManagementOperation -Context $Context -ApiId $api.ApiId
+            $operations = Get-AzApiManagementOperation `
+                -Context $Context `
+                -ApiId $api.ApiId
 
             foreach ($operation in $operations) {
 
@@ -97,7 +124,8 @@ switch ($PolicyScope) {
                         Operation_Id = $operationId
                 }
 
-                $results += New-Object PSObject -Property $details
+                $results += New-Object PSObject `
+                    -Property $details
             }
         }
 
