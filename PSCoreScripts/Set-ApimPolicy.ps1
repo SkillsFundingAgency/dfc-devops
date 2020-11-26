@@ -29,7 +29,20 @@ The APIM api id. Only required if applying policy to api scope or operation scop
 The APIM operation id. Only required if applying policy to operation scope
 
 .EXAMPLE
-Set-ApimPolicy -ApimResourceGroup dfc-foo-bar-rg -ApimServiceName dfc-foo-bar-apim -ApiId bar -PolicyFilePath some-file.yaml
+#Set tenant scoped policy
+Set-ApimPolicy -PolicyScope tenant -ApimResourceGroup dfc-foo-bar-rg -ApimServiceName dfc-foo-bar-apim -PolicyFilePath some-file
+
+#Set product scoped policy
+Set-ApimPolicy -PolicyScope product -ApimResourceGroup dfc-foo-bar-rg -ApimServiceName dfc-foo-bar-apim -PolicyFilePath some-file -ProductId productid
+
+#Set api scoped policy
+Set-ApimPolicy -PolicyScope api -ApimResourceGroup dfc-foo-bar-rg -ApimServiceName dfc-foo-bar-apim -PolicyFilePath some-file -ApiId apiid
+
+#Set operation scoped policy
+Set-ApimPolicy -PolicyScope operation -ApimResourceGroup dfc-foo-bar-rg -ApimServiceName dfc-foo-bar-apim -PolicyFilePath some-file -ApiId apiid -OperationId operationid
+
+#Return a list of all valid product, api and operation IDs available on the given service
+Set-ApimPolicy -PolicyScope listavailable -ApimResourceGroup dfc-foo-bar-rg -ApimServiceName dfc-foo-bar-apim
 #>
 [CmdletBinding()]
 Param(
@@ -37,7 +50,7 @@ Param(
     [String]$ApimResourceGroup,
     [Parameter(Mandatory=$true)]
     [String]$ApimServiceName,
-    [Parameter(Mandatory=$true)]
+    [Parameter(Mandatory=$false)]
     [String]$PolicyFilePath,
     [Parameter(Mandatory=$true)]
     [ValidateSet('tenant', 'product', 'api', 'operation', 'listavailable')]
