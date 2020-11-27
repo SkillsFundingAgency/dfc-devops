@@ -54,7 +54,7 @@ Param(
     [String]$PolicyFilePath,
     [Parameter(Mandatory=$true)]
     [ValidateSet('tenant', 'product', 'api', 'operation', 'listavailable')]
-    [Switch]$PolicyScope,
+    [String]$PolicyScope,
     [Parameter(Mandatory=$false)]
     [String]$ProductId,
     [Parameter(Mandatory=$false)]
