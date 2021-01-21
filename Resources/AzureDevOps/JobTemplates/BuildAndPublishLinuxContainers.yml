@@ -5,7 +5,7 @@ parameters:
 jobs:
 - job: BuildAndPublishContainers
   pool:
-    name: 'ubuntu-latest'
+    name: 'Hosted Ubuntu 2004'
   steps:
   # Build and publish the NCS.AzureDevOpsAgents.OWASP docker image
   - template: AzureDevOpsTemplates/Build/StepTemplates/dfc-docker-publish-k8smanifest.yml@dfc-devops
