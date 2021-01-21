@@ -61,7 +61,7 @@ param (
     [Parameter(Mandatory = $false)]
     [string] $DatabaseTier = "S2",
     [Parameter(Mandatory = $false)]
-    [int] $DatabaseMaxSize = 25000000,
+    [Long] $DatabaseMaxSize = 25000000,
     [Parameter(Mandatory = $false)]
     [string] $ElasticPool
 )
