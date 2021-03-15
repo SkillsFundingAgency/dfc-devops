@@ -45,6 +45,11 @@ $Tags = @{
     Environment = $Environment
     'Parent Business' = $ParentBusiness
     'Service Offering' = $ServiceOffering
+    'Portfolio' = 'Education and Skills Funding Agency'
+    'Service Line' = 'Customer Experience Data and Digital'
+    'Service' = $ParentBusiness
+    'Product' = $ServiceOffering
+    'Feature' = $ServiceOffering
 }
 
 Write-Verbose -Message "Attempting to retrieve existing resource group $ResourceGroupName"
