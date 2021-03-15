@@ -47,7 +47,7 @@ $Tags = @{
     'Service Offering' = $ServiceOffering
     'Portfolio' = 'Education and Skills Funding Agency'
     'Service Line' = 'Customer Experience Data and Digital'
-    'Service' = $ParentBusiness
+    'Service' = 'National Careers Service'
     'Product' = $ServiceOffering
     'Feature' = $ServiceOffering
 }
