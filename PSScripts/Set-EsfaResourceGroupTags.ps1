@@ -42,7 +42,7 @@ param(
 )
 
 $Tags = @{
-    Environment = $Environment
+    'Environment' = $Environment
     'Parent Business' = $ParentBusiness
     'Service Offering' = $ServiceOffering
     'Portfolio' = 'Education and Skills Funding Agency'
