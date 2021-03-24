@@ -106,14 +106,26 @@ function New-PfxFileFromKeyVaultSecret {
         [String]$PfxFilePath
     )
 
-    Write-Verbose "Converting certificate secret to pfx file"
-    $CertBytes = [System.Convert]::FromBase64String($KeyVaultSecret.SecretValueText)
-    $CertCollection = New-Object System.Security.Cryptography.X509Certificates.X509Certificate2Collection
-    $CertCollection.Import($CertBytes,$null,[System.Security.Cryptography.X509Certificates.X509KeyStorageFlags]::Exportable)
 
-    $ProtectedCertificateBytes = $CertCollection.Export([System.Security.Cryptography.X509Certificates.X509ContentType]::Pkcs12, $Password)
+  
+    Write-Verbose "Converting certificate secret to pfx file"
+    $secretValueText = '';
+    $ssPtr = [System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($KeyVaultSecret.SecretValue)
+    try {
+        $secretValueText = [System.Runtime.InteropServices.Marshal]::PtrToStringBSTR($ssPtr)
+    } finally {
+        [System.Runtime.InteropServices.Marshal]::ZeroFreeBSTR($ssPtr)
+    }
+    $secretByte = [Convert]::FromBase64String($secretValueText)
+    $x509Cert = new-object System.Security.Cryptography.X509Certificates.X509Certificate2
+    $x509Cert.Import($secretByte, "", "Exportable,PersistKeySet")
+    $type = [System.Security.Cryptography.X509Certificates.X509ContentType]::Pfx
+    $pfxFileByte = $x509Cert.Export($type, $password)
+
+    # Write to a file
     Write-Verbose "Writing certificate to pfx file $PfxFilePath"
-    [System.IO.File]::WriteAllBytes($PfxFilePath, $ProtectedCertificateBytes)
+    [System.IO.File]::WriteAllBytes($PfxFilePath, $pfxFileByte)
+
 }
 
 # Check that OpenSSL is installed
