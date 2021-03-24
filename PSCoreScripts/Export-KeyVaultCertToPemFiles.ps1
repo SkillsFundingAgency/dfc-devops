@@ -77,21 +77,21 @@ function New-Password {
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseShouldProcessForStateChangingFunctions", "", Justification="This function doesn't change system state it merely returns a random string for use as a password.")]
     [CmdletBinding()]
     param(
-		[Parameter(Mandatory=$true)]
-		[int]$Length
-	)
-	$PasswordString = -join ((48..57) + (65..90) + (97..122) | Get-Random -Count $Length | ForEach-Object {[char]$_})
+        [Parameter(Mandatory=$true)]
+        [int]$Length
+    )
+    $PasswordString = -join ((48..57) + (65..90) + (97..122) | Get-Random -Count $Length | ForEach-Object {[char]$_})
     # Check that PasswordString container lowercase, uppercase and numeric characters
     if ($PasswordString -match "^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)") {
 
         return $PasswordString
 
-	}
-	else {
+    }
+    else {
 
         New-Password -length $Length
 
-	}
+    }
 }
 
 function New-PfxFileFromKeyVaultSecret {
@@ -106,8 +106,6 @@ function New-PfxFileFromKeyVaultSecret {
         [String]$PfxFilePath
     )
 
-
-  
     Write-Verbose "Converting certificate secret to pfx file"
     $secretValueText = '';
     $ssPtr = [System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($KeyVaultSecret.SecretValue)
