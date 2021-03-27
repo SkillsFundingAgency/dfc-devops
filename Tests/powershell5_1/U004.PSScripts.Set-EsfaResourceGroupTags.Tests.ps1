@@ -6,7 +6,7 @@ Describe "Set-EsfaResourceGroupTags unit tests" -Tag "Unit" {
         @{
             ResourceGroupName = "dfc-foobar-rg"
             Location = "westeurope"
-            Tags = @{"Parent Business" =  "National Careers Service"; "Service Offering" = "Digital First Career Service (DFCS) Website"; "Environment" = "Dev/Test"; "Portfolio" = "Education and Skills Funding Agency"; "Service Line" = "Customer Experience Data and Digital"; "Service" = "National Careers Service"; "Product" = "Digital First Career Service (DFCS) Website"; "Feature" = "Digital First Career Service (DFCS) Website"} 
+            Tags = @{"Parent Business" =  "National Careers Service"; "Service Offering" = "Digital First Career Service (DFCS) Website"; "Environment" = "Dev/Test"; "Portfolio" = "Education and Skills Funding Agency"; "Service Line" = "Customer Experience Digital and Data"; "Service" = "National Careers Service"; "Product" = "Digital First Career Service (DFCS) Website"; "Feature" = "Digital First Career Service (DFCS) Website"} 
         }
     }
     Mock New-AzureRmResourceGroup
