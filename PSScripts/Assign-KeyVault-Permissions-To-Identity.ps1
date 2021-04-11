@@ -32,10 +32,10 @@ if ($ServicePrincipalObject) {
     Write-Verbose "$($ObjectId)"
 
     Write-Verbose "Removing any existing Azure KeyVault Policy for System Identity $($ServicePrincipalName)"
-    Remove-AzKeyVaultAccessPolicy -VaultName $KeyVaultName  -ObjectId $ObjectId
+    Remove-AzKeyVaultAccessPolicy -VaultName $KeyVaultName -ObjectId $ObjectId
 
-    Write-Verbose "Setting Azure KeyVault Policy for System Identity $($ServicePrincipalName) to list,get"    
-    Set-AzKeyVaultAccessPolicy -VaultName $KeyVaultName  -ObjectId $ObjectId -PermissionsToSecrets  get,list
+    Write-Verbose "Setting Azure KeyVault Policy for System Identity $($ServicePrincipalName) to list,get"
+    Set-AzKeyVaultAccessPolicy -VaultName $KeyVaultName -ObjectId $ObjectId -PermissionsToSecrets get,list
 } else {
     Write-Verbose "$($ServicePrincipalName) not found on subscription"
 }
