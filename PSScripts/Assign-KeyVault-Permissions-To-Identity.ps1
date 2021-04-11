@@ -36,7 +36,6 @@ if ($ServicePrincipalObject) {
 
     Write-Verbose "Setting Azure KeyVault Policy for System Identity $($ServicePrincipalName) to list,get"    
     Set-AzKeyVaultAccessPolicy -VaultName $KeyVaultName  -ObjectId $ObjectId -PermissionsToSecrets  get,list
-
 } else {
     Write-Verbose "$($ServicePrincipalName) not found on subscription"
 }
