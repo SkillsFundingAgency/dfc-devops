@@ -50,9 +50,18 @@
                 "description": "Name of the existing VNET resource group"
             }
         },
-        "agentNodeCount": {
+        "agentNodeCount1": {
             "type": "int",
-            "defaultValue": 3,
+            "defaultValue": 2,
+            "metadata": {
+                "description": "The number of nodes for the cluster."
+            },
+            "minValue": 1,
+            "maxValue": 50
+        },
+        "agentNodeCount2": {
+            "type": "int",
+            "defaultValue": 4,
             "metadata": {
                 "description": "The number of nodes for the cluster."
             },
@@ -146,7 +155,7 @@
                 "agentPoolProfiles": [
                     {
                         "name": "[parameters('agentPoolName1')]",
-                        "count": "[parameters('agentNodeCount')]",
+                        "count": "[parameters('agentNodeCount1')]",
                         "vmSize": "[parameters('agent1VMSize')]",
                         "osType": "Linux",
                         "vnetSubnetID": "[variables('vnetSubnetID')]",
@@ -162,7 +171,7 @@
                     },
                     {
                         "name": "[parameters('agentPoolName2')]",
-                        "count": "[parameters('agentNodeCount')]",
+                        "count": "[parameters('agentNodeCount2')]",
                         "vmSize": "[parameters('agent2VMSize')]",
                         "osType": "Linux",
                         "vnetSubnetID": "[variables('vnetSubnetID')]",
@@ -190,7 +199,7 @@
                 },
                 "networkProfile": {
                     "loadBalancerSku": "standard",
-                    "networkPlugin": "azure",
+                    "networkPlugin": "kubenet",
                     "serviceCidr": "[parameters('serviceCidr')]",
                     "dnsServiceIP": "[parameters('dnsServiceIp')]",
                     "podCidr": "[parameters('podCidr')]",
