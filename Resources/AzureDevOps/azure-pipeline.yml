@@ -39,7 +39,7 @@ stages:
     PowershellCoreCodeCoveragePercentage: 25
 
 - stage: BuildAndPublishContainers
-  # condition: or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq(variables['Build.Reason'], 'PullRequest'))
+  condition: or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq(variables['Build.Reason'], 'PullRequest'))
   dependsOn: []
   variables:
   - group: KeyVault - dfc-dev-shared-kv
@@ -51,8 +51,7 @@ stages:
       ContainerRegistryPassword: $(ContainerRegistryPassword)
 
 - stage: DeployAzureDevOpsContainers
-#  condition: and(succeeded('BuildAndPublishContainers'), eq(variables['Build.SourceBranch'], 'refs/heads/master'), ne(variables['Build.Reason'], 'PullRequest'))
-  condition: succeeded('BuildAndPublishContainers')
+  condition: and(succeeded('BuildAndPublishContainers'), eq(variables['Build.SourceBranch'], 'refs/heads/master'), ne(variables['Build.Reason'], 'PullRequest'))
   dependsOn: BuildAndPublishContainers
   variables:
   - template: VariableTemplates\SharedEnvironmentVariables.yml
