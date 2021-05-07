@@ -4,6 +4,7 @@ parameters:
   AzureSubscriptionEndpoint: ''
   Environment: ''
   KubernetesCluster: ''
+  Namespace: 'default'
 
 jobs:
 - deployment: DeployToDev
@@ -12,6 +13,13 @@ jobs:
     runOnce:
       deploy:
         steps:
+        #Create Namespace
+        - template: AzureDevOpsTemplates\Deploy\StepTemplates\dfc-kubernetes-create-namespace.yml@dfc-devops
+          parameters:
+            azureSubscriptionEndpoint: ${{ parameters.AzureSubscriptionEndpoint }}
+            AksResourceGroup: ${{ parameters.AksResourceGroup }}
+            kubernetesCluster: ${{ parameters.KubernetesCluster }}
+            Namespace: ${{ parameters.Namespace }}
         # Create PAT token secret
         - task: Kubernetes@1
           displayName: kubectl create pat token secret
@@ -21,10 +29,10 @@ jobs:
             azureResourceGroup: ${{ parameters.AksResourceGroup }}
             kubernetesCluster: ${{ parameters.KubernetesCluster }}
             useClusterAdmin: true
-            namespace: 'default'
+            namespace: '${{ parameters.Namespace }}'
             secretType: generic
             secretArguments: --from-literal=pattokensecret=${{ parameters.AzurePatToken }}
-            secretName: dfc-azuredevops-pat-token
+            secretName: dfc-azuredevops-pat-token                    
         # Deploy the NCS.AzureDevOpsAgents.OWASP docker image
         - template: AzureDevOpsTemplates\Deploy\StepTemplates\dfc-kubernetes-deploy.yml@dfc-devops
           parameters:
@@ -33,3 +41,4 @@ jobs:
             KubernetesCluster: ${{ parameters.KubernetesCluster }}
             ManifestFileName: owasp-agent.kubernetes.yml
             PathToManifest: $(Pipeline.Workspace)/NCS.AzureDevOpsAgents.OWASP
+            Namespace: ${{ parameters.Namespace }}
