@@ -34,7 +34,7 @@ jobs:
             secretArguments: --from-literal=pattokensecret=${{ parameters.AzurePatToken }}
             secretName: dfc-azuredevops-pat-token                    
         # Deploy the NCS.AzureDevOpsAgents.OWASP docker image
-        - template: AzureDevOpsTemplates\Deploy\StepTemplates\dfc-kubernetes-deploy.yml@dfc-devops
+        - template: .\dfc-kubernetes-deploy.yml
           parameters:
             AksResourceGroup: ${{ parameters.AksResourceGroup }}
             AzureSubscriptionEndpoint: ${{ parameters.AzureSubscriptionEndpoint }}

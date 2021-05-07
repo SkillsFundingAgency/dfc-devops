@@ -16,6 +16,7 @@ spec:
     spec:
       nodeSelector:
         "beta.kubernetes.io/os": linux
+        kubernetes.io/hostname: __DockerHostDeploymentNodeSelector1__
       containers:
       - name: owasp-agent
         image: dfcdevsharedcr.azurecr.io/ncs.azuredevopsagents.owasp:__NCSAzureDevOpsAgentsOWASPTag__
