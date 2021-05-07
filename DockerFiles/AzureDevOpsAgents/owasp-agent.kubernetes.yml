@@ -8,7 +8,10 @@ spec:
     rollingUpdate:
       maxSurge: 1
       maxUnavailable: 1
-  minReadySeconds: 5 
+  minReadySeconds: 5
+  selector:
+    matchLabels:
+      app: owasp-agent
   template:
     metadata:
       labels:
