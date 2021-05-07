@@ -52,7 +52,7 @@ stages:
 
 - stage: DeployAzureDevOpsContainers
 #  condition: and(succeeded('BuildAndPublishContainers'), eq(variables['Build.SourceBranch'], 'refs/heads/master'), ne(variables['Build.Reason'], 'PullRequest'))
-  condition: and(succeeded('BuildAndPublishContainers'))
+  condition: succeeded('BuildAndPublishContainers')
   dependsOn: BuildAndPublishContainers
   variables:
   - template: VariableTemplates\SharedEnvironmentVariables.yml
