@@ -94,16 +94,6 @@ steps:
       command: test
       projects: '${{ parameters.SolutionBaseName }}*${{ parameters.IntegrationTestSuffix }}\${{ parameters.SolutionBaseName }}*${{ parameters.IntegrationTestSuffix }}.csproj'
       arguments: '--configuration ${{ parameters.BuildConfiguration }} --collect "Code coverage"'
-
-#  - task: VSTest@2
-#     displayName: 'VSTest - Run Integration Tests'
-#     inputs:
-#       testAssemblyVer2: |
-#         **\*Tests.dll
-#         !**\*TestAdapter.dll
-#         !**\obj\**
-#         searchFolder: $(build.artifactstagingdirectory)/Artifact/$(SolutionBaseName).IntegrationTests
-#     continueOnError: true
  
   - task: SonarCloudAnalyze@1
     displayName: 'Run Code Analysis'
