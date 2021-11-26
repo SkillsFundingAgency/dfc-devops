@@ -62,10 +62,9 @@ $Configuration = [PesterConfiguration]@{
 }
 
 # Invoke tests
-$allOutput = Invoke-Pester -Configuration $Configuration
-$Result = $allOutput | select-object -Last 1;
+$Result = Invoke-Pester -Configuration $Configuration
 
 # report failures
-if ($Result.FailedCount -ne 0) { 
+if ($Result.FailedCount -gt 0) { 
     Write-Error "Pester returned $($result.FailedCount) errors"
 }
