@@ -3,7 +3,7 @@ $ResourceGroupName = "dfc-test-template-rg"
 $TemplateFile = "$PSScriptRoot\..\..\ArmTemplates\azure-search.json"
 
 Describe "Azure Search Deployment Tests" -Tag "Acceptance" {
-  
+
   Context "When Azure Search is deployed with just search name" {
     $TemplateParameters = @{
       azureSearchName = "dfc-foo-bar-sch-01"
@@ -34,7 +34,7 @@ Describe "Azure Search Deployment Tests" -Tag "Acceptance" {
     }
 
     $output = Test-AzureRmResourceGroupDeployment @TestTemplateParams
-  
+
     It "Should be deployed successfully" {
       $output | Should -Be $null
     }
@@ -56,7 +56,7 @@ Describe "Azure Search Deployment Tests" -Tag "Acceptance" {
     }
 
     $output = Test-AzureRmResourceGroupDeployment @TestTemplateParams
-  
+    
     It "Should be deployed successfully" {
       $output | Should -Be $null
     }

@@ -3,7 +3,7 @@ $ResourceGroupName = "dfc-test-template-rg"
 $TemplateFile = "$PSScriptRoot\..\..\ArmTemplates\storage-account.json"
 
 Describe "Storage Account Deployment Tests" -Tag "Acceptance" {
-  
+
   Context "When a storage account deployed with just name" {
     $TemplateParameters = @{
       storageAccountName = "dfcfoobarstr"
@@ -15,7 +15,7 @@ Describe "Storage Account Deployment Tests" -Tag "Acceptance" {
     }
 
     $output = Test-AzureRmResourceGroupDeployment @TestTemplateParams
-  
+
     It "Should be deployed successfully" {
       $output | Should -Be $null
     }

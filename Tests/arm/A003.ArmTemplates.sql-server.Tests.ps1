@@ -14,13 +14,13 @@ $TestTemplateParams = @{
 }
 
 Describe "SQL Server Deployment Tests" -Tag "Acceptance" {
-  
+
   Context "When SQL Server deployed with required params only" {
     $TemplateParameters = $TemplateParametersDefault
     $TestTemplateParams['TemplateParameterObject'] = $TemplateParameters
 
     $output = Test-AzureRmResourceGroupDeployment @TestTemplateParams
-  
+
     It "Should be deployed successfully" {
       $output | Should -Be $null
     }

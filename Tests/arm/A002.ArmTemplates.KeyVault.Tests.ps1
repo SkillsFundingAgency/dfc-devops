@@ -3,7 +3,7 @@ $ResourceGroupName = "dfc-test-template-rg"
 $TemplateFile = "$PSScriptRoot\..\..\ArmTemplates\keyvault.json"
 
 Describe "Key Vault Deployment Tests" -Tag "Acceptance" {
-  
+
   Context "When KeyVault deployed with just key vault name" {
     $TemplateParameters = @{
       keyVaultName = "dfc-foo-bar-kv"

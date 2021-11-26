@@ -3,7 +3,7 @@ $ResourceGroupName = "dfc-test-template-rg"
 $TemplateFile = "$PSScriptRoot\..\..\ArmTemplates\cosmos-db.json"
 
 Describe "Key Vault Deployment Tests" -Tag "Acceptance" {
-  
+
   Context "Deploying Cosmos DB with SQL API, Eventual consistency" {
     $TemplateParameters = @{
       cosmosDbName            = "dfc-foo-bar-cdb-01"
@@ -57,7 +57,7 @@ Describe "Key Vault Deployment Tests" -Tag "Acceptance" {
     }
 
     $output = Test-AzureRmResourceGroupDeployment @TestTemplateParams
-  
+
     It "Should be deployed successfully" {
       $output | Should -Be $null
     }
@@ -77,7 +77,7 @@ Describe "Key Vault Deployment Tests" -Tag "Acceptance" {
     }
 
     $output = Test-AzureRmResourceGroupDeployment @TestTemplateParams
-  
+
     It "Should be deployed successfully" {
       $output | Should -Be $null
     }

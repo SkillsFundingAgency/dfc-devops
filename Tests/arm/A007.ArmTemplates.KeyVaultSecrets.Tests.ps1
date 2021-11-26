@@ -3,7 +3,7 @@ $ResourceGroupName = "dfc-test-template-rg"
 $TemplateFile = "$PSScriptRoot\..\..\ArmTemplates\KeyVault\keyvault-secrets.json"
 
 Describe "Key Vault Secrets Deployment Tests" -Tag "Acceptance" {
-  
+
   Context "When a single key vault secret added" {
     $TemplateParameters = @{
       keyVaultName = "dfc-foo-bar-kv"
@@ -34,13 +34,12 @@ Describe "Key Vault Secrets Deployment Tests" -Tag "Acceptance" {
       TemplateFile            = $TemplateFile
       TemplateParameterObject = $TemplateParameters
     }
-
+    
     $output = Test-AzureRmResourceGroupDeployment @TestTemplateParams
-  
+
     It "Should be deployed successfully" {
       $output | Should -Be $null
     }
 
   }
-
 }
