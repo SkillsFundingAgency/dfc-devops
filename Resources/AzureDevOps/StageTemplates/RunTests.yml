@@ -6,13 +6,13 @@ parameters:
 stages:
 - stage: Test
   jobs:
-    # - template: ../JobTemplates/RunIndividualTest.yml
-    #   parameters:
-    #     RequiresAzurePowershell: true
-    #     AzureSubscription: '${{ parameters.AzureSubscription }}'
-    #     TestName: 'RunAcceptanceTests'
-    #     TestType: 'Acceptance'
-    #     ResultsFileSuffix: 'Acceptance'
+    - template: ../JobTemplates/RunIndividualTest.yml
+      parameters:
+        RequiresAzurePowershell: true
+        AzureSubscription: '${{ parameters.AzureSubscription }}'
+        TestName: 'RunAcceptanceTests'
+        TestType: 'Acceptance'
+        ResultsFileSuffix: 'Acceptance'
 
     - template: ../JobTemplates/RunIndividualTest.yml
       parameters:
