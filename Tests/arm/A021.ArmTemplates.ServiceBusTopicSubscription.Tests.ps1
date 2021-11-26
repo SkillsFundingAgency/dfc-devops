@@ -16,7 +16,7 @@ Describe "Service Bus Topic Subscription Deployment Tests" -Tag "Acceptance" {
       TemplateParameterObject = $TemplateParameters
     }
 
-    It "Should be deployed successfully with just a subscription" {
+    It "Should be deployed successfully with just a subscription" -Foreach @{TestTemplateParams = $TestTemplateParams }{
       $output = Test-AzureRmResourceGroupDeployment @TestTemplateParams
       $output | Should -Be $null
     }
@@ -25,7 +25,7 @@ Describe "Service Bus Topic Subscription Deployment Tests" -Tag "Acceptance" {
       Write-Error $output.Message
     }
 
-    It "Should be deployed successfully when the SQL filter is specified" {
+    It "Should be deployed successfully when the SQL filter is specified" -Foreach @{TestTemplateParams = $TestTemplateParams }{
       $TestTemplateParams['subscriptionSqlFilter'] = "value = something"
       $output = Test-AzureRmResourceGroupDeployment @TestTemplateParams
       $output | Should -Be $null
