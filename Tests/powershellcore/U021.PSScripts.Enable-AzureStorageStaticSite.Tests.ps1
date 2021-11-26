@@ -1,12 +1,14 @@
 Push-Location -Path $PSScriptRoot\..\..\PSCoreScripts\
 
-$strname = "dfcfoobarstr"
+
 
 Describe "Enable-AzureStorageStaticSite unit tests" -Tag "Unit" {
 
     # Skipped due to https://github.com/pester/Pester/issues/1289
     # Test-Connection returns a "MethodInvocationException: Exception calling "GetParamBlock" with "1" argument(s)" exception
     It "Should call the Azure cmdlets" -Skip {
+
+        $strname = "dfcfoobarstr"
         Mock New-AzStorageContext
         Mock Test-Connection -MockWith { return $true }
         Mock Enable-AzStorageStaticWebsite
