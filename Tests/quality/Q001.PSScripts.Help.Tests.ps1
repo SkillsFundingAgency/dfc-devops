@@ -16,7 +16,7 @@ Describe "Help quality tests for '<_>'" -ForEach @($Scripts) -Tag "Quality" {
         $help = Get-Help $_.FullName
         $parameters = @()
         if ($help.parameters.parameter.count -ne 0) {
-            $parameters = $help.Parameters.Parameter
+            $parameters = $help.Parameters.Parameter | Where-Object {$_ -notmatch 'whatif|confirm'}
         }
         Write-Output "parameter count: $($parameters.Count)"
     }
