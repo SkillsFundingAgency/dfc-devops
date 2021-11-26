@@ -62,9 +62,9 @@ $Configuration = [PesterConfiguration]@{
 }
 
 # Invoke tests
-$Result = Invoke-Pester -Configuration $Configuration
+$Result = Invoke-Pester -Configuration $Configuration -PassThru
 
 # report failures
 if ($Result.FailedCount -gt 0) { 
-    Write-Error "Pester returned $($result.FailedCount) errors"
+    throw "{0} tests did not pass" -f $Result.FailedCount
 }
