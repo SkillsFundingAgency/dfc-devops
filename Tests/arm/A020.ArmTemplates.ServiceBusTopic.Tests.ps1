@@ -5,6 +5,7 @@ $TemplateFile = "$PSScriptRoot\..\..\ArmTemplates\ServiceBus\servicebus-topic.js
 Describe "Service Bus Topic Deployment Tests" -Tag "Acceptance" {
   
   Context "When deploying the Service Bus Topic" {
+    
     $TemplateParameters = @{
       serviceBusNamespaceName = "dfc-foo-bar-ns"
       serviceBusTopicName     = "topic-name"
@@ -14,8 +15,7 @@ Describe "Service Bus Topic Deployment Tests" -Tag "Acceptance" {
       TemplateFile            = $TemplateFile
       TemplateParameterObject = $TemplateParameters
     }
-  
-    It "Should be deployed successfully" {
+    It "Should be deployed successfully" -Foreach @{TestTemplateParams = $TestTemplateParams } {
       $output = Test-AzureRmResourceGroupDeployment @TestTemplateParams
       $output | Should -Be $null
     }
