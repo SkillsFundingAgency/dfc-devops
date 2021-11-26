@@ -16,61 +16,63 @@ function Set-CosmosDbOffer ($OfferThroughput) {}
 
 Describe "New-CosmosDbAccountCollections unit tests" -Tag "Unit" {
 
-    Mock Get-AzureRmResource {
-        return @{
-            Properties = @{ provisioningState = "Succeeded" }
+    BeforeAll {
+
+        Mock Get-AzureRmResource {
+            return @{
+                Properties = @{ provisioningState = "Succeeded" }
+            }
         }
-    }
 
-    Mock New-CosmosDbContext {
-        return @{
-            Account = "ABC123"
+        Mock New-CosmosDbContext {
+            return @{
+                Account = "ABC123"
+            }
         }
-    }
 
-    Mock Get-CosmosDbDatabase { return $null } # database name != foobar
-    Mock Get-CosmosDbDatabase {
-        return @{
-            Name = "foobar"
+        Mock Get-CosmosDbDatabase { return $null } # database name != foobar
+        Mock Get-CosmosDbDatabase {
+            return @{
+                Name = "foobar"
+            }
+        } -ParameterFilter { $Id -eq "foobar" }
+
+        Mock Get-CosmosDbCollection { return $null } # collection name !- coll
+        Mock Get-CosmosDbCollection {
+            return @{
+                CollectionName = "coll"
+                PartitionKey   = "/partkey"
+                DefaultTtl     = 12345
+            }
+        } -ParameterFilter { $Id -eq "coll" }
+
+        Mock Set-CosmosDbCollection {
+            $cosmosCollection = New-Object -TypeName PSCustomObject @{
+                DefaultTTL     = $DefaultTimeToLive
+                indexingPolicy = New-Object -TypeName PSCustomObject
+            }
+            return $cosmosCollection
         }
-    } -ParameterFilter { $Id -eq "foobar" }
 
-    Mock Get-CosmosDbCollection { return $null } # collection name !- coll
-    Mock Get-CosmosDbCollection {
-        return @{
-            CollectionName  = "coll"
-            PartitionKey    = "/partkey"
-            DefaultTtl      = 12345
+        Mock Get-CosmosDbOffer {
+            return @{
+                content = @{ OfferThroughput = 400 }
+            }
         }
-    } -ParameterFilter { $Id -eq "coll" }
 
-    Mock Set-CosmosDbCollection {
-        $cosmosCollection = New-Object -TypeName PSCustomObject @{
-            DefaultTTL      = $DefaultTimeToLive
-            indexingPolicy  = New-Object -TypeName PSCustomObject
+        Mock Set-CosmosDbOffer {
+            return @{
+                content = @{ OfferThroughput = $OfferThroughput }
+            }
         }
-        return $cosmosCollection
-    }
 
-    Mock Get-CosmosDbOffer {
-        return @{
-            content = @{ OfferThroughput = 400 }
-        }
-    }
+        Mock Get-InstalledModule
+        Mock Install-Module
+        Mock Import-Module
+        Mock New-CosmosDbDatabase
+        Mock New-CosmosDbCollection
 
-    Mock Set-CosmosDbOffer {
-        return @{
-            content = @{ OfferThroughput = $OfferThroughput }
-        }
-    }
-
-    Mock Get-InstalledModule
-    Mock Install-Module
-    Mock Import-Module
-    Mock New-CosmosDbDatabase
-    Mock New-CosmosDbCollection
-
-    $CollectionNotExists = @'
+        $CollectionNotExists = @'
 {
     "DatabaseName": "foobar",
     "Collections": [ {
@@ -80,7 +82,7 @@ Describe "New-CosmosDbAccountCollections unit tests" -Tag "Unit" {
 }
 '@
     
-    $CollectionExists = @'
+        $CollectionExists = @'
 {
     "DatabaseName": "foobar",
     "Collections": [ {
@@ -92,9 +94,10 @@ Describe "New-CosmosDbAccountCollections unit tests" -Tag "Unit" {
 }
 '@
 
-    $DefaultParams = @{ 
-        CosmosDbAccountName = 'dfc-foo-bar-cdb'
-        ResourceGroupName   = "dfc-foo-bar-rg"
+        $DefaultParams = @{ 
+            CosmosDbAccountName = 'dfc-foo-bar-cdb'
+            ResourceGroupName   = "dfc-foo-bar-rg"
+        }
     }
 
     # This test will write to the error stream
@@ -169,7 +172,7 @@ Describe "New-CosmosDbAccountCollections unit tests" -Tag "Unit" {
 
     It "Cosmos collection is updated when DefaultTtl is changed" {
 
-        $DefaultParams['CosmosDbConfigurationString'] = $CollectionExists.Replace('12345','10000')
+        $DefaultParams['CosmosDbConfigurationString'] = $CollectionExists.Replace('12345', '10000')
 
         $VerboseOutput = .\New-CosmosDbAccountCollections @DefaultParams -Verbose 4>&1
 
@@ -184,7 +187,7 @@ Describe "New-CosmosDbAccountCollections unit tests" -Tag "Unit" {
 
     It "Cosmos collection is updated when OfferThroughput is changed" {
 
-        $DefaultParams['CosmosDbConfigurationString'] = $CollectionExists.Replace('400','444')
+        $DefaultParams['CosmosDbConfigurationString'] = $CollectionExists.Replace('400', '444')
 
         $VerboseOutput = .\New-CosmosDbAccountCollections @DefaultParams -Verbose 4>&1
 
