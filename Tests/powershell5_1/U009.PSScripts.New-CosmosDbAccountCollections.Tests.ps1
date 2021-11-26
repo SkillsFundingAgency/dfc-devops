@@ -105,7 +105,7 @@ Describe "New-CosmosDbAccountCollections unit tests" -Tag "Unit" {
 
         $DefaultParams['CosmosDbConfigurationString'] = '{ "invalid: "json" }' # missing quote after invalid
 
-        { .\New-CosmosDbAccountCollections @DefaultParams } | Should Throw
+        { .\New-CosmosDbAccountCollections @DefaultParams } | Should -Throw
 
         $DefaultParams.Remove('CosmosDbConfigurationString') # clean up
     }

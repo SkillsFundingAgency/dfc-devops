@@ -26,7 +26,7 @@ Describe "Get-AppServiceAppSetting unit tests" -Tag "Unit" {
 
         $output = .\Get-AppServiceAppSetting -ResourceGroupName dfc-foo-bar-rg -AppServiceName dfc-foo-bar-as -AppSetting foo
 
-        $output | Should be $expected
+        $output | Should -Be $expected
 
     }
 

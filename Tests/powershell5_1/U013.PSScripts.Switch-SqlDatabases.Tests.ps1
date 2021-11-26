@@ -6,12 +6,14 @@ function Set-AzureRmSqlDatabase {}
 
 Describe "Switch-SqlDatabases unit tests" -Tag "Unit" {
 
-    Mock Set-AzureRmSqlDatabase
-    Mock Get-AzureRmSqlDatabase {
-        $mock = '{ "ResourceGroupName": "dfc-foo-bar-rg", "ServerName": "dfc-foo-bar-sql", "DatabaseName": "dfc-foo-bar-db", "Location": "westeurope" }'
-        if ($global:NumDatabaseExists -gt 0) {
-            $global:NumDatabaseExists -= 1
-            return ConvertFrom-Json $mock
+    BeforeAll {
+        Mock Set-AzureRmSqlDatabase
+        Mock Get-AzureRmSqlDatabase {
+            $mock = '{ "ResourceGroupName": "dfc-foo-bar-rg", "ServerName": "dfc-foo-bar-sql", "DatabaseName": "dfc-foo-bar-db", "Location": "westeurope" }'
+            if ($global:NumDatabaseExists -gt 0) {
+                $global:NumDatabaseExists -= 1
+                return ConvertFrom-Json $mock
+            }
         }
     }
 
