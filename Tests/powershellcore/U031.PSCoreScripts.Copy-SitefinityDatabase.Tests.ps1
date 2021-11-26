@@ -62,25 +62,25 @@ Describe "Copy-SitefinityDatabase unit tests" -Tag "Unit" {
         It "should throw an exception if SQL server does not exist" {
             { 
                 ./Copy-SitefinityDatabase -ServerName not-a-sql-server -AppServiceName dfc-foo-as  -ReleaseNumber 123
-            } | Should throw "Could not find SQL server not-a-sql-server"
+            } | Should -Throw "Could not find SQL server not-a-sql-server"
         }
 
         It "should throw an exception if app service does not exist" {
             { 
                 ./Copy-SitefinityDatabase -AppServiceName not-an-app-service -ServerName dfc-foo-sql -ReleaseNumber 123
-            } | Should throw "Could not find app service not-an-app-service"
+            } | Should -Throw "Could not find app service not-an-app-service"
         }
 
         It "should throw an exception if it cannot get the release number" {
             { 
                 ./Copy-SitefinityDatabase -AppServiceName dfc-foo-as -ServerName dfc-foo-sql
-            } | Should throw "Cannot find environment variable RELEASE_RELEASENAME and no ReleaseNumber passed in"
+            } | Should -Throw "Cannot find environment variable RELEASE_RELEASENAME and no ReleaseNumber passed in"
         }
 
         It "should throw an exception if the current database does not exist" {
             { 
                 ./Copy-SitefinityDatabase -AppServiceName dfc-foo-as -ServerName dfc-foo-sql -ReleaseNumber 123
-            } | Should throw "Could not find the current database dfc-foo-sitefinitydb"
+            } | Should -Throw "Could not find the current database dfc-foo-sitefinitydb"
         }
     }
 

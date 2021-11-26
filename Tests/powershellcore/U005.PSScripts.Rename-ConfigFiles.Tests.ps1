@@ -7,7 +7,7 @@ Describe "ConvertTo-VSTSVariables unit tests" -Tag "Unit" {
 
         .\Rename-ConfigFiles -RootPath $TestDrive
 
-        (Get-ChildItem $TestDrive).Name | Should be "test.config"
+        (Get-ChildItem $TestDrive).Name | Should -Be "test.config"
     }
 
 }
