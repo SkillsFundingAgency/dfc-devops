@@ -63,7 +63,7 @@ try {
     }
 
     # Invoke tests
-    $Result = Invoke-Pester -Configuration $Configuration -PassThru
+    $Result = Invoke-Pester -Configuration $Configuration
 
     # report failures
     if ($Result.FailedCount -gt 0) { 
