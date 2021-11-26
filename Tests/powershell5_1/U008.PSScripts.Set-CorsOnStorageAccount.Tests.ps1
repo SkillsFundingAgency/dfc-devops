@@ -1,12 +1,15 @@
 Push-Location -Path $PSScriptRoot\..\..\PSScripts\
 
-$strname = "dfcfoobarstr"
-$strkey  = "foo="
-$origin  = "foo.example.org"
+
 
 Describe "Set-CorsOnStorageAccount unit tests" -Tag "Unit" {
 
     It "Should call the Azure cmdlets" {
+
+        $strname = "dfcfoobarstr"
+        $strkey  = "foo="
+        $origin  = "foo.example.org"
+        
         Mock New-AzureStorageContext
         Mock Get-AzureStorageCORSRule
         Mock Set-AzureStorageCORSRule

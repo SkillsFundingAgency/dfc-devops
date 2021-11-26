@@ -9,7 +9,7 @@ Describe "New-KeyVault unit tests" -Tag "Unit" {
     $kvname = "dfc-foobar-kv"
     $rgname = "dfc-foobar-rg"
 
-    It "Should create a key vault if one does not exist" {
+    It "Should create a key vault if one does not exist" -Foreach @{rgname = $rgname }{
         Mock Get-AzureRmKeyVault { return $null }
 
         .\New-KeyVault -keyVaultName $kvname -ResourceGroupName $rgname
@@ -20,7 +20,7 @@ Describe "New-KeyVault unit tests" -Tag "Unit" {
         Assert-MockCalled Remove-AzureRmKeyVaultAccessPolicy -Exactly 1 -Scope It
     }
 
-    It "Should not create anything if the key vault already exist" {
+    It "Should not create anything if the key vault already exist" -Foreach @{rgname = $rgname }{
         Mock Get-AzureRmKeyVault { return ConvertFrom-Json '{ "VaultName": "dfc-foobar-kv", "ResourceGroupName": "dfc-foobar-rg", "Location": "westeurope" }' }
 
         .\New-KeyVault -keyVaultName $kvname -ResourceGroupName $rgname
