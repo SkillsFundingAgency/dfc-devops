@@ -26,7 +26,6 @@ Describe "Code quality tests" -ForEach @($Scripts) -Tag "Quality" {
         Write-Output "Script name: $($ScriptName)"
         $ExcludeRules = @(
             "PSUseSingularNouns",
-            "PSAvoidUsingWriteHost",
             "PSAvoidUsingEmptyCatchBlock",
             "PSAvoidUsingPlainTextForPassword",
             "PSAvoidUsingConvertToSecureStringWithPlainText",
