@@ -4,17 +4,19 @@ Import-Module ..\PSModules\AzureApiFunctions
 
 Describe "ApiRequest unit tests" -Tag "Unit" {
 
-    Mock -ModuleName AzureApiFunctions Invoke-WebRequest { 
-        return @{
-            StatusCode = 200
-            Content    = '{ "result": "Success" }'
+    BeforeAll {
+        Mock -ModuleName AzureApiFunctions Invoke-WebRequest { 
+            return @{
+                StatusCode = 200
+                Content    = '{ "result": "Success" }'
+            }
         }
-    }
 
-    $RequestParams = @{ 
-        Method = 'GET'
-        Url    = "https://api.mydomain.com/endpoint"
-        ApiKey = "Mock123"
+        $RequestParams = @{ 
+            Method = 'GET'
+            Url    = "https://api.mydomain.com/endpoint"
+            ApiKey = "Mock123"
+        }
     }
 
     It "Check ApiRequest passes the Content-Type abd api-key headers" {
@@ -34,7 +36,7 @@ Describe "ApiRequest unit tests" -Tag "Unit" {
 
         $result = ApiRequest @RequestParams
 
-        $result.result | Should Be "Success"
+        $result.result | -Should -Be "Success"
 
     }
 

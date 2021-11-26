@@ -22,7 +22,7 @@ Describe "Invoke-SmokeTestsOnWebApp unit tests" -Tag "Unit" {
 
         {
             ./Invoke-SmokeTestOnWebApp.ps1 @params
-        } | Should not throw
+        } | Should not -Throw
 
 
         It "should get the web app by slot" {
