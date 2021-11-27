@@ -397,83 +397,88 @@ InModuleScope CompositeRegistrationFunctions {
         }
     }
 
-    # Describe "New-RegionRegistration" -Tag "Unit" {
-    #     Context "When the path is not specified" {
-    #         It "should throw an error" {
-    #             {
-    #                 New-RegionRegistration -Path SomePath -Region @{}
-    #             } | Should -throw "PageRegion is not set for a region on path SomePath"
-    #         }
-    #     }
+    Describe "New-RegionRegistration" -Tag "Unit" {
+        Context "When the path is not specified" {
+            It "should throw an error" {
+                {
+                    New-RegionRegistration -Path SomePath -Region @{}
+                } | Should -throw "PageRegion is not set for a region on path SomePath"
+            }
+        }
 
-    #     Context "When creating a new region registration" {
-    #         New-RegistrationContext -PathApiUrl https://path-api/api -RegionApiUrl https://region-api/api -ApiKey SomeApiKey
-    #         Mock Invoke-CompositeApiRegistrationRequest
-    #         Mock ConvertTo-Json 
+        Context "When creating a new region registration" {
+            BeforeAll {
+                New-RegistrationContext -PathApiUrl https://path-api/api -RegionApiUrl https://region-api/api -ApiKey SomeApiKey
+                Mock Invoke-CompositeApiRegistrationRequest
+                Mock ConvertTo-Json 
+            }
 
-    #         New-RegionRegistration -Path SomePath -Region @{  PageRegion = 5 }
 
-    #         It "should serialize the object" { 
-    #             Should -Invoke -CommandName ConvertTo-Json -Exactly 1
-    #         }
+            It "should serialize the object" { 
+                New-RegionRegistration -Path SomePath -Region @{  PageRegion = 5 }
+                Should -Invoke -CommandName ConvertTo-Json -Exactly 1
+            }
 
-    #         It "should invoke a composite api registration request" {
-    #             Should -Invoke -CommandName Invoke-CompositeApiRegistrationRequest -Exactly 1 -ParameterFilter {
-    #                 $Url -eq "https://region-api/api/paths/SomePath/regions" -and `
-    #                     $Method -eq "Post"
-    #             }
-    #         }
-    #     }
+            It "should invoke a composite api registration request" {
+                New-RegionRegistration -Path SomePath -Region @{  PageRegion = 5 }
+                Should -Invoke -CommandName Invoke-CompositeApiRegistrationRequest -Exactly 1 -ParameterFilter {
+                    $Url -eq "https://region-api/api/paths/SomePath/regions" -and `
+                        $Method -eq "Post"
+                }
+            }
+        }
 
-    #     Context "When creating a new region registration with optional fields" {
-    #         New-RegistrationContext -PathApiUrl https://path-api/api -RegionApiUrl https://region-api/api -ApiKey SomeApiKey
-    #         Mock Invoke-CompositeApiRegistrationRequest
-    #         Mock ConvertTo-Json
+        Context "When creating a new region registration with optional fields" {
+            BeforeAll {
+                New-RegistrationContext -PathApiUrl https://path-api/api -RegionApiUrl https://region-api/api -ApiKey SomeApiKey
+                Mock Invoke-CompositeApiRegistrationRequest
+                Mock ConvertTo-Json
+            }
 
-    #         It "should not include any optional fields by default" {
-    #             New-RegionRegistration -Path SomePath -Region @{  PageRegion = 5 }
+            It "should not include any optional fields by default" {
+                New-RegionRegistration -Path SomePath -Region @{  PageRegion = 5 }
 
-    #             Should -Invoke -CommandName ConvertTo-Json -Scope It -ParameterFilter {
-    #                 $InputObject.Keys.Count | Should -Be 2
-    #                 $InputObject.Contains("Path")
-    #                 $InputObject.Contains("PageRegion")
-    #             }
-    #         }
+                Should -Invoke -CommandName ConvertTo-Json -Scope It -ParameterFilter {
+                    $InputObject.Keys.Count | Should -Be 2
+                    $InputObject.Contains("Path")
+                    $InputObject.Contains("PageRegion")
+                }
+            }
 
-    #         It "should include the RegionEndpoint optional field when specified" {
-    #             New-RegionRegistration -Path SomePath -Region @{  PageRegion = 5; RegionEndpoint = "SomeEndpoint" }
+            It "should include the RegionEndpoint optional field when specified" {
+                New-RegionRegistration -Path SomePath -Region @{  PageRegion = 5; RegionEndpoint = "SomeEndpoint" }
 
-    #             Should -Invoke -CommandName ConvertTo-Json -Scope It -ParameterFilter {
-    #                 $InputObject.Keys.Count | Should -Be 3
-    #                 $InputObject.Contains("Path")
-    #                 $InputObject.Contains("PageRegion")
-    #                 $InputObject.Contains("RegionEndpoint")
-    #             }
-    #         }
+                Should -Invoke -CommandName ConvertTo-Json -Scope It -ParameterFilter {
+                    $InputObject.Keys.Count | Should -Be 3
+                    $InputObject.Contains("Path")
+                    $InputObject.Contains("PageRegion")
+                    $InputObject.Contains("RegionEndpoint")
+                }
+            }
 
-    #         It "should include the HealthCheckRequired optional field when specified" {
-    #             New-RegionRegistration -Path SomePath -Region @{  PageRegion = 5; HealthCheckRequired = $false }
+            It "should include the HealthCheckRequired optional field when specified" {
+                New-RegionRegistration -Path SomePath -Region @{  PageRegion = 5; HealthCheckRequired = $false }
 
-    #             Should -Invoke -CommandName ConvertTo-Json -Scope It -ParameterFilter {
-    #                 $InputObject.Keys.Count | Should -Be 3
-    #                 $InputObject.Contains("Path")
-    #                 $InputObject.Contains("PageRegion")
-    #                 $InputObject.Contains("HealthCheckRequired")
-    #             }
-    #         }
+                Should -Invoke -CommandName ConvertTo-Json -Scope It -ParameterFilter {
+                    $InputObject.Keys.Count | Should -Be 3
+                    $InputObject.Contains("Path")
+                    $InputObject.Contains("PageRegion")
+                    $InputObject.Contains("HealthCheckRequired")
+                }
+            }
 
-    #         It "should include the OfflineHtml optional field when specified" {
-    #             New-RegionRegistration -Path SomePath -Region @{  PageRegion = 5; OfflineHtml = "Some mark-up" }
+            It "should include the OfflineHtml optional field when specified" {
+                New-RegionRegistration -Path SomePath -Region @{  PageRegion = 5; OfflineHtml = "Some mark-up" }
 
-    #             Should -Invoke -CommandName ConvertTo-Json -Scope It -ParameterFilter {
-    #                 $InputObject.Keys.Count | Should -Be 3
-    #                 $InputObject.Contains("Path")
-    #                 $InputObject.Contains("PageRegion")
-    #                 $InputObject.Contains("OfflineHtml")
-    #             }
-    #         }
-    #     }
-    # }
+                Should -Invoke -CommandName ConvertTo-Json -Scope It -ParameterFilter {
+                    $InputObject.Keys.Count | Should -Be 3
+                    $InputObject.Contains("Path")
+                    $InputObject.Contains("PageRegion")
+                    $InputObject.Contains("OfflineHtml")
+                }
+            }
+        }
+    }
 
     Describe "Update-PathRegistration" -Tag "Unit" {
 
@@ -498,73 +503,77 @@ InModuleScope CompositeRegistrationFunctions {
         }
     }
 
-    # Describe "Update-RegionRegistration" -Tag "Unit" {
-    #     New-RegistrationContext -PathApiUrl https://path-api/api -RegionApiUrl https://region-api/api -ApiKey SomeApiKey
-    #     Mock Invoke-CompositeApiRegistrationRequest 
-    #     Mock ConvertTo-Json 
+    Describe "Update-RegionRegistration" -Tag "Unit" {
+
+        BeforeAll {
+            New-RegistrationContext -PathApiUrl https://path-api/api -RegionApiUrl https://region-api/api -ApiKey SomeApiKey
+            Mock Invoke-CompositeApiRegistrationRequest 
+            Mock ConvertTo-Json 
+        }
     
-    #     Update-RegionRegistration -Path SomePath -PageRegion 5 -ItemsToPatch @{}
 
-    #     It "should serialize the objects to update" { 
-    #         Should -Invoke -CommandName ConvertTo-Json -Exactly 1            
-    #     }
+        It "should serialize the objects to update" { 
+            Update-RegionRegistration -Path SomePath -PageRegion 5 -ItemsToPatch @{}
+            Should -Invoke -CommandName ConvertTo-Json -Exactly 1            
+        }
 
-    #     It "should invoke a composite api registration request" {
-    #         Should -Invoke -CommandName Invoke-CompositeApiRegistrationRequest -Exactly 1 -ParameterFilter {
-    #             $Url -eq "https://region-api/api/paths/SomePath/regions/5" -and `
-    #                 $Method -eq "PATCH"
-    #         }
-    #     }
-    # }
+        It "should invoke a composite api registration request" {
+            Update-RegionRegistration -Path SomePath -PageRegion 5 -ItemsToPatch @{}
+            Should -Invoke -CommandName Invoke-CompositeApiRegistrationRequest -Exactly 1 -ParameterFilter {
+                $Url -eq "https://region-api/api/paths/SomePath/regions/5" -and `
+                    $Method -eq "PATCH"
+            }
+        }
+    }
 
-    # Describe "Get-PatchDocuments" -Tag "Unit" {
-    #     Context "When generating properties and the values are equal" {
-    #         It "should not create any patch documents" {
-    #             $original = @{ "Property1" = "AValue" }
-    #             $replacement = @{ "Property1" = "AValue" }
+    Describe "Get-PatchDocuments" -Tag "Unit" {
+        Context "When generating properties and the values are equal" {
+            It "should not create any patch documents" {
+                $original = @{ "Property1" = "AValue" }
+                $replacement = @{ "Property1" = "AValue" }
 
-    #             $result = Get-PatchDocuments -OriginalValues $original -ReplacementValues $replacement
+                $result = Get-PatchDocuments -OriginalValues $original -ReplacementValues $replacement
 
-    #             $result.Count | Should -Be 0
-    #         }
-    #     }
+                $result.Count | Should -Be 0
+            }
+        }
 
-    #     Context "When patching properties and the value does not exist in the original collection" {
-    #         It "should create an add document for a property" {
-    #             $result = Get-PatchDocuments -OriginalValues @{ } -ReplacementValues @{ "TestProp" = "AnotherValue" }
+        Context "When patching properties and the value does not exist in the original collection" {
+            It "should create an add document for a property" {
+                $result = Get-PatchDocuments -OriginalValues @{ } -ReplacementValues @{ "TestProp" = "AnotherValue" }
 
-    #             $result.Count | Should -Be 1
+                $result.Count | Should -Be 1
 
-    #             $result[0].op | Should -Be "add"
-    #             $result[0].path | Should -Be "/TestProp"
-    #             $result[0].value | Should -Be "AnotherValue"
-    #         }
-    #     }
+                $result[0].op | Should -Be "add"
+                $result[0].path | Should -Be "/TestProp"
+                $result[0].value | Should -Be "AnotherValue"
+            }
+        }
 
-    #     Context "When generating properties and the value exists in the original collection, but differs" {
-    #         It "should create a replace document for a property" {
-    #             $result = Get-PatchDocuments -OriginalValues @{ "TestProp" = "OriginalValue" } -ReplacementValues @{ "TestProp" = "UpdatedValue" }
+        Context "When generating properties and the value exists in the original collection, but differs" {
+            It "should create a replace document for a property" {
+                $result = Get-PatchDocuments -OriginalValues @{ "TestProp" = "OriginalValue" } -ReplacementValues @{ "TestProp" = "UpdatedValue" }
 
-    #             $result.Count | Should -Be 1
+                $result.Count | Should -Be 1
 
-    #             $result[0].op | Should -Be "replace"
-    #             $result[0].path | Should -Be "/TestProp"
-    #             $result[0].value | Should -Be "UpdatedValue"
-    #         }
-    #     }
+                $result[0].op | Should -Be "replace"
+                $result[0].path | Should -Be "/TestProp"
+                $result[0].value | Should -Be "UpdatedValue"
+            }
+        }
 
-    #     Context "When patching multiple properties" {
-    #         It "should create a patch document for each property" {
-    #             $result = Get-PatchDocuments -OriginalValues @{ } -ReplacementValues @{
-    #                 "TestPropOne"   = "UpdatedValue"
-    #                 "TestPropTwo"   = "AnotherValue"
-    #                 "TestPropThree" = "ThirdValue"
-    #             }
+        Context "When patching multiple properties" {
+            It "should create a patch document for each property" {
+                $result = Get-PatchDocuments -OriginalValues @{ } -ReplacementValues @{
+                    "TestPropOne"   = "UpdatedValue"
+                    "TestPropTwo"   = "AnotherValue"
+                    "TestPropThree" = "ThirdValue"
+                }
 
-    #             $result.Count | Should -be 3
-    #         }
-    #     }
-    # }
+                $result.Count | Should -be 3
+            }
+        }
+    }
 
     Describe "ConvertTo-Hashtable" -Tag "Unit" {
         Context "When converting an object to a hashtable" {
