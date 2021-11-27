@@ -24,23 +24,25 @@ Describe "Invoke-SmokeTestsOnWebApp unit tests" -Tag "Unit" {
                 AttemptsBeforeFailure = 3
             }
 
+            Mock Get-AzWebAppSlot -MockWith {
+                return @{ DefaultHostName = "site.azurewebsites.net" }
+            }
 
         }
 
         It "should get the web app by slot" {
-            Mock Get-AzWebAppSlot { "site.azurewebsites.net" } -ParameterFilter {
+
+            {
+                ./Invoke-SmokeTestOnWebApp.ps1 @params
+            } | Should -Not -Throw
+
+            Should -Invoke -CommandName Get-AzWebAppSlot -Times 1 -ParameterFilter {
                 $Uri -eq "https://site.azurewebsites.net/path" -and `
                     $TimeoutSec -eq $params.TimeoutInSecs -and `
                     $Method -eq "Get" -and `
                     $MaximumRedirection -eq 0 -and `
                     $UseBasicParsing.IsPresent
             }
-
-            {
-                ./Invoke-SmokeTestOnWebApp.ps1 @params
-            } | Should -Not -Throw
-
-            Assert-MockCalled Get-AzWebAppSlot -Exactly 1
         }
 
 
