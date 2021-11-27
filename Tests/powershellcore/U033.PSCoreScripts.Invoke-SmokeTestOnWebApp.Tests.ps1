@@ -17,7 +17,7 @@ Describe "Invoke-SmokeTestsOnWebApp unit tests" -Tag "Unit" {
                 return @{ DefaultHostName = "site.azurewebsites.net" }
             }
 
-            $params = @{
+            $params1 = @{
                 AppName               = "SomeWebApp"
                 ResourceGroup         = "SomeResourceGroup"
                 Slot                  = "ASlot"
@@ -34,25 +34,25 @@ Describe "Invoke-SmokeTestsOnWebApp unit tests" -Tag "Unit" {
         It "should get the web app by slot" {
 
             {
-                ./Invoke-SmokeTestOnWebApp.ps1 @params
+                ./Invoke-SmokeTestOnWebApp.ps1 @params1
             } | Should -Not -Throw
 
             Assert-MockCalled Get-AzWebAppSlot -Exactly 1 -ParameterFilter {
-                $ResourceGroupName -eq $params.ResourceGroup -and `
-                    $Name -eq $params.AppName -and `
-                    $Slot -eq $params.Slot
+                $ResourceGroupName -eq $params1.ResourceGroup -and `
+                    $Name -eq $params1.AppName -and `
+                    $Slot -eq $params1.Slot
             }
         }
 
         It "should perform a web request to the site" {
 
             {
-                ./Invoke-SmokeTestOnWebApp.ps1 @params
+                ./Invoke-SmokeTestOnWebApp.ps1 @params1
             } | Should -Not -Throw
 
             Assert-MockCalled Invoke-WebRequest -Exactly 1 -ParameterFilter {
                 $Uri -eq "https://site.azurewebsites.net/path" -and `
-                    $TimeoutSec -eq $params.TimeoutInSecs -and `
+                    $TimeoutSec -eq $params1.TimeoutInSecs -and `
                     $Method -eq "Get" -and `
                     $MaximumRedirection -eq 0 -and `
                     $UseBasicParsing.IsPresent
@@ -62,7 +62,7 @@ Describe "Invoke-SmokeTestsOnWebApp unit tests" -Tag "Unit" {
         It "should not sleep" {
 
             {
-                ./Invoke-SmokeTestOnWebApp.ps1 @params
+                ./Invoke-SmokeTestOnWebApp.ps1 @params1
             } | Should -Not -Throw
 
             Assert-MockCalled Start-Sleep -Exactly 0
@@ -263,7 +263,7 @@ Describe "Invoke-SmokeTestsOnWebApp unit tests" -Tag "Unit" {
 
 
             ./Invoke-SmokeTestOnWebApp.ps1 @params
-            
+
             Assert-MockCalled Start-Sleep -Exactly 2
         }
     }
