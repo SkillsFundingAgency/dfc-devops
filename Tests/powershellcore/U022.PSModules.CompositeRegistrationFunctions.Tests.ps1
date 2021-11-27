@@ -402,7 +402,7 @@ InModuleScope CompositeRegistrationFunctions {
             It "should throw an error" {
                 {
                     New-RegionRegistration -Path SomePath -Region @{}
-                } | Should -throw "PageRegion is not set for a region on path SomePath"
+                } | Should -throw -ExpectedMessage 'PageRegion is not set for a region on path SomePath*'
             }
         }
 
