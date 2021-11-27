@@ -36,7 +36,7 @@ Describe "Invoke-SmokeTestsOnWebApp unit tests" -Tag "Unit" {
                 ./Invoke-SmokeTestOnWebApp.ps1 @params
             } | Should -Not -Throw
 
-            Assert-MockCalled Get-AzWebAppSlot -Exactly 1 
+            Should -Invoke -CommandName Get-AzWebAppSlot -Times 1
         }
 
 
@@ -46,7 +46,7 @@ Describe "Invoke-SmokeTestsOnWebApp unit tests" -Tag "Unit" {
                 ./Invoke-SmokeTestOnWebApp.ps1 @params
             } | Should -Not -Throw
 
-            Assert-MockCalled Invoke-WebRequest -Exactly 1 -ParameterFilter {
+            Should -Invoke -CommandName Invoke-WebRequest -Exactly 1 -ParameterFilter {
                 $Uri -eq "https://site.azurewebsites.net/path" -and `
                 $TimeoutSec -eq $params.TimeoutInSecs -and `
                 $Method -eq "Get" -and `
@@ -62,7 +62,7 @@ Describe "Invoke-SmokeTestsOnWebApp unit tests" -Tag "Unit" {
                 ./Invoke-SmokeTestOnWebApp.ps1 @params
             } | Should -Not -Throw
 
-            Assert-MockCalled Start-Sleep -Exactly 0
+            Should -Invoke -CommandName Start-Sleep -Exactly 0
         }
     }
 
@@ -98,7 +98,8 @@ Describe "Invoke-SmokeTestsOnWebApp unit tests" -Tag "Unit" {
                 ./Invoke-SmokeTestOnWebApp.ps1 @params
             } | Should -Throw "Smoke test exhausted all retry attempts and is still not responding"
 
-            Assert-MockCalled Get-AzWebAppSlot -Exactly 1 
+            Should -Invoke -CommandName Get-AzWebAppSlot -Times 1
+
         }
 
         It "should perform a web requests to the site" {
@@ -107,7 +108,7 @@ Describe "Invoke-SmokeTestsOnWebApp unit tests" -Tag "Unit" {
                 ./Invoke-SmokeTestOnWebApp.ps1 @params
             } | Should -Throw "Smoke test exhausted all retry attempts and is still not responding"
 
-            Assert-MockCalled Invoke-WebRequest -Exactly 3 -ParameterFilter {
+            Should -Invoke -CommandName Invoke-WebRequest -Exactly 3 -ParameterFilter {
                 $Uri -eq "https://site.azurewebsites.net/path" -and `
                     $TimeoutSec -eq $params.TimeoutInSecs -and `
                     $Method -eq "Get" -and `
@@ -122,7 +123,7 @@ Describe "Invoke-SmokeTestsOnWebApp unit tests" -Tag "Unit" {
                 ./Invoke-SmokeTestOnWebApp.ps1 @params
             } | Should -Throw "Smoke test exhausted all retry attempts and is still not responding"
 
-            Assert-MockCalled Start-Sleep -Exactly 2 -ParameterFilter { $Seconds -eq $params.BackOffPeriodInSecs }
+            Should -Invoke -CommandName Start-Sleep -Exactly 2 -ParameterFilter { $Seconds -eq $params.BackOffPeriodInSecs }
         }
     }
 
@@ -156,7 +157,7 @@ Describe "Invoke-SmokeTestsOnWebApp unit tests" -Tag "Unit" {
                 ./Invoke-SmokeTestOnWebApp.ps1 @params
             } | Should -Throw "Smoke test exhausted all retry attempts and is still not responding"
 
-            Assert-MockCalled Get-AzWebAppSlot -Exactly 1 
+            Should -Invoke -CommandName Get-AzWebAppSlot -Times 1
         }
 
         It "should perform a web requests to the site" {
@@ -166,7 +167,7 @@ Describe "Invoke-SmokeTestsOnWebApp unit tests" -Tag "Unit" {
                 ./Invoke-SmokeTestOnWebApp.ps1 @params
             } | Should -Throw "Smoke test exhausted all retry attempts and is still not responding"
 
-            Assert-MockCalled Invoke-WebRequest -Exactly 3 -ParameterFilter {
+            Should -Invoke -CommandName Invoke-WebRequest -Exactly 3 -ParameterFilter {
                 $Uri -eq "https://site.azurewebsites.net/path" -and `
                     $TimeoutSec -eq $params.TimeoutInSecs -and `
                     $Method -eq "Get" -and `
@@ -227,7 +228,7 @@ Describe "Invoke-SmokeTestsOnWebApp unit tests" -Tag "Unit" {
 
             ./Invoke-SmokeTestOnWebApp.ps1 @params
 
-            Assert-MockCalled Get-AzWebAppSlot -Exactly 1 
+            Should -Invoke -CommandName Get-AzWebAppSlot -Times 1
         }
 
         It "should perform a web requests to the site" {
