@@ -10,7 +10,7 @@ Describe "Get-VersionedFunctionAppName" -Tag "Unit" {
 
             {
                 & ./Get-VersionedFunctionAppName
-            } | Should Throw
+            } | Should -Throw
         }
     }
 
@@ -39,7 +39,7 @@ Describe "Get-VersionedFunctionAppName" -Tag "Unit" {
 
             $functionAppOutput = $allOutput | Where-Object { $_ -like "*FunctionAppName*" }
 
-            $functionAppOutput | Should Be "##vso[task.setvariable variable=FunctionAppName;isOutput=false]$ExpectedResult"
+            $functionAppOutput | Should -Be "##vso[task.setvariable variable=FunctionAppName;isOutput=false]$ExpectedResult"
         }
     }
 
@@ -67,7 +67,7 @@ Describe "Get-VersionedFunctionAppName" -Tag "Unit" {
 
             $functionAppOutput = $allOutput | Where-Object { $_ -like "*ApiVersion*" }
 
-            $functionAppOutput | Should Be "##vso[task.setvariable variable=ApiVersion;isOutput=false]$ExpectedResult"
+            $functionAppOutput | Should -Be "##vso[task.setvariable variable=ApiVersion;isOutput=false]$ExpectedResult"
         }
     }
 }
