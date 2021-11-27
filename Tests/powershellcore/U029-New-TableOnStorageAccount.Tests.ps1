@@ -50,6 +50,7 @@ Describe "New-TableOnStorageAccount unit tests" -Tag "Unit" {
         }
 
         It "should get storage account keys" {
+            ./New-TableOnStorageAccount -StorageAccountName SomeStorageAccount -ResourceGroupName aResourceGroup -TableName SomeTable
             Should -Invoke -CommandName Get-AzStorageAccountKey -Exactly 1 -ParameterFilter {
                 $ResourceGroupName -eq "aResourceGroup" -and `
                     $Name -eq "SomeStorageAccount"
