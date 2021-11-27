@@ -13,9 +13,6 @@ Describe "Invoke-SmokeTestsOnWebApp unit tests" -Tag "Unit" {
             Mock Invoke-WebRequest -MockWith {
                 return @{ StatusCode = 200 }
             }
-            Mock Get-AzWebAppSlot -MockWith {
-                return @{ DefaultHostName = "site.azurewebsites.net" }
-            }
 
             $params = @{
                 AppName               = "SomeWebApp"
@@ -27,21 +24,14 @@ Describe "Invoke-SmokeTestsOnWebApp unit tests" -Tag "Unit" {
                 AttemptsBeforeFailure = 3
             }
 
-        }
-
-        It "should perform a web request to the site" {
-
-            {
-                ./Invoke-SmokeTestOnWebApp.ps1 @params
-            } | Should -Not -Throw
-
-            Assert-MockCalled Invoke-WebRequest -Exactly 1 -ParameterFilter {
+            Mock Get-AzWebAppSlot { "site.azurewebsites.net" } -ParameterFilter {
                 $Uri -eq "https://site.azurewebsites.net/path" -and `
                     $TimeoutSec -eq $params.TimeoutInSecs -and `
                     $Method -eq "Get" -and `
                     $MaximumRedirection -eq 0 -and `
                     $UseBasicParsing.IsPresent
             }
+
         }
 
         It "should get the web app by slot" {
@@ -50,11 +40,17 @@ Describe "Invoke-SmokeTestsOnWebApp unit tests" -Tag "Unit" {
                 ./Invoke-SmokeTestOnWebApp.ps1 @params
             } | Should -Not -Throw
 
-            Assert-MockCalled Get-AzWebAppSlot 0 -ParameterFilter {
-                $ResourceGroupName -eq $params.ResourceGroup -and `
-                    $Name -eq $params.AppName -and `
-                    $Slot -eq $params.Slot
-            }
+            Assert-MockCalled Get-AzWebAppSlot -Exactly 1
+        }
+
+
+        It "should perform a web request to the site" {
+
+            {
+                ./Invoke-SmokeTestOnWebApp.ps1 @params
+            } | Should -Not -Throw
+
+            Assert-MockCalled Invoke-WebRequest -Exactly 1 -ParameterFilter 
         }
 
 
