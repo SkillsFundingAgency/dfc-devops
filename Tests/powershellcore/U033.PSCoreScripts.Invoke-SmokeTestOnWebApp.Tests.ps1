@@ -50,7 +50,7 @@ Describe "Invoke-SmokeTestsOnWebApp unit tests" -Tag "Unit" {
                 ./Invoke-SmokeTestOnWebApp.ps1 @params
             } | Should -Not -Throw
 
-            Assert-MockCalled Get-AzWebAppSlot -Exactly 1 -ParameterFilter {
+            Assert-MockCalled Get-AzWebAppSlot 0 -ParameterFilter {
                 $ResourceGroupName -eq $params.ResourceGroup -and `
                     $Name -eq $params.AppName -and `
                     $Slot -eq $params.Slot
