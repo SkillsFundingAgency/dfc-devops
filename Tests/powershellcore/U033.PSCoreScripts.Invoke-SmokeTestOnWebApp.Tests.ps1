@@ -24,6 +24,10 @@ Describe "Invoke-SmokeTestsOnWebApp unit tests" -Tag "Unit" {
                 AttemptsBeforeFailure = 3
             }
 
+
+        }
+
+        It "should get the web app by slot" {
             Mock Get-AzWebAppSlot { "site.azurewebsites.net" } -ParameterFilter {
                 $Uri -eq "https://site.azurewebsites.net/path" -and `
                     $TimeoutSec -eq $params.TimeoutInSecs -and `
@@ -31,10 +35,6 @@ Describe "Invoke-SmokeTestsOnWebApp unit tests" -Tag "Unit" {
                     $MaximumRedirection -eq 0 -and `
                     $UseBasicParsing.IsPresent
             }
-
-        }
-
-        It "should get the web app by slot" {
 
             {
                 ./Invoke-SmokeTestOnWebApp.ps1 @params
