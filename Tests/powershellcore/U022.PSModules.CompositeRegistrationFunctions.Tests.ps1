@@ -284,7 +284,7 @@ InModuleScope CompositeRegistrationFunctions {
                 }
 
                 Should -Invoke -CommandName ConvertTo-Json -Scope It -ParameterFilter {
-                    $InputObject.Keys.Count | Should Be 2
+                    $InputObject.Keys.Count | Should -Be 2
                     $InputObject.Contains("Path")
                     $InputObject.Contains("Layout")
                 }
@@ -298,7 +298,7 @@ InModuleScope CompositeRegistrationFunctions {
                 }
 
                 Should -Invoke -CommandName ConvertTo-Json -Scope It -ParameterFilter {
-                    $InputObject.Keys.Count | Should Be 3
+                    $InputObject.Keys.Count | Should -Be 3
                     $InputObject.Contains("Path")
                     $InputObject.Contains("Layout")
                     $InputObject.Contains("TopNavigationText")
@@ -313,7 +313,7 @@ InModuleScope CompositeRegistrationFunctions {
                 }
 
                 Should -Invoke -CommandName ConvertTo-Json -Scope It -ParameterFilter {
-                    $InputObject.Keys.Count | Should Be 3
+                    $InputObject.Keys.Count | Should -Be 3
                     $InputObject.Contains("Path")
                     $InputObject.Contains("Layout")
                     $InputObject.Contains("TopNavigationOrder")
@@ -328,7 +328,7 @@ InModuleScope CompositeRegistrationFunctions {
                 }
 
                 Should -Invoke -CommandName ConvertTo-Json -Scope It -ParameterFilter {
-                    $InputObject.Keys.Count | Should Be 3
+                    $InputObject.Keys.Count | Should -Be 3
                     $InputObject.Contains("Path")
                     $InputObject.Contains("Layout")
                     $InputObject.Contains("OfflineHtml")
@@ -343,7 +343,7 @@ InModuleScope CompositeRegistrationFunctions {
                 }
 
                 Should -Invoke -CommandName ConvertTo-Json -Scope It -ParameterFilter {
-                    $InputObject.Keys.Count | Should Be 3
+                    $InputObject.Keys.Count | Should -Be 3
                     $InputObject.Contains("Path")
                     $InputObject.Contains("Layout")
                     $InputObject.Contains("PhaseBannerHtml")
@@ -358,7 +358,7 @@ InModuleScope CompositeRegistrationFunctions {
                 }
 
                 Should -Invoke -CommandName ConvertTo-Json -Scope It -ParameterFilter {
-                    $InputObject.Keys.Count | Should Be 3
+                    $InputObject.Keys.Count | Should -Be 3
                     $InputObject.Contains("Path")
                     $InputObject.Contains("Layout")
                     $InputObject.Contains("ExternalUrl")
@@ -373,7 +373,7 @@ InModuleScope CompositeRegistrationFunctions {
                 }
 
                 Should -Invoke -CommandName ConvertTo-Json -Scope It -ParameterFilter {
-                    $InputObject.Keys.Count | Should Be 3
+                    $InputObject.Keys.Count | Should -Be 3
                     $InputObject.Contains("Path")
                     $InputObject.Contains("Layout")
                     $InputObject.Contains("SitemapUrl")
@@ -388,7 +388,7 @@ InModuleScope CompositeRegistrationFunctions {
                 }
 
                 Should -Invoke -CommandName ConvertTo-Json -Scope It -ParameterFilter {
-                    $InputObject.Keys.Count | Should Be 3
+                    $InputObject.Keys.Count | Should -Be 3
                     $InputObject.Contains("Path")
                     $InputObject.Contains("Layout")
                     $InputObject.Contains("RobotsUrl")
@@ -475,24 +475,28 @@ InModuleScope CompositeRegistrationFunctions {
     #     }
     # }
 
-    # Describe "Update-PathRegistration" -Tag "Unit" {
-    #     New-RegistrationContext -PathApiUrl https://path-api/api -RegionApiUrl https://region-api/api -ApiKey SomeApiKey
-    #     Mock Invoke-CompositeApiRegistrationRequest 
-    #     Mock ConvertTo-Json 
+    Describe "Update-PathRegistration" -Tag "Unit" {
+
+        BeforeAll {
+            New-RegistrationContext -PathApiUrl https://path-api/api -RegionApiUrl https://region-api/api -ApiKey SomeApiKey
+            Mock Invoke-CompositeApiRegistrationRequest 
+            Mock ConvertTo-Json 
+        }
     
-    #     Update-PathRegistration -Path SomePath -ItemsToPatch @{ }
 
-    #     It "should serialize the objects to update" { 
-    #         Should -Invoke -CommandName ConvertTo-Json -Exactly 1            
-    #     }
+        It "should serialize the objects to update" { 
+            Update-PathRegistration -Path SomePath -ItemsToPatch @{ }
+            Should -Invoke -CommandName ConvertTo-Json -Exactly 1            
+        }
 
-    #     It "should invoke a composite api registration request" {
-    #         Should -Invoke -CommandName Invoke-CompositeApiRegistrationRequest -Exactly 1 -ParameterFilter {
-    #             $Url -eq "https://path-api/api/paths/SomePath" -and `
-    #                 $Method -eq "PATCH"
-    #         }
-    #     }
-    # }
+        It "should invoke a composite api registration request" {
+            Update-PathRegistration -Path SomePath -ItemsToPatch @{ }
+            Should -Invoke -CommandName Invoke-CompositeApiRegistrationRequest -Exactly 1 -ParameterFilter {
+                $Url -eq "https://path-api/api/paths/SomePath" -and `
+                    $Method -eq "PATCH"
+            }
+        }
+    }
 
     # Describe "Update-RegionRegistration" -Tag "Unit" {
     #     New-RegistrationContext -PathApiUrl https://path-api/api -RegionApiUrl https://region-api/api -ApiKey SomeApiKey
