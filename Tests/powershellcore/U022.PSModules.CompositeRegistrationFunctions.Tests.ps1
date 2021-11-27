@@ -78,14 +78,15 @@ InModuleScope CompositeRegistrationFunctions {
                 }
 
                 $script:ApiKey = "SomeApiKey"
-                $result = Invoke-CompositeApiRegistrationRequest -Url https://some/api -Method POST
             }
 
             It "should return null" {
+                $result = Invoke-CompositeApiRegistrationRequest -Url https://some/api -Method POST
                 $result | Should -Be $null
             }
 
             It "should correctly call Invoke-WebRequest" {
+                $result = Invoke-CompositeApiRegistrationRequest -Url https://some/api -Method POST
                 Should -Invoke -CommandName  Invoke-WebRequest -Exactly 1 -ParameterFilter {
                     $Uri -eq "https://some/api" -and `
                         $Method -eq "POST" -and `
@@ -106,10 +107,10 @@ InModuleScope CompositeRegistrationFunctions {
                 }
 
                 $script:ApiKey = "SomeApiKey"
-                $result = Invoke-CompositeApiRegistrationRequest -Url https://some/api -Method POST
             }
 
             It "should return deserialise the returned content" {
+                $result = Invoke-CompositeApiRegistrationRequest -Url https://some/api -Method POST
                 $result.message | Should -Be "some message"
             }
 
@@ -124,29 +125,33 @@ InModuleScope CompositeRegistrationFunctions {
             }
         }
 
-        #     Context "When performing a PATCH request and the api does not return a 200 status code" {
-        #         Mock Invoke-WebRequest -MockWith { return @{
-        #                 StatusCode = 204
-        #             }
-        #         }
+        Context "When performing a PATCH request and the api does not return a 200 status code" {
 
-        #         $script:ApiKey = "SomeApiKey"
-        #         $result = Invoke-CompositeApiRegistrationRequest -Url https://some/api -Method Patch
+            BeforeAll {
+                Mock Invoke-WebRequest -MockWith { return @{
+                        StatusCode = 204
+                    }
+                }
 
-        #         It "should return null" {
-        #             $result | Should -Be $null
-        #         }
+                $script:ApiKey = "SomeApiKey"
+            }
 
-        #         It "should correctly call Invoke-WebRequest" {
-        #             Should -Invoke -CommandName  Invoke-WebRequest -Exactly 1 -ParameterFilter {
-        #                 $Uri -eq "https://some/api" -and `
-        #                     $Method -eq "Patch" -and `
-        #                     $UseBasicParsing -eq $true -and `
-        #                     $Headers["Ocp-Apim-Subscription-Key"] -eq "SomeApiKey" -and `
-        #                     $Headers["Content-Type"] -eq "application/json"
-        #             }
-        #         }
-        #     }
+            It "should return null" {
+                $result = Invoke-CompositeApiRegistrationRequest -Url https://some/api -Method PATCH
+                $result | Should -Be $null
+            }
+
+            It "should correctly call Invoke-WebRequest" {
+                $result = Invoke-CompositeApiRegistrationRequest -Url https://some/api -Method PATCH
+                Should -Invoke -CommandName  Invoke-WebRequest -Exactly 1 -ParameterFilter {
+                    $Uri -eq "https://some/api" -and `
+                        $Method -eq "PATCH" -and `
+                        $UseBasicParsing -eq $true -and `
+                        $Headers["Ocp-Apim-Subscription-Key"] -eq "SomeApiKey" -and `
+                        $Headers["Content-Type"] -eq "application/json"
+                }
+            }
+        }
 
         #     Context "When performing a PATCH request and the api returns a 200 status code" {
         #         Mock Invoke-WebRequest -MockWith { return @{
