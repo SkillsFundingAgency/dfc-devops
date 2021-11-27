@@ -13,7 +13,9 @@ Describe "Invoke-SmokeTestsOnWebApp unit tests" -Tag "Unit" {
             Mock Get-AzWebAppSlot -MockWith {
                 return @{ DefaultHostName = "site.azurewebsites.net" }
             }
+        }
 
+        BeforeEach {
             $params = @{
                 AppName               = "SomeWebApp"
                 ResourceGroup         = "SomeResourceGroup"
@@ -26,11 +28,7 @@ Describe "Invoke-SmokeTestsOnWebApp unit tests" -Tag "Unit" {
     
             {
                 ./Invoke-SmokeTestOnWebApp.ps1 @params
-            } | Should -Not -Throw
-        }
-
-        BeforeEach {
-
+            } | Should not -Throw
         }
 
 
@@ -68,7 +66,9 @@ Describe "Invoke-SmokeTestsOnWebApp unit tests" -Tag "Unit" {
             Mock Get-AzWebAppSlot -MockWith {
                 return @{ DefaultHostName = "site.azurewebsites.net" }
             }
+        }
 
+        BeforeEach{
             $params = @{
                 AppName               = "SomeWebApp"
                 ResourceGroup         = "SomeResourceGroup"
@@ -83,11 +83,7 @@ Describe "Invoke-SmokeTestsOnWebApp unit tests" -Tag "Unit" {
 
             {
                 ./Invoke-SmokeTestOnWebApp.ps1 @params
-            } | Should -Throw "Smoke test exhausted all retry attempts and is still not responding"
-        }
-
-        BeforeEach {
-
+            } | Should throw "Smoke test exhausted all retry attempts and is still not responding"
     
         }
 
@@ -125,8 +121,9 @@ Describe "Invoke-SmokeTestsOnWebApp unit tests" -Tag "Unit" {
             Mock Get-AzWebAppSlot -MockWith {
                 return @{ DefaultHostName = "site.azurewebsites.net" }
             }
+        }
 
-
+        BeforeEach{
             $params = @{
                 AppName               = "SomeWebApp"
                 ResourceGroup         = "SomeResourceGroup"
@@ -141,12 +138,8 @@ Describe "Invoke-SmokeTestsOnWebApp unit tests" -Tag "Unit" {
     
             {
                 ./Invoke-SmokeTestOnWebApp.ps1 @params
-            } | Should -Throw "Smoke test exhausted all retry attempts and is still not responding"
-        }
-
-        BeforeEach {
-
-        }
+            } | Should throw "Smoke test exhausted all retry attempts and is still not responding"
+            }
 
         It "should get the web app by slot" {
             Assert-MockCalled Get-AzWebAppSlot -Exactly 1 -ParameterFilter {
