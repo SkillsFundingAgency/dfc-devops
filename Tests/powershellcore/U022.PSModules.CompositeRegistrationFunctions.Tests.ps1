@@ -11,7 +11,7 @@ InModuleScope CompositeRegistrationFunctions {
             It "should throw an exception" {
                 {
                     Invoke-CompositeApiRegistrationRequest -Url https://some/api -Method Get
-                } | Should throw "an error status code"
+                } | Should -Throw "an error status code"
             }        
         }
 
@@ -23,7 +23,7 @@ InModuleScope CompositeRegistrationFunctions {
             $result = Invoke-CompositeApiRegistrationRequest -Url https://some/api -Method Get
 
             It "should return null" {
-                $result | Should Be $null
+                $result | Should -Be $null
             }
 
             it "should correctly call Invoke-WebRequest" {
@@ -47,7 +47,7 @@ InModuleScope CompositeRegistrationFunctions {
             $result = Invoke-CompositeApiRegistrationRequest -Url https://some/api -Method Get
 
             It "should deserialize the returned content" {
-                $result.message | Should Be "some message"
+                $result.message | Should -Be "some message"
             }
 
             it "should correctly call Invoke-WebRequest" {
@@ -70,7 +70,7 @@ InModuleScope CompositeRegistrationFunctions {
             $result = Invoke-CompositeApiRegistrationRequest -Url https://some/api -Method Post
 
             It "should return null" {
-                $result | Should Be $null
+                $result | Should -Be $null
             }
 
             It "should correctly call Invoke-WebRequest" {
@@ -95,7 +95,7 @@ InModuleScope CompositeRegistrationFunctions {
             $result = Invoke-CompositeApiRegistrationRequest -Url https://some/api -Method Post
 
             It "should return deserialise the returned content" {
-                $result.message | Should Be "some message"
+                $result.message | Should -Be "some message"
             }
 
             It "should correctly call Invoke-WebRequest" {
@@ -119,7 +119,7 @@ InModuleScope CompositeRegistrationFunctions {
             $result = Invoke-CompositeApiRegistrationRequest -Url https://some/api -Method Patch
 
             It "should return null" {
-                $result | Should Be $null
+                $result | Should -Be $null
             }
 
             It "should correctly call Invoke-WebRequest" {
@@ -144,7 +144,7 @@ InModuleScope CompositeRegistrationFunctions {
             $result = Invoke-CompositeApiRegistrationRequest -Url https://some/api -Method Patch
 
             It "should return deserialise the returned content" {
-                $result.message | Should Be "some message"
+                $result.message | Should -Be "some message"
             }
 
             It "should correctly call Invoke-WebRequest" {
@@ -199,7 +199,7 @@ InModuleScope CompositeRegistrationFunctions {
             It "should throw an error" {
                 {
                     New-PathRegistration -Path @{}
-                } | Should throw "Path not specified"
+                } | Should -Throw "Path not specified"
             }
         }
 
@@ -207,7 +207,7 @@ InModuleScope CompositeRegistrationFunctions {
             It "should throw an error" {
                 {
                     New-PathRegistration -Path @{ Path = "SomePath"}
-                } | Should throw "Layout is mandatory when creating a page registration."
+                } | Should -throw "Layout is mandatory when creating a page registration."
             }
         }
 
@@ -363,7 +363,7 @@ InModuleScope CompositeRegistrationFunctions {
             It "should throw an error" {
                 {
                     New-RegionRegistration -Path SomePath -Region @{}
-                } | Should throw "PageRegion is not set for a region on path SomePath"
+                } | Should -throw "PageRegion is not set for a region on path SomePath"
             }
         }
 
@@ -395,7 +395,7 @@ InModuleScope CompositeRegistrationFunctions {
                 New-RegionRegistration -Path SomePath -Region @{  PageRegion = 5 }
 
                 Should -Invoke -CommandName ConvertTo-Json -Scope It -ParameterFilter {
-                    $InputObject.Keys.Count | Should Be 2
+                    $InputObject.Keys.Count | Should -Be 2
                     $InputObject.Contains("Path")
                     $InputObject.Contains("PageRegion")
                 }
@@ -405,7 +405,7 @@ InModuleScope CompositeRegistrationFunctions {
                 New-RegionRegistration -Path SomePath -Region @{  PageRegion = 5; RegionEndpoint = "SomeEndpoint" }
 
                 Should -Invoke -CommandName ConvertTo-Json -Scope It -ParameterFilter {
-                    $InputObject.Keys.Count | Should Be 3
+                    $InputObject.Keys.Count | Should -Be 3
                     $InputObject.Contains("Path")
                     $InputObject.Contains("PageRegion")
                     $InputObject.Contains("RegionEndpoint")
@@ -416,7 +416,7 @@ InModuleScope CompositeRegistrationFunctions {
                 New-RegionRegistration -Path SomePath -Region @{  PageRegion = 5; HealthCheckRequired = $false }
 
                 Should -Invoke -CommandName ConvertTo-Json -Scope It -ParameterFilter {
-                    $InputObject.Keys.Count | Should Be 3
+                    $InputObject.Keys.Count | Should -Be 3
                     $InputObject.Contains("Path")
                     $InputObject.Contains("PageRegion")
                     $InputObject.Contains("HealthCheckRequired")
@@ -427,7 +427,7 @@ InModuleScope CompositeRegistrationFunctions {
                 New-RegionRegistration -Path SomePath -Region @{  PageRegion = 5; OfflineHtml = "Some mark-up" }
 
                 Should -Invoke -CommandName ConvertTo-Json -Scope It -ParameterFilter {
-                    $InputObject.Keys.Count | Should Be 3
+                    $InputObject.Keys.Count | Should -Be 3
                     $InputObject.Contains("Path")
                     $InputObject.Contains("PageRegion")
                     $InputObject.Contains("OfflineHtml")
@@ -482,7 +482,7 @@ InModuleScope CompositeRegistrationFunctions {
 
                 $result = Get-PatchDocuments -OriginalValues $original -ReplacementValues $replacement
 
-                $result.Count | Should Be 0
+                $result.Count | Should -Be 0
             }
         }
 
@@ -490,11 +490,11 @@ InModuleScope CompositeRegistrationFunctions {
             It "should create an add document for a property" {
                 $result = Get-PatchDocuments -OriginalValues @{ } -ReplacementValues @{ "TestProp" = "AnotherValue"}
 
-                $result.Count | Should Be 1
+                $result.Count | Should -Be 1
 
-                $result[0].op | Should Be "add"
-                $result[0].path | Should Be "/TestProp"
-                $result[0].value | Should Be "AnotherValue"
+                $result[0].op | Should -Be "add"
+                $result[0].path | Should -Be "/TestProp"
+                $result[0].value | Should -Be "AnotherValue"
             }
         }
 
@@ -502,11 +502,11 @@ InModuleScope CompositeRegistrationFunctions {
             It "should create a replace document for a property" {
                 $result = Get-PatchDocuments -OriginalValues @{ "TestProp" = "OriginalValue" } -ReplacementValues @{ "TestProp" = "UpdatedValue" }
 
-                $result.Count | Should Be 1
+                $result.Count | Should -Be 1
 
-                $result[0].op | Should Be "replace"
-                $result[0].path | Should Be "/TestProp"
-                $result[0].value | Should Be "UpdatedValue"
+                $result[0].op | Should -Be "replace"
+                $result[0].path | Should -Be "/TestProp"
+                $result[0].value | Should -Be "UpdatedValue"
             }
         }
 
@@ -518,7 +518,7 @@ InModuleScope CompositeRegistrationFunctions {
                     "TestPropThree" = "ThirdValue"
                 }
 
-                $result.Count | Should be 3
+                $result.Count | Should -be 3
             }
         }
     }
@@ -538,18 +538,18 @@ InModuleScope CompositeRegistrationFunctions {
             $result = ConvertTo-Hashtable -Object $customObject
 
             It "should return a hashtable" {
-                $result.GetType() | Should be "hashtable"
+                $result.GetType() | Should -be "hashtable"
             }
 
             It "should convert properties" {
-                $result.Keys.Count| Should be 6
+                $result.Keys.Count| Should -be 6
 
-                $result.Contains("StringProperty") | Should be $true
-                $result.Contains("IntProperty") | Should be $true
-                $result.Contains("BoolProperty") | Should be $true
-                $result.Contains("NullProperty") | Should be $true
-                $result.Contains("ArrayProperty") | Should be $true
-                $result.Contains("ObjectProperty") | Should be $true
+                $result.Contains("StringProperty") | Should -be $true
+                $result.Contains("IntProperty") | Should -be $true
+                $result.Contains("BoolProperty") | Should -be $true
+                $result.Contains("NullProperty") | Should -be $true
+                $result.Contains("ArrayProperty") | Should -be $true
+                $result.Contains("ObjectProperty") | Should -be $true
             }
         }
     }
