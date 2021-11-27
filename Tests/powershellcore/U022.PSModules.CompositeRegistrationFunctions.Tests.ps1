@@ -191,10 +191,11 @@ InModuleScope CompositeRegistrationFunctions {
 
                 Mock Invoke-CompositeApiRegistrationRequest 
                 
-                Get-PathRegistration -Path SomePath
             }
 
             It "should invoke a composite api registration request" {
+                Get-PathRegistration -Path SomePath
+
                 Should -Invoke -CommandName Invoke-CompositeApiRegistrationRequest -ParameterFilter {
                     $Url -eq "https://path-api/api/paths/SomePath" -and
                     $Method -eq "Get"
