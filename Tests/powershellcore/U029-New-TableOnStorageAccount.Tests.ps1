@@ -46,11 +46,10 @@ Describe "New-TableOnStorageAccount unit tests" -Tag "Unit" {
         It "should throw an exception" {
             { 
                 ./New-TableOnStorageAccount -StorageAccountName SomeStorageAccount -ResourceGroupName aResourceGroup -TableName SomeTable
-            } | Should throw "Unable to fetch account keys from storage account 'SomeStorageAccount'"
+            } | Should -throw "Unable to fetch account keys from storage account 'SomeStorageAccount'"
         }
 
         It "should get storage account keys" {
-            ./New-TableOnStorageAccount -StorageAccountName SomeStorageAccount -ResourceGroupName aResourceGroup -TableName SomeTable
             Should -Invoke -CommandName Get-AzStorageAccountKey -Exactly 1 -ParameterFilter {
                 $ResourceGroupName -eq "aResourceGroup" -and `
                     $Name -eq "SomeStorageAccount"
@@ -58,17 +57,14 @@ Describe "New-TableOnStorageAccount unit tests" -Tag "Unit" {
         }
 
         It "should not create any storage contexts" {
-            ./New-TableOnStorageAccount -StorageAccountName SomeStorageAccount -ResourceGroupName aResourceGroup -TableName SomeTable
             Should -Invoke -CommandName New-AzStorageContext -Exactly 0
         }
 
         It "should not get any storage tables" {
-            ./New-TableOnStorageAccount -StorageAccountName SomeStorageAccount -ResourceGroupName aResourceGroup -TableName SomeTable
             Should -Invoke -CommandName Get-AzStorageTable -Exactly 0
         }
 
         It "should not create any tables" {
-            ./New-TableOnStorageAccount -StorageAccountName SomeStorageAccount -ResourceGroupName aResourceGroup -TableName SomeTable
             Should -Invoke -CommandName New-AzStorageTable -Exactly 0
         }
     }
