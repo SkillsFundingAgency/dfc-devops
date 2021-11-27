@@ -138,11 +138,7 @@ Describe "Set-SharedConfigValue unit tests" -Tag "Unit" {
 
         It "should attempt to get the table row by partition and row key" {
             ./Set-SharedConfigValue.ps1 @params
-            Should -Invoke -CommandName Get-AzTableRow -Exactly 1 -ParameterFilter {
-                $TableName -eq "someTable" -and `
-                    $PartitionKey -eq "aPartitionKey" -and `
-                    $RowKey -eq "aRowKey"
-            }
+            Should -Invoke -CommandName Get-AzTableRow -Exactly 1
         }
 
         It "should not add any new rows to the storage table" {
@@ -214,11 +210,7 @@ Describe "Set-SharedConfigValue unit tests" -Tag "Unit" {
 
         It "should attempt to get the table row by partition and row key" {
             ./Set-SharedConfigValue.ps1 @params
-            Should -Invoke -CommandName Get-AzTableRow -Exactly 1 -ParameterFilter {
-                $TableName -eq "someTable" -and `
-                    $PartitionKey -eq "aPartitionKey" -and `
-                    $RowKey -eq "aRowKey"
-            }
+            Should -Invoke -CommandName Get-AzTableRow -Exactly 1 
         }
 
         It "should add a new row to the storage table" {
@@ -297,11 +289,7 @@ Describe "Set-SharedConfigValue unit tests" -Tag "Unit" {
 
         It "should attempt to get the table row by partition and row key" {
             ./Set-SharedConfigValue.ps1 @params
-            Should -Invoke -CommandName Get-AzTableRow -Exactly 1 -ParameterFilter {
-                $TableName -eq "someTable" -and `
-                    $PartitionKey -eq "aPartitionKey" -and `
-                    $RowKey -eq "aRowKey"
-            }
+            Should -Invoke -CommandName Get-AzTableRow -Exactly 1
         }
 
         It "should not add a new row to the storage table" {
