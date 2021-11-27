@@ -17,7 +17,7 @@ Describe "Invoke-SmokeTestsOnWebApp unit tests" -Tag "Unit" {
                 return @{ DefaultHostName = "site.azurewebsites.net" }
             }
 
-            $params1 = @{
+            $params = @{
                 AppName               = "SomeWebApp"
                 ResourceGroup         = "SomeResourceGroup"
                 Slot                  = "ASlot"
@@ -26,43 +26,42 @@ Describe "Invoke-SmokeTestsOnWebApp unit tests" -Tag "Unit" {
                 TimeoutInSecs         = 7
                 AttemptsBeforeFailure = 3
             }
-    
 
-    
-        }
-
-        It "should get the web app by slot" {
-
-            {
-                ./Invoke-SmokeTestOnWebApp.ps1 @params1
-            } | Should -Not -Throw
-
-            Assert-MockCalled Get-AzWebAppSlot -Exactly 1 -ParameterFilter {
-                $ResourceGroupName -eq $params1.ResourceGroup -and `
-                    $Name -eq $params1.AppName -and `
-                    $Slot -eq $params1.Slot
-            }
         }
 
         It "should perform a web request to the site" {
 
             {
-                ./Invoke-SmokeTestOnWebApp.ps1 @params1
+                ./Invoke-SmokeTestOnWebApp.ps1 @params
             } | Should -Not -Throw
 
             Assert-MockCalled Invoke-WebRequest -Exactly 1 -ParameterFilter {
                 $Uri -eq "https://site.azurewebsites.net/path" -and `
-                    $TimeoutSec -eq $params1.TimeoutInSecs -and `
+                    $TimeoutSec -eq $params.TimeoutInSecs -and `
                     $Method -eq "Get" -and `
                     $MaximumRedirection -eq 0 -and `
                     $UseBasicParsing.IsPresent
             }
         }
 
+        It "should get the web app by slot" {
+
+            {
+                ./Invoke-SmokeTestOnWebApp.ps1 @params
+            } | Should -Not -Throw
+
+            Assert-MockCalled Get-AzWebAppSlot -Exactly 1 -ParameterFilter {
+                $ResourceGroupName -eq $params.ResourceGroup -and `
+                    $Name -eq $params.AppName -and `
+                    $Slot -eq $params.Slot
+            }
+        }
+
+
         It "should not sleep" {
 
             {
-                ./Invoke-SmokeTestOnWebApp.ps1 @params1
+                ./Invoke-SmokeTestOnWebApp.ps1 @params
             } | Should -Not -Throw
 
             Assert-MockCalled Start-Sleep -Exactly 0
