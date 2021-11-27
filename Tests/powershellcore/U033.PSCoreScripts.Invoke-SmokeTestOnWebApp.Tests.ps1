@@ -24,7 +24,9 @@ Describe "Invoke-SmokeTestsOnWebApp unit tests" -Tag "Unit" {
                 AttemptsBeforeFailure = 3
             }
 
-            Mock Get-AzWebAppSlot 
+            Mock Get-AzWebAppSlot -MockWith {
+                return @{ DefaultHostName = "site.azurewebsites.net" }
+            }
 
         }
 
@@ -39,8 +41,6 @@ Describe "Invoke-SmokeTestsOnWebApp unit tests" -Tag "Unit" {
                     $Name -eq $params.AppName -and `
                     $Slot -eq $params.Slot
             }
-
-            
         }
 
 
