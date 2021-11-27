@@ -21,18 +21,19 @@ InModuleScope CompositeRegistrationFunctions {
                 Mock Invoke-WebRequest -MockWith { return @{ StatusCode = 204 } }
 
                 $script:ApiKey = "SomeApiKey"
-                $result = Invoke-CompositeApiRegistrationRequest -Url https://some/api -Method Get
             }
         
 
             It "should return null" {
+                $result = Invoke-CompositeApiRegistrationRequest -Url https://some/api -Method GET
                 $result | Should -Be $null
             }
 
             it "should correctly call Invoke-WebRequest" {
+                $result = Invoke-CompositeApiRegistrationRequest -Url https://some/api -Method GET
                 Should -Invoke -CommandName  Invoke-WebRequest -Exactly 1 -ParameterFilter {
                     $Uri -eq "https://some/api" -and `
-                        $Method -eq "Get" -and `
+                        $Method -eq "GET" -and `
                         $UseBasicParsing -eq $true -and `
                         $Headers["Ocp-Apim-Subscription-Key"] -eq "SomeApiKey"
                 }
