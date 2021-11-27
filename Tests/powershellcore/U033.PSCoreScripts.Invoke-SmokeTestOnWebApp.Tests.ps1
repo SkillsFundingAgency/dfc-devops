@@ -36,7 +36,7 @@ Describe "Invoke-SmokeTestsOnWebApp unit tests" -Tag "Unit" {
                 ./Invoke-SmokeTestOnWebApp.ps1 @params
             } | Should -Not -Throw
 
-            Should -Invoke -CommandName Get-AzWebAppSlot -Exactly 1
+            Assert-MockCalled Get-AzWebAppSlot -Exactly 1 
         }
 
 
