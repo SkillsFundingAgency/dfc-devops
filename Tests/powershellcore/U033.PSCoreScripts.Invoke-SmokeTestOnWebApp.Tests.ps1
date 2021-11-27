@@ -2,26 +2,30 @@
 
 Describe "Invoke-SmokeTestsOnWebApp unit tests" -Tag "Unit" {
     BeforeAll {
-        Mock Start-Sleep
-        Mock Invoke-WebRequest -MockWith {
-            return @{ StatusCode = 200 }
-        }
-        Mock Get-AzWebAppSlot -MockWith {
-            return @{ DefaultHostName = "site.azurewebsites.net" }
-        }
+
     
     }
 
     Context "When performing a smoke test that is initially succesful" {
 
         BeforeAll {
+
+
+            Mock Start-Sleep
+            Mock Invoke-WebRequest -MockWith {
+                return @{ StatusCode = 200 }
+            }
+            Mock Get-AzWebAppSlot -MockWith {
+                return @{ DefaultHostName = "site.azurewebsites.net" }
+            }
+
             $params = @{
-                AppName               = "SomeWebApp"
-                ResourceGroup         = "SomeResourceGroup"
-                Slot                  = "ASlot"
-                Path                  = "/path"
-                BackOffPeriodInSecs   = 10
-                TimeoutInSecs         = 7
+                AppName = "SomeWebApp"
+                ResourceGroup = "SomeResourceGroup"
+                Slot = "ASlot"
+                Path = "/path"
+                BackOffPeriodInSecs = 10
+                TimeoutInSecs = 7
                 AttemptsBeforeFailure = 3
             }
     
@@ -30,6 +34,10 @@ Describe "Invoke-SmokeTestsOnWebApp unit tests" -Tag "Unit" {
 
         It "should get the web app by slot" {
 
+            {
+                ./Invoke-SmokeTestOnWebApp.ps1 @params
+            } | Should -Not -Throw
+    
             Assert-MockCalled Get-AzWebAppSlot -Exactly 1 -ParameterFilter {
                 $ResourceGroupName -eq $params.ResourceGroup -and `
                     $Name -eq $params.AppName -and `
