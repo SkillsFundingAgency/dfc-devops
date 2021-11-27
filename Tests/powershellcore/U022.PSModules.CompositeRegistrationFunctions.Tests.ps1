@@ -69,54 +69,60 @@ InModuleScope CompositeRegistrationFunctions {
             }
         }
 
-        #     Context "When performing a POST request and the api does not return a 201 status code" {
-        #         Mock Invoke-WebRequest -MockWith { return @{
-        #                 StatusCode = 204
-        #             }
-        #         }
+        Context "When performing a POST request and the api does not return a 201 status code" {
 
-        #         $script:ApiKey = "SomeApiKey"
-        #         $result = Invoke-CompositeApiRegistrationRequest -Url https://some/api -Method Post
+            BeforeAll {
+                Mock Invoke-WebRequest -MockWith { return @{
+                        StatusCode = 204
+                    }
+                }
 
-        #         It "should return null" {
-        #             $result | Should -Be $null
-        #         }
+                $script:ApiKey = "SomeApiKey"
+                $result = Invoke-CompositeApiRegistrationRequest -Url https://some/api -Method POST
+            }
 
-        #         It "should correctly call Invoke-WebRequest" {
-        #             Should -Invoke -CommandName  Invoke-WebRequest -Exactly 1 -ParameterFilter {
-        #                 $Uri -eq "https://some/api" -and `
-        #                     $Method -eq "Post" -and `
-        #                     $UseBasicParsing -eq $true -and `
-        #                     $Headers["Ocp-Apim-Subscription-Key"] -eq "SomeApiKey" -and `
-        #                     $Headers["Content-Type"] -eq "application/json"
-        #             }
-        #         }
-        #     }
+            It "should return null" {
+                $result | Should -Be $null
+            }
 
-        #     Context "When performing a POST request and the api returns a 201 status code" {
-        #         Mock Invoke-WebRequest -MockWith { return @{
-        #                 StatusCode = 201
-        #                 Content    = "{ ""message"": ""some message"" }" 
-        #             }
-        #         }
+            It "should correctly call Invoke-WebRequest" {
+                Should -Invoke -CommandName  Invoke-WebRequest -Exactly 1 -ParameterFilter {
+                    $Uri -eq "https://some/api" -and `
+                        $Method -eq "POST" -and `
+                        $UseBasicParsing -eq $true -and `
+                        $Headers["Ocp-Apim-Subscription-Key"] -eq "SomeApiKey" -and `
+                        $Headers["Content-Type"] -eq "application/json"
+                }
+            }
+        }
 
-        #         $script:ApiKey = "SomeApiKey"
-        #         $result = Invoke-CompositeApiRegistrationRequest -Url https://some/api -Method Post
+        Context "When performing a POST request and the api returns a 201 status code" {
 
-        #         It "should return deserialise the returned content" {
-        #             $result.message | Should -Be "some message"
-        #         }
+            BeforeAll {
+                Mock Invoke-WebRequest -MockWith { return @{
+                        StatusCode = 201
+                        Content    = "{ ""message"": ""some message"" }" 
+                    }
+                }
 
-        #         It "should correctly call Invoke-WebRequest" {
-        #             Should -Invoke -CommandName  Invoke-WebRequest -Exactly 1 -ParameterFilter {
-        #                 $Uri -eq "https://some/api" -and `
-        #                     $Method -eq "Post" -and `
-        #                     $UseBasicParsing -eq $true -and `
-        #                     $Headers["Ocp-Apim-Subscription-Key"] -eq "SomeApiKey" -and `
-        #                     $Headers["Content-Type"] -eq "application/json"
-        #             }
-        #         }
-        #     }
+                $script:ApiKey = "SomeApiKey"
+                $result = Invoke-CompositeApiRegistrationRequest -Url https://some/api -Method POST
+            }
+
+            It "should return deserialise the returned content" {
+                $result.message | Should -Be "some message"
+            }
+
+            It "should correctly call Invoke-WebRequest" {
+                Should -Invoke -CommandName  Invoke-WebRequest -Exactly 1 -ParameterFilter {
+                    $Uri -eq "https://some/api" -and `
+                        $Method -eq "POST" -and `
+                        $UseBasicParsing -eq $true -and `
+                        $Headers["Ocp-Apim-Subscription-Key"] -eq "SomeApiKey" -and `
+                        $Headers["Content-Type"] -eq "application/json"
+                }
+            }
+        }
 
         #     Context "When performing a PATCH request and the api does not return a 200 status code" {
         #         Mock Invoke-WebRequest -MockWith { return @{
