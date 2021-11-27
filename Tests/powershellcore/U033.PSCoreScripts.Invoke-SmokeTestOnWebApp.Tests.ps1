@@ -36,7 +36,7 @@ Describe "Invoke-SmokeTestsOnWebApp unit tests" -Tag "Unit" {
                 ./Invoke-SmokeTestOnWebApp.ps1 @params
             } | Should -Not -Throw
 
-            Should -Invoke -CommandName Get-AzWebAppSlot -Times 1 
+            Should -Invoke -CommandName Get-AzWebAppSlot -Exactly 1
         }
 
 
@@ -98,11 +98,7 @@ Describe "Invoke-SmokeTestsOnWebApp unit tests" -Tag "Unit" {
                 ./Invoke-SmokeTestOnWebApp.ps1 @params
             } | Should -Throw "Smoke test exhausted all retry attempts and is still not responding"
 
-            Assert-MockCalled Get-AzWebAppSlot -Exactly 1 -ParameterFilter {
-                $ResourceGroupName -eq $params.ResourceGroup -and `
-                    $Name -eq $params.AppName -and `
-                    $Slot -eq $params.Slot
-            }
+            Assert-MockCalled Get-AzWebAppSlot -Exactly 1 
         }
 
         It "should perform a web requests to the site" {
@@ -160,11 +156,7 @@ Describe "Invoke-SmokeTestsOnWebApp unit tests" -Tag "Unit" {
                 ./Invoke-SmokeTestOnWebApp.ps1 @params
             } | Should -Throw "Smoke test exhausted all retry attempts and is still not responding"
 
-            Assert-MockCalled Get-AzWebAppSlot -Exactly 1 -ParameterFilter {
-                $ResourceGroupName -eq $params.ResourceGroup -and `
-                    $Name -eq $params.AppName -and `
-                    $Slot -eq $params.Slot
-            }
+            Assert-MockCalled Get-AzWebAppSlot -Exactly 1 
         }
 
         It "should perform a web requests to the site" {
@@ -235,11 +227,7 @@ Describe "Invoke-SmokeTestsOnWebApp unit tests" -Tag "Unit" {
 
             ./Invoke-SmokeTestOnWebApp.ps1 @params
 
-            Assert-MockCalled Get-AzWebAppSlot -Exactly 1 -ParameterFilter {
-                $ResourceGroupName -eq $params.ResourceGroup -and `
-                    $Name -eq $params.AppName -and `
-                    $Slot -eq $params.Slot
-            }
+            Assert-MockCalled Get-AzWebAppSlot -Exactly 1 
         }
 
         It "should perform a web requests to the site" {
