@@ -43,7 +43,7 @@ Describe "Set-SearchIndexers unit tests" -Tag "Unit" {
 
         $DefaultParams['IndexConfigurationString'] = '{ "invalid": json" }' # missing quote before json value
 
-        { .\Set-SearchIndexers @DefaultParams } | Should Throw
+        { .\Set-SearchIndexers @DefaultParams } | Should -Throw
 
         $DefaultParams.Remove('IndexConfigurationString') # clean up
     }

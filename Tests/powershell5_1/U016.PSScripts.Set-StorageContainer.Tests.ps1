@@ -18,7 +18,7 @@ Describe "Set-StorageContainer unit tests" -Tag "Unit" {
 
         Mock Get-AzureStorageContainer { return $null }
 
-        .\Set-StorageContainer -ResourceGroupName dfc-foo-bar-rg -StorageAccountName dfcfoobarstr -ContainerName mockcontainer
+        .\Set-StorageContainer -ResourceGroupName dfc-foobar-rg -StorageAccountName dfcfoobarstr -ContainerName mockcontainer
 
         Assert-MockCalled Get-AzureStorageContainer -Exactly 1 -Scope It
         Assert-MockCalled New-AzureStorageContainer -Exactly 1 -Scope It
@@ -29,7 +29,7 @@ Describe "Set-StorageContainer unit tests" -Tag "Unit" {
 
         Mock Get-AzureStorageContainer { return ConvertFrom-Json '{ "name": "mockcontainer" }' }
 
-        .\Set-StorageContainer -ResourceGroupName dfc-foo-bar-rg -StorageAccountName dfcfoobarstr -ContainerName mockcontainer
+        .\Set-StorageContainer -ResourceGroupName dfc-foobar-rg -StorageAccountName dfcfoobarstr -ContainerName mockcontainer
 
         Assert-MockCalled Get-AzureStorageContainer -Exactly 1 -Scope It
         Assert-MockCalled New-AzureStorageContainer -Exactly 0 -Scope It
