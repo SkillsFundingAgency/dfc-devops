@@ -28,7 +28,7 @@ Describe "Invoke-SmokeTestsOnWebApp unit tests" -Tag "Unit" {
     
             {
                 ./Invoke-SmokeTestOnWebApp.ps1 @params
-            } | Should not -Throw
+            } | Should -Not -Throw
         }
 
 
@@ -83,7 +83,7 @@ Describe "Invoke-SmokeTestsOnWebApp unit tests" -Tag "Unit" {
 
             {
                 ./Invoke-SmokeTestOnWebApp.ps1 @params
-            } | Should throw "Smoke test exhausted all retry attempts and is still not responding"
+            } | Should -Throw "Smoke test exhausted all retry attempts and is still not responding"
     
         }
 
@@ -138,7 +138,7 @@ Describe "Invoke-SmokeTestsOnWebApp unit tests" -Tag "Unit" {
     
             {
                 ./Invoke-SmokeTestOnWebApp.ps1 @params
-            } | Should throw "Smoke test exhausted all retry attempts and is still not responding"
+            } | Should -Throw "Smoke test exhausted all retry attempts and is still not responding"
             }
 
         It "should get the web app by slot" {

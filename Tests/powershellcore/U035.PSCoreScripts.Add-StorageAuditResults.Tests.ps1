@@ -88,9 +88,7 @@ Describe "Add-StorageAuditResults unit tests" -Tag "Unit" {
             $Params["AppendToReport"] = New-Object -TypeName Object
 
             { .\Add-StorageAuditResults.ps1 @Params } | 
-            Should -Throw -PassThru | 
-            Select-Object -ExpandProperty Exception | 
-            Should -BeLike "*Error validating input from AppendToReport parameter, a member of array is not of type *"
+            Should -Throw -ExpectedMessage 'Error validating input from AppendToReport parameter, a member of array is not of type `[CrossEnvironmentStorageAccountAudit`]*'
         }
 
     }

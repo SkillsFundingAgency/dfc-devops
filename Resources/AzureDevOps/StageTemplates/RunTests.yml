@@ -21,14 +21,14 @@ stages:
     #     TestType: 'Quality'
     #     ResultsFileSuffix: 'Quality'
 
-    # - template: ../JobTemplates/RunIndividualTest.yml
-    #   parameters:
-    #     RequiresAzurePowershell: true
-    #     AzureSubscription: '${{ parameters.AzureSubscription }}'
-    #     TestName: 'RunPowershell5UnitTests'
-    #     TestType: 'Unit'
-    #     ResultsFileSuffix: 'powershell'
-    #     CodeCoveragePercentage: ${{ parameters.Powershell5CodeCoveragePercentage }}
+    - template: ../JobTemplates/RunIndividualTest.yml
+      parameters:
+        RequiresAzurePowershell: true
+        AzureSubscription: '${{ parameters.AzureSubscription }}'
+        TestName: 'RunPowershell5UnitTests'
+        TestType: 'Unit'
+        ResultsFileSuffix: 'powershell'
+        CodeCoveragePercentage: ${{ parameters.Powershell5CodeCoveragePercentage }}
 
     - template: ../JobTemplates/RunIndividualTest.yml
       parameters:
