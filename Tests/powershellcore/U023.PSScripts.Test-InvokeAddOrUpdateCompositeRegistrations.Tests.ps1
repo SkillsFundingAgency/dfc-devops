@@ -498,7 +498,7 @@ Describe "Invoke-AddOrUpdateCompositeRegistrations" -Tag "Unit" {
             Should -Invoke -CommandName Get-PatchDocuments -ParameterFilter { $ReplacementValues.PageRegion -eq 1 } -Exactly 1
         }
 
-        It "should update the region registrations" {
+        It "should update the region registrations"  {
             & $PSScriptRoot/../PSScripts/Invoke-AddOrUpdateCompositeRegistrations -PathApiUrl https://path/api -RegionApiUrl https://region/api -RegistrationFile ./some-file.json  -ApiKey SomeApiKey
             Should -Invoke -CommandName Update-RegionRegistration -Exactly 1 -ParameterFilter { $Path -eq "SomePath" -and $PageRegion -eq 1 }
         }
