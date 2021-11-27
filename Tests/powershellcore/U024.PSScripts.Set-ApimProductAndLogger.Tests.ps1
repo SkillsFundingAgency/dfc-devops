@@ -21,11 +21,11 @@ Describe "Set-ApimProductAndLogger unit tests" -Tag "Unit" {
 
         .\Set-ApimProductAndLogger @CmdletParameters
 
-        Assert-MockCalled New-AzApiManagementContext -Exactly 1 -Scope It
-        Assert-MockCalled Add-AzApiManagementApiToProduct -Exactly 1 -Scope It
-        Assert-MockCalled Get-AzApiManagementDiagnostic -Exactly 0 -Scope It
-        Assert-MockCalled New-AzApiManagementDiagnostic -Exactly 0 -Scope It
-        Assert-MockCalled Set-AzApiManagementDiagnostic -Exactly 0 -Scope It
+        Should -Invoke -CommandName New-AzApiManagementContext -Exactly 1 -Scope It
+        Should -Invoke -CommandName Add-AzApiManagementApiToProduct -Exactly 1 -Scope It
+        Should -Invoke -CommandName Get-AzApiManagementDiagnostic -Exactly 0 -Scope It
+        Should -Invoke -CommandName New-AzApiManagementDiagnostic -Exactly 0 -Scope It
+        Should -Invoke -CommandName Set-AzApiManagementDiagnostic -Exactly 0 -Scope It
 
     }
 
@@ -47,11 +47,11 @@ Describe "Set-ApimProductAndLogger unit tests" -Tag "Unit" {
 
         .\Set-ApimProductAndLogger @CmdletParameters
 
-        Assert-MockCalled New-AzApiManagementContext -Exactly 1 -Scope It
-        Assert-MockCalled Add-AzApiManagementApiToProduct -Exactly 1 -Scope It
-        Assert-MockCalled Get-AzApiManagementDiagnostic -Exactly 1 -Scope It
-        Assert-MockCalled New-AzApiManagementDiagnostic -Exactly 0 -Scope It
-        Assert-MockCalled Set-AzApiManagementDiagnostic -Exactly 0 -Scope It
+        Should -Invoke -CommandName New-AzApiManagementContext -Exactly 1 -Scope It
+        Should -Invoke -CommandName Add-AzApiManagementApiToProduct -Exactly 1 -Scope It
+        Should -Invoke -CommandName Get-AzApiManagementDiagnostic -Exactly 1 -Scope It
+        Should -Invoke -CommandName New-AzApiManagementDiagnostic -Exactly 0 -Scope It
+        Should -Invoke -CommandName Set-AzApiManagementDiagnostic -Exactly 0 -Scope It
 
     }
 
@@ -73,11 +73,11 @@ Describe "Set-ApimProductAndLogger unit tests" -Tag "Unit" {
 
         .\Set-ApimProductAndLogger @CmdletParameters
 
-        Assert-MockCalled New-AzApiManagementContext -Exactly 1 -Scope It
-        Assert-MockCalled Add-AzApiManagementApiToProduct -Exactly 1 -Scope It
-        Assert-MockCalled Get-AzApiManagementDiagnostic -Exactly 1 -Scope It
-        Assert-MockCalled New-AzApiManagementDiagnostic -Exactly 0 -Scope It
-        Assert-MockCalled Set-AzApiManagementDiagnostic -Exactly 1 -Scope It
+        Should -Invoke -CommandName New-AzApiManagementContext -Exactly 1 -Scope It
+        Should -Invoke -CommandName Add-AzApiManagementApiToProduct -Exactly 1 -Scope It
+        Should -Invoke -CommandName Get-AzApiManagementDiagnostic -Exactly 1 -Scope It
+        Should -Invoke -CommandName New-AzApiManagementDiagnostic -Exactly 0 -Scope It
+        Should -Invoke -CommandName Set-AzApiManagementDiagnostic -Exactly 1 -Scope It
 
     }
 
@@ -95,11 +95,11 @@ Describe "Set-ApimProductAndLogger unit tests" -Tag "Unit" {
 
         .\Set-ApimProductAndLogger @CmdletParameters
 
-        Assert-MockCalled New-AzApiManagementContext -Exactly 1 -Scope It
-        Assert-MockCalled Add-AzApiManagementApiToProduct -Exactly 1 -Scope It
-        Assert-MockCalled Get-AzApiManagementDiagnostic -Exactly 1 -Scope It
-        Assert-MockCalled New-AzApiManagementDiagnostic -Exactly 1 -Scope It
-        Assert-MockCalled Set-AzApiManagementDiagnostic -Exactly 0 -Scope It
+        Should -Invoke -CommandName New-AzApiManagementContext -Exactly 1 -Scope It
+        Should -Invoke -CommandName Add-AzApiManagementApiToProduct -Exactly 1 -Scope It
+        Should -Invoke -CommandName Get-AzApiManagementDiagnostic -Exactly 1 -Scope It
+        Should -Invoke -CommandName New-AzApiManagementDiagnostic -Exactly 1 -Scope It
+        Should -Invoke -CommandName Set-AzApiManagementDiagnostic -Exactly 0 -Scope It
 
     }
 }

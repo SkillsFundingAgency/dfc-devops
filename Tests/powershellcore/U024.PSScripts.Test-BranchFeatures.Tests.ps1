@@ -25,6 +25,7 @@ Describe "Test-BranchFeatures" -Tag "Unit" {
             param($SourceBranch, $ShouldHaveSonarOutput)
 
             $env:Build_SourceBranchName = $SourceBranch
+            $env:Build_Reason = "SomethingElse"
 
             $output = & ./Test-BranchFeatures
 
