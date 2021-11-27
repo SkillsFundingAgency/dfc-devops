@@ -186,7 +186,7 @@ InModuleScope CompositeRegistrationFunctions {
 
     Describe "Get-PathRegistration" -Tag "Unit" {        
         Context "When getting a path registration" {
-            BeforAll {
+            BeforeAll {
                 New-RegistrationContext -PathApiUrl https://path-api/api -RegionApiUrl https://region-api/api -ApiKey SomeApiKey
 
                 Mock Invoke-CompositeApiRegistrationRequest 
