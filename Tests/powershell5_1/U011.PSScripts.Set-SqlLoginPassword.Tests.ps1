@@ -49,6 +49,8 @@ Describe "Set-SqlLoginPassword unit tests" -Tag "Unit" {
 
     It "Should throw an error if database is not online" {
 
+        Mock Write-Error
+        
         .\Set-SqlLoginPassword @params 
 
         Assert-MockCalled Write-Error
