@@ -30,10 +30,6 @@ Describe "Invoke-SmokeTestsOnWebApp unit tests" -Tag "Unit" {
 
         It "should get the web app by slot" {
 
-            {
-                ./Invoke-SmokeTestOnWebApp.ps1 @params
-            } | Should -Not -Throw
-    
             Assert-MockCalled Get-AzWebAppSlot -Exactly 1 -ParameterFilter {
                 $ResourceGroupName -eq $params.ResourceGroup -and `
                     $Name -eq $params.AppName -and `
