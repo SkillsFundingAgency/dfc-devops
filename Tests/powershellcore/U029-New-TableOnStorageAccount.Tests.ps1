@@ -49,12 +49,8 @@ Describe "New-TableOnStorageAccount unit tests" -Tag "Unit" {
             } | Should -throw "Unable to fetch account keys from storage account 'SomeStorageAccount'"
         }
 
-        It "should get storage account keys" {
-            ./New-TableOnStorageAccount -StorageAccountName SomeStorageAccount -ResourceGroupName aResourceGroup -TableName SomeTable
-            Should -Invoke -CommandName Get-AzStorageAccountKey -Exactly 1 -ParameterFilter {
-                $ResourceGroupName -eq "aResourceGroup" -and `
-                    $Name -eq "SomeStorageAccount"
-            }
+        It "should not get storage account keys" {
+            Should -Invoke -CommandName Get-AzStorageAccountKey -Exactly 0
         }
 
         It "should not create any storage contexts" {
