@@ -1,21 +1,20 @@
 ﻿Push-Location -Path $PSScriptRoot\..\..\PSCoreScripts\
 
 Describe "Invoke-SmokeTestsOnWebApp unit tests" -Tag "Unit" {
-
+    BeforeAll {
+        Mock Start-Sleep
+        Mock Invoke-WebRequest -MockWith {
+            return @{ StatusCode = 200 }
+        }
+        Mock Get-AzWebAppSlot -MockWith {
+            return @{ DefaultHostName = "site.azurewebsites.net" }
+        }
+    
+    }
 
     Context "When performing a smoke test that is initially succesful" {
 
         BeforeAll {
-            Mock Start-Sleep
-            Mock Invoke-WebRequest -MockWith {
-                return @{ StatusCode = 200 }
-            }
-            Mock Get-AzWebAppSlot -MockWith {
-                return @{ DefaultHostName = "site.azurewebsites.net" }
-            }
-        }
-
-        BeforeEach {
             $params = @{
                 AppName               = "SomeWebApp"
                 ResourceGroup         = "SomeResourceGroup"
@@ -28,9 +27,9 @@ Describe "Invoke-SmokeTestsOnWebApp unit tests" -Tag "Unit" {
     
             {
                 ./Invoke-SmokeTestOnWebApp.ps1 @params
-            } | Should not -Throw
+            } | Should -Not -Throw
+    
         }
-
 
         It "should get the web app by slot" {
             Assert-MockCalled Get-AzWebAppSlot -Exactly 1 -ParameterFilter {
@@ -57,18 +56,7 @@ Describe "Invoke-SmokeTestsOnWebApp unit tests" -Tag "Unit" {
 
     Context "When performing a smoke test that times out" {
 
-    
         BeforeAll {
-            Mock Start-Sleep
-            Mock Invoke-WebRequest -MockWith {
-                return @{ StatusCode = 200 }
-            }
-            Mock Get-AzWebAppSlot -MockWith {
-                return @{ DefaultHostName = "site.azurewebsites.net" }
-            }
-        }
-
-        BeforeEach{
             $params = @{
                 AppName               = "SomeWebApp"
                 ResourceGroup         = "SomeResourceGroup"
@@ -78,15 +66,13 @@ Describe "Invoke-SmokeTestsOnWebApp unit tests" -Tag "Unit" {
                 TimeoutInSecs         = 7
                 AttemptsBeforeFailure = 3
             }
-
+    
             Mock Invoke-WebRequest -MockWith { throw "timeout" }
-
+    
             {
                 ./Invoke-SmokeTestOnWebApp.ps1 @params
-            } | Should throw "Smoke test exhausted all retry attempts and is still not responding"
-    
+            } | Should -Throw "Smoke test exhausted all retry attempts and is still not responding"
         }
-
 
         It "should get the web app by slot" {
             Assert-MockCalled Get-AzWebAppSlot -Exactly 1 -ParameterFilter {
@@ -114,16 +100,6 @@ Describe "Invoke-SmokeTestsOnWebApp unit tests" -Tag "Unit" {
     Context "When performing a smoke test that returns a non-OK status code" {
 
         BeforeAll {
-            Mock Start-Sleep
-            Mock Invoke-WebRequest -MockWith {
-                return @{ StatusCode = 200 }
-            }
-            Mock Get-AzWebAppSlot -MockWith {
-                return @{ DefaultHostName = "site.azurewebsites.net" }
-            }
-        }
-
-        BeforeEach{
             $params = @{
                 AppName               = "SomeWebApp"
                 ResourceGroup         = "SomeResourceGroup"
@@ -133,14 +109,14 @@ Describe "Invoke-SmokeTestsOnWebApp unit tests" -Tag "Unit" {
                 TimeoutInSecs         = 7
                 AttemptsBeforeFailure = 3
             }
-    
+
             Mock Invoke-WebRequest -MockWith { return @{ StatusCode = 302 } }
-    
+
             {
                 ./Invoke-SmokeTestOnWebApp.ps1 @params
-            } | Should throw "Smoke test exhausted all retry attempts and is still not responding"
-            }
+            } | Should -Throw "Smoke test exhausted all retry attempts and is still not responding"
 
+        }
         It "should get the web app by slot" {
             Assert-MockCalled Get-AzWebAppSlot -Exactly 1 -ParameterFilter {
                 $ResourceGroupName -eq $params.ResourceGroup -and `
@@ -166,14 +142,7 @@ Describe "Invoke-SmokeTestsOnWebApp unit tests" -Tag "Unit" {
 
     Context "When performing a smoke test that fails then succeeds" {
 
-        BeforeAll {
-            Mock Start-Sleep
-            Mock Invoke-WebRequest -MockWith {
-                return @{ StatusCode = 200 }
-            }
-            Mock Get-AzWebAppSlot -MockWith {
-                return @{ DefaultHostName = "site.azurewebsites.net" }
-            }
+        BeforeAll{
 
             $script:actualAttempts = 0
 
@@ -198,9 +167,7 @@ Describe "Invoke-SmokeTestsOnWebApp unit tests" -Tag "Unit" {
             }
     
             ./Invoke-SmokeTestOnWebApp.ps1 @params
-        }
-
-
+            }
 
         It "should get the smoke test url from the web app" {
             Assert-MockCalled Get-AzWebAppSlot -Exactly 1 -ParameterFilter {
