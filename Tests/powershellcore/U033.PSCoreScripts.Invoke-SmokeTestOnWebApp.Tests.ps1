@@ -25,13 +25,15 @@ Describe "Invoke-SmokeTestsOnWebApp unit tests" -Tag "Unit" {
                 AttemptsBeforeFailure = 3
             }
     
+           
+        }
+
+        It "should get the web app by slot" {
+
             {
                 ./Invoke-SmokeTestOnWebApp.ps1 @params
             } | Should -Not -Throw
     
-        }
-
-        It "should get the web app by slot" {
             Assert-MockCalled Get-AzWebAppSlot -Exactly 1 -ParameterFilter {
                 $ResourceGroupName -eq $params.ResourceGroup -and `
                     $Name -eq $params.AppName -and `
@@ -40,6 +42,11 @@ Describe "Invoke-SmokeTestsOnWebApp unit tests" -Tag "Unit" {
         }
 
         It "should perform a web request to the site" {
+
+            {
+                ./Invoke-SmokeTestOnWebApp.ps1 @params
+            } | Should -Not -Throw
+    
             Assert-MockCalled Invoke-WebRequest -Exactly 1 -ParameterFilter {
                 $Uri -eq "https://site.azurewebsites.net/path" -and `
                     $TimeoutSec -eq $params.TimeoutInSecs -and `
