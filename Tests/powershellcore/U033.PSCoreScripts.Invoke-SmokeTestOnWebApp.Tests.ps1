@@ -37,12 +37,12 @@ Describe "Invoke-SmokeTestsOnWebApp unit tests" -Tag "Unit" {
             } | Should -Not -Throw
 
             Should -Invoke -CommandName Get-AzWebAppSlot -Times 1 -ParameterFilter {
-                $Uri -eq "https://site.azurewebsites.net/path" -and `
-                    $TimeoutSec -eq $params.TimeoutInSecs -and `
-                    $Method -eq "Get" -and `
-                    $MaximumRedirection -eq 0 -and `
-                    $UseBasicParsing.IsPresent
+                $ResourceGroupName -eq $params.ResourceGroup -and `
+                    $Name -eq $params.AppName -and `
+                    $Slot -eq $params.Slot
             }
+
+            
         }
 
 
@@ -52,7 +52,13 @@ Describe "Invoke-SmokeTestsOnWebApp unit tests" -Tag "Unit" {
                 ./Invoke-SmokeTestOnWebApp.ps1 @params
             } | Should -Not -Throw
 
-            Assert-MockCalled Invoke-WebRequest -Exactly 1 -ParameterFilter 
+            Assert-MockCalled Invoke-WebRequest -Exactly 1 -ParameterFilter {
+                $Uri -eq "https://site.azurewebsites.net/path" -and `
+                $TimeoutSec -eq $params.TimeoutInSecs -and `
+                $Method -eq "Get" -and `
+                $MaximumRedirection -eq 0 -and `
+                $UseBasicParsing.IsPresent
+            }
         }
 
 
