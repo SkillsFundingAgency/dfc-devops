@@ -27,13 +27,16 @@ Describe "Invoke-SmokeTestsOnWebApp unit tests" -Tag "Unit" {
                 AttemptsBeforeFailure = 3
             }
     
-            {
-                ./Invoke-SmokeTestOnWebApp.ps1 @params
-            } | Should -Not -Throw
+
     
         }
 
         It "should get the web app by slot" {
+
+            {
+                ./Invoke-SmokeTestOnWebApp.ps1 @params
+            } | Should -Not -Throw
+
             Assert-MockCalled Get-AzWebAppSlot -Exactly 1 -ParameterFilter {
                 $ResourceGroupName -eq $params.ResourceGroup -and `
                     $Name -eq $params.AppName -and `
@@ -42,6 +45,11 @@ Describe "Invoke-SmokeTestsOnWebApp unit tests" -Tag "Unit" {
         }
 
         It "should perform a web request to the site" {
+
+            {
+                ./Invoke-SmokeTestOnWebApp.ps1 @params
+            } | Should -Not -Throw
+
             Assert-MockCalled Invoke-WebRequest -Exactly 1 -ParameterFilter {
                 $Uri -eq "https://site.azurewebsites.net/path" -and `
                     $TimeoutSec -eq $params.TimeoutInSecs -and `
@@ -52,6 +60,11 @@ Describe "Invoke-SmokeTestsOnWebApp unit tests" -Tag "Unit" {
         }
 
         It "should not sleep" {
+
+            {
+                ./Invoke-SmokeTestOnWebApp.ps1 @params
+            } | Should -Not -Throw
+
             Assert-MockCalled Start-Sleep -Exactly 0
         }
     }
@@ -79,12 +92,15 @@ Describe "Invoke-SmokeTestsOnWebApp unit tests" -Tag "Unit" {
     
             Mock Invoke-WebRequest -MockWith { throw "timeout" }
     
-            {
-                ./Invoke-SmokeTestOnWebApp.ps1 @params
-            } | Should -Throw "Smoke test exhausted all retry attempts and is still not responding"
+
         }
 
         It "should get the web app by slot" {
+
+            {
+                ./Invoke-SmokeTestOnWebApp.ps1 @params
+            } | Should -Throw "Smoke test exhausted all retry attempts and is still not responding"
+
             Assert-MockCalled Get-AzWebAppSlot -Exactly 1 -ParameterFilter {
                 $ResourceGroupName -eq $params.ResourceGroup -and `
                     $Name -eq $params.AppName -and `
@@ -93,6 +109,11 @@ Describe "Invoke-SmokeTestsOnWebApp unit tests" -Tag "Unit" {
         }
 
         It "should perform a web requests to the site" {
+
+            {
+                ./Invoke-SmokeTestOnWebApp.ps1 @params
+            } | Should -Throw "Smoke test exhausted all retry attempts and is still not responding"
+
             Assert-MockCalled Invoke-WebRequest -Exactly 3 -ParameterFilter {
                 $Uri -eq "https://site.azurewebsites.net/path" -and `
                     $TimeoutSec -eq $params.TimeoutInSecs -and `
@@ -103,6 +124,11 @@ Describe "Invoke-SmokeTestsOnWebApp unit tests" -Tag "Unit" {
         }
 
         It "should sleep on each loop apart from the last" {
+
+            {
+                ./Invoke-SmokeTestOnWebApp.ps1 @params
+            } | Should -Throw "Smoke test exhausted all retry attempts and is still not responding"
+
             Assert-MockCalled Start-Sleep -Exactly 2 -ParameterFilter { $Seconds -eq $params.BackOffPeriodInSecs }
         }
     }
@@ -129,11 +155,14 @@ Describe "Invoke-SmokeTestsOnWebApp unit tests" -Tag "Unit" {
 
             Mock Invoke-WebRequest -MockWith { return @{ StatusCode = 302 } }
 
+        }
+        It "should get the web app by slot" {
+
+
             {
                 ./Invoke-SmokeTestOnWebApp.ps1 @params
             } | Should -Throw "Smoke test exhausted all retry attempts and is still not responding"
-        }
-        It "should get the web app by slot" {
+
             Assert-MockCalled Get-AzWebAppSlot -Exactly 1 -ParameterFilter {
                 $ResourceGroupName -eq $params.ResourceGroup -and `
                     $Name -eq $params.AppName -and `
@@ -142,6 +171,12 @@ Describe "Invoke-SmokeTestsOnWebApp unit tests" -Tag "Unit" {
         }
 
         It "should perform a web requests to the site" {
+
+
+            {
+                ./Invoke-SmokeTestOnWebApp.ps1 @params
+            } | Should -Throw "Smoke test exhausted all retry attempts and is still not responding"
+
             Assert-MockCalled Invoke-WebRequest -Exactly 3 -ParameterFilter {
                 $Uri -eq "https://site.azurewebsites.net/path" -and `
                     $TimeoutSec -eq $params.TimeoutInSecs -and `
@@ -152,6 +187,12 @@ Describe "Invoke-SmokeTestsOnWebApp unit tests" -Tag "Unit" {
         }
 
         It "should sleep on each loop apart from the last" {
+
+
+            {
+                ./Invoke-SmokeTestOnWebApp.ps1 @params
+            } | Should -Throw "Smoke test exhausted all retry attempts and is still not responding"
+
             Assert-MockCalled Start-Sleep -Exactly 2 -ParameterFilter { $Seconds -eq $params.BackOffPeriodInSecs }
         }
     }
@@ -189,11 +230,14 @@ Describe "Invoke-SmokeTestsOnWebApp unit tests" -Tag "Unit" {
                 AttemptsBeforeFailure = 5
             }
 
-            ./Invoke-SmokeTestOnWebApp.ps1 @params
 
         }
 
         It "should get the smoke test url from the web app" {
+
+
+            ./Invoke-SmokeTestOnWebApp.ps1 @params
+
             Assert-MockCalled Get-AzWebAppSlot -Exactly 1 -ParameterFilter {
                 $ResourceGroupName -eq $params.ResourceGroup -and `
                     $Name -eq $params.AppName -and `
@@ -202,6 +246,10 @@ Describe "Invoke-SmokeTestsOnWebApp unit tests" -Tag "Unit" {
         }
 
         It "should perform a web requests to the site" {
+
+
+            ./Invoke-SmokeTestOnWebApp.ps1 @params
+
             Assert-MockCalled Invoke-WebRequest -Exactly 3 -ParameterFilter {
                 $Uri -eq "https://site.azurewebsites.net/path" -and `
                     $TimeoutSec -eq $params.TimeoutInSecs -and `
@@ -212,6 +260,10 @@ Describe "Invoke-SmokeTestsOnWebApp unit tests" -Tag "Unit" {
         }
 
         It "should sleep on each loop apart from the last" {
+
+
+            ./Invoke-SmokeTestOnWebApp.ps1 @params
+            
             Assert-MockCalled Start-Sleep -Exactly 2
         }
     }
