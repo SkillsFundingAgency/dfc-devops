@@ -271,7 +271,7 @@ Describe "Copy-SitefinityDatabase unit tests" -Tag "Unit" {
 
             { 
                 ./Copy-SitefinityDatabase -AppServiceName dfc-foo-as -ServerName dfc-foo-sql -ReleaseNumber 123
-            } | Should throw "Could not determine current database version from DatabaseVersion app setting"
+            } | Should -throw "Could not determine current database version from DatabaseVersion app setting"
         }
 
     }
