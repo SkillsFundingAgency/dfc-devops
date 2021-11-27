@@ -29,35 +29,35 @@ Describe "Invoke-AddOrUpdateCompositeRegistrations" -Tag "Unit" {
         & $PSScriptRoot/../PSScripts/Invoke-AddOrUpdateCompositeRegistrations -PathApiUrl https://path/api -RegionApiUrl https://region/api -RegistrationFile ./some-file.json -ApiKey SomeApiKey
 
         It "should attempt to get a path registration" {
-            Assert-MockCalled Get-PathRegistration -ParameterFilter { $Path -eq "SomePath" } -Exactly 1
+            Should -Invoke -CommandName Get-PathRegistration -ParameterFilter { $Path -eq "SomePath" } -Exactly 1
         }
 
         It "should create a new registration"  {
-            Assert-MockCalled New-PathRegistration -Exactly 1
+            Should -Invoke -CommandName New-PathRegistration -Exactly 1
         }
 
         It "should not convert any objects into hashtables" {
-            Assert-MockCalled ConvertTo-HashTable -Exactly 0
+            Should -Invoke -CommandName ConvertTo-HashTable -Exactly 0
         }
 
         It "should not generate any patch documents" {
-            Assert-MockCalled Get-PatchDocuments -Exactly 0
+            Should -Invoke -CommandName Get-PatchDocuments -Exactly 0
         }
 
         It "should not update any path registrations" {
-            Assert-MockCalled Update-PathRegistration -Exactly 0
+            Should -Invoke -CommandName Update-PathRegistration -Exactly 0
         }
 
         It "should not get any region registrations" {
-            Assert-MockCalled Get-RegionRegistration -Exactly 0
+            Should -Invoke -CommandName Get-RegionRegistration -Exactly 0
         }
 
         It "should not create any region registrations" {
-            Assert-MockCalled New-RegionRegistration -Exactly 0
+            Should -Invoke -CommandName New-RegionRegistration -Exactly 0
         }
 
         It "should not update any region registrations" {
-            Assert-MockCalled Update-RegionRegistration -Exactly 0
+            Should -Invoke -CommandName Update-RegionRegistration -Exactly 0
         }
     }
 
@@ -78,35 +78,35 @@ Describe "Invoke-AddOrUpdateCompositeRegistrations" -Tag "Unit" {
         & $PSScriptRoot/../PSScripts/Invoke-AddOrUpdateCompositeRegistrations -PathApiUrl https://path/api -RegionApiUrl https://region/api -RegistrationFile ./some-file.json -ApiKey SomeApiKey
 
         It "should attempt to get a path registration" {
-            Assert-MockCalled Get-PathRegistration -ParameterFilter { $Path -eq "SomePath" } -Exactly 1
+            Should -Invoke -CommandName Get-PathRegistration -ParameterFilter { $Path -eq "SomePath" } -Exactly 1
         }
 
         It "should not create a new registration"  {
-            Assert-MockCalled New-PathRegistration -Exactly -0
+            Should -Invoke -CommandName New-PathRegistration -Exactly -0
         }
 
         It "should convert the path objects into hashtables" {
-            Assert-MockCalled ConvertTo-HashTable -Exactly 2
+            Should -Invoke -CommandName ConvertTo-HashTable -Exactly 2
         }
 
         It "should get the patch documents for the path" {
-            Assert-MockCalled Get-PatchDocuments -Exactly 1
+            Should -Invoke -CommandName Get-PatchDocuments -Exactly 1
         }
 
         It "should not update any path registrations" {
-            Assert-MockCalled Update-PathRegistration -Exactly 0
+            Should -Invoke -CommandName Update-PathRegistration -Exactly 0
         }
 
         It "should not get any region registrations" {
-            Assert-MockCalled Get-RegionRegistration -Exactly 0
+            Should -Invoke -CommandName Get-RegionRegistration -Exactly 0
         }
 
         It "should not create any region registrations" {
-            Assert-MockCalled New-RegionRegistration -Exactly 0
+            Should -Invoke -CommandName New-RegionRegistration -Exactly 0
         }
 
         It "should not update any region registrations" {
-            Assert-MockCalled Update-RegionRegistration -Exactly 0
+            Should -Invoke -CommandName Update-RegionRegistration -Exactly 0
         }
     }
 
@@ -135,39 +135,39 @@ Describe "Invoke-AddOrUpdateCompositeRegistrations" -Tag "Unit" {
         & $PSScriptRoot/../PSScripts/Invoke-AddOrUpdateCompositeRegistrations -PathApiUrl https://path/api -RegionApiUrl https://region/api -RegistrationFile ./some-file.json  -ApiKey SomeApiKey
 
         It "should attempt to get a path registration" {
-            Assert-MockCalled Get-PathRegistration -ParameterFilter { $Path -eq "SomePath" } -Exactly 1
+            Should -Invoke -CommandName Get-PathRegistration -ParameterFilter { $Path -eq "SomePath" } -Exactly 1
         }
 
         It "should not create a new registration"  {
-            Assert-MockCalled New-PathRegistration -Exactly -0
+            Should -Invoke -CommandName New-PathRegistration -Exactly -0
         }
 
         It "should convert the path objects into hashtables" {
-            Assert-MockCalled ConvertTo-HashTable -Exactly 2
+            Should -Invoke -CommandName ConvertTo-HashTable -Exactly 2
         }
 
         It "should get the patch documents for the page" {
-            Assert-MockCalled Get-PatchDocuments -ParameterFilter { $ReplacementValues.Path -eq "SomePath" } -Exactly 1
+            Should -Invoke -CommandName Get-PatchDocuments -ParameterFilter { $ReplacementValues.Path -eq "SomePath" } -Exactly 1
         }
 
         It "should update the path registration" {
-            Assert-MockCalled Update-PathRegistration -ParameterFilter { $Path -eq "SomePath" } -Exactly 1
+            Should -Invoke -CommandName Update-PathRegistration -ParameterFilter { $Path -eq "SomePath" } -Exactly 1
         }
 
         It "should not get any region registrations" {
-            Assert-MockCalled Get-RegionRegistration -Exactly 0
+            Should -Invoke -CommandName Get-RegionRegistration -Exactly 0
         }
 
         It "should get the patch documents for the region" {
-            Assert-MockCalled Get-PatchDocuments -ParameterFilter { $ReplacementValues.Path -ne "SomePath" } -Exactly 0
+            Should -Invoke -CommandName Get-PatchDocuments -ParameterFilter { $ReplacementValues.Path -ne "SomePath" } -Exactly 0
         }
 
         It "should not create any region registrations" {
-            Assert-MockCalled New-RegionRegistration -Exactly 0
+            Should -Invoke -CommandName New-RegionRegistration -Exactly 0
         }
 
         It "should not update any region registrations" {
-            Assert-MockCalled Update-RegionRegistration -Exactly 0
+            Should -Invoke -CommandName Update-RegionRegistration -Exactly 0
         }
     }
 
@@ -193,39 +193,39 @@ Describe "Invoke-AddOrUpdateCompositeRegistrations" -Tag "Unit" {
         & $PSScriptRoot/../PSScripts/Invoke-AddOrUpdateCompositeRegistrations -PathApiUrl https://path/api -RegionApiUrl https://region/api -RegistrationFile ./some-file.json  -ApiKey SomeApiKey
 
         It "should attempt to get a path registration" {
-            Assert-MockCalled Get-PathRegistration -ParameterFilter { $Path -eq "SomePath" } -Exactly 1
+            Should -Invoke -CommandName Get-PathRegistration -ParameterFilter { $Path -eq "SomePath" } -Exactly 1
         }
 
         It "should not create a new registration"  {
-            Assert-MockCalled New-PathRegistration -Exactly -0
+            Should -Invoke -CommandName New-PathRegistration -Exactly -0
         }
 
         It "should convert the objects into hashtables" {
-            Assert-MockCalled ConvertTo-HashTable -Exactly 2
+            Should -Invoke -CommandName ConvertTo-HashTable -Exactly 2
         }
 
         It "should get the patch documents for the page" {
-            Assert-MockCalled Get-PatchDocuments -ParameterFilter { $ReplacementValues.Path -eq "SomePath" } -Exactly 1
+            Should -Invoke -CommandName Get-PatchDocuments -ParameterFilter { $ReplacementValues.Path -eq "SomePath" } -Exactly 1
         }
 
         It "should not update any path registrations" {
-            Assert-MockCalled Update-PathRegistration -Exactly 0
+            Should -Invoke -CommandName Update-PathRegistration -Exactly 0
         }
 
         It "should get the region registration" {
-            Assert-MockCalled Get-RegionRegistration -Exactly 1 -ParameterFilter { $Path -eq "SomePath" -and $PageRegion -eq 1 }
+            Should -Invoke -CommandName Get-RegionRegistration -Exactly 1 -ParameterFilter { $Path -eq "SomePath" -and $PageRegion -eq 1 }
         }
 
         It "should create a new region registrations" {
-            Assert-MockCalled New-RegionRegistration -Exactly 1 -ParameterFilter { $Path -eq "SomePath" }
+            Should -Invoke -CommandName New-RegionRegistration -Exactly 1 -ParameterFilter { $Path -eq "SomePath" }
         }
 
         It "should not get the patch documents for the region" {
-            Assert-MockCalled Get-PatchDocuments -ParameterFilter { $ReplacementValues.PageRegion -eq 1 } -Exactly 0
+            Should -Invoke -CommandName Get-PatchDocuments -ParameterFilter { $ReplacementValues.PageRegion -eq 1 } -Exactly 0
         }
 
         It "should not update any region registrations" {
-            Assert-MockCalled Update-RegionRegistration -Exactly 0
+            Should -Invoke -CommandName Update-RegionRegistration -Exactly 0
         }
     }
 
@@ -256,39 +256,39 @@ Describe "Invoke-AddOrUpdateCompositeRegistrations" -Tag "Unit" {
         & $PSScriptRoot/../PSScripts/Invoke-AddOrUpdateCompositeRegistrations -PathApiUrl https://path/api -RegionApiUrl https://region/api -RegistrationFile ./some-file.json  -ApiKey SomeApiKey
 
         It "should attempt to get a path registration" {
-            Assert-MockCalled Get-PathRegistration -ParameterFilter { $Path -eq "SomePath" } -Exactly 1
+            Should -Invoke -CommandName Get-PathRegistration -ParameterFilter { $Path -eq "SomePath" } -Exactly 1
         }
 
         It "should not create a new registration"  {
-            Assert-MockCalled New-PathRegistration -Exactly -0
+            Should -Invoke -CommandName New-PathRegistration -Exactly -0
         }
 
         It "should get the patch documents for the path" {
-            Assert-MockCalled Get-PatchDocuments -ParameterFilter { $ReplacementValues.Path -eq "SomePath" } -Exactly 1
+            Should -Invoke -CommandName Get-PatchDocuments -ParameterFilter { $ReplacementValues.Path -eq "SomePath" } -Exactly 1
         }
 
         It "should not update any path registrations" {
-            Assert-MockCalled Update-PathRegistration -Exactly 0
+            Should -Invoke -CommandName Update-PathRegistration -Exactly 0
         }
 
         It "should get the region registration" {
-            Assert-MockCalled Get-RegionRegistration -Exactly 1 -ParameterFilter { $Path -eq "SomePath"  }
+            Should -Invoke -CommandName Get-RegionRegistration -Exactly 1 -ParameterFilter { $Path -eq "SomePath"  }
         }
 
         It "should not create any region registrations" {
-            Assert-MockCalled New-RegionRegistration -Exactly 0
+            Should -Invoke -CommandName New-RegionRegistration -Exactly 0
         }
 
         It "should convert the objects into hashtables" {
-            Assert-MockCalled ConvertTo-HashTable -Exactly 4
+            Should -Invoke -CommandName ConvertTo-HashTable -Exactly 4
         }
 
         It "should get the patch documents for the region"  {
-            Assert-MockCalled Get-PatchDocuments -ParameterFilter { $ReplacementValues.PageRegion -eq 1 } -Exactly 1
+            Should -Invoke -CommandName Get-PatchDocuments -ParameterFilter { $ReplacementValues.PageRegion -eq 1 } -Exactly 1
         }
 
         It "should not update any region registrations" {
-            Assert-MockCalled Update-RegionRegistration -Exactly 0
+            Should -Invoke -CommandName Update-RegionRegistration -Exactly 0
         }
     }
 
@@ -326,39 +326,39 @@ Describe "Invoke-AddOrUpdateCompositeRegistrations" -Tag "Unit" {
         & $PSScriptRoot/../PSScripts/Invoke-AddOrUpdateCompositeRegistrations -PathApiUrl https://path/api -RegionApiUrl https://region/api -RegistrationFile ./some-file.json  -ApiKey SomeApiKey
 
         It "should attempt to get a path registration" {
-            Assert-MockCalled Get-PathRegistration -ParameterFilter { $Path -eq "SomePath" } -Exactly 1
+            Should -Invoke -CommandName Get-PathRegistration -ParameterFilter { $Path -eq "SomePath" } -Exactly 1
         }
 
         It "should not create a new registration"  {
-            Assert-MockCalled New-PathRegistration -Exactly -0
+            Should -Invoke -CommandName New-PathRegistration -Exactly -0
         }
 
         It "should get the patch objects for the path" {
-            Assert-MockCalled Get-PatchDocuments -ParameterFilter { $ReplacementValues.Path -eq "SomePath" } -Exactly 1
+            Should -Invoke -CommandName Get-PatchDocuments -ParameterFilter { $ReplacementValues.Path -eq "SomePath" } -Exactly 1
         }
 
         It "should not update any path registrations" {
-            Assert-MockCalled Update-PathRegistration -Exactly 0
+            Should -Invoke -CommandName Update-PathRegistration -Exactly 0
         }
 
         It "should get the region registration" {
-            Assert-MockCalled Get-RegionRegistration -Exactly 1 -ParameterFilter { $Path -eq "SomePath" -and $PageRegion -eq 1 }
+            Should -Invoke -CommandName Get-RegionRegistration -Exactly 1 -ParameterFilter { $Path -eq "SomePath" -and $PageRegion -eq 1 }
         }
 
         It "should not create any region registrations" {
-            Assert-MockCalled New-RegionRegistration -Exactly 0
+            Should -Invoke -CommandName New-RegionRegistration -Exactly 0
         }
 
         It "should convert the objects into hashtables" {
-            Assert-MockCalled ConvertTo-HashTable -Exactly 4
+            Should -Invoke -CommandName ConvertTo-HashTable -Exactly 4
         }
 
         It "should get the patch documents for the region"  {
-            Assert-MockCalled Get-PatchDocuments -ParameterFilter { $ReplacementValues.PageRegion -eq 1 } -Exactly 1
+            Should -Invoke -CommandName Get-PatchDocuments -ParameterFilter { $ReplacementValues.PageRegion -eq 1 } -Exactly 1
         }
 
         It "should update the region registrations" {
-            Assert-MockCalled Update-RegionRegistration -Exactly 1 -ParameterFilter { $Path -eq "SomePath" -and $PageRegion -eq 1 }
+            Should -Invoke -CommandName Update-RegionRegistration -Exactly 1 -ParameterFilter { $Path -eq "SomePath" -and $PageRegion -eq 1 }
         }
     }
 }

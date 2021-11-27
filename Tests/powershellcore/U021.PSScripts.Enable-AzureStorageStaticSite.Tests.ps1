@@ -16,10 +16,10 @@ Describe "Enable-AzureStorageStaticSite unit tests" -Tag "Unit" {
 
         .\Enable-AzureStorageStaticSite -StorageAccountName $strname
 
-        Assert-MockCalled New-AzStorageContext -Exactly 1
-        Assert-MockCalled Enable-AzStorageStaticWebsite -Exactly 1
-        Assert-MockCalled Test-Connection -Exactly 1
-        Assert-MockCalled Start-Sleep -Exactly 0
+        Should -Invoke -CommandName New-AzStorageContext -Exactly 1
+        Should -Invoke -CommandName Enable-AzStorageStaticWebsite -Exactly 1
+        Should -Invoke -CommandName Test-Connection -Exactly 1
+        Should -Invoke -CommandName Start-Sleep -Exactly 0
     }
 
 }

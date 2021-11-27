@@ -27,7 +27,7 @@ InModuleScope CompositeRegistrationFunctions {
             }
 
             it "should correctly call Invoke-WebRequest" {
-                Assert-MockCalled  Invoke-WebRequest -Exactly 1 -ParameterFilter {
+                Should -Invoke -CommandName  Invoke-WebRequest -Exactly 1 -ParameterFilter {
                     $Uri -eq "https://some/api" -and `
                     $Method -eq "Get" -and `
                     $UseBasicParsing -eq $true -and `
@@ -51,7 +51,7 @@ InModuleScope CompositeRegistrationFunctions {
             }
 
             it "should correctly call Invoke-WebRequest" {
-                Assert-MockCalled  Invoke-WebRequest -Exactly 1 -ParameterFilter {
+                Should -Invoke -CommandName  Invoke-WebRequest -Exactly 1 -ParameterFilter {
                     $Uri -eq "https://some/api" -and `
                     $Method -eq "Get" -and `
                     $UseBasicParsing -eq $true -and `
@@ -74,7 +74,7 @@ InModuleScope CompositeRegistrationFunctions {
             }
 
             It "should correctly call Invoke-WebRequest" {
-                Assert-MockCalled  Invoke-WebRequest -Exactly 1 -ParameterFilter {
+                Should -Invoke -CommandName  Invoke-WebRequest -Exactly 1 -ParameterFilter {
                     $Uri -eq "https://some/api" -and `
                     $Method -eq "Post" -and `
                     $UseBasicParsing -eq $true -and `
@@ -99,7 +99,7 @@ InModuleScope CompositeRegistrationFunctions {
             }
 
             It "should correctly call Invoke-WebRequest" {
-                Assert-MockCalled  Invoke-WebRequest -Exactly 1 -ParameterFilter {
+                Should -Invoke -CommandName  Invoke-WebRequest -Exactly 1 -ParameterFilter {
                     $Uri -eq "https://some/api" -and `
                     $Method -eq "Post" -and `
                     $UseBasicParsing -eq $true -and `
@@ -123,7 +123,7 @@ InModuleScope CompositeRegistrationFunctions {
             }
 
             It "should correctly call Invoke-WebRequest" {
-                Assert-MockCalled  Invoke-WebRequest -Exactly 1 -ParameterFilter {
+                Should -Invoke -CommandName  Invoke-WebRequest -Exactly 1 -ParameterFilter {
                     $Uri -eq "https://some/api" -and `
                     $Method -eq "Patch" -and `
                     $UseBasicParsing -eq $true -and `
@@ -148,7 +148,7 @@ InModuleScope CompositeRegistrationFunctions {
             }
 
             It "should correctly call Invoke-WebRequest" {
-                Assert-MockCalled  Invoke-WebRequest -Exactly 1 -ParameterFilter {
+                Should -Invoke -CommandName  Invoke-WebRequest -Exactly 1 -ParameterFilter {
                     $Uri -eq "https://some/api" -and `
                     $Method -eq "Patch" -and `
                     $UseBasicParsing -eq $true -and `
@@ -168,7 +168,7 @@ InModuleScope CompositeRegistrationFunctions {
             Get-PathRegistration -Path SomePath
 
             It "should invoke a composite api registration request" {
-                Assert-MockCalled Invoke-CompositeApiRegistrationRequest -ParameterFilter {
+                Should -Invoke -CommandName Invoke-CompositeApiRegistrationRequest -ParameterFilter {
                     $Url -eq "https://path-api/api/paths/SomePath" -and
                     $Method -eq "Get"
                 }
@@ -186,7 +186,7 @@ InModuleScope CompositeRegistrationFunctions {
             Get-RegionRegistration -Path SomePath -PageRegion 1
 
             It "should invoke a composite api registration request" {
-                Assert-MockCalled Invoke-CompositeApiRegistrationRequest -ParameterFilter {
+                Should -Invoke -CommandName Invoke-CompositeApiRegistrationRequest -ParameterFilter {
                     $Url -eq "https://region-api/api/paths/SomePath/regions/1" -and
                     $Method -eq "Get"
                 }
@@ -222,11 +222,11 @@ InModuleScope CompositeRegistrationFunctions {
             }
 
             It "should serialize the object" { 
-                Assert-MockCalled ConvertTo-Json -Exactly 1
+                Should -Invoke -CommandName ConvertTo-Json -Exactly 1
             }
 
             It "should invoke a composite api registration request" {
-                Assert-MockCalled Invoke-CompositeApiRegistrationRequest -Exactly 1 -ParameterFilter {
+                Should -Invoke -CommandName Invoke-CompositeApiRegistrationRequest -Exactly 1 -ParameterFilter {
                     $Url -eq "https://path-api/api/paths" -and `
                     $Method -eq "Post"
                 }
@@ -244,7 +244,7 @@ InModuleScope CompositeRegistrationFunctions {
                     Layout = 1
                 }
 
-                Assert-MockCalled ConvertTo-Json -Scope It -ParameterFilter {
+                Should -Invoke -CommandName ConvertTo-Json -Scope It -ParameterFilter {
                     $InputObject.Keys.Count | Should Be 2
                     $InputObject.Contains("Path")
                     $InputObject.Contains("Layout")
@@ -258,7 +258,7 @@ InModuleScope CompositeRegistrationFunctions {
                     TopNavigationText = "Some Text"
                 }
 
-                Assert-MockCalled ConvertTo-Json -Scope It -ParameterFilter {
+                Should -Invoke -CommandName ConvertTo-Json -Scope It -ParameterFilter {
                     $InputObject.Keys.Count | Should Be 3
                     $InputObject.Contains("Path")
                     $InputObject.Contains("Layout")
@@ -273,7 +273,7 @@ InModuleScope CompositeRegistrationFunctions {
                     TopNavigationOrder = "Some Text"
                 }
 
-                Assert-MockCalled ConvertTo-Json -Scope It -ParameterFilter {
+                Should -Invoke -CommandName ConvertTo-Json -Scope It -ParameterFilter {
                     $InputObject.Keys.Count | Should Be 3
                     $InputObject.Contains("Path")
                     $InputObject.Contains("Layout")
@@ -288,7 +288,7 @@ InModuleScope CompositeRegistrationFunctions {
                     OfflineHtml = "Some HTML"
                 }
 
-                Assert-MockCalled ConvertTo-Json -Scope It -ParameterFilter {
+                Should -Invoke -CommandName ConvertTo-Json -Scope It -ParameterFilter {
                     $InputObject.Keys.Count | Should Be 3
                     $InputObject.Contains("Path")
                     $InputObject.Contains("Layout")
@@ -303,7 +303,7 @@ InModuleScope CompositeRegistrationFunctions {
                     PhaseBannerHtml = "Some HTML"
                 }
 
-                Assert-MockCalled ConvertTo-Json -Scope It -ParameterFilter {
+                Should -Invoke -CommandName ConvertTo-Json -Scope It -ParameterFilter {
                     $InputObject.Keys.Count | Should Be 3
                     $InputObject.Contains("Path")
                     $InputObject.Contains("Layout")
@@ -318,7 +318,7 @@ InModuleScope CompositeRegistrationFunctions {
                     ExternalUrl = "https://some/url"
                 }
 
-                Assert-MockCalled ConvertTo-Json -Scope It -ParameterFilter {
+                Should -Invoke -CommandName ConvertTo-Json -Scope It -ParameterFilter {
                     $InputObject.Keys.Count | Should Be 3
                     $InputObject.Contains("Path")
                     $InputObject.Contains("Layout")
@@ -333,7 +333,7 @@ InModuleScope CompositeRegistrationFunctions {
                     SitemapUrl = "https://some/url"
                 }
 
-                Assert-MockCalled ConvertTo-Json -Scope It -ParameterFilter {
+                Should -Invoke -CommandName ConvertTo-Json -Scope It -ParameterFilter {
                     $InputObject.Keys.Count | Should Be 3
                     $InputObject.Contains("Path")
                     $InputObject.Contains("Layout")
@@ -348,7 +348,7 @@ InModuleScope CompositeRegistrationFunctions {
                     RobotsUrl = "https://some/url"
                 }
 
-                Assert-MockCalled ConvertTo-Json -Scope It -ParameterFilter {
+                Should -Invoke -CommandName ConvertTo-Json -Scope It -ParameterFilter {
                     $InputObject.Keys.Count | Should Be 3
                     $InputObject.Contains("Path")
                     $InputObject.Contains("Layout")
@@ -375,11 +375,11 @@ InModuleScope CompositeRegistrationFunctions {
             New-RegionRegistration -Path SomePath -Region @{  PageRegion = 5 }
 
             It "should serialize the object" { 
-                Assert-MockCalled ConvertTo-Json -Exactly 1
+                Should -Invoke -CommandName ConvertTo-Json -Exactly 1
             }
 
             It "should invoke a composite api registration request" {
-                Assert-MockCalled Invoke-CompositeApiRegistrationRequest -Exactly 1 -ParameterFilter {
+                Should -Invoke -CommandName Invoke-CompositeApiRegistrationRequest -Exactly 1 -ParameterFilter {
                     $Url -eq "https://region-api/api/paths/SomePath/regions" -and `
                     $Method -eq "Post"
                 }
@@ -394,7 +394,7 @@ InModuleScope CompositeRegistrationFunctions {
             It "should not include any optional fields by default" {
                 New-RegionRegistration -Path SomePath -Region @{  PageRegion = 5 }
 
-                Assert-MockCalled ConvertTo-Json -Scope It -ParameterFilter {
+                Should -Invoke -CommandName ConvertTo-Json -Scope It -ParameterFilter {
                     $InputObject.Keys.Count | Should Be 2
                     $InputObject.Contains("Path")
                     $InputObject.Contains("PageRegion")
@@ -404,7 +404,7 @@ InModuleScope CompositeRegistrationFunctions {
             It "should include the RegionEndpoint optional field when specified" {
                 New-RegionRegistration -Path SomePath -Region @{  PageRegion = 5; RegionEndpoint = "SomeEndpoint" }
 
-                Assert-MockCalled ConvertTo-Json -Scope It -ParameterFilter {
+                Should -Invoke -CommandName ConvertTo-Json -Scope It -ParameterFilter {
                     $InputObject.Keys.Count | Should Be 3
                     $InputObject.Contains("Path")
                     $InputObject.Contains("PageRegion")
@@ -415,7 +415,7 @@ InModuleScope CompositeRegistrationFunctions {
             It "should include the HealthCheckRequired optional field when specified" {
                 New-RegionRegistration -Path SomePath -Region @{  PageRegion = 5; HealthCheckRequired = $false }
 
-                Assert-MockCalled ConvertTo-Json -Scope It -ParameterFilter {
+                Should -Invoke -CommandName ConvertTo-Json -Scope It -ParameterFilter {
                     $InputObject.Keys.Count | Should Be 3
                     $InputObject.Contains("Path")
                     $InputObject.Contains("PageRegion")
@@ -426,7 +426,7 @@ InModuleScope CompositeRegistrationFunctions {
             It "should include the OfflineHtml optional field when specified" {
                 New-RegionRegistration -Path SomePath -Region @{  PageRegion = 5; OfflineHtml = "Some mark-up" }
 
-                Assert-MockCalled ConvertTo-Json -Scope It -ParameterFilter {
+                Should -Invoke -CommandName ConvertTo-Json -Scope It -ParameterFilter {
                     $InputObject.Keys.Count | Should Be 3
                     $InputObject.Contains("Path")
                     $InputObject.Contains("PageRegion")
@@ -444,11 +444,11 @@ InModuleScope CompositeRegistrationFunctions {
         Update-PathRegistration -Path SomePath -ItemsToPatch @{ }
 
         It "should serialize the objects to update" { 
-            Assert-MockCalled ConvertTo-Json -Exactly 1            
+            Should -Invoke -CommandName ConvertTo-Json -Exactly 1            
         }
 
         It "should invoke a composite api registration request" {
-            Assert-MockCalled Invoke-CompositeApiRegistrationRequest -Exactly 1 -ParameterFilter {
+            Should -Invoke -CommandName Invoke-CompositeApiRegistrationRequest -Exactly 1 -ParameterFilter {
                 $Url -eq "https://path-api/api/paths/SomePath" -and `
                 $Method -eq "Patch"
             }
@@ -463,11 +463,11 @@ InModuleScope CompositeRegistrationFunctions {
         Update-RegionRegistration -Path SomePath -PageRegion 5 -ItemsToPatch @{}
 
         It "should serialize the objects to update" { 
-            Assert-MockCalled ConvertTo-Json -Exactly 1            
+            Should -Invoke -CommandName ConvertTo-Json -Exactly 1            
         }
 
         It "should invoke a composite api registration request" {
-            Assert-MockCalled Invoke-CompositeApiRegistrationRequest -Exactly 1 -ParameterFilter {
+            Should -Invoke -CommandName Invoke-CompositeApiRegistrationRequest -Exactly 1 -ParameterFilter {
                 $Url -eq "https://region-api/api/paths/SomePath/regions/5" -and `
                 $Method -eq "Patch"
             }
