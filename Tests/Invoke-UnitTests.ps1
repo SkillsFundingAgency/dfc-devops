@@ -74,7 +74,7 @@ try {
             Container = $Container
         }
         Output     = @{
-            Verbosity = 'Diagnostic'
+            Verbosity = 'Normal'
         }
         Filter     = @{
             Tag = 'Unit'

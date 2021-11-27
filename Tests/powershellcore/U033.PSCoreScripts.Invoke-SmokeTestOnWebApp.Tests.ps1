@@ -183,7 +183,7 @@ Describe "Invoke-SmokeTestsOnWebApp unit tests" -Tag "Unit" {
                 ./Invoke-SmokeTestOnWebApp.ps1 @params
             } | Should -Throw "Smoke test exhausted all retry attempts and is still not responding"
 
-            Assert-MockCalled Start-Sleep -Exactly 2 -ParameterFilter { $Seconds -eq $params.BackOffPeriodInSecs }
+            Should -Invoke -CommandName Start-Sleep -Exactly 2 -ParameterFilter { $Seconds -eq $params.BackOffPeriodInSecs }
         }
     }
 
@@ -236,7 +236,7 @@ Describe "Invoke-SmokeTestsOnWebApp unit tests" -Tag "Unit" {
 
             ./Invoke-SmokeTestOnWebApp.ps1 @params
 
-            Assert-MockCalled Invoke-WebRequest -Exactly 3 -ParameterFilter {
+            Should -Invoke -CommandName Invoke-WebRequest -Exactly 3 -ParameterFilter {
                 $Uri -eq "https://site.azurewebsites.net/path" -and `
                     $TimeoutSec -eq $params.TimeoutInSecs -and `
                     $Method -eq "Get" -and `
@@ -250,7 +250,7 @@ Describe "Invoke-SmokeTestsOnWebApp unit tests" -Tag "Unit" {
 
             ./Invoke-SmokeTestOnWebApp.ps1 @params
 
-            Assert-MockCalled Start-Sleep -Exactly 2
+            Should -Invoke -CommandName Start-Sleep -Exactly 2
         }
     }
 }
