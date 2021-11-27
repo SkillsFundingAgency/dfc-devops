@@ -36,7 +36,7 @@ Describe "ApiRequest unit tests" -Tag "Unit" {
 
         $result = ApiRequest @RequestParams
 
-        $result.result | -Should -Be "Success"
+        $result.result | Should -Be "Success"
 
     }
 

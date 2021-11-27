@@ -8,9 +8,11 @@ function New-AzureStorageContainer {}
 
 Describe "Set-StorageContainer unit tests" -Tag "Unit" {
 
-    Mock Get-AzureRmStorageAccountKey { return ConvertFrom-Json '[ { "KeyName": "key", "Value": "not4RealKey==" } ]' }
-    Mock New-AzureStorageContext
-    Mock New-AzureStorageContainer
+    BeforeEach {
+        Mock Get-AzureRmStorageAccountKey { return ConvertFrom-Json '[ { "KeyName": "key", "Value": "not4RealKey==" } ]' }
+        Mock New-AzureStorageContext
+        Mock New-AzureStorageContainer
+    }
 
     It "Ensure New-AzureStorageContainer is called to create a container if it doesnt already exist" {
 

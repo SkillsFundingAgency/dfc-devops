@@ -42,7 +42,7 @@ Describe "Set-SearchDatasources unit tests" -Tag "Unit" {
 
         $DefaultParams['IndexConfigurationString'] = '{ "invalid: "json" }' # missing quote after invalid
 
-        { .\Set-SearchDatasources @DefaultParams } | Should Throw
+        { .\Set-SearchDatasources @DefaultParams } | Should -Throw
 
         $DefaultParams.Remove('IndexConfigurationString') # clean up
     }

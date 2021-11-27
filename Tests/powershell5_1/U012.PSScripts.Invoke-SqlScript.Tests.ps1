@@ -17,7 +17,7 @@ Describe "Invoke-SqlScript unit tests" -Tag "Unit" {
     
         Mock Invoke-Sqlcmd
 
-        Set-Content -Path $params.SQLScript -Value "SELECT 1"
+        
 
     }
 
@@ -34,6 +34,8 @@ Describe "Invoke-SqlScript unit tests" -Tag "Unit" {
   
 
     It "Should run Invoke-Sqlcmd with inputfile when valid script is passed" {
+
+        Set-Content -Path $params.SQLScript -Value "SELECT 1"
 
         .\Invoke-SqlScript @params
 
