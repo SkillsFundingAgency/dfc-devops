@@ -87,7 +87,7 @@ Describe "Add-StorageAuditResults unit tests" -Tag "Unit" {
         It "should Throw an error" {
             $Params["AppendToReport"] = New-Object -TypeName Object
 
-            { .\Add-StorageAuditResults.ps1 @Params } | Should -throw "Error validating input from AppendToReport parameter, a member of array is not of type [CrossEnvironmentStorageAccountAudit]"
+            { .\Add-StorageAuditResults.ps1 @Params } | Should -throw "*Error validating input from AppendToReport parameter, a member of array is not of type [CrossEnvironmentStorageAccountAudit]*"
         }
 
     }
