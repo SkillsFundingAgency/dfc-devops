@@ -205,186 +205,197 @@ InModuleScope CompositeRegistrationFunctions {
     }
 
 
-    # Describe "Get-RegionRegistration" -Tag "Unit" {        
-    #     Context "When getting a region registration" {
-    #         New-RegistrationContext -PathApiUrl https://path-api/api -RegionApiUrl https://region-api/api -ApiKey SomeApiKey
+    Describe "Get-RegionRegistration" -Tag "Unit" {    
+        
+        Context "When getting a region registration" {
+            BeforeAll {
+                New-RegistrationContext -PathApiUrl https://path-api/api -RegionApiUrl https://region-api/api -ApiKey SomeApiKey
 
-    #         Mock Invoke-CompositeApiRegistrationRequest 
+                Mock Invoke-CompositeApiRegistrationRequest 
+            }
             
-    #         Get-RegionRegistration -Path SomePath -PageRegion 1
 
-    #         It "should invoke a composite api registration request" {
-    #             Should -Invoke -CommandName Invoke-CompositeApiRegistrationRequest -ParameterFilter {
-    #                 $Url -eq "https://region-api/api/paths/SomePath/regions/1" -and
-    #                 $Method -eq "Get"
-    #             }
-    #         }
-    #     }
-    # } 
+            It "should invoke a composite api registration request" {
+                Get-RegionRegistration -Path SomePath -PageRegion 1
+                Should -Invoke -CommandName Invoke-CompositeApiRegistrationRequest -ParameterFilter {
+                    $Url -eq "https://region-api/api/paths/SomePath/regions/1" -and
+                    $Method -eq "Get"
+                }
+            }
+        }
+    } 
 
-    # Describe "New-PathRegistration" -Tag "Unit" {
-    #     Context "When the path is not specified" {
-    #         It "should throw an error" {
-    #             {
-    #                 New-PathRegistration -Path @{}
-    #             } | Should -Throw "Path not specified"
-    #         }
-    #     }
+    Describe "New-PathRegistration" -Tag "Unit" {
+        Context "When the path is not specified" {
+            It "should throw an error" {
+                {
+                    New-PathRegistration -Path @{}
+                } | Should -Throw "Path not specified"
+            }
+        }
 
-    #     Context "When the layout is not specified" {
-    #         It "should throw an error" {
-    #             {
-    #                 New-PathRegistration -Path @{ Path = "SomePath" }
-    #             } | Should -throw "Layout is mandatory when creating a page registration."
-    #         }
-    #     }
+        Context "When the layout is not specified" {
+            It "should throw an error" {
+                {
+                    New-PathRegistration -Path @{ Path = "SomePath" }
+                } | Should -throw "Layout is mandatory when creating a page registration."
+            }
+        }
 
-    #     Context "When creating a new path registration" {
-    #         New-RegistrationContext -PathApiUrl https://path-api/api -RegionApiUrl https://region-api/api -ApiKey SomeApiKey
-    #         Mock Invoke-CompositeApiRegistrationRequest 
-    #         Mock ConvertTo-Json 
+        Context "When creating a new path registration" {
+            BeforeAll {
+                New-RegistrationContext -PathApiUrl https://path-api/api -RegionApiUrl https://region-api/api -ApiKey SomeApiKey
+                Mock Invoke-CompositeApiRegistrationRequest 
+                Mock ConvertTo-Json 
+    
+            }
 
-    #         New-PathRegistration -Path @{ 
-    #             Path   = "SomePath" 
-    #             Layout = 1
-    #         }
+            It "should serialize the object" { 
+                New-PathRegistration -Path @{ 
+                    Path   = "SomePath" 
+                    Layout = 1
+                }
+                Should -Invoke -CommandName ConvertTo-Json -Exactly 1
+            }
 
-    #         It "should serialize the object" { 
-    #             Should -Invoke -CommandName ConvertTo-Json -Exactly 1
-    #         }
+            It "should invoke a composite api registration request" {
+                New-PathRegistration -Path @{ 
+                    Path   = "SomePath" 
+                    Layout = 1
+                }
+                Should -Invoke -CommandName Invoke-CompositeApiRegistrationRequest -Exactly 1 -ParameterFilter {
+                    $Url -eq "https://path-api/api/paths" -and `
+                        $Method -eq "Post"
+                }
+            }
+        }
 
-    #         It "should invoke a composite api registration request" {
-    #             Should -Invoke -CommandName Invoke-CompositeApiRegistrationRequest -Exactly 1 -ParameterFilter {
-    #                 $Url -eq "https://path-api/api/paths" -and `
-    #                     $Method -eq "Post"
-    #             }
-    #         }
-    #     }
+        Context "When creating a new path registration with optional fields" {
+            BeforeAll {
+                New-RegistrationContext -PathApiUrl https://path-api/api -RegionApiUrl https://region-api/api -ApiKey SomeApiKey
+                Mock Invoke-CompositeApiRegistrationRequest
+                Mock ConvertTo-Json
+            }
 
-    #     Context "When creating a new path registration with optional fields" {
-    #         New-RegistrationContext -PathApiUrl https://path-api/api -RegionApiUrl https://region-api/api -ApiKey SomeApiKey
-    #         Mock Invoke-CompositeApiRegistrationRequest
-    #         Mock ConvertTo-Json
+            It "should not include any optional by default" {
+                New-PathRegistration -Path @{
+                    Path   = "SomePath"
+                    Layout = 1
+                }
 
-    #         It "should not include any optional by default" {
-    #             New-PathRegistration -Path @{
-    #                 Path   = "SomePath"
-    #                 Layout = 1
-    #             }
+                Should -Invoke -CommandName ConvertTo-Json -Scope It -ParameterFilter {
+                    $InputObject.Keys.Count | Should Be 2
+                    $InputObject.Contains("Path")
+                    $InputObject.Contains("Layout")
+                }
+            }
 
-    #             Should -Invoke -CommandName ConvertTo-Json -Scope It -ParameterFilter {
-    #                 $InputObject.Keys.Count | Should Be 2
-    #                 $InputObject.Contains("Path")
-    #                 $InputObject.Contains("Layout")
-    #             }
-    #         }
+            It "should include the optional TopNavigationText field when specified" {
+                New-PathRegistration -Path @{
+                    Path              = "SomePath"
+                    Layout            = 1
+                    TopNavigationText = "Some Text"
+                }
 
-    #         It "should include the optional TopNavigationText field when specified" {
-    #             New-PathRegistration -Path @{
-    #                 Path              = "SomePath"
-    #                 Layout            = 1
-    #                 TopNavigationText = "Some Text"
-    #             }
+                Should -Invoke -CommandName ConvertTo-Json -Scope It -ParameterFilter {
+                    $InputObject.Keys.Count | Should Be 3
+                    $InputObject.Contains("Path")
+                    $InputObject.Contains("Layout")
+                    $InputObject.Contains("TopNavigationText")
+                }
+            }
 
-    #             Should -Invoke -CommandName ConvertTo-Json -Scope It -ParameterFilter {
-    #                 $InputObject.Keys.Count | Should Be 3
-    #                 $InputObject.Contains("Path")
-    #                 $InputObject.Contains("Layout")
-    #                 $InputObject.Contains("TopNavigationText")
-    #             }
-    #         }
+            It "should include the optional TopNavigationOrder field when specified" {
+                New-PathRegistration -Path @{
+                    Path               = "SomePath"
+                    Layout             = 1
+                    TopNavigationOrder = "Some Text"
+                }
 
-    #         It "should include the optional TopNavigationOrder field when specified" {
-    #             New-PathRegistration -Path @{
-    #                 Path               = "SomePath"
-    #                 Layout             = 1
-    #                 TopNavigationOrder = "Some Text"
-    #             }
+                Should -Invoke -CommandName ConvertTo-Json -Scope It -ParameterFilter {
+                    $InputObject.Keys.Count | Should Be 3
+                    $InputObject.Contains("Path")
+                    $InputObject.Contains("Layout")
+                    $InputObject.Contains("TopNavigationOrder")
+                }
+            }
 
-    #             Should -Invoke -CommandName ConvertTo-Json -Scope It -ParameterFilter {
-    #                 $InputObject.Keys.Count | Should Be 3
-    #                 $InputObject.Contains("Path")
-    #                 $InputObject.Contains("Layout")
-    #                 $InputObject.Contains("TopNavigationOrder")
-    #             }
-    #         }
+            It "should include the optional OfflineHtml field when specified" {
+                New-PathRegistration -Path @{
+                    Path        = "SomePath"
+                    Layout      = 1
+                    OfflineHtml = "Some HTML"
+                }
 
-    #         It "should include the optional OfflineHtml field when specified" {
-    #             New-PathRegistration -Path @{
-    #                 Path        = "SomePath"
-    #                 Layout      = 1
-    #                 OfflineHtml = "Some HTML"
-    #             }
+                Should -Invoke -CommandName ConvertTo-Json -Scope It -ParameterFilter {
+                    $InputObject.Keys.Count | Should Be 3
+                    $InputObject.Contains("Path")
+                    $InputObject.Contains("Layout")
+                    $InputObject.Contains("OfflineHtml")
+                }
+            }
 
-    #             Should -Invoke -CommandName ConvertTo-Json -Scope It -ParameterFilter {
-    #                 $InputObject.Keys.Count | Should Be 3
-    #                 $InputObject.Contains("Path")
-    #                 $InputObject.Contains("Layout")
-    #                 $InputObject.Contains("OfflineHtml")
-    #             }
-    #         }
+            It "should include the optional PhaseBannerHtml field when specified" {
+                New-PathRegistration -Path @{
+                    Path            = "SomePath"
+                    Layout          = 1
+                    PhaseBannerHtml = "Some HTML"
+                }
 
-    #         It "should include the optional PhaseBannerHtml field when specified" {
-    #             New-PathRegistration -Path @{
-    #                 Path            = "SomePath"
-    #                 Layout          = 1
-    #                 PhaseBannerHtml = "Some HTML"
-    #             }
+                Should -Invoke -CommandName ConvertTo-Json -Scope It -ParameterFilter {
+                    $InputObject.Keys.Count | Should Be 3
+                    $InputObject.Contains("Path")
+                    $InputObject.Contains("Layout")
+                    $InputObject.Contains("PhaseBannerHtml")
+                }
+            }
 
-    #             Should -Invoke -CommandName ConvertTo-Json -Scope It -ParameterFilter {
-    #                 $InputObject.Keys.Count | Should Be 3
-    #                 $InputObject.Contains("Path")
-    #                 $InputObject.Contains("Layout")
-    #                 $InputObject.Contains("PhaseBannerHtml")
-    #             }
-    #         }
+            It "should include the optional ExternalUrl field when specified" {
+                New-PathRegistration -Path @{
+                    Path        = "SomePath"
+                    Layout      = 1
+                    ExternalUrl = "https://some/url"
+                }
 
-    #         It "should include the optional ExternalUrl field when specified" {
-    #             New-PathRegistration -Path @{
-    #                 Path        = "SomePath"
-    #                 Layout      = 1
-    #                 ExternalUrl = "https://some/url"
-    #             }
+                Should -Invoke -CommandName ConvertTo-Json -Scope It -ParameterFilter {
+                    $InputObject.Keys.Count | Should Be 3
+                    $InputObject.Contains("Path")
+                    $InputObject.Contains("Layout")
+                    $InputObject.Contains("ExternalUrl")
+                }
+            }
 
-    #             Should -Invoke -CommandName ConvertTo-Json -Scope It -ParameterFilter {
-    #                 $InputObject.Keys.Count | Should Be 3
-    #                 $InputObject.Contains("Path")
-    #                 $InputObject.Contains("Layout")
-    #                 $InputObject.Contains("ExternalUrl")
-    #             }
-    #         }
+            It "should include the optional SitemapUrl field when specified" {
+                New-PathRegistration -Path @{
+                    Path       = "SomePath"
+                    Layout     = 1
+                    SitemapUrl = "https://some/url"
+                }
 
-    #         It "should include the optional SitemapUrl field when specified" {
-    #             New-PathRegistration -Path @{
-    #                 Path       = "SomePath"
-    #                 Layout     = 1
-    #                 SitemapUrl = "https://some/url"
-    #             }
+                Should -Invoke -CommandName ConvertTo-Json -Scope It -ParameterFilter {
+                    $InputObject.Keys.Count | Should Be 3
+                    $InputObject.Contains("Path")
+                    $InputObject.Contains("Layout")
+                    $InputObject.Contains("SitemapUrl")
+                }
+            }
 
-    #             Should -Invoke -CommandName ConvertTo-Json -Scope It -ParameterFilter {
-    #                 $InputObject.Keys.Count | Should Be 3
-    #                 $InputObject.Contains("Path")
-    #                 $InputObject.Contains("Layout")
-    #                 $InputObject.Contains("SitemapUrl")
-    #             }
-    #         }
+            It "should include the optional RobotsUrl field when specified" {
+                New-PathRegistration -Path @{
+                    Path      = "SomePath"
+                    Layout    = 1
+                    RobotsUrl = "https://some/url"
+                }
 
-    #         It "should include the optional RobotsUrl field when specified" {
-    #             New-PathRegistration -Path @{
-    #                 Path      = "SomePath"
-    #                 Layout    = 1
-    #                 RobotsUrl = "https://some/url"
-    #             }
-
-    #             Should -Invoke -CommandName ConvertTo-Json -Scope It -ParameterFilter {
-    #                 $InputObject.Keys.Count | Should Be 3
-    #                 $InputObject.Contains("Path")
-    #                 $InputObject.Contains("Layout")
-    #                 $InputObject.Contains("RobotsUrl")
-    #             }
-    #         }
-    #     }
-    # }
+                Should -Invoke -CommandName ConvertTo-Json -Scope It -ParameterFilter {
+                    $InputObject.Keys.Count | Should Be 3
+                    $InputObject.Contains("Path")
+                    $InputObject.Contains("Layout")
+                    $InputObject.Contains("RobotsUrl")
+                }
+            }
+        }
+    }
 
     # Describe "New-RegionRegistration" -Tag "Unit" {
     #     Context "When the path is not specified" {
@@ -551,36 +562,39 @@ InModuleScope CompositeRegistrationFunctions {
     #     }
     # }
 
-    # Describe "ConvertTo-Hashtable" -Tag "Unit" {
-    #     Context "When converting an object to a hashtable" {
+    Describe "ConvertTo-Hashtable" -Tag "Unit" {
+        Context "When converting an object to a hashtable" {
 
-    #         $customObject = [PSCustomObject]@{
-    #             StringProperty = "SomeValue"
-    #             IntProperty    = 5
-    #             BoolProperty   = $true
-    #             NullProperty   = $null
-    #             ArrayProperty  = @()
-    #             ObjectProperty = [PSCustomObject]@{}
-    #         }
+            BeforeAll {
+                $customObject = [PSCustomObject]@{
+                    StringProperty = "SomeValue"
+                    IntProperty    = 5
+                    BoolProperty   = $true
+                    NullProperty   = $null
+                    ArrayProperty  = @()
+                    ObjectProperty = [PSCustomObject]@{}
+                }
+            }
 
-    #         $result = ConvertTo-Hashtable -Object $customObject
 
-    #         It "should return a hashtable" {
-    #             $result.GetType() | Should -be "hashtable"
-    #         }
+            It "should return a hashtable" {
+                $result = ConvertTo-Hashtable -Object $customObject
+                $result.GetType() | Should -be "hashtable"
+            }
 
-    #         It "should convert properties" {
-    #             $result.Keys.Count | Should -be 6
+            It "should convert properties" {
+                $result = ConvertTo-Hashtable -Object $customObject
 
-    #             $result.Contains("StringProperty") | Should -be $true
-    #             $result.Contains("IntProperty") | Should -be $true
-    #             $result.Contains("BoolProperty") | Should -be $true
-    #             $result.Contains("NullProperty") | Should -be $true
-    #             $result.Contains("ArrayProperty") | Should -be $true
-    #             $result.Contains("ObjectProperty") | Should -be $true
-    #         }
-    #     }
-    # }
+                $result.Keys.Count | Should -be 6
+                $result.Contains("StringProperty") | Should -be $true
+                $result.Contains("IntProperty") | Should -be $true
+                $result.Contains("BoolProperty") | Should -be $true
+                $result.Contains("NullProperty") | Should -be $true
+                $result.Contains("ArrayProperty") | Should -be $true
+                $result.Contains("ObjectProperty") | Should -be $true
+            }
+        }
+    }
 }
 
 
