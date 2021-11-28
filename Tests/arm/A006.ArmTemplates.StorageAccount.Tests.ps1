@@ -1,24 +1,25 @@
-# common variables
-$ResourceGroupName = "dfc-test-template-rg"
-$TemplateFile = "$PSScriptRoot\..\..\ArmTemplates\storage-account.json"
-
 Describe "Storage Account Deployment Tests" -Tag "Acceptance" {
 
+  BeforeAll {
+    # common variables
+    $ResourceGroupName = "dfc-test-template-rg"
+    $TemplateFile = "$PSScriptRoot\..\..\ArmTemplates\storage-account.json"
+  }
+
   Context "When a storage account deployed with just name" {
-    $TemplateParameters = @{
-      storageAccountName = "dfcfoobarstr"
+    BeforeAll {
+      $TemplateParameters = @{
+        storageAccountName = "dfcfoobarstr"
+      }
+      $TestTemplateParams = @{
+        ResourceGroupName       = $ResourceGroupName
+        TemplateFile            = $TemplateFile
+        TemplateParameterObject = $TemplateParameters
+      }
     }
-    $TestTemplateParams = @{
-      ResourceGroupName       = $ResourceGroupName
-      TemplateFile            = $TemplateFile
-      TemplateParameterObject = $TemplateParameters
-    }
-
-    $output = Test-AzureRmResourceGroupDeployment @TestTemplateParams
-
     It "Should be deployed successfully" {
+      $output = Test-AzureRmResourceGroupDeployment @TestTemplateParams
       $output | Should -Be $null
     }
-
   }
 }
