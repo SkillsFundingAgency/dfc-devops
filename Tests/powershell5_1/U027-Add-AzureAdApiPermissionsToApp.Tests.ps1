@@ -25,7 +25,7 @@ Describe "Add-AzureAdApiPermissionsToApp unit tests" -Tag "Unit" {
     Mock Set-AzureAdApplication
 
     #Script relies on .NET method which can't be mocked.  Lines 100 - 115 will need to be moved into a seperate external function which can be mocked.
-    It "Should call Set-AzureAdApplication when called with delegated permissions" -Skip {
+    It "Should call Set-AzureAdApplication when called with delegated permissions" -Tag "DontRun" {
 
         $CmdletParameters = @{
             AppRegistrationDisplayName = "dfc-foo-bar-app"
