@@ -51,6 +51,7 @@ try {
         }
         Filter     = @{
             Tag = 'Quality'
+            ExcludeTag = 'DontRun'
         }
         TestResult = @{
             Enabled      = $true
