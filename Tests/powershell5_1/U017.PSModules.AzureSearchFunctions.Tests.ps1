@@ -23,7 +23,7 @@ Describe "ApiRequest unit tests" -Tag "Unit" {
 
         ApiRequest @RequestParams
 
-        Should -Invoke -CommandName -ModuleName AzureApiFunctions Invoke-WebRequest -ParameterFilter {
+        Should -Invoke -CommandName Invoke-WebRequest -ModuleName AzureApiFunctions -ParameterFilter {
             $Headers['Content-Type'] -eq "application/json"
         }
 
@@ -32,7 +32,7 @@ Describe "ApiRequest unit tests" -Tag "Unit" {
 
         ApiRequest @RequestParams
 
-        Should -Invoke -CommandName -ModuleName AzureApiFunctions Invoke-WebRequest -ParameterFilter {
+        Should -Invoke -CommandName  Invoke-WebRequest -ModuleName AzureApiFunctions -ParameterFilter {
             $Headers['api-key'] -eq "Mock123"
         }
 
@@ -50,7 +50,7 @@ Describe "ApiRequest unit tests" -Tag "Unit" {
 
         ApiRequest @RequestParams
 
-        Should -Invoke -CommandName -ModuleName AzureApiFunctions Invoke-WebRequest -Exactly 0 
+        Should -Invoke -CommandName Invoke-WebRequest -ModuleName AzureApiFunctions -Exactly 0 
     }
 
     It "Check ApiRequest passes the body if added" {
@@ -60,7 +60,7 @@ Describe "ApiRequest unit tests" -Tag "Unit" {
 
         ApiRequest @RequestParams
 
-        Should -Invoke -CommandName -ModuleName AzureApiFunctions Invoke-WebRequest -Exactly 1
+        Should -Invoke -CommandName Invoke-WebRequest -ModuleName AzureApiFunctions -Exactly 1 
     }
 
 }
