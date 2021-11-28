@@ -2,7 +2,7 @@ Push-Location -Path $PSScriptRoot\..\..\PSCoreScripts\
 
 Import-Module ../PSModules/CompositeRegistrationFunctions
 
-Describe "Invoke-AddOrUpdateCompositeRegistrations" -Tag "Unit" {
+Describe "Invoke-AddOrUpdateCompositeRegistrations" -Tag "DontRun" {
     Mock New-RegistrationContext
     Mock Get-PathRegistration -MockWith { return $null }
     Mock New-PathRegistration -MockWith { return $null }
