@@ -78,6 +78,7 @@ try {
         }
         Filter     = @{
             Tag = 'Unit'
+            ExcludeTag = "DontRun"
         }
         TestResult = @{
             Enabled      = $true
