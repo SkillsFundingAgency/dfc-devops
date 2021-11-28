@@ -23,10 +23,10 @@ Describe "ApiRequest unit tests" -Tag "Unit" {
 
         ApiRequest @RequestParams
 
-        Should -Invoke -CommandName -ModuleName AzureApiFunctions Invoke-WebRequest -ParameterFilter {
+        Assert-MockCalled -ModuleName AzureApiFunctions Invoke-WebRequest -ParameterFilter {
             $Headers['Content-Type'] -eq "application/json"
         }
-        Should -Invoke -CommandName -ModuleName AzureApiFunctions Invoke-WebRequest -ParameterFilter {
+        Assert-MockCalled -ModuleName AzureApiFunctions Invoke-WebRequest -ParameterFilter {
             $Headers['api-key'] -eq "Mock123"
         }
 
@@ -44,7 +44,7 @@ Describe "ApiRequest unit tests" -Tag "Unit" {
 
         ApiRequest @RequestParams
 
-        Should -Invoke -CommandName -ModuleName AzureApiFunctions Invoke-WebRequest -Exactly 0 -ParameterFilter {
+        Assert-MockCalled -ModuleName AzureApiFunctions Invoke-WebRequest -Exactly 0 -ParameterFilter {
             $Body
         }
     }
@@ -56,7 +56,7 @@ Describe "ApiRequest unit tests" -Tag "Unit" {
 
         ApiRequest @RequestParams
 
-        Should -Invoke -CommandName -ModuleName AzureApiFunctions Invoke-WebRequest -ParameterFilter {
+        Assert-MockCalled -ModuleName AzureApiFunctions Invoke-WebRequest -ParameterFilter {
             $Body
         }
     }
