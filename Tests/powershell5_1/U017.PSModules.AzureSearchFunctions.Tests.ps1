@@ -48,10 +48,13 @@ Describe "ApiRequest unit tests" -Tag "Unit" {
 
     It "Check ApiRequest does not pass the body in if not body specified" {
 
+        $bodypayload = '{ "foo": "bar" }'
+        $JsonBody = $bodypayload | ConvertTo-Json -Depth 10
+
         ApiRequest @RequestParams
 
         Should -Invoke -CommandName Invoke-WebRequest -ModuleName AzureApiFunctions -Exactly 0 -ParameterFilter {
-            $Body -eq '{ "foo": "bar" }'
+            $Body -eq $JsonBody
         }
     }
 
@@ -59,12 +62,14 @@ Describe "ApiRequest unit tests" -Tag "Unit" {
 
         $bodypayload = '{ "foo": "bar" }'
         $RequestParams['Body'] = $bodypayload
+        $JsonBody = $bodypayload | ConvertTo-Json -Depth 10
 
         ApiRequest @RequestParams
 
         Should -Invoke -CommandName Invoke-WebRequest -ModuleName AzureApiFunctions -Exactly 1 -ParameterFilter {
-            $Body -eq '{ "foo": "bar" }'
+            $Body -eq $JsonBody
         }
     }
 
 }
+
