@@ -21,7 +21,7 @@ Describe "Service Bus Queue Deployment Tests" -Tag "Acceptance" {
   
   
     }
-    It "Should be deployed successfully with just a subscription" -Foreach @{TestTemplateParams = $TestTemplateParams } {
+    It "Should be deployed successfully with just a subscription" {
       $output = Test-AzureRmResourceGroupDeployment @TestTemplateParams
       $output | Should -Be $null
 
