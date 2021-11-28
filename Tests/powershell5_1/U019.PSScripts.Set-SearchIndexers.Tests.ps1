@@ -61,10 +61,10 @@ Describe "Set-SearchIndexers unit tests" -Tag "Unit" {
         
         .\Set-SearchIndexers @DefaultParams
 
-        Assert-MockCalled Get-AzureRmResource -Scope It -Exactly 1
-        Assert-MockCalled Invoke-AzureRmResourceAction -Scope It -Exactly 1
-        Assert-MockCalled ApiRequest -Scope It -ParameterFilter { $Method -eq 'GET' } -Exactly 1
-        Assert-MockCalled ApiRequest -Scope It -ParameterFilter { $Method -eq 'POST' } -Exactly 0
+        Should -Invoke -CommandName Get-AzureRmResource -Scope It -Exactly 1
+        Should -Invoke -CommandName Invoke-AzureRmResourceAction -Scope It -Exactly 1
+        Should -Invoke -CommandName ApiRequest -Scope It -ParameterFilter { $Method -eq 'GET' } -Exactly 1
+        Should -Invoke -CommandName ApiRequest -Scope It -ParameterFilter { $Method -eq 'POST' } -Exactly 0
 
     }
 
@@ -80,10 +80,10 @@ Describe "Set-SearchIndexers unit tests" -Tag "Unit" {
         
         .\Set-SearchIndexers @DefaultParams
 
-        Assert-MockCalled Get-AzureRmResource -Scope It -Exactly 1
-        Assert-MockCalled Invoke-AzureRmResourceAction -Scope It -Exactly 1
-        Assert-MockCalled ApiRequest -Scope It -ParameterFilter { $Method -eq 'GET' } -Exactly 1
-        Assert-MockCalled ApiRequest -Scope It -ParameterFilter { $Method -eq 'POST' } -Exactly 1
+        Should -Invoke -CommandName Get-AzureRmResource -Scope It -Exactly 1
+        Should -Invoke -CommandName Invoke-AzureRmResourceAction -Scope It -Exactly 1
+        Should -Invoke -CommandName ApiRequest -Scope It -ParameterFilter { $Method -eq 'GET' } -Exactly 1
+        Should -Invoke -CommandName ApiRequest -Scope It -ParameterFilter { $Method -eq 'POST' } -Exactly 1
 
     }
 
@@ -106,10 +106,10 @@ Describe "Set-SearchIndexers unit tests" -Tag "Unit" {
                 
         .\Set-SearchIndexers @DefaultParams
         
-        Assert-MockCalled Get-AzureRmResource -Scope It -Exactly 1
-        Assert-MockCalled Invoke-AzureRmResourceAction -Scope It -Exactly 1
-        Assert-MockCalled ApiRequest -Scope It -ParameterFilter { $Method -eq 'GET' } -Exactly 1
-        Assert-MockCalled ApiRequest -Scope It -ParameterFilter { $Method -eq 'POST' } -Exactly 1
+        Should -Invoke -CommandName Get-AzureRmResource -Scope It -Exactly 1
+        Should -Invoke -CommandName Invoke-AzureRmResourceAction -Scope It -Exactly 1
+        Should -Invoke -CommandName ApiRequest -Scope It -ParameterFilter { $Method -eq 'GET' } -Exactly 1
+        Should -Invoke -CommandName ApiRequest -Scope It -ParameterFilter { $Method -eq 'POST' } -Exactly 1
         
     }
 

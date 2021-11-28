@@ -31,11 +31,11 @@ Describe "New-ApplicationRegistration unit tests" -Tag "Unit" {
 
         { .\New-ApplicationRegistration @CmdletParameters } | Should -Throw "KeyVault dfc-foo-shared-kv doesn't exist, nowhere to store secret"
 
-        Assert-MockCalled Get-AzureRmContext -Exactly 1 -Scope It
-        Assert-MockCalled Get-AzureRmADServicePrincipal -ParameterFilter { $ApplicationId } -Exactly 1 -Scope It
-        Assert-MockCalled Get-AzureRmADServicePrincipal -Exactly 2 -Scope It
-        Assert-MockCalled Get-AzureRmKeyVault -Exactly 1 -Scope It
-        Assert-MockCalled New-AzureRmADServicePrincipal -Exactly 0 -Scope It
+        Should -Invoke -CommandName Get-AzureRmContext -Exactly 1 -Scope It
+        Should -Invoke -CommandName Get-AzureRmADServicePrincipal -ParameterFilter { $ApplicationId } -Exactly 1 -Scope It
+        Should -Invoke -CommandName Get-AzureRmADServicePrincipal -Exactly 2 -Scope It
+        Should -Invoke -CommandName Get-AzureRmKeyVault -Exactly 1 -Scope It
+        Should -Invoke -CommandName New-AzureRmADServicePrincipal -Exactly 0 -Scope It
 
     }
 
@@ -61,11 +61,11 @@ Describe "New-ApplicationRegistration unit tests" -Tag "Unit" {
 
         { .\New-ApplicationRegistration @CmdletParameters } | Should -Throw "Service Principal 4a11d94c-9c97-4c0b-8f85-476c1ef15956 doesn't have Set permission on KeyVault dfc-foo-shared-kv"
 
-        Assert-MockCalled Get-AzureRmContext -Exactly 1 -Scope It
-        Assert-MockCalled Get-AzureRmADServicePrincipal -ParameterFilter { $ApplicationId } -Exactly 1 -Scope It
-        Assert-MockCalled Get-AzureRmADServicePrincipal -Exactly 2 -Scope It
-        Assert-MockCalled Get-AzureRmKeyVault -Exactly 1 -Scope It
-        Assert-MockCalled New-AzureRmADServicePrincipal -Exactly 0 -Scope It
+        Should -Invoke -CommandName Get-AzureRmContext -Exactly 1 -Scope It
+        Should -Invoke -CommandName Get-AzureRmADServicePrincipal -ParameterFilter { $ApplicationId } -Exactly 1 -Scope It
+        Should -Invoke -CommandName Get-AzureRmADServicePrincipal -Exactly 2 -Scope It
+        Should -Invoke -CommandName Get-AzureRmKeyVault -Exactly 1 -Scope It
+        Should -Invoke -CommandName New-AzureRmADServicePrincipal -Exactly 0 -Scope It
 
     }
 
@@ -92,11 +92,11 @@ Describe "New-ApplicationRegistration unit tests" -Tag "Unit" {
 
         .\New-ApplicationRegistration @CmdletParameters
 
-        Assert-MockCalled Get-AzureRmContext -Exactly 1 -Scope It
-        Assert-MockCalled Get-AzureRmADServicePrincipal -ParameterFilter { $ApplicationId } -Exactly 1 -Scope It
-        Assert-MockCalled Get-AzureRmADServicePrincipal -Exactly 2 -Scope It
-        Assert-MockCalled Get-AzureRmKeyVault -Exactly 1 -Scope It
-        Assert-MockCalled New-AzureRmADServicePrincipal -Exactly 1 -Scope It
+        Should -Invoke -CommandName Get-AzureRmContext -Exactly 1 -Scope It
+        Should -Invoke -CommandName Get-AzureRmADServicePrincipal -ParameterFilter { $ApplicationId } -Exactly 1 -Scope It
+        Should -Invoke -CommandName Get-AzureRmADServicePrincipal -Exactly 2 -Scope It
+        Should -Invoke -CommandName Get-AzureRmKeyVault -Exactly 1 -Scope It
+        Should -Invoke -CommandName New-AzureRmADServicePrincipal -Exactly 1 -Scope It
 
     }
 

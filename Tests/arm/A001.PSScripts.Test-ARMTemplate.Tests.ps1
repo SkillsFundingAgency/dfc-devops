@@ -7,6 +7,6 @@ Describe "Test-ARMTemplate acceptance tests" -Tag "Acceptance" {
 
         .\Test-ARMTemplate -TemplateFile template.json -ParameterFile parameters.json
 
-        Assert-MockCalled Test-AzureRmResourceGroupDeployment  -Exactly 1
+        Should -Invoke -CommandName Test-AzureRmResourceGroupDeployment  -Exactly 1
     }
 }

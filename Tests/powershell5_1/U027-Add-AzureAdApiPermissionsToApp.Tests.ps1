@@ -35,7 +35,7 @@ Describe "Add-AzureAdApiPermissionsToApp unit tests" -Tag "Unit" {
 
         .\Add-AzureAdApiPermissionsToApp @CmdletParameters
 
-        Assert-MockCalled Get-AzureRmADApplication -Exactly 1 -Scope It
-        Assert-MockCalled Set-AzureRmADApplication -Exactly 1 -Scope It -ParameterFilter { $ObjectId -eq "b68bcf9f-9ec6-47b6-bcc4-8efa9a0c497d" -and $RequiredResourceAccess }
+        Should -Invoke -CommandName Get-AzureRmADApplication -Exactly 1 -Scope It
+        Should -Invoke -CommandName Set-AzureRmADApplication -Exactly 1 -Scope It -ParameterFilter { $ObjectId -eq "b68bcf9f-9ec6-47b6-bcc4-8efa9a0c497d" -and $RequiredResourceAccess }
     }
 }

@@ -24,10 +24,10 @@ Describe "Import-ApimSwaggerApiDefinition unit tests" -Tag "Unit" {
 
         .\Import-ApimSwaggerApiDefinition @CmdletParameters
 
-        Assert-MockCalled Invoke-RestMethod -Exactly 0 -Scope It
-        Assert-MockCalled Set-Content -Exactly 0 -Scope It
-        Assert-MockCalled Get-AzureRmApiManagementApi -Exactly 1 -Scope It
-        Assert-MockCalled Import-AzureRmApiManagementApi -Exactly 1 -Scope It
+        Should -Invoke -CommandName Invoke-RestMethod -Exactly 0 -Scope It
+        Should -Invoke -CommandName Set-Content -Exactly 0 -Scope It
+        Should -Invoke -CommandName Get-AzureRmApiManagementApi -Exactly 1 -Scope It
+        Should -Invoke -CommandName Import-AzureRmApiManagementApi -Exactly 1 -Scope It
 
     }
 
@@ -54,10 +54,10 @@ Describe "Import-ApimSwaggerApiDefinition unit tests" -Tag "Unit" {
 
         .\Import-ApimSwaggerApiDefinition @CmdletParameters
 
-        Assert-MockCalled Invoke-RestMethod -Exactly 0 -Scope It
-        Assert-MockCalled Set-Content -Exactly 0 -Scope It
-        Assert-MockCalled Get-AzApiManagementApi -Exactly 1 -Scope It
-        Assert-MockCalled Import-AzApiManagementApi -Exactly 1 -Scope It
+        Should -Invoke -CommandName Invoke-RestMethod -Exactly 0 -Scope It
+        Should -Invoke -CommandName Set-Content -Exactly 0 -Scope It
+        Should -Invoke -CommandName Get-AzApiManagementApi -Exactly 1 -Scope It
+        Should -Invoke -CommandName Import-AzApiManagementApi -Exactly 1 -Scope It
 
     }
 

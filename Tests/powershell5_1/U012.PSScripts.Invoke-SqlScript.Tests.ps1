@@ -27,7 +27,7 @@ Describe "Invoke-SqlScript unit tests" -Tag "Unit" {
 
         .\Invoke-SqlScript @params
 
-        Assert-MockCalled Write-Error
+        Should -Invoke -CommandName Write-Error
 
     }
 
@@ -39,7 +39,7 @@ Describe "Invoke-SqlScript unit tests" -Tag "Unit" {
 
         .\Invoke-SqlScript @params
 
-        Assert-MockCalled Invoke-Sqlcmd -Exactly 1 -Scope It
+        Should -Invoke -CommandName Invoke-Sqlcmd -Exactly 1 -Scope It
 
     }
 

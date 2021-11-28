@@ -48,14 +48,14 @@ Describe "Export-KeyVaultCertToPemFiles unit tests" -Tag "Unit" {
 
             .\Export-KeyVaultCertToPemFiles @Params
 
-            Assert-MockCalled Get-AzStorageAccountKey -Exactly 1
-            Assert-MockCalled New-AzStorageContext -Exactly 1
-            Assert-MockCalled Get-AzKeyVaultSecret -Exactly 1
-            Assert-MockCalled Invoke-Expression -Exactly 1 -ParameterFilter { $Command -match "openssl pkcs12 -in .*\\PsExportedPfx.pfx -out .*\\cert.pem -nokeys -clcerts -password pass:\w{20}" }
-            Assert-MockCalled Invoke-Expression -Exactly 1 -ParameterFilter { $Command -match "openssl pkcs12 -in .*\\PsExportedPfx.pfx -out .*\\fullchain.pem --chain -nokeys -password pass:\w{20}" }
-            Assert-MockCalled Invoke-Expression -Exactly 1 -ParameterFilter { $Command -match "openssl pkcs12 -in .*\\PsExportedPfx.pfx -out .*\\privkey.pem -nocerts -nodes -password pass:\w{20}" }
-            Assert-MockCalled Set-AzStorageFileContent -Exactly 3
-            Assert-MockCalled Remove-Item -Exactly 4
+            Should -Invoke -CommandName Get-AzStorageAccountKey -Exactly 1
+            Should -Invoke -CommandName New-AzStorageContext -Exactly 1
+            Should -Invoke -CommandName Get-AzKeyVaultSecret -Exactly 1
+            Should -Invoke -CommandName Invoke-Expression -Exactly 1 -ParameterFilter { $Command -match "openssl pkcs12 -in .*\\PsExportedPfx.pfx -out .*\\cert.pem -nokeys -clcerts -password pass:\w{20}" }
+            Should -Invoke -CommandName Invoke-Expression -Exactly 1 -ParameterFilter { $Command -match "openssl pkcs12 -in .*\\PsExportedPfx.pfx -out .*\\fullchain.pem --chain -nokeys -password pass:\w{20}" }
+            Should -Invoke -CommandName Invoke-Expression -Exactly 1 -ParameterFilter { $Command -match "openssl pkcs12 -in .*\\PsExportedPfx.pfx -out .*\\privkey.pem -nocerts -nodes -password pass:\w{20}" }
+            Should -Invoke -CommandName Set-AzStorageFileContent -Exactly 3
+            Should -Invoke -CommandName Remove-Item -Exactly 4
 
         }
 
@@ -106,14 +106,14 @@ Describe "Export-KeyVaultCertToPemFiles unit tests" -Tag "Unit" {
 
             .\Export-KeyVaultCertToPemFiles @Params
 
-            Assert-MockCalled Get-AzStorageAccountKey -Exactly 1
-            Assert-MockCalled New-AzStorageContext -Exactly 1
-            Assert-MockCalled Get-AzKeyVaultSecret -Exactly 1
-            Assert-MockCalled Invoke-Expression -Exactly 1 -ParameterFilter { $Command -match "openssl pkcs12 -in .*\\PsExportedPfx.pfx -out .*\\cert.pem -nokeys -clcerts -password pass:\w{20}" }
-            Assert-MockCalled Invoke-Expression -Exactly 1 -ParameterFilter { $Command -match "openssl pkcs12 -in .*\\PsExportedPfx.pfx -out .*\\fullchain.pem --chain -nokeys -password pass:\w{20}" }
-            Assert-MockCalled Invoke-Expression -Exactly 1 -ParameterFilter { $Command -match "openssl pkcs12 -in .*\\PsExportedPfx.pfx -out .*\\privkey.pem -nocerts -nodes -password pass:\w{20}" }
-            Assert-MockCalled Set-AzStorageFileContent -Exactly 5
-            Assert-MockCalled Remove-Item -Exactly 4
+            Should -Invoke -CommandName Get-AzStorageAccountKey -Exactly 1
+            Should -Invoke -CommandName New-AzStorageContext -Exactly 1
+            Should -Invoke -CommandName Get-AzKeyVaultSecret -Exactly 1
+            Should -Invoke -CommandName Invoke-Expression -Exactly 1 -ParameterFilter { $Command -match "openssl pkcs12 -in .*\\PsExportedPfx.pfx -out .*\\cert.pem -nokeys -clcerts -password pass:\w{20}" }
+            Should -Invoke -CommandName Invoke-Expression -Exactly 1 -ParameterFilter { $Command -match "openssl pkcs12 -in .*\\PsExportedPfx.pfx -out .*\\fullchain.pem --chain -nokeys -password pass:\w{20}" }
+            Should -Invoke -CommandName Invoke-Expression -Exactly 1 -ParameterFilter { $Command -match "openssl pkcs12 -in .*\\PsExportedPfx.pfx -out .*\\privkey.pem -nocerts -nodes -password pass:\w{20}" }
+            Should -Invoke -CommandName Set-AzStorageFileContent -Exactly 5
+            Should -Invoke -CommandName Remove-Item -Exactly 4
 
         }
 

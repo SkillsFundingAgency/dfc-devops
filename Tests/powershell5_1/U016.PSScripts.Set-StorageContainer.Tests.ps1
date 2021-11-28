@@ -20,8 +20,8 @@ Describe "Set-StorageContainer unit tests" -Tag "Unit" {
 
         .\Set-StorageContainer -ResourceGroupName dfc-foobar-rg -StorageAccountName dfcfoobarstr -ContainerName mockcontainer
 
-        Assert-MockCalled Get-AzureStorageContainer -Exactly 1 -Scope It
-        Assert-MockCalled New-AzureStorageContainer -Exactly 1 -Scope It
+        Should -Invoke -CommandName Get-AzureStorageContainer -Exactly 1 -Scope It
+        Should -Invoke -CommandName New-AzureStorageContainer -Exactly 1 -Scope It
 
     }
 
@@ -31,8 +31,8 @@ Describe "Set-StorageContainer unit tests" -Tag "Unit" {
 
         .\Set-StorageContainer -ResourceGroupName dfc-foobar-rg -StorageAccountName dfcfoobarstr -ContainerName mockcontainer
 
-        Assert-MockCalled Get-AzureStorageContainer -Exactly 1 -Scope It
-        Assert-MockCalled New-AzureStorageContainer -Exactly 0 -Scope It
+        Should -Invoke -CommandName Get-AzureStorageContainer -Exactly 1 -Scope It
+        Should -Invoke -CommandName New-AzureStorageContainer -Exactly 0 -Scope It
 
     }
 

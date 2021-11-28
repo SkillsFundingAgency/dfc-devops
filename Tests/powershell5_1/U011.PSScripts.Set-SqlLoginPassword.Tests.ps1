@@ -60,7 +60,7 @@ Describe "Set-SqlLoginPassword unit tests" -Tag "Unit" {
 
         .\Set-SqlLoginPassword @params
 
-        Assert-MockCalled Invoke-Sqlcmd -Exactly 1 -Scope It
+        Should -Invoke -CommandName Invoke-Sqlcmd -Exactly 1 -Scope It
 
     }
 
@@ -78,7 +78,7 @@ Describe "Set-SqlLoginPassword unit tests" -Tag "Unit" {
 
         .\Set-SqlLoginPassword -UserScript $SQLScript @params
 
-        Assert-MockCalled Write-Error
+        Should -Invoke -CommandName Write-Error
 
     }
 
@@ -97,7 +97,7 @@ Describe "Set-SqlLoginPassword unit tests" -Tag "Unit" {
 
         .\Set-SqlLoginPassword @params
 
-        Assert-MockCalled Invoke-Sqlcmd -Exactly 1 -Scope It
+        Should -Invoke -CommandName Invoke-Sqlcmd -Exactly 1 -Scope It
 
     }
 

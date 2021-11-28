@@ -16,10 +16,10 @@ Describe "New-KeyVault unit tests" -Tag "Unit" {
 
         .\New-KeyVault -keyVaultName $kvname -ResourceGroupName $rgname
 
-        Assert-MockCalled Get-AzureRmKeyVault -Exactly 1 -Scope It
-        Assert-MockCalled Get-AzureRmResourceGroup -Exactly 1 -Scope It
-        Assert-MockCalled New-AzureRmKeyVault -Exactly 1 -Scope It
-        Assert-MockCalled Remove-AzureRmKeyVaultAccessPolicy -Exactly 1 -Scope It
+        Should -Invoke -CommandName Get-AzureRmKeyVault -Exactly 1 -Scope It
+        Should -Invoke -CommandName Get-AzureRmResourceGroup -Exactly 1 -Scope It
+        Should -Invoke -CommandName New-AzureRmKeyVault -Exactly 1 -Scope It
+        Should -Invoke -CommandName Remove-AzureRmKeyVaultAccessPolicy -Exactly 1 -Scope It
     }
 
     It "Should not create anything if the key vault already exist" {
@@ -27,10 +27,10 @@ Describe "New-KeyVault unit tests" -Tag "Unit" {
 
         .\New-KeyVault -keyVaultName $kvname -ResourceGroupName $rgname
 
-        Assert-MockCalled Get-AzureRmKeyVault -Exactly 1 -Scope It
-        Assert-MockCalled Get-AzureRmResourceGroup -Exactly 0 -Scope It
-        Assert-MockCalled New-AzureRmKeyVault -Exactly 0 -Scope It
-        Assert-MockCalled Remove-AzureRmKeyVaultAccessPolicy -Exactly 0 -Scope It
+        Should -Invoke -CommandName Get-AzureRmKeyVault -Exactly 1 -Scope It
+        Should -Invoke -CommandName Get-AzureRmResourceGroup -Exactly 0 -Scope It
+        Should -Invoke -CommandName New-AzureRmKeyVault -Exactly 0 -Scope It
+        Should -Invoke -CommandName Remove-AzureRmKeyVaultAccessPolicy -Exactly 0 -Scope It
     }
 
 }

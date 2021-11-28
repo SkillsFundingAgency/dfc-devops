@@ -174,22 +174,22 @@ Describe "Copy-SitefinityDatabase unit tests" -Tag "Unit" {
         }
 
         It "should get the sql server resource description" {
-            Assert-MockCalled Get-AzResource -Exactly 1 -ParameterFilter { $Name -eq "dfc-foo-sql" }
+            Should -Invoke -CommandName Get-AzResource -Exactly 1 -ParameterFilter { $Name -eq "dfc-foo-sql" }
         }
 
         It "should get the web app resource description" {
-            Assert-MockCalled Get-AzResource -Exactly 1 -ParameterFilter { $Name -eq "dfc-foo-as" }
+            Should -Invoke -CommandName Get-AzResource -Exactly 1 -ParameterFilter { $Name -eq "dfc-foo-as" }
         }
 
         It "should get the web app details" {
-            Assert-MockCalled Get-AzWebApp -Exactly 1 -ParameterFilter {
+            Should -Invoke -CommandName Get-AzWebApp -Exactly 1 -ParameterFilter {
                 $Name -eq "dfc-foo-as" -and `
                     $ResourceGroupName -eq "dfc-foo-rg"
             }
         }
 
         It "should get the existing table" {
-            Assert-MockCalled Get-AzSqlDatabase -Exactly 1 -ParameterFilter {
+            Should -Invoke -CommandName Get-AzSqlDatabase -Exactly 1 -ParameterFilter {
                 $ResourceGroupName -eq "dfc-foo-rg" -and `
                     $ServerName -eq "dfc-foo-sql" -and `
                     $DatabaseName -eq "dfc-foo-sitefinitydb"
@@ -197,7 +197,7 @@ Describe "Copy-SitefinityDatabase unit tests" -Tag "Unit" {
         }
 
         It "should look for a copy database called dfc-foo-sitefinitydb-r199" {
-            Assert-MockCalled Get-AzSqlDatabase -Exactly 1 -ParameterFilter {
+            Should -Invoke -CommandName Get-AzSqlDatabase -Exactly 1 -ParameterFilter {
                 $ResourceGroupName -eq "dfc-foo-rg" -and `
                     $ServerName -eq "dfc-foo-sql" -and `
                     $DatabaseName -eq "dfc-foo-sitefinitydb-r199"
@@ -205,7 +205,7 @@ Describe "Copy-SitefinityDatabase unit tests" -Tag "Unit" {
         }
 
         It "Should copy dfc-foo-sitefinitydb to dfc-foo-sitefinitydb-r199" {
-            Assert-MockCalled New-AzSqlDatabaseCopy -Exactly 1 -ParameterFilter {
+            Should -Invoke -CommandName New-AzSqlDatabaseCopy -Exactly 1 -ParameterFilter {
                 $ResourceGroupName -eq "dfc-foo-rg" -and `
                     $ServerName -eq "dfc-foo-sql" -and `
                     $DatabaseName -eq "dfc-foo-sitefinitydb" -and `
@@ -355,22 +355,22 @@ Describe "Copy-SitefinityDatabase unit tests" -Tag "Unit" {
 
         }
         It "should get the sql server resource description" {
-            Assert-MockCalled Get-AzResource -Exactly 1 -ParameterFilter { $Name -eq "dfc-foo-sql" }
+            Should -Invoke -CommandName Get-AzResource -Exactly 1 -ParameterFilter { $Name -eq "dfc-foo-sql" }
         }
 
         It "should get the web app resource description" {
-            Assert-MockCalled Get-AzResource -Exactly 1 -ParameterFilter { $Name -eq "dfc-foo-as" }
+            Should -Invoke -CommandName Get-AzResource -Exactly 1 -ParameterFilter { $Name -eq "dfc-foo-as" }
         }
 
         It "should get the web app details" {
-            Assert-MockCalled Get-AzWebApp -Exactly 1 -ParameterFilter {
+            Should -Invoke -CommandName Get-AzWebApp -Exactly 1 -ParameterFilter {
                 $Name -eq "dfc-foo-as" -and `
                     $ResourceGroupName -eq "dfc-foo-rg"
             }
         }
         
         It "should get the existing table" {
-            Assert-MockCalled Get-AzSqlDatabase -Exactly 1 -ParameterFilter {
+            Should -Invoke -CommandName Get-AzSqlDatabase -Exactly 1 -ParameterFilter {
                 $ResourceGroupName -eq "dfc-foo-rg" -and `
                     $ServerName -eq "dfc-foo-sql" -and `
                     $DatabaseName -eq "dfc-foo-sitefinitydb"
@@ -378,7 +378,7 @@ Describe "Copy-SitefinityDatabase unit tests" -Tag "Unit" {
         }
 
         It "should look for a copy database called dfc-foo-sitefinitydb-r123" {
-            Assert-MockCalled Get-AzSqlDatabase -Exactly 1 -ParameterFilter {
+            Should -Invoke -CommandName Get-AzSqlDatabase -Exactly 1 -ParameterFilter {
                 $ResourceGroupName -eq "dfc-foo-rg" -and `
                     $ServerName -eq "dfc-foo-sql" -and `
                     $DatabaseName -eq "dfc-foo-sitefinitydb-r123"
@@ -386,7 +386,7 @@ Describe "Copy-SitefinityDatabase unit tests" -Tag "Unit" {
         }
 
         It "Should copy dfc-foo-sitefinitydb to dfc-foo-sitefinitydb-r123" {
-            Assert-MockCalled New-AzSqlDatabaseCopy -Exactly 1 -ParameterFilter {
+            Should -Invoke -CommandName New-AzSqlDatabaseCopy -Exactly 1 -ParameterFilter {
                 $ResourceGroupName -eq "dfc-foo-rg" -and `
                     $ServerName -eq "dfc-foo-sql" -and `
                     $DatabaseName -eq "dfc-foo-sitefinitydb" -and `
@@ -476,22 +476,22 @@ Describe "Copy-SitefinityDatabase unit tests" -Tag "Unit" {
         }
 
         It "should get the sql server resource description using name only" {
-            Assert-MockCalled Get-AzResource -Exactly 1 -ParameterFilter { $Name -eq "dfc-foo-sql" }
+            Should -Invoke -CommandName Get-AzResource -Exactly 1 -ParameterFilter { $Name -eq "dfc-foo-sql" }
         }
 
         It "should get the web app resource description" {
-            Assert-MockCalled Get-AzResource -Exactly 1 -ParameterFilter { $Name -eq "dfc-foo-as" }
+            Should -Invoke -CommandName Get-AzResource -Exactly 1 -ParameterFilter { $Name -eq "dfc-foo-as" }
         }
 
         It "should get the web app details" {
-            Assert-MockCalled Get-AzWebApp -Exactly 1 -ParameterFilter {
+            Should -Invoke -CommandName Get-AzWebApp -Exactly 1 -ParameterFilter {
                 $Name -eq "dfc-foo-as" -and `
                     $ResourceGroupName -eq "dfc-foo-rg"
             }
         }
         
         It "should get the existing table" {
-            Assert-MockCalled Get-AzSqlDatabase -Exactly 1 -ParameterFilter {
+            Should -Invoke -CommandName Get-AzSqlDatabase -Exactly 1 -ParameterFilter {
                 $ResourceGroupName -eq "dfc-foo-rg" -and `
                     $ServerName -eq "dfc-foo-sql" -and `
                     $DatabaseName -eq "dfc-foo-sitefinitydb-r100"
@@ -499,7 +499,7 @@ Describe "Copy-SitefinityDatabase unit tests" -Tag "Unit" {
         }
 
         It "should look for a copy database called dfc-foo-sitefinitydb-r124" {
-            Assert-MockCalled Get-AzSqlDatabase -Exactly 1 -ParameterFilter {
+            Should -Invoke -CommandName Get-AzSqlDatabase -Exactly 1 -ParameterFilter {
                 $ResourceGroupName -eq "dfc-foo-rg" -and `
                     $ServerName -eq "dfc-foo-sql" -and `
                     $DatabaseName -eq "dfc-foo-sitefinitydb-r124"
@@ -507,7 +507,7 @@ Describe "Copy-SitefinityDatabase unit tests" -Tag "Unit" {
         }
 
         It "Should copy dfc-foo-sitefinitydb to dfc-foo-sitefinitydb-r124 in elastic pool" {
-            Assert-MockCalled New-AzSqlDatabaseCopy -Exactly 1 -ParameterFilter {
+            Should -Invoke -CommandName New-AzSqlDatabaseCopy -Exactly 1 -ParameterFilter {
                 $ResourceGroupName -eq "dfc-foo-rg" -and `
                     $ServerName -eq "dfc-foo-sql" -and `
                     $DatabaseName -eq "dfc-foo-sitefinitydb-r100" -and `
@@ -595,22 +595,22 @@ Describe "Copy-SitefinityDatabase unit tests" -Tag "Unit" {
         }
 
         It "should get the sql server resource description" {
-            Assert-MockCalled Get-AzResource -Exactly 1 -ParameterFilter { $Name -eq "dfc-foo-sql" }
+            Should -Invoke -CommandName Get-AzResource -Exactly 1 -ParameterFilter { $Name -eq "dfc-foo-sql" }
         }
 
         It "should get the web app resource description" {
-            Assert-MockCalled Get-AzResource -Exactly 1 -ParameterFilter { $Name -eq "dfc-foo-as" }
+            Should -Invoke -CommandName Get-AzResource -Exactly 1 -ParameterFilter { $Name -eq "dfc-foo-as" }
         }
 
         It "should get the web app details" {
-            Assert-MockCalled Get-AzWebApp -Exactly 1 -ParameterFilter {
+            Should -Invoke -CommandName Get-AzWebApp -Exactly 1 -ParameterFilter {
                 $Name -eq "dfc-foo-as" -and `
                     $ResourceGroupName -eq "dfc-foo-rg"
             }
         }
         
         It "should get the existing table" {
-            Assert-MockCalled Get-AzSqlDatabase -Exactly 1 -ParameterFilter {
+            Should -Invoke -CommandName Get-AzSqlDatabase -Exactly 1 -ParameterFilter {
                 $ResourceGroupName -eq "dfc-foo-rg" -and `
                     $ServerName -eq "dfc-foo-sql" -and `
                     $DatabaseName -eq "dfc-foo-sitefinitydb-r101"
@@ -618,7 +618,7 @@ Describe "Copy-SitefinityDatabase unit tests" -Tag "Unit" {
         }
 
         It "should look for a copy database called dfc-foo-sitefinitydb-r125" {
-            Assert-MockCalled Get-AzSqlDatabase -Exactly 1 -ParameterFilter {
+            Should -Invoke -CommandName Get-AzSqlDatabase -Exactly 1 -ParameterFilter {
                 $ResourceGroupName -eq "dfc-foo-rg" -and `
                     $ServerName -eq "dfc-foo-sql" -and `
                     $DatabaseName -eq "dfc-foo-sitefinitydb-r125"
@@ -626,7 +626,7 @@ Describe "Copy-SitefinityDatabase unit tests" -Tag "Unit" {
         }
 
         It "Should not copy the database" {
-            Assert-MockCalled New-AzSqlDatabaseCopy -Exactly 0
+            Should -Invoke -CommandName New-AzSqlDatabaseCopy -Exactly 0
         }
 
     }

@@ -18,7 +18,7 @@ Describe "Get-AppServiceAppSetting unit tests" -Tag "Unit" {
 
         .\Get-AppServiceAppSetting -ResourceGroupName dfc-foo-bar-rg -AppServiceName dfc-foo-bar-as -AppSetting notasetting
 
-        Assert-MockCalled Write-Error
+        Should -Invoke -CommandName Write-Error
 
     }
 

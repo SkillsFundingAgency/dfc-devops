@@ -32,10 +32,10 @@ Describe "New-DatabaseFromBlobFile unit tests" -Tag "Unit" {
     It "Should create a database" {
         .\New-DatabaseFromBlobFile @params
 
-        Assert-MockCalled New-AzureRmSqlDatabaseImport -Exactly 1 -Scope It
-        Assert-MockCalled Get-AzureRmSqlDatabaseImportExportStatus -Exactly 1 -Scope It
-        Assert-MockCalled Set-AzureRmSqlDatabase -Exactly 0 -Scope It
-        Assert-MockCalled Get-AzureRmSqlDatabase -Exactly 1 -Scope It
+        Should -Invoke -CommandName New-AzureRmSqlDatabaseImport -Exactly 1 -Scope It
+        Should -Invoke -CommandName Get-AzureRmSqlDatabaseImportExportStatus -Exactly 1 -Scope It
+        Should -Invoke -CommandName Set-AzureRmSqlDatabase -Exactly 0 -Scope It
+        Should -Invoke -CommandName Get-AzureRmSqlDatabase -Exactly 1 -Scope It
     }
 
     It "Should add database to elastic pool if one is specified" {
@@ -43,10 +43,10 @@ Describe "New-DatabaseFromBlobFile unit tests" -Tag "Unit" {
 
         .\New-DatabaseFromBlobFile @params
 
-        Assert-MockCalled New-AzureRmSqlDatabaseImport -Exactly 1 -Scope It
-        Assert-MockCalled Get-AzureRmSqlDatabaseImportExportStatus -Exactly 1 -Scope It
-        Assert-MockCalled Set-AzureRmSqlDatabase -Exactly 1 -Scope It
-        Assert-MockCalled Get-AzureRmSqlDatabase -Exactly 0 -Scope It
+        Should -Invoke -CommandName New-AzureRmSqlDatabaseImport -Exactly 1 -Scope It
+        Should -Invoke -CommandName Get-AzureRmSqlDatabaseImportExportStatus -Exactly 1 -Scope It
+        Should -Invoke -CommandName Set-AzureRmSqlDatabase -Exactly 1 -Scope It
+        Should -Invoke -CommandName Get-AzureRmSqlDatabase -Exactly 0 -Scope It
     }
 
 }

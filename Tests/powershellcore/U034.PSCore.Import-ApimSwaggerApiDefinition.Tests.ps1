@@ -40,11 +40,11 @@ Describe "Import-ApimSwaggerApiDefinition unit tests" -Tag "Unit" {
 
         .\Import-ApimSwaggerApiDefinition @ImportStdParameters
 
-        Assert-MockCalled Invoke-RestMethod -Exactly 0 -Scope It
-        Assert-MockCalled New-AzApiManagementContext -Exactly 1 -Scope It
-        Assert-MockCalled Get-AzApiManagementApi -Exactly 1 -Scope It
-        Assert-MockCalled Get-AzApiManagementApiVersionSet -Exactly 0 -Scope It
-        Assert-MockCalled Import-AzApiManagementApi -Exactly 1 -Scope It -ParameterFilter { $SpecificationUrl -eq "https://dfc-foo-bar-fa.azurewebsites.net/swagger/json" }
+        Should -Invoke -CommandName Invoke-RestMethod -Exactly 0 -Scope It
+        Should -Invoke -CommandName New-AzApiManagementContext -Exactly 1 -Scope It
+        Should -Invoke -CommandName Get-AzApiManagementApi -Exactly 1 -Scope It
+        Should -Invoke -CommandName Get-AzApiManagementApiVersionSet -Exactly 0 -Scope It
+        Should -Invoke -CommandName Import-AzApiManagementApi -Exactly 1 -Scope It -ParameterFilter { $SpecificationUrl -eq "https://dfc-foo-bar-fa.azurewebsites.net/swagger/json" }
 
     }
 
@@ -56,11 +56,11 @@ Describe "Import-ApimSwaggerApiDefinition unit tests" -Tag "Unit" {
 
         .\Import-ApimSwaggerApiDefinition @DownloadStdParameters
 
-        Assert-MockCalled Invoke-RestMethod -Exactly 1 -Scope It
-        Assert-MockCalled New-AzApiManagementContext -Exactly 1 -Scope It
-        Assert-MockCalled Get-AzApiManagementApi -Exactly 1 -Scope It
-        Assert-MockCalled Get-AzApiManagementApiVersionSet -Exactly 0 -Scope It
-        Assert-MockCalled Import-AzApiManagementApi -Exactly 1 -Scope It -ParameterFilter { $SpecificationPath }
+        Should -Invoke -CommandName Invoke-RestMethod -Exactly 1 -Scope It
+        Should -Invoke -CommandName New-AzApiManagementContext -Exactly 1 -Scope It
+        Should -Invoke -CommandName Get-AzApiManagementApi -Exactly 1 -Scope It
+        Should -Invoke -CommandName Get-AzApiManagementApiVersionSet -Exactly 0 -Scope It
+        Should -Invoke -CommandName Import-AzApiManagementApi -Exactly 1 -Scope It -ParameterFilter { $SpecificationPath }
 
     }
 
@@ -72,11 +72,11 @@ Describe "Import-ApimSwaggerApiDefinition unit tests" -Tag "Unit" {
 
         .\Import-ApimSwaggerApiDefinition @ImportVersionedParameters
 
-        Assert-MockCalled Invoke-RestMethod -Exactly 0 -Scope It
-        Assert-MockCalled New-AzApiManagementContext -Exactly 1 -Scope It
-        Assert-MockCalled Get-AzApiManagementApi -Exactly 1 -Scope It
-        Assert-MockCalled Get-AzApiManagementApiVersionSet -Exactly 1 -Scope It
-        Assert-MockCalled Import-AzApiManagementApi -Exactly 1 -Scope It -ParameterFilter { $SpecificationUrl -eq "https://dfc-foo-bar-fa.azurewebsites.net/swagger/json" -and $ApiVersion -eq "v1" }
+        Should -Invoke -CommandName Invoke-RestMethod -Exactly 0 -Scope It
+        Should -Invoke -CommandName New-AzApiManagementContext -Exactly 1 -Scope It
+        Should -Invoke -CommandName Get-AzApiManagementApi -Exactly 1 -Scope It
+        Should -Invoke -CommandName Get-AzApiManagementApiVersionSet -Exactly 1 -Scope It
+        Should -Invoke -CommandName Import-AzApiManagementApi -Exactly 1 -Scope It -ParameterFilter { $SpecificationUrl -eq "https://dfc-foo-bar-fa.azurewebsites.net/swagger/json" -and $ApiVersion -eq "v1" }
 
     }
 
@@ -97,11 +97,11 @@ Describe "Import-ApimSwaggerApiDefinition unit tests" -Tag "Unit" {
 
         .\Import-ApimSwaggerApiDefinition @DownloadVersionedParameters
 
-        Assert-MockCalled Invoke-RestMethod -Exactly 1 -Scope It
-        Assert-MockCalled New-AzApiManagementContext -Exactly 1 -Scope It
-        Assert-MockCalled Get-AzApiManagementApi -Exactly 1 -Scope It
-        Assert-MockCalled Get-AzApiManagementApiVersionSet -Exactly 1 -Scope It
-        Assert-MockCalled Import-AzApiManagementApi -Exactly 1 -Scope It
+        Should -Invoke -CommandName Invoke-RestMethod -Exactly 1 -Scope It
+        Should -Invoke -CommandName New-AzApiManagementContext -Exactly 1 -Scope It
+        Should -Invoke -CommandName Get-AzApiManagementApi -Exactly 1 -Scope It
+        Should -Invoke -CommandName Get-AzApiManagementApiVersionSet -Exactly 1 -Scope It
+        Should -Invoke -CommandName Import-AzApiManagementApi -Exactly 1 -Scope It
 
     }
 

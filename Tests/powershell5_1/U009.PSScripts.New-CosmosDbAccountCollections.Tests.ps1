@@ -116,7 +116,7 @@ Describe "New-CosmosDbAccountCollections unit tests" -Tag "Unit" {
 
         .\New-CosmosDbAccountCollections @DefaultParams
 
-        Assert-MockCalled New-CosmosDbDatabase -Exactly 1 -Scope It
+        Should -Invoke -CommandName New-CosmosDbDatabase -Exactly 1 -Scope It
 
         $DefaultParams.Remove('CosmosDbConfigurationString') # clean up
 
@@ -128,7 +128,7 @@ Describe "New-CosmosDbAccountCollections unit tests" -Tag "Unit" {
 
         .\New-CosmosDbAccountCollections @DefaultParams
 
-        Assert-MockCalled New-CosmosDbDatabase -Exactly 0 -Scope It
+        Should -Invoke -CommandName New-CosmosDbDatabase -Exactly 0 -Scope It
 
         $DefaultParams.Remove('CosmosDbConfigurationString') # clean up
 
@@ -140,7 +140,7 @@ Describe "New-CosmosDbAccountCollections unit tests" -Tag "Unit" {
 
         .\New-CosmosDbAccountCollections @DefaultParams
 
-        Assert-MockCalled New-CosmosDbCollection -Exactly 1 -Scope It
+        Should -Invoke -CommandName New-CosmosDbCollection -Exactly 1 -Scope It
 
         $DefaultParams.Remove('CosmosDbConfigurationString') # clean up
 
@@ -152,7 +152,7 @@ Describe "New-CosmosDbAccountCollections unit tests" -Tag "Unit" {
 
         .\New-CosmosDbAccountCollections @DefaultParams
 
-        Assert-MockCalled New-CosmosDbCollection -Exactly 0 -Scope It
+        Should -Invoke -CommandName New-CosmosDbCollection -Exactly 0 -Scope It
 
         $DefaultParams.Remove('CosmosDbConfigurationString') # clean up
 
@@ -164,7 +164,7 @@ Describe "New-CosmosDbAccountCollections unit tests" -Tag "Unit" {
 
         .\New-CosmosDbAccountCollections @DefaultParams
 
-        Assert-MockCalled Set-CosmosDbCollection -Exactly 0 -Scope It
+        Should -Invoke -CommandName Set-CosmosDbCollection -Exactly 0 -Scope It
 
         $DefaultParams.Remove('CosmosDbConfigurationString') # clean up
 
@@ -176,8 +176,8 @@ Describe "New-CosmosDbAccountCollections unit tests" -Tag "Unit" {
 
         $VerboseOutput = .\New-CosmosDbAccountCollections @DefaultParams -Verbose 4>&1
 
-        Assert-MockCalled Set-CosmosDbCollection -ParameterFilter { $DefaultTimeToLive -eq 10000 } -Exactly 1 -Scope It
-        Assert-MockCalled Set-CosmosDbOffer -Exactly 0 -Scope It
+        Should -Invoke -CommandName Set-CosmosDbCollection -ParameterFilter { $DefaultTimeToLive -eq 10000 } -Exactly 1 -Scope It
+        Should -Invoke -CommandName Set-CosmosDbOffer -Exactly 0 -Scope It
         ($VerboseOutput -like "Updating Time To Live (TTL) to 10000").Length | Should -Be 1
         ($VerboseOutput -like "OfferThroughput already set to 400.  Not updating.").Length | Should -Be 1
 
@@ -191,8 +191,8 @@ Describe "New-CosmosDbAccountCollections unit tests" -Tag "Unit" {
 
         $VerboseOutput = .\New-CosmosDbAccountCollections @DefaultParams -Verbose 4>&1
 
-        Assert-MockCalled Set-CosmosDbCollection -Exactly 0 -Scope It
-        Assert-MockCalled Set-CosmosDbOffer -Exactly 1 -Scope It
+        Should -Invoke -CommandName Set-CosmosDbCollection -Exactly 0 -Scope It
+        Should -Invoke -CommandName Set-CosmosDbOffer -Exactly 1 -Scope It
         ($VerboseOutput -like "Time To Live (TTL) already set to 12345.  Not updating.").Length | Should -Be 1
         ($VerboseOutput -like "OfferThroughput set to 444").Length | Should -Be 1
 

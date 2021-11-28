@@ -16,9 +16,9 @@ Describe "Set-CorsOnStorageAccount unit tests" -Tag "Unit" {
 
         .\Set-CorsOnStorageAccount -StorageAccountName $strname -StorageAccountKey $strkey -AllowedOrigins $origin
 
-        Assert-MockCalled New-AzureStorageContext -Exactly 1 -ParameterFilter { $StorageAccountName -eq $strname -and $StorageAccountKey -eq $strkey } -Scope It
-        Assert-MockCalled Get-AzureStorageCORSRule -Exactly 1
-        Assert-MockCalled Set-AzureStorageCORSRule -Exactly 1
+        Should -Invoke -CommandName New-AzureStorageContext -Exactly 1 -ParameterFilter { $StorageAccountName -eq $strname -and $StorageAccountKey -eq $strkey } -Scope It
+        Should -Invoke -CommandName Get-AzureStorageCORSRule -Exactly 1
+        Should -Invoke -CommandName Set-AzureStorageCORSRule -Exactly 1
     }
 
 }

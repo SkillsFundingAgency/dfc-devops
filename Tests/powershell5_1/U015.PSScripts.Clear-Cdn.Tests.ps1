@@ -12,7 +12,7 @@ Describe "Clear-Cdn unit tests" -Tag "Unit" {
 
         .\Clear-Cdn -ResourceGroupName dfc-foo-bar-rg -CdnName dfc-foo-bar-cdn -EndpointName dfc-foo-bar-assets
 
-        Assert-MockCalled Unpublish-AzureRmCdnEndpointContent
+        Should -Invoke -CommandName Unpublish-AzureRmCdnEndpointContent
 
     }
 
