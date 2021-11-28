@@ -50,7 +50,9 @@ Describe "ApiRequest unit tests" -Tag "Unit" {
 
         ApiRequest @RequestParams
 
-        Should -Invoke -CommandName Invoke-WebRequest -ModuleName AzureApiFunctions -Exactly 0 
+        Should -Invoke -CommandName Invoke-WebRequest -ModuleName AzureApiFunctions -Exactly 0 -ParameterFilter {
+            $Body -eq '{ "foo": "bar" }'
+        }
     }
 
     It "Check ApiRequest passes the body if added" {
@@ -60,7 +62,9 @@ Describe "ApiRequest unit tests" -Tag "Unit" {
 
         ApiRequest @RequestParams
 
-        Should -Invoke -CommandName Invoke-WebRequest -ModuleName AzureApiFunctions -Exactly 1 
+        Should -Invoke -CommandName Invoke-WebRequest -ModuleName AzureApiFunctions -Exactly 1 -ParameterFilter {
+            $Body -eq '{ "foo": "bar" }'
+        }
     }
 
 }
