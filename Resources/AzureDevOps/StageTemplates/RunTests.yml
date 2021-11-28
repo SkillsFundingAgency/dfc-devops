@@ -11,7 +11,7 @@ stages:
         RequiresAzurePowershell: true
         AzureSubscription: '${{ parameters.AzureSubscription }}'
         TestName: 'RunAcceptanceTests'
-        TestType: 'Acceptance'
+        TestType: 'ArmAcceptance'
         ResultsFileSuffix: 'Acceptance'
 
     - template: ../JobTemplates/RunIndividualTest.yml

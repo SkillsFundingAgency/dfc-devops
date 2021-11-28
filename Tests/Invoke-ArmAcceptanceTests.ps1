@@ -1,9 +1,9 @@
 <#
 .SYNOPSIS
-Test runner for code quality tests
+Test runner for ARM acceptance tests
 
 .DESCRIPTION
-Test runner for code quality tests
+Test runner for ARM acceptance tests
 
 .EXAMPLE
 Invoke-QualityTests.ps1
