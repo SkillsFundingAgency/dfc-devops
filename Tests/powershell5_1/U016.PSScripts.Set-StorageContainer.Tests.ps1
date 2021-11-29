@@ -8,18 +8,20 @@ function New-AzureStorageContainer {}
 
 Describe "Set-StorageContainer unit tests" -Tag "Unit" {
 
-    Mock Get-AzureRmStorageAccountKey { return ConvertFrom-Json '[ { "KeyName": "key", "Value": "not4RealKey==" } ]' }
-    Mock New-AzureStorageContext
-    Mock New-AzureStorageContainer
+    BeforeEach {
+        Mock Get-AzureRmStorageAccountKey { return ConvertFrom-Json '[ { "KeyName": "key", "Value": "not4RealKey==" } ]' }
+        Mock New-AzureStorageContext
+        Mock New-AzureStorageContainer
+    }
 
     It "Ensure New-AzureStorageContainer is called to create a container if it doesnt already exist" {
 
         Mock Get-AzureStorageContainer { return $null }
 
-        .\Set-StorageContainer -ResourceGroupName dfc-foo-bar-rg -StorageAccountName dfcfoobarstr -ContainerName mockcontainer
+        .\Set-StorageContainer -ResourceGroupName dfc-foobar-rg -StorageAccountName dfcfoobarstr -ContainerName mockcontainer
 
-        Assert-MockCalled Get-AzureStorageContainer -Exactly 1 -Scope It
-        Assert-MockCalled New-AzureStorageContainer -Exactly 1 -Scope It
+        Should -Invoke -CommandName Get-AzureStorageContainer -Exactly 1 -Scope It
+        Should -Invoke -CommandName New-AzureStorageContainer -Exactly 1 -Scope It
 
     }
 
@@ -27,10 +29,10 @@ Describe "Set-StorageContainer unit tests" -Tag "Unit" {
 
         Mock Get-AzureStorageContainer { return ConvertFrom-Json '{ "name": "mockcontainer" }' }
 
-        .\Set-StorageContainer -ResourceGroupName dfc-foo-bar-rg -StorageAccountName dfcfoobarstr -ContainerName mockcontainer
+        .\Set-StorageContainer -ResourceGroupName dfc-foobar-rg -StorageAccountName dfcfoobarstr -ContainerName mockcontainer
 
-        Assert-MockCalled Get-AzureStorageContainer -Exactly 1 -Scope It
-        Assert-MockCalled New-AzureStorageContainer -Exactly 0 -Scope It
+        Should -Invoke -CommandName Get-AzureStorageContainer -Exactly 1 -Scope It
+        Should -Invoke -CommandName New-AzureStorageContainer -Exactly 0 -Scope It
 
     }
 

@@ -25,10 +25,11 @@ Describe "Test-BranchFeatures" -Tag "Unit" {
             param($SourceBranch, $ShouldHaveSonarOutput)
 
             $env:Build_SourceBranchName = $SourceBranch
+            $env:Build_Reason = "SomethingElse"
 
             $output = & ./Test-BranchFeatures
 
-            $output | Should Be "##vso[task.setvariable variable=ShouldRunSonarCloud]$ShouldHaveSonarOutput"
+            $output | Should -Be "##vso[task.setvariable variable=ShouldRunSonarCloud]$ShouldHaveSonarOutput"
         }
 
         It "Should return 'True' for pull requests" {
@@ -37,7 +38,7 @@ Describe "Test-BranchFeatures" -Tag "Unit" {
 
             $output = & ./Test-BranchFeatures
 
-            $output | Should Be "##vso[task.setvariable variable=ShouldRunSonarCloud]True"
+            $output | Should -Be "##vso[task.setvariable variable=ShouldRunSonarCloud]True"
 
         }
     }

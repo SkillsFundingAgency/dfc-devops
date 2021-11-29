@@ -1,9 +1,9 @@
 <#
 .SYNOPSIS
-Test runner for code quality tests
+Test runner for ARM acceptance tests
 
 .DESCRIPTION
-Test runner for code quality tests
+Test runner for ARM acceptance tests
 
 .EXAMPLE
 Invoke-QualityTests.ps1
@@ -34,7 +34,7 @@ try {
 
 
     # Write-Host "Fetching tests:"
-    $Tests = (Get-ChildItem -Path "$($PSScriptRoot)\Quality" -Recurse | Where-Object { $_.Name -like "*.Tests.ps1" }).FullName
+    $Tests = (Get-ChildItem -Path "$($PSScriptRoot)\arm" -Recurse | Where-Object { $_.Name -like "*.Tests.ps1" }).FullName
 
     $Params = [ordered]@{
         Path = $Tests;
@@ -50,13 +50,13 @@ try {
             Verbosity = 'Detailed'
         }
         Filter     = @{
-            Tag = 'Quality'
+            Tag = 'Acceptance'
             ExcludeTag = 'DontRun'
         }
         TestResult = @{
             Enabled      = $true
             OutputFormat = "NUnitXml"
-            OutputPath   = "$PSScriptRoot\TEST-Quality.xml"
+            OutputPath   = "$PSScriptRoot\TEST-Acceptance.xml"
         }
         Should     = @{
             ErrorAction = 'Continue'

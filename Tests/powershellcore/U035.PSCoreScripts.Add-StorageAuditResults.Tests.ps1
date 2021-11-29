@@ -2,97 +2,184 @@ Push-Location -Path $PSScriptRoot\..\..\PSCoreScripts\
 
 Describe "Add-StorageAuditResults unit tests" -Tag "Unit" {
 
-    $LatestDateTimeOffset = [System.DateTimeOffset]::new("12/26/2019 11:00:00")
-    $OlderDateTimeOffset = [System.DateTimeOffset]::new("12/25/2019 09:00:00")
-
-    Mock Get-AzStorageAccount -MockWith { return @(
-        @{
-            StorageAccountName = "dfcfoosharedstr"
-            ResourceGroupName = "dfc-foo-shared-rg"
-        },
-        @{
-            StorageAccountName = "dssfoosharedstr"
-            ResourceGroupName = "dss-foo-shared-rg"
-        },
-        @{
-            StorageAccountName = "dfcbarsharedstr"
-            ResourceGroupName = "dfc-bar-shared-rg"
-        }
-    )}
-    Mock New-AzStorageContext
-    Mock Get-AzStorageContainer -MockWith { return @(
-        @{
-            Name = "foo-container"
-            LastModified = $LatestDateTimeOffset
-        },
-        @{
-            Name = "bar-container"
-            LastModified = $OlderDateTimeOffset
-        }
-    )}
-    Mock Get-AzStorageAccountKey -MockWith { return @(
-        @{
-            KeyName = "key1"
-            Value = "not-a-real-key"
-            Permissions = "full"
-        },
-        @{
-            KeyName = "key2"
-            Value = "not-a-real-key-either"
-            Permissions = "full"
-        }
-    )}
-    Mock New-AzStorageContext
-    Mock Get-AzStorageShare -MockWith { return @(
-        @{
-            Name = "foo-share"
-            Properties = @{
-                LastModified = $LatestDateTimeOffset
-            }
-            
-        },
-        @{
-            Name = "bar-share"
-            Properties = @{
-                LastModified = $OlderDateTimeOffset
-            }
-        }
-    )}
-    Mock Get-AzStorageQueue -MockWith { return @(
-        @{
-            Name = "foo-queue"
-        },
-        @{
-            Name = "bar-queue"
-        }
-    )}
-    Mock Get-AzStorageTable -MockWith { return @(
-        @{
-            Name = "foo-table"
-        },
-        @{
-            Name = "bar-table"
-        }
-    )}
-
-    $Params = @{
-        EnvironmentNames = @("foo", "bar")
-    }
-
     Context "AppendToReport parameter used and object passed in is not of type CrossEnvironmentStorageAccountAudit" {
 
-        $Params["AppendToReport"] = New-Object -TypeName Object
+
+        BeforeAll {
+            $LatestDateTimeOffset = [System.DateTimeOffset]::new("12/26/2019 11:00:00")
+            $OlderDateTimeOffset = [System.DateTimeOffset]::new("12/25/2019 09:00:00")
+
+            Mock Get-AzStorageAccount -MockWith { return @(
+                    @{
+                        StorageAccountName = "dfcfoosharedstr"
+                        ResourceGroupName  = "dfc-foo-shared-rg"
+                    },
+                    @{
+                        StorageAccountName = "dssfoosharedstr"
+                        ResourceGroupName  = "dss-foo-shared-rg"
+                    },
+                    @{
+                        StorageAccountName = "dfcbarsharedstr"
+                        ResourceGroupName  = "dfc-bar-shared-rg"
+                    }
+                ) }
+            Mock New-AzStorageContext
+            Mock Get-AzStorageContainer -MockWith { return @(
+                    @{
+                        Name         = "foo-container"
+                        LastModified = $LatestDateTimeOffset
+                    },
+                    @{
+                        Name         = "bar-container"
+                        LastModified = $OlderDateTimeOffset
+                    }
+                ) }
+            Mock Get-AzStorageAccountKey -MockWith { return @(
+                    @{
+                        KeyName     = "key1"
+                        Value       = "not-a-real-key"
+                        Permissions = "full"
+                    },
+                    @{
+                        KeyName     = "key2"
+                        Value       = "not-a-real-key-either"
+                        Permissions = "full"
+                    }
+                ) }
+            Mock New-AzStorageContext
+            Mock Get-AzStorageShare -MockWith { return @(
+                    @{
+                        Name       = "foo-share"
+                        Properties = @{
+                            LastModified = $LatestDateTimeOffset
+                        }
+            
+                    },
+                    @{
+                        Name       = "bar-share"
+                        Properties = @{
+                            LastModified = $OlderDateTimeOffset
+                        }
+                    }
+                ) }
+            Mock Get-AzStorageQueue -MockWith { return @(
+                    @{
+                        Name = "foo-queue"
+                    },
+                    @{
+                        Name = "bar-queue"
+                    }
+                ) }
+            Mock Get-AzStorageTable -MockWith { return @(
+                    @{
+                        Name = "foo-table"
+                    },
+                    @{
+                        Name = "bar-table"
+                    }
+                ) }
+
+            $Params = @{
+                EnvironmentNames = @("foo", "bar")
+            }
+        }
 
         It "should Throw an error" {
-            { .\Add-StorageAuditResults.ps1 @Params } | Should throw "Error validating input from AppendToReport parameter, a member of array is not of type [CrossEnvironmentStorageAccountAudit]"
+            $Params["AppendToReport"] = New-Object -TypeName Object
+
+            { .\Add-StorageAuditResults.ps1 @Params } | 
+            Should -Throw -ExpectedMessage 'Error validating input from AppendToReport parameter, a member of array is not of type `[CrossEnvironmentStorageAccountAudit`]*'
         }
 
     }
 
     Context "AppendToReport parameter is not used and valid environment names are used" {
 
-        $Params.Remove("AppendToReport")
 
+        BeforeAll {
+            $LatestDateTimeOffset = [System.DateTimeOffset]::new("12/26/2019 11:00:00")
+            $OlderDateTimeOffset = [System.DateTimeOffset]::new("12/25/2019 09:00:00")
+
+            Mock Get-AzStorageAccount -MockWith { return @(
+                    @{
+                        StorageAccountName = "dfcfoosharedstr"
+                        ResourceGroupName  = "dfc-foo-shared-rg"
+                    },
+                    @{
+                        StorageAccountName = "dssfoosharedstr"
+                        ResourceGroupName  = "dss-foo-shared-rg"
+                    },
+                    @{
+                        StorageAccountName = "dfcbarsharedstr"
+                        ResourceGroupName  = "dfc-bar-shared-rg"
+                    }
+                ) }
+            Mock New-AzStorageContext
+            Mock Get-AzStorageContainer -MockWith { return @(
+                    @{
+                        Name         = "foo-container"
+                        LastModified = $LatestDateTimeOffset
+                    },
+                    @{
+                        Name         = "bar-container"
+                        LastModified = $OlderDateTimeOffset
+                    }
+                ) }
+            Mock Get-AzStorageAccountKey -MockWith { return @(
+                    @{
+                        KeyName     = "key1"
+                        Value       = "not-a-real-key"
+                        Permissions = "full"
+                    },
+                    @{
+                        KeyName     = "key2"
+                        Value       = "not-a-real-key-either"
+                        Permissions = "full"
+                    }
+                ) }
+            Mock New-AzStorageContext
+            Mock Get-AzStorageShare -MockWith { return @(
+                    @{
+                        Name       = "foo-share"
+                        Properties = @{
+                            LastModified = $LatestDateTimeOffset
+                        }
+            
+                    },
+                    @{
+                        Name       = "bar-share"
+                        Properties = @{
+                            LastModified = $OlderDateTimeOffset
+                        }
+                    }
+                ) }
+            Mock Get-AzStorageQueue -MockWith { return @(
+                    @{
+                        Name = "foo-queue"
+                    },
+                    @{
+                        Name = "bar-queue"
+                    }
+                ) }
+            Mock Get-AzStorageTable -MockWith { return @(
+                    @{
+                        Name = "foo-table"
+                    },
+                    @{
+                        Name = "bar-table"
+                    }
+                ) }
+
+            $Params = @{
+                EnvironmentNames = @("foo", "bar")
+            }
+        }
+
+        BeforeEach {
+            $Params.Remove("AppendToReport")
+
+        }
+        
         It "should parse the servicename and environment segments from the storage account name if NCS naming convention is used" {
             $VerboseOutput = .\Add-StorageAuditResults.ps1 @Params -Verbose 4>&1
             $VerboseOutput | Where-Object { $_.Message -eq "ServicePrefix is dfc, Environment is foo" } | Should -Not -Be $null
@@ -140,28 +227,107 @@ Describe "Add-StorageAuditResults unit tests" -Tag "Unit" {
     
     Context "AppendToReport parameter used and object passed in is of type CrossEnvironmentStorageAccountAudit" {
 
+
+        BeforeAll {
+            $LatestDateTimeOffset = [System.DateTimeOffset]::new("12/26/2019 11:00:00")
+            $OlderDateTimeOffset = [System.DateTimeOffset]::new("12/25/2019 09:00:00")
+
+            Mock Get-AzStorageAccount -MockWith { return @(
+                    @{
+                        StorageAccountName = "dfcfoosharedstr"
+                        ResourceGroupName  = "dfc-foo-shared-rg"
+                    },
+                    @{
+                        StorageAccountName = "dssfoosharedstr"
+                        ResourceGroupName  = "dss-foo-shared-rg"
+                    },
+                    @{
+                        StorageAccountName = "dfcbarsharedstr"
+                        ResourceGroupName  = "dfc-bar-shared-rg"
+                    }
+                ) }
+            Mock New-AzStorageContext
+            Mock Get-AzStorageContainer -MockWith { return @(
+                    @{
+                        Name         = "foo-container"
+                        LastModified = $LatestDateTimeOffset
+                    },
+                    @{
+                        Name         = "bar-container"
+                        LastModified = $OlderDateTimeOffset
+                    }
+                ) }
+            Mock Get-AzStorageAccountKey -MockWith { return @(
+                    @{
+                        KeyName     = "key1"
+                        Value       = "not-a-real-key"
+                        Permissions = "full"
+                    },
+                    @{
+                        KeyName     = "key2"
+                        Value       = "not-a-real-key-either"
+                        Permissions = "full"
+                    }
+                ) }
+            Mock New-AzStorageContext
+            Mock Get-AzStorageShare -MockWith { return @(
+                    @{
+                        Name       = "foo-share"
+                        Properties = @{
+                            LastModified = $LatestDateTimeOffset
+                        }
+            
+                    },
+                    @{
+                        Name       = "bar-share"
+                        Properties = @{
+                            LastModified = $OlderDateTimeOffset
+                        }
+                    }
+                ) }
+            Mock Get-AzStorageQueue -MockWith { return @(
+                    @{
+                        Name = "foo-queue"
+                    },
+                    @{
+                        Name = "bar-queue"
+                    }
+                ) }
+            Mock Get-AzStorageTable -MockWith { return @(
+                    @{
+                        Name = "foo-table"
+                    },
+                    @{
+                        Name = "bar-table"
+                    }
+                ) }
+
+            $Params = @{
+                EnvironmentNames = @("foo", "bar")
+            }
+        }
         It "should append output to AppendToReport object" {
             $Params.Remove("AppendToReport")
             $FirstTenant = .\Add-StorageAuditResults.ps1 @Params
 
             Mock Get-AzStorageAccount -MockWith { return @(
-                @{
-                    StorageAccountName = "dfcwoosharedstr"
-                    ResourceGroupName = "dfc-woo-shared-rg"
-                },
-                @{
-                    StorageAccountName = "dsswoosharedstr"
-                    ResourceGroupName = "dss-woo-shared-rg"
-                },
-                @{
-                    StorageAccountName = "dfcgarsharedstr"
-                    ResourceGroupName = "dfc-gar-shared-rg"
-                }
-            )}
+                    @{
+                        StorageAccountName = "dfcwoosharedstr"
+                        ResourceGroupName  = "dfc-woo-shared-rg"
+                    },
+                    @{
+                        StorageAccountName = "dsswoosharedstr"
+                        ResourceGroupName  = "dss-woo-shared-rg"
+                    },
+                    @{
+                        StorageAccountName = "dfcgarsharedstr"
+                        ResourceGroupName  = "dfc-gar-shared-rg"
+                    }
+                ) }
 
             $Params = @{
                 EnvironmentNames = @("woo", "gar")
-                AppendToReport = $FirstTenant
+                AppendToReport   = $FirstTenant
             }
 
             $SecondTenant = .\Add-StorageAuditResults.ps1 @Params
@@ -174,27 +340,111 @@ Describe "Add-StorageAuditResults unit tests" -Tag "Unit" {
 
     Context "Running in a subscription with multiple services using ServicePrefixes parameter" {
 
-        $Params.Remove("AppendToReport")
-        $Params["ServicePrefixes"] = @("dfc", "dss")
 
-        Mock Get-AzStorageAccount -MockWith { return @(
-            @{
-                StorageAccountName = "dfcfoosharedstr"
-                ResourceGroupName = "dfc-foo-shared-rg"
-            },
-            @{
-                StorageAccountName = "dssfoosharedstr"
-                ResourceGroupName = "dss-foo-shared-rg"
-            },
-            @{
-                StorageAccountName = "dfcbarsharedstr"
-                ResourceGroupName = "dfc-bar-shared-rg"
-            },
-            @{
-                StorageAccountName = "dasbarsharedstr"
-                ResourceGroupName = "das-bar-shared-rg"
+        BeforeAll {
+            $LatestDateTimeOffset = [System.DateTimeOffset]::new("12/26/2019 11:00:00")
+            $OlderDateTimeOffset = [System.DateTimeOffset]::new("12/25/2019 09:00:00")
+
+            Mock Get-AzStorageAccount -MockWith { return @(
+                    @{
+                        StorageAccountName = "dfcfoosharedstr"
+                        ResourceGroupName  = "dfc-foo-shared-rg"
+                    },
+                    @{
+                        StorageAccountName = "dssfoosharedstr"
+                        ResourceGroupName  = "dss-foo-shared-rg"
+                    },
+                    @{
+                        StorageAccountName = "dfcbarsharedstr"
+                        ResourceGroupName  = "dfc-bar-shared-rg"
+                    }
+                ) }
+            Mock New-AzStorageContext
+            Mock Get-AzStorageContainer -MockWith { return @(
+                    @{
+                        Name         = "foo-container"
+                        LastModified = $LatestDateTimeOffset
+                    },
+                    @{
+                        Name         = "bar-container"
+                        LastModified = $OlderDateTimeOffset
+                    }
+                ) }
+            Mock Get-AzStorageAccountKey -MockWith { return @(
+                    @{
+                        KeyName     = "key1"
+                        Value       = "not-a-real-key"
+                        Permissions = "full"
+                    },
+                    @{
+                        KeyName     = "key2"
+                        Value       = "not-a-real-key-either"
+                        Permissions = "full"
+                    }
+                ) }
+            Mock New-AzStorageContext
+            Mock Get-AzStorageShare -MockWith { return @(
+                    @{
+                        Name       = "foo-share"
+                        Properties = @{
+                            LastModified = $LatestDateTimeOffset
+                        }
+            
+                    },
+                    @{
+                        Name       = "bar-share"
+                        Properties = @{
+                            LastModified = $OlderDateTimeOffset
+                        }
+                    }
+                ) }
+            Mock Get-AzStorageQueue -MockWith { return @(
+                    @{
+                        Name = "foo-queue"
+                    },
+                    @{
+                        Name = "bar-queue"
+                    }
+                ) }
+            Mock Get-AzStorageTable -MockWith { return @(
+                    @{
+                        Name = "foo-table"
+                    },
+                    @{
+                        Name = "bar-table"
+                    }
+                ) }
+
+            $Params = @{
+                EnvironmentNames = @("foo", "bar")
             }
-        )}
+        }
+
+        BeforeEach {
+            $Params.Remove("AppendToReport")
+            $Params["ServicePrefixes"] = @("dfc", "dss")
+
+            Mock Get-AzStorageAccount -MockWith { return @(
+                    @{
+                        StorageAccountName = "dfcfoosharedstr"
+                        ResourceGroupName  = "dfc-foo-shared-rg"
+                    },
+                    @{
+                        StorageAccountName = "dssfoosharedstr"
+                        ResourceGroupName  = "dss-foo-shared-rg"
+                    },
+                    @{
+                        StorageAccountName = "dfcbarsharedstr"
+                        ResourceGroupName  = "dfc-bar-shared-rg"
+                    },
+                    @{
+                        StorageAccountName = "dasbarsharedstr"
+                        ResourceGroupName  = "das-bar-shared-rg"
+                    }
+                ) 
+            }
+
+        }
 
         It "should only return results where the Storage Account Name starts with the values passed in using ServicePrefixes" {
             $Output = .\Add-StorageAuditResults.ps1 @Params

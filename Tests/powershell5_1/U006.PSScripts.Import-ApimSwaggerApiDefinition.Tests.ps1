@@ -24,15 +24,15 @@ Describe "Import-ApimSwaggerApiDefinition unit tests" -Tag "Unit" {
 
         .\Import-ApimSwaggerApiDefinition @CmdletParameters
 
-        Assert-MockCalled Invoke-RestMethod -Exactly 0 -Scope It
-        Assert-MockCalled Set-Content -Exactly 0 -Scope It
-        Assert-MockCalled Get-AzureRmApiManagementApi -Exactly 1 -Scope It
-        Assert-MockCalled Import-AzureRmApiManagementApi -Exactly 1 -Scope It
+        Should -Invoke -CommandName Invoke-RestMethod -Exactly 0 -Scope It
+        Should -Invoke -CommandName Set-Content -Exactly 0 -Scope It
+        Should -Invoke -CommandName Get-AzureRmApiManagementApi -Exactly 1 -Scope It
+        Should -Invoke -CommandName Import-AzureRmApiManagementApi -Exactly 1 -Scope It
 
     }
 
     # Unable to test Az cmdlets alongside AzureRm.  After ZDT deployments are implemented across all projects this script will no longer require the AzureRm code blocks
-    It "Should run with AZ cmdlets if a URL is supplied and UseAzModule is set to `$true but not create a file" -Skip {
+    It "Should run with AZ cmdlets if a URL is supplied and UseAzModule is set to `$true but not create a file" -Tag "DontRun" {
 
         Mock Invoke-RestMethod
         Mock Set-Content
@@ -54,10 +54,10 @@ Describe "Import-ApimSwaggerApiDefinition unit tests" -Tag "Unit" {
 
         .\Import-ApimSwaggerApiDefinition @CmdletParameters
 
-        Assert-MockCalled Invoke-RestMethod -Exactly 0 -Scope It
-        Assert-MockCalled Set-Content -Exactly 0 -Scope It
-        Assert-MockCalled Get-AzApiManagementApi -Exactly 1 -Scope It
-        Assert-MockCalled Import-AzApiManagementApi -Exactly 1 -Scope It
+        Should -Invoke -CommandName Invoke-RestMethod -Exactly 0 -Scope It
+        Should -Invoke -CommandName Set-Content -Exactly 0 -Scope It
+        Should -Invoke -CommandName Get-AzApiManagementApi -Exactly 1 -Scope It
+        Should -Invoke -CommandName Import-AzApiManagementApi -Exactly 1 -Scope It
 
     }
 
