@@ -9,8 +9,6 @@ param(
     [Parameter(Mandatory=$true)]
     [string]$CosmosKey,
     [Parameter(Mandatory=$true)]
-    ##[string]$StorageKey,
-    ##[Parameter(Mandatory=$false)]
     [string]$CosmosAccountNameTarget,
     [Parameter(Mandatory=$false)]
     [string]$DatabaseTarget,
@@ -23,7 +21,6 @@ param(
 foreach ($collection in $Collections) {
     Write-Verbose -Message "Backing up collection $collection"
 
-  ##  $parameters = "/s:DocumentDB /s.ConnectionString:AccountEndpoint=https://$CosmosAccountName.documents.azure.com:443/;AccountKey=$CosmosKey;Database=$Database /s.Collection:$Collection /t:JsonFile /t.File:blobs://$StorageKey@$($ContainerUrl.Replace('https://', ''))/$([DateTime]::Now.ToString("yyyy-MM-dd_HHmm"))-$Collection-backup.json"
     $parameters = "/s:DocumentDB /s.ConnectionString:AccountEndpoint=https://$CosmosAccountName.documents.azure.com:443/;AccountKey=$CosmosKey;Database=$Database /s.Collection:$Collection /t:DocumentDBTarget /t.ConnectionString:AccountEndpoint=https://$CosmosAccountNameTarget.documents.azure.com:443/;AccountKey=$CosmosKeyTarget;Database=$DatabaseTarget /t.Collection:$Collection"
 
     Write-Verbose -Message "Parameters: $parameters"
