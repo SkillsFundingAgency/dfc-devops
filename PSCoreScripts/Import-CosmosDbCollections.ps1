@@ -54,6 +54,8 @@ param(
     [string]$DataMigrationToolLocation = 'C:\Program Files (x86)\AzureCosmosDBDataMigrationTool\dt.exe'
 )
 
+Write-Verbose -Message "Number of collections: $($Collections.Count)"
+
 foreach ($collection in $Collections.GetEnumerator()) {
     Write-Verbose -Message "Backing up collection $collection"
 
@@ -61,5 +63,6 @@ foreach ($collection in $Collections.GetEnumerator()) {
     Write-Verbose -Message "Parameters: $parameters"
     $cmd = $DataMigrationToolLocation
     $params = $parameters.Split(" ")
+    
     & $cmd $params
 }
