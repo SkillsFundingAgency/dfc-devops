@@ -59,7 +59,7 @@ Write-Verbose -Message "Number of collections: $($Collections.Count)"
 foreach ($collection in $Collections.GetEnumerator()) {
     Write-Verbose -Message "Backing up collection $collection"
 
-    $parameters = "/s:JsonFile /s.Files:blobs://$StorageKey@$($ContainerUrl.Replace('https://', ''))/$($collection.Value)-$($collection.Key)-backup.json /t:DocumentDB /t.PartitionKey:/PartitionKey /t.ConnectionString:AccountEndpoint=https://$CosmosAccountName.documents.azure.com:443/;AccountKey=$CosmosKey;Database=$Database /t.Collection:$($Collection.Key) /t.IdField:id /t.CollectionThroughput:2500" 
+    $parameters = "/s:JsonFile /s.Files:blobs://$StorageKey@$($ContainerUrl.Replace('https://', ''))/$($collection.Value)-$($collection.Key)-backup.json /t:DocumentDB /t.PartitionKey:/PartitionKey /t.ConnectionString:AccountEndpoint=https://$CosmosAccountName.documents.azure.com:443/;AccountKey=$CosmosKey;Database=$Database /t.Collection:$($Collection.Key) /t.IdField:id /t.ParallelRequests:5 /t.ConnectionMode:Gateway" 
     Write-Verbose -Message "Parameters: $parameters"
     $cmd = $DataMigrationToolLocation
     $params = $parameters.Split(" ")
