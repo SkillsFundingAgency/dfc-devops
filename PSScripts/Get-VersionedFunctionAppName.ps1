@@ -75,7 +75,7 @@ function Get-FunctionVersionFromBranch {
     if($BranchName -iin @("dev", "master"))  {
         $branchVersion = "v1"
     } else {
-        if($BranchName -match '^(?:(v[0-9]+)-)?(?:master|dev)(?:-(v[0-9]+))?$') {
+        if($BranchName -match '^(?:(v[0-9]+)-)?(?:master|dev|dotnet6)(?:-(v[0-9]+))?$') {
             if($null -ne $Matches[1]) {
                 $branchVersion = $Matches[1]
             } else {
