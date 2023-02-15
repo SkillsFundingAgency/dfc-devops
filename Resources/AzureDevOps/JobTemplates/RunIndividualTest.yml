@@ -22,7 +22,6 @@ jobs:
   - ${{ if eq(parameters.RequiresAzurePowershell, true) }}:
     - task: AzurePowerShell@3
       displayName: 'AzurePowershell: Invoke-${{ parameters.TestType }}Tests.ps1'
-      continueOnError: true
       inputs:
         azureSubscription: '${{ parameters.AzureSubscription }}'
         ScriptPath: '$(System.DefaultWorkingDirectory)/Tests/Invoke-${{ parameters.TestType }}Tests.ps1'
@@ -55,6 +54,7 @@ jobs:
 
     - task: PowerShell@2
       displayName: 'PowerShell Script: Out-TestResults'
+      continueOnError: true
       inputs:
         targetType: filePath
         filePath: '$(System.DefaultWorkingDirectory)/Tests/Out-TestAndCodeCoverageResults.ps1'
