@@ -27,7 +27,7 @@ steps:
    displayName: 'Build solution ${{ parameters.SolutionBaseName }}.sln'
    inputs:
      solution: '${{ parameters.SolutionBaseName }}.sln'
-     vsVersion: 15.0
+     vsVersion: 17.0
      msbuildArgs: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:PackageLocation="$(build.artifactstagingdirectory)\DeploymentPackages\\" /p:VersionPrefix="$(GitVersion.MajorMinorPatch)"'
      platform: '${{ parameters.BuildPlatform }}'
      configuration: '${{ parameters.BuildConfiguration }}'
