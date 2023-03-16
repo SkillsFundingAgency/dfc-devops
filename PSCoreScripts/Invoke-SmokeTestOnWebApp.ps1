@@ -114,8 +114,10 @@ do {
     if(-not $wasSuccessful) {
         if($attemptCount -ge $AttemptsBeforeFailure) {
             if (-not $rebooted) {
-                Restart-AzureRmWebApp -Name $AppName -ResourceGroupName $ResourceGroup
+                Write-Verbose "Initial smoke tests failed restart web app"
+                Restart-AzWebApp -Name $AppName -ResourceGroupName $ResourceGroup
                 $rebooted = $true
+                Write-Verbose "Resetting attemptCount to 0 after restart"
                 $attemptCount = 0
             } else {
                 throw "Smoke test exhausted all retry attempts and is still not responding"
