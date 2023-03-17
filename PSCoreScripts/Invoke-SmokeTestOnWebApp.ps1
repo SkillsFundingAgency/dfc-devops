@@ -119,6 +119,8 @@ do {
                 $rebooted = $true
                 Write-Verbose "Resetting attemptCount to 0 after restart"
                 $attemptCount = 0
+                Start-Sleep "Sleeping for 60 secs post restart"
+                Start-Sleep -Seconds 60
             } else {
                 throw "Smoke test exhausted all retry attempts and is still not responding"
             }
