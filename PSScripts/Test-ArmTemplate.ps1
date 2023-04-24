@@ -44,6 +44,7 @@ $Result = Test-AzureRmResourceGroupDeployment @DeploymentParameters
 if ($Result.Count -gt 0) {
 
     $Result
+    $Result.Details
     throw "Template is invalid"
 
 }
