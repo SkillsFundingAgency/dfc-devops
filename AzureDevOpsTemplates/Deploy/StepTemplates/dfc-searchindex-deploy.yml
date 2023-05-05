@@ -1,7 +1,7 @@
 parameters:
   AzureSubscription: ''
   IndexFile: ''
-  ScriptPath: 'PSScripts/Set-SearchIndexes.ps1@dfc-devops'
+  ScriptPath: '$(Agent.BuildDirectory)/s/dfc-devops/PSScripts/Set-SearchIndexes.ps1'
   SearchName: ''
   SearchResourceGroupName: ''
   Location: 'West Europe'
