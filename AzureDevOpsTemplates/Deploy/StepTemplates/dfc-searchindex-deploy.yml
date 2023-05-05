@@ -1,0 +1,17 @@
+parameters:
+  AzureSubscription: ''
+  IndexFile: ''
+  ScriptPath: 'PSScripts/Set-SearchIndexes.ps1'
+  SearchName: ''
+  SearchResourceGroupName: ''
+  Location: 'West Europe'
+
+steps:
+- task: AzurePowerShell@3
+  displayName: 'Create Search Indexes'
+  condition: and(succeeded(), ne(variables.IndexFile, ''))
+  inputs:
+    AzureSubscription: '${{ parameters.AzureSubscription }}'
+    ScriptPath: '${{ parameters.ScriptPath }}'
+    ScriptArguments: '-SearchName ${{ parameters.SearchName }} -ResourceGroupName ${{ parameters.SearchResourceGroupName }} -IndexFilePath "${{ parameters.IndexFile }}"'
+    azurePowerShellVersion: LatestVersion
