@@ -1,7 +1,7 @@
 parameters:
   AzureSubscription: ''
   IndexFile: ''
-  CreateIndexScriptPath: '$(System.DefaultWorkingDirectory)\Set-SearchIndexes.ps1'
+  CreateIndexScriptPath: '$(Build.SourcesDirectory)\PSScripts\Set-SearchIndexes.ps1'
   SearchName: ''
   SearchResourceGroupName: ''
   Location: 'West Europe'
