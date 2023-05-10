@@ -1,28 +1,10 @@
 parameters:
   AzureSubscription: ''
   IndexFile: ''
-  CreateIndexScriptUrl: https://raw.githubusercontent.com/SkillsFundingAgency/dfc-devops/master/PSScripts/Set-SearchIndexes.ps1
   CreateIndexScriptPath: '$(System.DefaultWorkingDirectory)\Set-SearchIndexes.ps1'
-  AzureModuleUrl: https://raw.githubusercontent.com/SkillsFundingAgency/dfc-devops/master/PSModules/AzureApiFunctions.psm1
-  AzureModulePath: '$(System.DefaultWorkingDirectory)\..\PSModules\AzureApiFunctions.psm1'
   SearchName: ''
   SearchResourceGroupName: ''
   Location: 'West Europe'
-
-steps:
-- task: PowerShell@2
-  name: DownloadCreateIndexScript
-  displayName: 'Download Index Creation script'
-  inputs:
-    targetType: 'inline'
-    script: Invoke-WebRequest -Uri ${{ parameters.CreateIndexScriptUrl }} -OutFile ${{ parameters.CreateIndexScriptPath }}
-
-- task: PowerShell@2
-  name: DownloadAzureApiModule
-  displayName: 'Download Azure API Modules'
-  inputs:
-    targetType: 'inline'
-    script: Invoke-WebRequest -Uri ${{ parameters.AzureModuleUrl }} -OutFile ${{ parameters.AzureModulePath }}
 
 - task: AzurePowerShell@3
   displayName: 'Create Search Indexes'
