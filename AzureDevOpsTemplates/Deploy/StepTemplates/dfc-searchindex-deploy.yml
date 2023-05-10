@@ -6,6 +6,7 @@ parameters:
   SearchResourceGroupName: ''
   Location: 'West Europe'
 
+steps:
 - task: AzurePowerShell@3
   displayName: 'Create Search Indexes'
   condition: and(succeeded(), ne(variables.IndexFile, ''))
