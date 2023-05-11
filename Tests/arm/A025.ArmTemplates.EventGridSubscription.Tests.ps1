@@ -1,25 +1,32 @@
-# common variables
-$ResourceGroupName = "dfc-test-template-rg"
-$TemplateFile = "$PSScriptRoot\..\..\ArmTemplates\eventgrid-subscription.json"
-
 Describe "Event Grid Subscription Tests" -Tag "Acceptance" {
-  
+
+  BeforeAll {
+
+    # common variables
+    $ResourceGroupName = "dfc-test-template-rg"
+    $TemplateFile = "$PSScriptRoot\..\..\ArmTemplates\eventgrid-subscription.json"
+
+  }
   Context "When an Event Grid Subscription is deployed" {
-    $TemplateParameters = @{
-        eventgridTopicName = "dfc-foo-bar-egt"
+
+    BeforeAll {
+
+      $TemplateParameters = @{
+        eventgridTopicName        = "dfc-foo-bar-egt"
         eventgridSubscriptionName = "dfc-foo-bar-egs"
-        eventGridSubscriptionUrl = "https://foo.bar"
-    }
+        eventGridSubscriptionUrl  = "https://foo.bar"
+      }
 
-    $TestTemplateParams = @{
-      ResourceGroupName       = $ResourceGroupName
-      TemplateFile            = $TemplateFile
-      TemplateParameterObject = $TemplateParameters
-    }
+      $TestTemplateParams = @{
+        ResourceGroupName       = $ResourceGroupName
+        TemplateFile            = $TemplateFile
+        TemplateParameterObject = $TemplateParameters
+      }
 
-    $output = Test-AzureRmResourceGroupDeployment @TestTemplateParams
+    }
   
     It "Should be deployed successfully" {
+      $output = Test-AzureRmResourceGroupDeployment @TestTemplateParams
       $output | Should -Be $null
     }
   }

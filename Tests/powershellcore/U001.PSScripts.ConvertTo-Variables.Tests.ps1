@@ -7,7 +7,7 @@ Describe "ConvertTo-VSTSVariables unit tests" -Tag "Unit" {
         $expected = @('Creating VSTS variable foo', '##vso[task.setvariable variable=foo]bar')
 
         $output = .\ConvertTo-VSTSVariables -ARMOutput $armout
-        $output | Should be $expected
+        $output | Should -Be $expected
     }
 
     It "Should return a securestring correctly" {
@@ -16,7 +16,7 @@ Describe "ConvertTo-VSTSVariables unit tests" -Tag "Unit" {
             	'##vso[task.setvariable variable=foo;issecret=true]bar')
 
         $output = .\ConvertTo-VSTSVariables -ARMOutput $armout
-        $output | Should be $expected
+        $output | Should -Be $expected
     }
 
     It "Should change the variable name correctly" {
@@ -25,7 +25,7 @@ Describe "ConvertTo-VSTSVariables unit tests" -Tag "Unit" {
             	'##vso[task.setvariable variable=fu]bar')
 
         $output = .\ConvertTo-VSTSVariables -ARMOutput $armout -rename @{foo="fu"}
-        $output | Should be $expected
+        $output | Should -Be $expected
     }
 
 }

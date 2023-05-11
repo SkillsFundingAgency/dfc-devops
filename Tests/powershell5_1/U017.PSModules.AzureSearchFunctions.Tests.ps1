@@ -4,27 +4,35 @@ Import-Module ..\PSModules\AzureApiFunctions
 
 Describe "ApiRequest unit tests" -Tag "Unit" {
 
-    Mock -ModuleName AzureApiFunctions Invoke-WebRequest { 
-        return @{
-            StatusCode = 200
-            Content    = '{ "result": "Success" }'
+    BeforeAll {
+        Mock -ModuleName AzureApiFunctions Invoke-WebRequest { 
+            return @{
+                StatusCode = 200
+                Content    = '{ "result": "Success" }'
+            }
+        }
+
+        $RequestParams = @{ 
+            Method = 'GET'
+            Url    = "https://api.mydomain.com/endpoint"
+            ApiKey = "Mock123"
         }
     }
 
-    $RequestParams = @{ 
-        Method = 'GET'
-        Url    = "https://api.mydomain.com/endpoint"
-        ApiKey = "Mock123"
-    }
-
-    It "Check ApiRequest passes the Content-Type abd api-key headers" {
+    It "Check ApiRequest passes the Content-Type" {
 
         ApiRequest @RequestParams
 
-        Assert-MockCalled -ModuleName AzureApiFunctions Invoke-WebRequest -ParameterFilter {
+        Should -Invoke -CommandName Invoke-WebRequest -ModuleName AzureApiFunctions -ParameterFilter {
             $Headers['Content-Type'] -eq "application/json"
         }
-        Assert-MockCalled -ModuleName AzureApiFunctions Invoke-WebRequest -ParameterFilter {
+
+    }
+    It "Check ApiRequest passes the api-key headers" {
+
+        ApiRequest @RequestParams
+
+        Should -Invoke -CommandName  Invoke-WebRequest -ModuleName AzureApiFunctions -ParameterFilter {
             $Headers['api-key'] -eq "Mock123"
         }
 
@@ -34,16 +42,19 @@ Describe "ApiRequest unit tests" -Tag "Unit" {
 
         $result = ApiRequest @RequestParams
 
-        $result.result | Should Be "Success"
+        $result.result | Should -Be "Success"
 
     }
 
     It "Check ApiRequest does not pass the body in if not body specified" {
 
+        $bodypayload = '{ "foo": "bar" }'
+        $JsonBody = $bodypayload | ConvertTo-Json -Depth 10
+
         ApiRequest @RequestParams
 
-        Assert-MockCalled -ModuleName AzureApiFunctions Invoke-WebRequest -Exactly 0 -ParameterFilter {
-            $Body
+        Should -Invoke -CommandName Invoke-WebRequest -ModuleName AzureApiFunctions -Exactly 0 -ParameterFilter {
+            $Body -eq $JsonBody
         }
     }
 
@@ -51,12 +62,14 @@ Describe "ApiRequest unit tests" -Tag "Unit" {
 
         $bodypayload = '{ "foo": "bar" }'
         $RequestParams['Body'] = $bodypayload
+        $JsonBody = $bodypayload | ConvertTo-Json -Depth 10
 
         ApiRequest @RequestParams
 
-        Assert-MockCalled -ModuleName AzureApiFunctions Invoke-WebRequest -ParameterFilter {
-            $Body
+        Should -Invoke -CommandName Invoke-WebRequest -ModuleName AzureApiFunctions -Exactly 1 -ParameterFilter {
+            $Body -eq $JsonBody
         }
     }
 
 }
+

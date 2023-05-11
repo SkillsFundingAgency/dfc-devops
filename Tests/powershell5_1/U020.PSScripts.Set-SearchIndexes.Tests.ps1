@@ -7,22 +7,23 @@ function Invoke-AzureRmResourceAction {}
 
 Describe "Set-SearchIndexes unit tests" -Tag "Unit" {
 
-    Mock Get-AzureRmResource {
-        return @{
-            ResourceId = "12345678-1234"
+    BeforeEach {
+        Mock Get-AzureRmResource {
+            return @{
+                ResourceId = "12345678-1234"
+            }
         }
-    }
 
-    Mock Invoke-AzureRmResourceAction {
-        return @{
-            PrimaryKey = "12345678=="
+        Mock Invoke-AzureRmResourceAction {
+            return @{
+                PrimaryKey = "12345678=="
+            }
         }
-    }
 
-    Mock ApiRequest -ParameterFilter { $Method -eq 'POST' }
-    Mock ApiRequest -ParameterFilter { $Method -eq 'PUT' }
+        Mock ApiRequest -ParameterFilter { $Method -eq 'POST' }
+        Mock ApiRequest -ParameterFilter { $Method -eq 'PUT' }
 
-    $SampleIndexDetails = @'
+        $SampleIndexDetails = @'
 [ {
     "name" : "mock",
     "fields": [
@@ -32,9 +33,10 @@ Describe "Set-SearchIndexes unit tests" -Tag "Unit" {
 } ]
 '@
 
-    $DefaultParams = @{ 
-        SearchName        = 'mock'
-        ResourceGroupName = "dfc-foo-bar-rg"
+        $DefaultParams = @{ 
+            SearchName        = 'mock'
+            ResourceGroupName = "dfc-foo-bar-rg"
+        }
     }
 
     # This test will write to the error stream
@@ -42,15 +44,16 @@ Describe "Set-SearchIndexes unit tests" -Tag "Unit" {
 
         $DefaultParams['IndexConfigurationString'] = '{ "invalid: "json" }' # missing quote after invalid
 
-        { .\Set-SearchIndexes @DefaultParams } | Should Throw
+        { .\Set-SearchIndexes @DefaultParams } | Should -Throw
 
         $DefaultParams.Remove('IndexConfigurationString') # clean up
     }
 
-    # Pass in a valid JSON for the rest of the tests
-    $DefaultParams['IndexConfigurationString'] = $SampleIndexDetails
 
     It "Ensure Set-SearchIndexes only calls ApiReqest once (GET only) if datasource exists and has not changed" {
+
+        # Pass in a valid JSON for the rest of the tests
+        $DefaultParams['IndexConfigurationString'] = $SampleIndexDetails
 
         # GET will return the datasource if it exists
         Mock ApiRequest -ParameterFilter { $Method -eq 'GET' } -MockWith {
@@ -59,15 +62,18 @@ Describe "Set-SearchIndexes unit tests" -Tag "Unit" {
         
         .\Set-SearchIndexes @DefaultParams
 
-        Assert-MockCalled Get-AzureRmResource -Scope It -Exactly 1
-        Assert-MockCalled Invoke-AzureRmResourceAction -Scope It -Exactly 1
-        Assert-MockCalled ApiRequest -Scope It -ParameterFilter { $Method -eq 'GET' } -Exactly 1
-        Assert-MockCalled ApiRequest -Scope It -ParameterFilter { $Method -eq 'POST' } -Exactly 0
-        Assert-MockCalled ApiRequest -Scope It -ParameterFilter { $Method -eq 'PUT' } -Exactly 0
+        Should -Invoke -CommandName Get-AzureRmResource -Scope It -Exactly 1
+        Should -Invoke -CommandName Invoke-AzureRmResourceAction -Scope It -Exactly 1
+        Should -Invoke -CommandName ApiRequest -Scope It -ParameterFilter { $Method -eq 'GET' } -Exactly 1
+        Should -Invoke -CommandName ApiRequest -Scope It -ParameterFilter { $Method -eq 'POST' } -Exactly 0
+        Should -Invoke -CommandName ApiRequest -Scope It -ParameterFilter { $Method -eq 'PUT' } -Exactly 0
 
     }
 
     It "Ensure Set-SearchIndexes calls ApiReqest twice (1x GET, 1x POST) if datasource does not exist" {
+
+        # Pass in a valid JSON for the rest of the tests
+        $DefaultParams['IndexConfigurationString'] = $SampleIndexDetails
 
         # GET will throw a 404 if not found
         Mock ApiRequest -ParameterFilter { $Method -eq 'GET' } -MockWith {
@@ -76,15 +82,18 @@ Describe "Set-SearchIndexes unit tests" -Tag "Unit" {
         
         .\Set-SearchIndexes @DefaultParams
 
-        Assert-MockCalled Get-AzureRmResource -Scope It -Exactly 1
-        Assert-MockCalled Invoke-AzureRmResourceAction -Scope It -Exactly 1
-        Assert-MockCalled ApiRequest -Scope It -ParameterFilter { $Method -eq 'GET' } -Exactly 1
-        Assert-MockCalled ApiRequest -Scope It -ParameterFilter { $Method -eq 'POST' } -Exactly 1
-        Assert-MockCalled ApiRequest -Scope It -ParameterFilter { $Method -eq 'PUT' } -Exactly 0
+        Should -Invoke -CommandName Get-AzureRmResource -Scope It -Exactly 1
+        Should -Invoke -CommandName Invoke-AzureRmResourceAction -Scope It -Exactly 1
+        Should -Invoke -CommandName ApiRequest -Scope It -ParameterFilter { $Method -eq 'GET' } -Exactly 1
+        Should -Invoke -CommandName ApiRequest -Scope It -ParameterFilter { $Method -eq 'POST' } -Exactly 1
+        Should -Invoke -CommandName ApiRequest -Scope It -ParameterFilter { $Method -eq 'PUT' } -Exactly 0
 
     }
 
     It "Ensure Set-SearchIndexes posts the update if additional fields are added to the index" {
+
+        # Pass in a valid JSON for the rest of the tests
+        $DefaultParams['IndexConfigurationString'] = $SampleIndexDetails
 
         # GET will return the sample index if it exists
         Mock ApiRequest -ParameterFilter { $Method -eq 'GET' } -MockWith {
@@ -105,23 +114,27 @@ Describe "Set-SearchIndexes unit tests" -Tag "Unit" {
         $DefaultParams['IndexConfigurationString'] = $ModifiedIndexDetails
         .\Set-SearchIndexes @DefaultParams
 
-        Assert-MockCalled Get-AzureRmResource -Scope It -Exactly 1
-        Assert-MockCalled Invoke-AzureRmResourceAction -Scope It -Exactly 1
-        Assert-MockCalled ApiRequest -Scope It -ParameterFilter { $Method -eq 'GET' } -Exactly 1
-        Assert-MockCalled ApiRequest -Scope It -ParameterFilter { $Method -eq 'POST' } -Exactly 0
-        Assert-MockCalled ApiRequest -Scope It -ParameterFilter { $Method -eq 'PUT' } -Exactly 1
+        Should -Invoke -CommandName Get-AzureRmResource -Scope It -Exactly 1
+        Should -Invoke -CommandName Invoke-AzureRmResourceAction -Scope It -Exactly 1
+        Should -Invoke -CommandName ApiRequest -Scope It -ParameterFilter { $Method -eq 'GET' } -Exactly 1
+        Should -Invoke -CommandName ApiRequest -Scope It -ParameterFilter { $Method -eq 'POST' } -Exactly 0
+        Should -Invoke -CommandName ApiRequest -Scope It -ParameterFilter { $Method -eq 'PUT' } -Exactly 1
 
         # clean up
         $DefaultParams['IndexConfigurationString'] = $SampleIndexDetails
 
     }
-    
-    # Change default params to read from file
-    $DefaultParams.Remove('IndexConfigurationString') # clean up
-    $DefaultParams['IndexFilePath'] = "$TestDrive\Mock.json"
+
     
     It "Ensure Set-SearchIndexes can read the JSON from a file" {
 
+        # Pass in a valid JSON for the rest of the tests
+        $DefaultParams['IndexConfigurationString'] = $SampleIndexDetails
+
+        # Change default params to read from file
+        $DefaultParams.Remove('IndexConfigurationString') # clean up
+        $DefaultParams['IndexFilePath'] = "$TestDrive\Mock.json"
+            
         Set-Content -Path $DefaultParams.IndexFilePath -Value $SampleIndexDetails
 
         # GET will throw a 404 if not found
@@ -131,10 +144,10 @@ Describe "Set-SearchIndexes unit tests" -Tag "Unit" {
                 
         .\Set-SearchIndexes @DefaultParams
         
-        Assert-MockCalled Get-AzureRmResource -Scope It -Exactly 1
-        Assert-MockCalled Invoke-AzureRmResourceAction -Scope It -Exactly 1
-        Assert-MockCalled ApiRequest -Scope It -ParameterFilter { $Method -eq 'GET' } -Exactly 1
-        Assert-MockCalled ApiRequest -Scope It -ParameterFilter { $Method -eq 'POST' } -Exactly 1
+        Should -Invoke -CommandName Get-AzureRmResource -Scope It -Exactly 1
+        Should -Invoke -CommandName Invoke-AzureRmResourceAction -Scope It -Exactly 1
+        Should -Invoke -CommandName ApiRequest -Scope It -ParameterFilter { $Method -eq 'GET' } -Exactly 1
+        Should -Invoke -CommandName ApiRequest -Scope It -ParameterFilter { $Method -eq 'POST' } -Exactly 1
         
     }
 

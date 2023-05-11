@@ -5,9 +5,11 @@ function Get-AzureRmWebApp {}
 
 Describe "Get-AppServiceAppSetting unit tests" -Tag "Unit" {
 
-    Mock Get-AzureRmWebApp {
-        $mockapp = '{ "SiteConfig": { "AppSettings": [ { "name": "foo", "value": "bar"}, { "name": "this", "value": "that" } ] } }'
-        return ConvertFrom-Json $mockapp
+    BeforeAll {
+        Mock Get-AzureRmWebApp {
+            $mockapp = '{ "SiteConfig": { "AppSettings": [ { "name": "foo", "value": "bar"}, { "name": "this", "value": "that" } ] } }'
+            return ConvertFrom-Json $mockapp
+        }
     }
 
     It "Should error app setting does not exist" {
@@ -16,7 +18,7 @@ Describe "Get-AppServiceAppSetting unit tests" -Tag "Unit" {
 
         .\Get-AppServiceAppSetting -ResourceGroupName dfc-foo-bar-rg -AppServiceName dfc-foo-bar-as -AppSetting notasetting
 
-        Assert-MockCalled Write-Error
+        Should -Invoke -CommandName Write-Error
 
     }
 
@@ -26,7 +28,7 @@ Describe "Get-AppServiceAppSetting unit tests" -Tag "Unit" {
 
         $output = .\Get-AppServiceAppSetting -ResourceGroupName dfc-foo-bar-rg -AppServiceName dfc-foo-bar-as -AppSetting foo
 
-        $output | Should be $expected
+        $output | Should -Be $expected
 
     }
 

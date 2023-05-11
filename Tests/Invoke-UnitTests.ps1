@@ -21,39 +21,91 @@ Invoke-UnitTests.ps1
 [CmdletBinding()]
 param ()
 
+try {
+    $pesterModule = Get-Module -Name Pester -ListAvailable | Where-Object { $_.Version -like '5.*' }
+    if (!$pesterModule) {
+        try {
+            Write-Host "Installing Pester"
+            Install-Module -Name Pester -Force -SkipPublisherCheck -MinimumVersion "5.0.0"
+            Write-Host "Getting Pester version"
+            $pesterModule = Get-Module -Name Pester -ListAvailable | Where-Object { $_.Version -like '5.*' }
+        }
+        catch {
+            Write-Error "Failed to install the Pester module."
+        }
+    }
 
-$pathToTests = "$PSScriptRoot\powershell5_1"
-$pathToScripts = "$PSScriptRoot\..\PSScripts\*.ps1"
-$powerShellEdition = "powershell"
+    $pesterModule | Import-Module
 
-if($PSVersionTable.PSVersion.Major -gt 5) {
-    $pathToTests = "$PSScriptRoot\powershellcore"
-    $pathToScripts = "$PSScriptRoot\..\PSCoreScripts\*.ps1"
-    $powerShellEdition = "pwsh"
 
-    # Powershell Core 6 wipes this, losing the path to all modules...
-    $env:PSModulePath = "C:\Program Files\PowerShell\Modules;c:\program files\powershell\6\Modules;C:\windows\system32\WindowsPowerShell\v1.0\Modules;C:\Modules\az_2.6.0"
+
+    $pathToTests = "$PSScriptRoot\powershell5_1"
+    $pathToScripts = "$PSScriptRoot\..\PSScripts\*.ps1"
+    $powerShellEdition = "powershell"
+
+    if ($PSVersionTable.PSVersion.Major -gt 5) {
+        $pathToTests = "$PSScriptRoot\powershellcore"
+        $pathToScripts = "$PSScriptRoot\..\PSCoreScripts\*.ps1"
+        $powerShellEdition = "pwsh"
+
+        # Powershell Core 6 wipes this, losing the path to all modules...
+        $env:PSModulePath = "C:\Program Files\PowerShell\Modules;c:\program files\powershell\6\Modules;C:\windows\system32\WindowsPowerShell\v1.0\Modules;C:\Modules\az_2.6.0"
+    }
+
+
+    $fullPathToScripts = Resolve-Path -Path $pathToScripts
+
+    $testResult = "$PSScriptRoot\TEST-$powerShellEdition.xml"
+    $codeCoverageResult = "$PSScriptRoot\CODECOVERAGE-$powerShellEdition.xml"
+
+
+
+    # Write-Host "Fetching tests:"
+    $Tests = (Get-ChildItem -Path "$pathToTests" -Recurse | Where-Object { $_.Name -like "*.Tests.ps1" }).FullName
+
+    $Params = [ordered]@{
+        Path = $Tests;
+    }
+
+    $Container = New-PesterContainer @Params
+
+    $Configuration = [PesterConfiguration]@{
+        Run        = @{
+            Container = $Container
+        }
+        Output     = @{
+            Verbosity = 'Detailed'
+        }
+        Filter     = @{
+            Tag = 'Unit'
+            ExcludeTag = 'DontRun'
+        }
+        TestResult = @{
+            Enabled      = $true
+            OutputFormat = "NUnitXml"
+            OutputPath   = $testResult
+        }
+        Should     = @{
+            ErrorAction = 'Continue'
+        }
+        CodeCoverage = @{
+            Enabled = $true
+            Path         = $fullPathToScripts
+            OutputFormat = "JaCoCo"
+            OutputPath   =  $codeCoverageResult
+        }
+    }
+
+    # Invoke tests
+    $Result = Invoke-Pester -Configuration $Configuration
+
+    # report failures
+    if ($Result.FailedCount -gt 0) { 
+        throw "{0} tests did not pass" -f $Result.FailedCount
+    }
 }
-
-
-$fullPathToScripts = Resolve-Path -Path $pathToScripts
-
-$testResult = "$PSScriptRoot\TEST-$powerShellEdition.xml"
-$codeCoverageResult = "$PSScriptRoot\CODECOVERAGE-$powerShellEdition.xml"
-
-$TestParameters = @{
-    OutputFormat = 'NUnitXml'
-    OutputFile   = $testResult
-    Script       = $pathToTests
-    PassThru     = $True
-    CodeCoverage = $fullPathToScripts
-    CodeCoverageOutputFile = $codeCoverageResult
-}
-
-# Invoke tests
-$Result = Invoke-Pester @TestParameters
-
-# report failures
-if ($Result.FailedCount -ne 0) { 
-    Write-Error "Pester returned $($result.FailedCount) errors"
+catch {
+    $msg = $_
+    Write-Error -ErrorRecord $msg
+    exit 1
 }

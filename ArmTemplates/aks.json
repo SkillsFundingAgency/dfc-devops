@@ -26,12 +26,6 @@
         "serviceCidr": {
             "type": "string"
         },
-        "servicePrincipalClientId": {
-            "type": "string"
-        },
-        "servicePrincipalSecret": {
-            "type": "securestring"
-        },
         "subnetName": {
             "type": "string",
             "metadata": {
@@ -190,8 +184,7 @@
                 "nodeResourceGroup": "[parameters('nodeResourceGroup')]",
                 "enableRBAC": true,
                 "servicePrincipalProfile": {
-                    "clientId": "[parameters('servicePrincipalClientId')]",
-                    "secret": "[parameters('servicePrincipalSecret')]"
+                    "clientId": "msi"
                 },
                 "aadProfile": {
                     "managed": true,
