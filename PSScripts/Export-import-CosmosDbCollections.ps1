@@ -21,7 +21,7 @@ param(
 foreach ($collection in $Collections) {
     Write-Verbose -Message "Backing up collection $collection"
 
-    $parameters = "/s:DocumentDB /s.ConnectionString:AccountEndpoint=https://$CosmosAccountName.documents.azure.com:443/;AccountKey=$CosmosKey;Database=$Database /s.Collection:$Collection /t:DocumentDBTarget /t.ConnectionString:AccountEndpoint=https://$CosmosAccountNameTarget.documents.azure.com:443/;AccountKey=$CosmosKeyTarget;Database=$DatabaseTarget /t.Collection:$Collection"
+    $parameters = "/s:DocumentDB /s.ConnectionString:AccountEndpoint=https://$CosmosAccountName.documents.azure.com:443/;AccountKey=$CosmosKey;Database=$Database /s.Collection:$Collection /t:DocumentDB /t.ConnectionString:AccountEndpoint=https://$CosmosAccountNameTarget.documents.azure.com:443/;AccountKey=$CosmosKeyTarget;Database=$DatabaseTarget /t.Collection:$Collection"
 
     Write-Verbose -Message "Parameters: $parameters"
     $cmd = $DataMigrationToolLocation
