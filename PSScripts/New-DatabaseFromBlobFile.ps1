@@ -59,9 +59,9 @@ param (
     [Parameter(Mandatory = $true)]
     [string] $StorageAccountKey,
     [Parameter(Mandatory = $false)]
-    [string] $DatabaseTier = "S2",
+    [string] $DatabaseTier = "S3",
     [Parameter(Mandatory = $false)]
-    [Long] $DatabaseMaxSize = 25000000,
+    [Long] $DatabaseMaxSizeBytes = 268435456000,
     [Parameter(Mandatory = $false)]
     [string] $ElasticPool
 )
@@ -79,25 +79,25 @@ $DatabaseImportParams = @{
     AdministratorLoginPassword = $SecureAdminPassword
     Edition                    = "Standard"
     ServiceObjectiveName       = $DatabaseTier
-    DatabaseMaxSizeBytes       = $DatabaseMaxSize
+    DatabaseMaxSizeBytes       = $DatabaseMaxSizeBytes
 }
-$Database = New-AzureRmSqlDatabaseImport @DatabaseImportParams
+$Database = New-AzSqlDatabaseImport @DatabaseImportParams
 
 $RestoreInProgress = $true
 
 While ($RestoreInProgress) {
     # Wait until restore has completed
     Start-Sleep 30
-    $DatabaseStatus = Get-AzureRmSqlDatabaseImportExportStatus -OperationStatusLink $Database.OperationStatusLink -ErrorAction SilentlyContinue
+    $DatabaseStatus = Get-AzSqlDatabaseImportExportStatus -OperationStatusLink $Database.OperationStatusLink
     Write-Output "$($DatabaseStatus.Status): $($DatabaseStatus.StatusMessage)"
     $RestoreInProgress = $DatabaseStatus.Status -ne "Succeeded"
 }
 
 if ($ElasticPool) {
     # If an elastic pool has been specified, move db into pool
-    Set-AzureRmSqlDatabase -ResourceGroupName $ResourceGroupName -ServerName $SQLServerName -DatabaseName $SQLDatabase -ElasticPoolName $ElasticPool
+    Set-AzSqlDatabase -ResourceGroupName $ResourceGroupName -ServerName $SQLServerName -DatabaseName $SQLDatabase -ElasticPoolName $ElasticPool
 }
 else {
     # display the database info
-    Get-AzureRmSqlDatabase -ResourceGroupName $ResourceGroupName -ServerName $SQLServerName -DatabaseName $SQLDatabase
+    Get-AzSqlDatabase -ResourceGroupName $ResourceGroupName -ServerName $SQLServerName -DatabaseName $SQLDatabase
 }
