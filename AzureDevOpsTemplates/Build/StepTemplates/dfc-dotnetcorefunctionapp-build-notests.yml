@@ -20,6 +20,8 @@ steps:
    displayName: 'NuGet restore ${{ parameters.SolutionBaseName }}.sln'
    inputs:
      restoreSolution: '${{ parameters.SolutionBaseName }}.sln'
+     feedsToUse: 'select'
+     vstsFeed: 'NationalCareersService'
 
  - task: DotNetCoreCLI@2
    displayName: 'dotnet build'

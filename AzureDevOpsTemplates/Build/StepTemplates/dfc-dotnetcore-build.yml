@@ -25,6 +25,14 @@ steps:
      configFilePath: ${{ parameters.GitVersionConfigFilePath }}
      versionSpec: '5.3.x'
 
+ - task: DotNetCoreCLI@2
+   displayName: 'restore nuget packages'
+   inputs:
+     command: 'restore'
+     projects: '**\*.csproj'
+     feedsToUse: 'select'
+     vstsFeed: 'NationalCareersService'
+
  # tasks to package a function app
  - task: DotNetCoreCLI@2
    displayName: 'Build - dotnet build application ${{ parameters.SolutionBaseName }}'

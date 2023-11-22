@@ -22,6 +22,8 @@ steps:
    displayName: 'NuGet restore ${{ parameters.SolutionBaseName }}.sln'
    inputs:
      restoreSolution: '${{ parameters.SolutionBaseName }}.sln'
+     feedsToUse: 'select'
+     vstsFeed: 'NationalCareersService'
 
  - task: VSBuild@1
    displayName: 'Build solution ${{ parameters.SolutionBaseName }}.sln'
