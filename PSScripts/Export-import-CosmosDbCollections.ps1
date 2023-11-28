@@ -1,4 +1,40 @@
-﻿[CmdletBinding()]
+﻿<#
+
+.SYNOPSIS
+Copies a number of collections from one cosmos account to another.
+
+.DESCRIPTION
+Copies a number of collections from one cosmos account to another.
+
+.PARAMETER CosmosAccountName
+The name of the source cosmos account
+
+.PARAMETER Database
+The name of the database containing collections to transfer from the source cosmos account
+
+.PARAMETER Collections
+The name of the collection to transfer from the source cosmos account
+
+.PARAMETER CosmosKey
+The account key of the source comsos account
+
+.PARAMETER CosmosAccountNameTarget
+The name of the target cosmos account
+
+.PARAMETER DatabaseTarget
+The name of the database to transfer the source collcetion to
+
+.PARAMETER CosmosKeyTarget
+The account key of the destination comsos account
+
+.PARAMETER DataMigrationToolLocation
+The location of the Microsoft Azure Cosmos Data Migration tool (defaults to C:\Program Files (x86)\AzureCosmosDBDataMigrationTool\dt.exe)
+
+.EXAMPLE
+./Export-import-CosmosDbColletions -Parameters @param
+#>
+
+[CmdletBinding()]
 param(
     [Parameter(Mandatory=$true)]
     [string]$CosmosAccountName,
