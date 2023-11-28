@@ -15,16 +15,16 @@ Describe "New-DatabaseFromBlobFile unit tests" -Tag "Unit" {
         }
 
         # solves CommandNotFoundException
-        function New-AzureRmSqlDatabaseImport {}
-        function Get-AzureRmSqlDatabaseImportExportStatus {}
-        function Set-AzureRmSqlDatabase {}
-        function Get-AzureRmSqlDatabase {}
+        function New-AzSqlDatabaseImport {}
+        function Get-AzSqlDatabaseImportExportStatus {}
+        function Set-AzSqlDatabase {}
+        function Get-AzSqlDatabase {}
 
 
-        Mock New-AzureRmSqlDatabaseImport { return ConvertFrom-Json '{ "OperationStatusLink": "https://management.azure.com/subscriptions/blah/guid?apiversion=1-2-3" }' }
-        Mock Get-AzureRmSqlDatabaseImportExportStatus { return ConvertFrom-Json '{ "Status": "Succeeded", "StatusMessage": "" }' }
-        Mock Set-AzureRmSqlDatabase
-        Mock Get-AzureRmSqlDatabase
+        Mock New-AzSqlDatabaseImport { return ConvertFrom-Json '{ "OperationStatusLink": "https://management.azure.com/subscriptions/blah/guid?apiversion=1-2-3" }' }
+        Mock Get-AzSqlDatabaseImportExportStatus { return ConvertFrom-Json '{ "Status": "Succeeded", "StatusMessage": "" }' }
+        Mock Set-AzSqlDatabase
+        Mock Get-AzSqlDatabase
 
 
 
@@ -32,10 +32,10 @@ Describe "New-DatabaseFromBlobFile unit tests" -Tag "Unit" {
     It "Should create a database" {
         .\New-DatabaseFromBlobFile @params
 
-        Should -Invoke -CommandName New-AzureRmSqlDatabaseImport -Exactly 1 -Scope It
-        Should -Invoke -CommandName Get-AzureRmSqlDatabaseImportExportStatus -Exactly 1 -Scope It
-        Should -Invoke -CommandName Set-AzureRmSqlDatabase -Exactly 0 -Scope It
-        Should -Invoke -CommandName Get-AzureRmSqlDatabase -Exactly 1 -Scope It
+        Should -Invoke -CommandName New-AzSqlDatabaseImport -Exactly 1 -Scope It
+        Should -Invoke -CommandName Get-AzSqlDatabaseImportExportStatus -Exactly 1 -Scope It
+        Should -Invoke -CommandName Set-AzSqlDatabase -Exactly 0 -Scope It
+        Should -Invoke -CommandName Get-AzSqlDatabase -Exactly 1 -Scope It
     }
 
     It "Should add database to elastic pool if one is specified" {
@@ -43,10 +43,10 @@ Describe "New-DatabaseFromBlobFile unit tests" -Tag "Unit" {
 
         .\New-DatabaseFromBlobFile @params
 
-        Should -Invoke -CommandName New-AzureRmSqlDatabaseImport -Exactly 1 -Scope It
-        Should -Invoke -CommandName Get-AzureRmSqlDatabaseImportExportStatus -Exactly 1 -Scope It
-        Should -Invoke -CommandName Set-AzureRmSqlDatabase -Exactly 1 -Scope It
-        Should -Invoke -CommandName Get-AzureRmSqlDatabase -Exactly 0 -Scope It
+        Should -Invoke -CommandName New-AzSqlDatabaseImport -Exactly 1 -Scope It
+        Should -Invoke -CommandName Get-AzSqlDatabaseImportExportStatus -Exactly 1 -Scope It
+        Should -Invoke -CommandName Set-AzSqlDatabase -Exactly 1 -Scope It
+        Should -Invoke -CommandName Get-AzSqlDatabase -Exactly 0 -Scope It
     }
 
 }
