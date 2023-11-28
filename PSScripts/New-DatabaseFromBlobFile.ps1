@@ -28,10 +28,10 @@ Url to bacpac file in the storage account
 Storage account key to access storage url
 
 .PARAMETER DatabaseTier
-Optional - sets the database tier to use. Defaults to an S2 if not specified.
+Optional - sets the database tier to use. Defaults to an S3 if not specified.
 
-.PARAMETER DatabaseMaxSize
-Optional - the max size the databse can grow to (in bytes). Defaults to 25000000 if not specified.
+.PARAMETER DatabaseMaxSizeBytes
+Optional - the max size the databse can grow to (in bytes). Defaults to 268435456000 if not specified.
 
 .PARAMETER ElasticPool
 Optional - moves the database into the elastic pool if specified

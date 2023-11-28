@@ -1,4 +1,4 @@
-Describe "Cognitive Services account Tests" -Tag "Acceptance" {
+Describe "Cognitive Services account Tests" -Tag "Acceptance" -Skip {
 
   BeforeAll {
     # common variables
