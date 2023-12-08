@@ -53,12 +53,12 @@ $Tags = @{
 }
 
 Write-Verbose -Message "Attempting to retrieve existing resource group $ResourceGroupName"
-$ResourceGroup = Get-AzureRmResourceGroup -Name $ResourceGroupName -ErrorAction SilentlyContinue
+$ResourceGroup = Get-AzResourceGroup -Name $ResourceGroupName -ErrorAction SilentlyContinue
 
 if(!$ResourceGroup) {
 
     Write-Verbose -Message "Resource group $ResourceGroupName doesn't exist, creating resource group"
-    New-AzureRmResourceGroup -Name $ResourceGroupName -Location $Location -Tag $Tags
+    New-AzResourceGroup -Name $ResourceGroupName -Location $Location -Tag $Tags
 
 }
 else {
@@ -107,8 +107,9 @@ else {
 
         Write-Host "Replacing existing tags:"
         $UpdatedTags
-        Set-AzureRmResourceGroup -Name $ResourceGroup.ResourceGroupName -Tag $UpdatedTags
+        Set-AzResourceGroup -Name $ResourceGroup.ResourceGroupName -Tag $UpdatedTags
 
     }
 
 }
+

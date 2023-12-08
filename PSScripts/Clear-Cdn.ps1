@@ -38,3 +38,4 @@ param (
 
 Write-Verbose "Purging $EndpointName of all content from $Path"
 Unpublish-AzureRmCdnEndpointContent -ResourceGroupName $ResourceGroupName -ProfileName $CdnName -EndpointName $EndpointName -PurgeContent $Path
+

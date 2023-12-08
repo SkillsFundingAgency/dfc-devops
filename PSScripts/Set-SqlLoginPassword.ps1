@@ -61,7 +61,7 @@ $DatabaseOffline = $true
 
 while ($DatabaseOffline) {
     Write-Verbose "Check $CheckLoopNumber to see if $SQLDatabase is online"
-    $ExistingDatabaseDetails = Get-AzureRmSqlDatabase -DatabaseName $SQLDatabase -ServerName $SQLServerName -ResourceGroupName $ResourceGroupName -ErrorAction SilentlyContinue
+    $ExistingDatabaseDetails = Get-AzSqlDatabase -DatabaseName $SQLDatabase -ServerName $SQLServerName -ResourceGroupName $ResourceGroupName -ErrorAction SilentlyContinue
 
     if ($ExistingDatabaseDetails) {
         # When status in Online, set $DatabaseOffline to false
@@ -80,7 +80,7 @@ while ($DatabaseOffline) {
     }
 }
 
-$SqlServerDetails = Get-AzureRmSqlServer -ServerName $SQLServerName -ResourceGroupName $ResourceGroupName
+$SqlServerDetails = Get-AzSqlServer -ServerName $SQLServerName -ResourceGroupName $ResourceGroupName
 
 # Common SQL parameters
 $SQLParams = @{
@@ -105,3 +105,4 @@ if ($UserScript) {
         Write-Error "Unable to find SQL script $UserScript"
     }
 }
+

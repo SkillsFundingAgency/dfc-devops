@@ -54,12 +54,12 @@ catch {
 }
 
 $SearchParams = @{
-    ResourceType      = "Microsoft.Search/searchServices"
+    ResourceType      = "http://Microsoft.Search/searchServices"
     ResourceGroupName = $ResourceGroupName
     ResourceName      = $SearchName
     ApiVersion        = '2015-08-19'
 }
-$SearchResource = Get-AzureRmResource @SearchParams
+$SearchResource = Get-AzResource @SearchParams
 
 $Url = "https://$($SearchResource.name).search.windows.net/datasources"
 
@@ -69,7 +69,7 @@ $SearchParams = @{
     ApiVersion = '2015-08-19'
     Force      = $true
 }
-$SearchResourceKeys = Invoke-AzureRmResourceAction @SearchParams
+$SearchResourceKeys = Invoke-AzResourceAction @SearchParams
 
 foreach ($DataSource in $DataSourceConfiguration) {
     try {
@@ -83,3 +83,4 @@ foreach ($DataSource in $DataSourceConfiguration) {
         continue
     }
 }
+

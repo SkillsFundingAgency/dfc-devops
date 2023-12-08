@@ -58,17 +58,17 @@ function New-Password{
 	}
 }
 
-$Context = Get-AzureRmContext
-$AzureDevOpsServicePrincipal = Get-AzureRmADServicePrincipal -ApplicationId $Context.Account.Id
+$Context = Get-AzContext
+$AzureDevOpsServicePrincipal = Get-AzADServicePrincipal -ApplicationId $Context.Account.Id
 
-$AdServicePrincipal = Get-AzureRmADServicePrincipal -SearchString $AppRegistrationName
+$AdServicePrincipal = Get-AzADServicePrincipal -DisplayNameBeginsWith $AppRegistrationName
 if(!$AdServicePrincipal) {
 
     if ($AddSecret) {
 
         $Password = New-Password -Length 24
         $SecurePassword = $Password | ConvertTo-SecureString -AsPlainText -Force
-        $KeyVault = Get-AzureRmKeyVault -VaultName $KeyVaultName
+        $KeyVault = Get-AzKeyVault -VaultName $KeyVaultName
         if (!$KeyVault) {
 
             throw "KeyVault $KeyVaultName doesn't exist, nowhere to store secret"
@@ -89,7 +89,7 @@ if(!$AdServicePrincipal) {
         try {
 
             Write-Verbose "Registering service principal ..."
-            $AdServicePrincipal = New-AzureRmADServicePrincipal -DisplayName $AppRegistrationName -Password $SecurePassword -EndDate $([DateTime]::new(2299, 12, 31)) -ErrorAction Stop -SkipAssignment
+            $AdServicePrincipal = New-AzADServicePrincipal -DisplayName $AppRegistrationName -Password $SecurePassword -EndDate $([DateTime]::new(2299, 12, 31)) -ErrorAction Stop -SkipAssignment
 
         }
         catch {
@@ -99,14 +99,14 @@ if(!$AdServicePrincipal) {
         }
 
         Write-Verbose "Adding ServicePrincipal secret to KeyVault $($KeyVault.VaultName)"
-        $Secret = Set-AzureKeyVaultSecret -Name $AppRegistrationName -SecretValue $SecurePassword -VaultName $KeyVault.VaultName
+        $Secret = Set-AzKeyVaultSecret -Name $AppRegistrationName -SecretValue $SecurePassword -VaultName $KeyVault.VaultName
         $Secret.Id
 
     }
     else {
 
         Write-Verbose "Registering service principal ..."
-        $AdServicePrincipal = New-AzureRmADServicePrincipal -DisplayName $AppRegistrationName -SkipAssignment
+        $AdServicePrincipal = New-AzADServicePrincipal -DisplayName $AppRegistrationName -SkipAssignment
 
     }
 

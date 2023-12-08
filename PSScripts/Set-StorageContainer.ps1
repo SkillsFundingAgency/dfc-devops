@@ -31,12 +31,12 @@ param (
     [string] $ContainerName
 )
 
-$AccountKeys = Get-AzureRmStorageAccountKey -ResourceGroupName $ResourceGroupName -name $StorageAccountName
-$StorageContext = New-AzureStorageContext -StorageAccountName $StorageAccountName -StorageAccountKey $AccountKeys[0].Value
+$AccountKeys = Get-AzStorageAccountKey -ResourceGroupName $ResourceGroupName -name $StorageAccountName
+$StorageContext = New-AzStorageContext -StorageAccountName $StorageAccountName -StorageAccountKey $AccountKeys[0].Value
 
-$StorageContainer = Get-AzureStorageContainer -Name $ContainerName -Context $StorageContext -ErrorAction SilentlyContinue
+$StorageContainer = Get-AzStorageContainer -Name $ContainerName -Context $StorageContext -ErrorAction SilentlyContinue
 if ($null -eq $StorageContainer) {
     # create storage container
     Write-Output "Creating container $ContainerName"
-    New-AzureStorageContainer -Name $ContainerName -Context $StorageContext
+    New-AzStorageContainer -Name $ContainerName -Context $StorageContext
 }

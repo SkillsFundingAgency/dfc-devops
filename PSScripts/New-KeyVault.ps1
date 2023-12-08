@@ -22,22 +22,23 @@ param(
     [string] $ResourceGroupName
 )
 
-$ExistingKeyVault = Get-AzureRmKeyVault $KeyVaultName -ResourceGroupName $ResourceGroupName
+$ExistingKeyVault = Get-AzKeyVault $KeyVaultName -ResourceGroupName $ResourceGroupName
 
 if ($ExistingKeyVault) {
     Write-Host "Key vault $KeyVaultName already exists"
 }
 else {
     Write-Host "Creating key vault $KeyVaultName"
-    $ResourceGroup = Get-AzureRmResourceGroup -Name $ResourceGroupName
+    $ResourceGroup = Get-AzResourceGroup -Name $ResourceGroupName
 
     $AzureRmVersion = Get-Module AzureRM -ListAvailable | Sort-Object { $_.Version.Major } -Descending | Select-Object -First 1
     if ($AzureRmVersion.Version.Major -gt 5) {
-        $NewKeyVault   = New-AzureRmKeyVault -Name $KeyVaultName -ResourceGroupName $ResourceGroup.ResourceGroupName -Location $ResourceGroup.Location
+        $NewKeyVault   = New-AzKeyVault -Name $KeyVaultName -ResourceGroupName $ResourceGroup.ResourceGroupName -Location $ResourceGroup.Location
     }
     else {
-        $NewKeyVault   = New-AzureRmKeyVault -VaultName $KeyVaultName -ResourceGroupName $ResourceGroup.ResourceGroupName -Location $ResourceGroup.Location
+        $NewKeyVault   = New-AzKeyVault -Name $KeyVaultName -ResourceGroupName $ResourceGroup.ResourceGroupName -Location $ResourceGroup.Location
     }
 
-    Remove-AzureRmKeyVaultAccessPolicy -VaultName $NewKeyVault.VaultName -ObjectId $NewKeyVault.AccessPolicies[0].ObjectId
+    Remove-AzKeyVaultAccessPolicy -VaultName $NewKeyVault.VaultName -ObjectId $NewKeyVault.AccessPolicies[0].ObjectId
 }
+

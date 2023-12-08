@@ -98,15 +98,15 @@ function New-RequireResourceAccessObject {
     return $RequiredResourceAccess
 }
 
-$Context = Get-AzureRmContext
+$Context = Get-AzContext
 #force context to grab a token for graph
-$AzureDevOpsServicePrincipal = Get-AzureRmADServicePrincipal -ApplicationId $Context.Account.Id
+$AzureDevOpsServicePrincipal = Get-AzADServicePrincipal -ApplicationId $Context.Account.Id
 Write-Verbose "Connected to AzureRm Context Tenant $($Context.Tenant.Id) with Account $($AzureDevOpsServicePrincipal.DisplayName) & Account.Type $($Context.Account.Type), connecting to AzureAD ..."
 
 $Cache = $Context.TokenCache
 $CacheItems = $Cache.ReadItems()
 
-$Token = ($CacheItems | Where-Object { $_.Resource -eq "https://graph.windows.net/" })
+$Token = ($CacheItems | Where-Object { $_.Resource -eq "https://graph.windows.net" })
 if ($Token.ExpiresOn -le [System.DateTime]::UtcNow) {
 
     $AuthContext = [Microsoft.IdentityModel.Clients.ActiveDirectory.AuthenticationContext]::new("$($Context.Environment.ActiveDirectoryAuthority)$($Context.Tenant.Id)",$Token)
@@ -131,7 +131,8 @@ $RequiredResourceAccessObject = New-RequireResourceAccessObject -TargetServicePr
 $RequiredResourcesAccessList.Add($RequiredResourceAccessObject)
 
 Write-Verbose "Getting App Registration ..."
-$AdApplication = Get-AzureRmADApplication -DisplayName $AppRegistrationDisplayName
+$AdApplication = Get-AzADApplication -DisplayName $AppRegistrationDisplayName
 Write-Verbose "Adding permissions to AD Application $($AdApplication.DisplayName)"
 Set-AzureAdApplication -ObjectId $AdApplication.ObjectId -RequiredResourceAccess $RequiredResourcesAccessList
 Write-Warning -Message "If not already approved, permission grants need to be approved in the Azure Portal via Azure Active Directory > App registrations > $($AdApplication.DisplayName) > API Permissions > Grant admin consent for Default Directory"
+

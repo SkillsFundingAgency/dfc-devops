@@ -42,4 +42,5 @@ $FileContentEncoded = [System.Convert]::ToBase64String($ClearBytes)
 $SecretValue = ConvertTo-SecureString -String $FileContentEncoded -AsPlainText -Force
 $SecretContentType = 'application/x-pkcs12'
 $SecretName = $SecretName.Replace('.' , '-')
-Set-AzureKeyVaultSecret -VaultName $KeyVaultName -Name $SecretName -SecretValue $SecretValue -ContentType $SecretContentType -Expires $ExpiryDate
+Set-AzKeyVaultSecret -VaultName $KeyVaultName -Name $SecretName -SecretValue $SecretValue -ContentType $SecretContentType -Expires $ExpiryDate
+
