@@ -89,7 +89,7 @@ if(!$AdServicePrincipal) {
         try {
 
             Write-Verbose "Registering service principal ..."
-            $AdServicePrincipal = New-AzADServicePrincipal -DisplayName $AppRegistrationName -Password $SecurePassword -EndDate $([DateTime]::new(2299, 12, 31)) -ErrorAction Stop -SkipAssignment
+            $AdServicePrincipal = New-AzADServicePrincipal -DisplayName $AppRegistrationName -PasswordCredential $SecurePassword -EndDate $([DateTime]::new(2299, 12, 31)) -ErrorAction Stop -SkipAssignment
 
         }
         catch {
