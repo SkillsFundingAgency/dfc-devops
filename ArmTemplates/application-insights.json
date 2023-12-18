@@ -62,7 +62,7 @@
         },
         "InstrumentationConnectionString": {
             "type": "string",
-            "value": "[reference(concat('microsoft.insights/components/', parameters('appInsightsName'))).InstrumentationConnectionString]"
+            "value": "[reference(concat('microsoft.insights/components/', parameters('appInsightsName'))).ConnectionString]"
         },
         "AppId": {
             "type": "string",
