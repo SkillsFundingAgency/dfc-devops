@@ -25,12 +25,34 @@
             "metadata": {
                 "description": "The name of the channel (without the leading #) that you want messages posted to"
             }
+        },
+        "workspaceResourceGroup": {
+            "defaultValue": "",
+            "type": "string",
+            "metadata": {
+                "description": "Name of the resource group containing the log analytics account used in workspace-based app insights"
+            }
+        },
+        "workspaceName": {
+            "defaultValue": "",
+            "type": "string",
+            "metadata": {
+                "description": "Name of the analytics account used in workspace-based app insights"
+            }
         }
     },
     "variables": {
         "hostingPlanName": "[concat(parameters('instanceBaseName'), '-asp')]",
         "functionAppName": "[concat(parameters('instanceBaseName'), '-fa')]",
-        "appInsightsName": "[concat(parameters('instanceBaseName'), '-ai')]"
+        "appInsightsName": "[concat(parameters('instanceBaseName'), '-ai')]",
+        "logAnalyticsResourceGroup": "[if(empty(parameters('workspaceResourceGroup')), resourceGroup().name, parameters('workspaceResourceGroup'))]",
+        "propertiesClassic": {
+            "Application_Type": "web"
+        },
+        "propertiesWorkspace": {
+            "Application_Type": "web",
+            "workspaceResourceId": "[resourceId(variables('logAnalyticsResourceGroup'), 'Microsoft.OperationalInsights/workspaces', parameters('workspaceName'))]"
+        }
     },
     "resources": [
         {
@@ -53,9 +75,7 @@
             "tags": {
                 "[concat('hidden-link:', resourceId('Microsoft.Web/sites', variables('appInsightsName')))]": "Resource"
             },
-            "properties": {
-                "Application_Type": "web"
-            }
+            "properties": "[if(empty(parameters('workspaceName')), variables('propertiesClassic'), variables('propertiesWorkspace'))]"
         },
         {
             "name": "[variables('functionAppName')]",
