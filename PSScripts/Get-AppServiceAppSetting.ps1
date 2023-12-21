@@ -36,7 +36,7 @@ param (
     [string] $VariableName = $AppSetting
 )
 
-$AppService = Get-AzureRmWebApp -ResourceGroupName $ResourceGroupName -Name $AppServiceName
+$AppService = Get-AzWebApp -ResourceGroupName $ResourceGroupName -Name $AppServiceName
 
 $AppSettingValue = ($AppService.SiteConfig.AppSettings | Where-Object {$_.Name -eq $AppSetting}).Value
 if (!$AppSettingValue){
@@ -45,3 +45,4 @@ if (!$AppSettingValue){
 else {
     Write-Output "##vso[task.setvariable variable=$VariableName]$($AppSettingValue)"
 }
+

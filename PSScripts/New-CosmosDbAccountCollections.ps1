@@ -37,8 +37,8 @@ param(
     [string]$CosmosDbConfigurationFilePath
 )
 
-$MinCosmosDBModuleVersion = "2.1.9.88"
-$MaxCosmosDBModuleVersion = "2.1.15.239"
+$MinCosmosDBModuleVersion = "http://2.1.9.88"
+$MaxCosmosDBModuleVersion = "http://2.1.15.239"
 $CosmosDBModuleVersion = Get-Module CosmosDB | Where-Object { ([System.Version] $_.Version.ToString() -ge [System.Version] $MinCosmosDBModuleVersion) -and ([System.Version] $_.Version.ToString() -le [System.Version] $MaxCosmosDBModuleVersion) }
 if ($CosmosDBModuleVersion) {
     Write-Verbose "Cosmos DB module $($CosmosDBModuleVersion.Version.ToString()) installed"
@@ -89,11 +89,11 @@ else {
     $GetCosmosDbAccountParameters = @{
         ResourceType      = "Microsoft.DocumentDb/databaseAccounts"
         ResourceGroupName = $ResourceGroupName
-        ResourceName      = $CosmosDbAccountName
+        Name      = $CosmosDbAccountName
     }
 }
 
-$ExistingAccount = Get-AzureRmResource @GetCosmosDbAccountParameters
+$ExistingAccount = Get-AzResource @GetCosmosDbAccountParameters
 if (!$ExistingAccount -or $ExistingAccount.Properties.provisioningState -ne "Succeeded") {
     Write-Error "CosmosDb Account could not be found, make sure it has been deployed."
     throw "$_"
@@ -295,3 +295,4 @@ foreach ($Collection in $CosmosDbConfiguration.Collections) {
 
     }
 }
+

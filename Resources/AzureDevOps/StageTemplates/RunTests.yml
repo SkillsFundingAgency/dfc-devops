@@ -23,7 +23,7 @@ stages:
 
     - template: ../JobTemplates/RunIndividualTest.yml
       parameters:
-        RequiresAzurePowershell: true
+        RequiresPowershellCore: true
         AzureSubscription: '${{ parameters.AzureSubscription }}'
         TestName: 'RunPowershell5UnitTests'
         TestType: 'Unit'

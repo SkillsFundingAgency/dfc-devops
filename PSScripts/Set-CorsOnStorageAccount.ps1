@@ -36,8 +36,8 @@ param(
 )
 
 Write-Verbose "Setting Storage Context on $StorageAccountName"
-$StorageContext = New-AzureStorageContext -StorageAccountName $StorageAccountName.ToLower() -StorageAccountKey $StorageAccountKey
-$ExistingCorsRules = Get-AzureStorageCORSRule -ServiceType Blob -Context $StorageContext
+$StorageContext = New-AzStorageContext -StorageAccountName $StorageAccountName.ToLower() -StorageAccountKey $StorageAccountKey
+$ExistingCorsRules = Get-AzStorageCORSRule -ServiceType Blob -Context $StorageContext
 
 $CORSRules = @()
 $CORSChanged = $false
@@ -61,9 +61,10 @@ if ($CORSChanged) {
     # Rule has been added, set CORS Rules
     try {
         Write-Output "Setting CORS rule on $($StorageContext.BlobEndPoint)"
-        Set-AzureStorageCORSRule -ServiceType Blob -CorsRules $CORSRules -Context $StorageContext
+        Set-AzStorageCORSRule -ServiceType Blob -CorsRules $CORSRules -Context $StorageContext
     }
     catch {
         throw "Failed to get Storage Context and set CORS settings: $_"
     }
 }
+

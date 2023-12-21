@@ -40,7 +40,7 @@ if ($PSCmdlet.MyInvocation.BoundParameters["Verbose"].IsPresent) {
     $DeploymentParameters
 
 }
-$Result = Test-AzureRmResourceGroupDeployment @DeploymentParameters
+$Result = Test-AzResourceGroupDeployment @DeploymentParameters
 if ($Result.Count -gt 0) {
 
     $Result
