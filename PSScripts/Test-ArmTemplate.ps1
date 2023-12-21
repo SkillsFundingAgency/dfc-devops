@@ -33,6 +33,8 @@ $DeploymentParameters = @{
     Verbose               = $true
 }
 
+Import-Module Az.Resources
+
 Write-Host "- Validating template"
 if ($PSCmdlet.MyInvocation.BoundParameters["Verbose"].IsPresent) {
 
