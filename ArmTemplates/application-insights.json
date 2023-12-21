@@ -14,31 +14,55 @@
             "metadata": {
                 "description": "Name of the app service the resource monitors (tag only)"
             }
+        },
+        "workspaceResourceGroup": {
+            "defaultValue": "",
+            "type": "string",
+            "metadata": {
+                "description": "Name of the resource group containing the log analytics account used in workspace-based app insights"
+            }
+        },
+        "workspaceName": {
+            "defaultValue": "",
+            "type": "string",
+            "metadata": {
+                "description": "Name of the analytics account used in workspace-based app insights"
+            }
         }
     },
     "variables": {
         "withoutAttachedService": {},
         "withAttachedService": {
             "[concat('hidden-link:', resourceId('Microsoft.Web/sites', parameters('attachedService')))]": "Resource"
+        },
+        "logAnalyticsResourceGroup": "[if(empty(parameters('workspaceResourceGroup')), resourceGroup().name, parameters('workspaceResourceGroup'))]",
+        "propertiesClassic": {
+            "Application_Type": "web"
+        },
+        "propertiesWorkspace": {
+            "Application_Type": "web",
+            "workspaceResourceId": "[resourceId(variables('logAnalyticsResourceGroup'), 'Microsoft.OperationalInsights/workspaces', parameters('workspaceName'))]"
         }
     },
     "resources": [
         {
-            "apiVersion": "2015-05-01",
+            "apiVersion": "2020-02-02",
             "name": "[parameters('appInsightsName')]",
             "type": "Microsoft.Insights/components",
             "location": "[resourceGroup().location]",
             "kind": "web",
             "tags": "[if(equals(parameters('attachedService'),''), variables('withoutAttachedService'), variables('withAttachedService'))]",
-            "properties": {
-                "Application_Type": "web"
-            }
+            "properties": "[if(empty(parameters('workspaceName')), variables('propertiesClassic'), variables('propertiesWorkspace'))]"
         }
     ],
     "outputs": {
         "InstrumentationKey": {
             "type": "string",
             "value": "[reference(concat('microsoft.insights/components/', parameters('appInsightsName'))).InstrumentationKey]"
+        },
+        "InstrumentationConnectionString": {
+            "type": "string",
+            "value": "[reference(concat('microsoft.insights/components/', parameters('appInsightsName'))).ConnectionString]"
         },
         "AppId": {
             "type": "string",

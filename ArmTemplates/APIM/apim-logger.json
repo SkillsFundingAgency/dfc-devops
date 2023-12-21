@@ -8,23 +8,43 @@
         "productDisplayName": {
             "type": "string",
             "defaultValue": ""
+        },
+        "workspaceResourceGroup": {
+            "defaultValue": "",
+            "type": "string",
+            "metadata": {
+                "description": "Name of the resource group containing the log analytics account used in workspace-based app insights"
+            }
+        },
+        "workspaceName": {
+            "defaultValue": "",
+            "type": "string",
+            "metadata": {
+                "description": "Name of the analytics account used in workspace-based app insights"
+            }
         }
     },
     "variables": {
         "apimLoggerName": "[if(greater(length(parameters('productDisplayName')), 0), concat(variables('apimProductInstanceName'), '-logger'), concat(parameters('apimServiceName'), '-logger'))]",
         "apimProductInstanceName": "[toLower(replace(parameters('productDisplayName'), ' ', '-'))]",
-        "appInsightsName": "[if(greater(length(parameters('productDisplayName')), 0), concat(parameters('apimServiceName'), '-', variables('apimProductInstanceName'), '-ai'), concat(parameters('apimServiceName'), '-ai'))]"
+        "appInsightsName": "[if(greater(length(parameters('productDisplayName')), 0), concat(parameters('apimServiceName'), '-', variables('apimProductInstanceName'), '-ai'), concat(parameters('apimServiceName'), '-ai'))]",
+        "logAnalyticsResourceGroup": "[if(empty(parameters('workspaceResourceGroup')), resourceGroup().name, parameters('workspaceResourceGroup'))]",
+        "propertiesClassic": {
+            "Application_Type": "web"
+        },
+        "propertiesWorkspace": {
+            "Application_Type": "web",
+            "workspaceResourceId": "[resourceId(variables('logAnalyticsResourceGroup'), 'Microsoft.OperationalInsights/workspaces', parameters('workspaceName'))]"
+        }
     },
     "resources": [
         {
-            "apiVersion": "2015-05-01",
+            "apiVersion": "2020-02-02",
             "name": "[variables('appInsightsName')]",
             "type": "Microsoft.Insights/components",
             "location": "[resourceGroup().location]",
             "kind": "web",
-            "properties": {
-                "Application_Type": "web"
-            }
+            "properties": "[if(empty(parameters('workspaceName')), variables('propertiesClassic'), variables('propertiesWorkspace'))]"
         },
         {
             "name": "[concat(parameters('apimServiceName'), '/', variables('apimLoggerName'))]",

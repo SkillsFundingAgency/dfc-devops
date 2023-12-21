@@ -25,6 +25,17 @@ slackChannelName: (required) string
 
 The name of the channel (without the leading #) that you want the function to post Azure Monitor alert messages to
 
+workspaceResourceGroup: (optional) string
+
+Only used in workspace-based application insights instances.
+The name of the resource group containing the log anayltics account to be used for storage.
+
+workspaceName: (optional) string
+Only used in workspace-based application insights instances.
+The name of the log anayltics account to be used for storage.
+
+
+
 ## Outputs
 
 WebhookUrl:  
