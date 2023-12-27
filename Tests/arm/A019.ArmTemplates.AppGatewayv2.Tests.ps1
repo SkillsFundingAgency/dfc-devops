@@ -41,7 +41,7 @@ $TemplateFile = "$PSScriptRoot\..\..\ArmTemplates\app-gateway-v2.json"
     }
   
     It "Should be deployed successfully" {
-      $output = Test-AzureRmResourceGroupDeployment @TestTemplateParams
+      $output = Test-AzResourceGroupDeployment @TestTemplateParams
       $output | Should -Be $null
     }
 
