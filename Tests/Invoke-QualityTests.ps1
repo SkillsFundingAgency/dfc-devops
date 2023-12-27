@@ -30,7 +30,7 @@ try {
         }
     }
 
-    $pesterModule | Import-Module
+    $pesterModule | Select-Object -First 1 | Import-Module
 
 
     # Write-Host "Fetching tests:"
