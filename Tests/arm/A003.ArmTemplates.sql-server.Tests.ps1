@@ -23,7 +23,7 @@ Describe "SQL Server Deployment Tests" -Tag "Acceptance" {
       $TemplateParameters = $TemplateParametersDefault
       $TestTemplateParams['TemplateParameterObject'] = $TemplateParameters
   
-      $output = Test-AzureRmResourceGroupDeployment @TestTemplateParams
+      $output = Test-AzResourceGroupDeployment @TestTemplateParams
       $output | Should -Be $null
     }
   }
@@ -35,7 +35,7 @@ Describe "SQL Server Deployment Tests" -Tag "Acceptance" {
       $TemplateParameters['sqlServerAdminUserName'] = "DummySA"
       $TestTemplateParams['TemplateParameterObject'] = $TemplateParameters
   
-      $output = Test-AzureRmResourceGroupDeployment @TestTemplateParams
+      $output = Test-AzResourceGroupDeployment @TestTemplateParams
       $output | Should -Be $null
     }
   }
@@ -48,7 +48,7 @@ Describe "SQL Server Deployment Tests" -Tag "Acceptance" {
       $TemplateParameters['threatDetectionEmailAddress'] = @( "dummy@example.com" )
       $TestTemplateParams['TemplateParameterObject'] = $TemplateParameters
   
-      $output = Test-AzureRmResourceGroupDeployment @TestTemplateParams
+      $output = Test-AzResourceGroupDeployment @TestTemplateParams
       $output | Should -Be $null
     }
   }
@@ -61,7 +61,7 @@ Describe "SQL Server Deployment Tests" -Tag "Acceptance" {
       $TemplateParameters['elasticPoolName'] = "dfc-foo-bar-epl"
       $TestTemplateParams['TemplateParameterObject'] = $TemplateParameters
   
-      $output = Test-AzureRmResourceGroupDeployment @TestTemplateParams
+      $output = Test-AzResourceGroupDeployment @TestTemplateParams
       $output | Should -Be $null
     }
   }

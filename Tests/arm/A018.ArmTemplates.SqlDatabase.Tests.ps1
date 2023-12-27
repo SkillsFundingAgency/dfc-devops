@@ -23,7 +23,7 @@ Describe "Sql Database Deployment Tests" -Tag "Acceptance" {
         }
 
         It "Should be deployed successfully" {
-            $output = Test-AzureRmResourceGroupDeployment @TestTemplateParams
+            $output = Test-AzResourceGroupDeployment @TestTemplateParams
             $output | Should -Be $null
         }
 
@@ -42,7 +42,7 @@ Describe "Sql Database Deployment Tests" -Tag "Acceptance" {
         }
 
         It "Should be deployed successfully" {
-            $output = Test-AzureRmResourceGroupDeployment @TestTemplateParams
+            $output = Test-AzResourceGroupDeployment @TestTemplateParams
             $output | Should -Be $null
         }
 
@@ -63,7 +63,7 @@ Describe "Sql Database Deployment Tests" -Tag "Acceptance" {
 
 
         It "Should be deployed successfully" {
-            $output = Test-AzureRmResourceGroupDeployment @TestTemplateParams
+            $output = Test-AzResourceGroupDeployment @TestTemplateParams
             $output | Should -Be $null
         }
 

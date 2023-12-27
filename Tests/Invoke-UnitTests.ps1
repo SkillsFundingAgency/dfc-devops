@@ -35,9 +35,7 @@ try {
         }
     }
 
-    $pesterModule | Import-Module
-
-
+    $pesterModule | Select-Object -First 1 | Import-Module
 
     $pathToTests = "$PSScriptRoot\powershell5_1"
     $pathToScripts = "$PSScriptRoot\..\PSScripts\*.ps1"
