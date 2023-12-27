@@ -54,7 +54,7 @@ catch {
 }
 
 $SearchParams = @{
-    ResourceType      = "http://Microsoft.Search/searchServices"
+    ResourceType      = "https://Microsoft.Search/searchServices"
     ResourceGroupName = $ResourceGroupName
     ResourceName      = $SearchName
     ApiVersion        = '2015-08-19'
