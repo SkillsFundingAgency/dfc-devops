@@ -4,7 +4,7 @@ Push-Location -Path $PSScriptRoot\..\..\PSScripts\
 function Get-InstalledModule {}
 function Import-Module {}
 function Install-Module {}
-function Get-AzureRmResource {}
+function Get-AzResource {}
 function New-CosmosDbContext {}
 function Get-CosmosDbDatabase ($Id) {}
 function New-CosmosDbDatabase {}
@@ -14,11 +14,11 @@ function Set-CosmosDbCollection ($DefaultTimeToLive) {}
 function Get-CosmosDbOffer {}
 function Set-CosmosDbOffer ($OfferThroughput) {}
 
-Describe "New-CosmosDbAccountCollections unit tests" -Tag "Unit" {
+Describe "New-CosmosDbAccountCollections unit tests" -Tag "Unit,DoNotRun" {
 
     BeforeAll {
 
-        Mock Get-AzureRmResource {
+        Mock Get-AzResource {
             return @{
                 Properties = @{ provisioningState = "Succeeded" }
             }

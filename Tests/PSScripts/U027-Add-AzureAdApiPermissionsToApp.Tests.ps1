@@ -2,7 +2,7 @@ Push-Location -Path $PSScriptRoot\..\..\PSScripts\
 
 Describe "Add-AzureAdApiPermissionsToApp unit tests" -Tag "Unit" {
 
-    Mock Get-AzureRmContext { [PsCustomObject]
+    Mock Get-AzContext { [PsCustomObject]
         @{
             Account = @{
                 Id = "35fd12f7-97c7-4f8c-8b10-00bf198ff4f8"
@@ -11,12 +11,12 @@ Describe "Add-AzureAdApiPermissionsToApp unit tests" -Tag "Unit" {
         }
 
     }
-    Mock Get-AzureRmADServicePrincipal -ParameterFilter { $ApplicationId } { [PsCustomObject]
+    Mock Get-AzADServicePrincipal -ParameterFilter { $ApplicationId } { [PsCustomObject]
         @{
             Id = "4a11d94c-9c97-4c0b-8f85-476c1ef15956"
         }
     }
-    Mock Get-AzureRmADApplication { [PsCustomObject] 
+    Mock Get-AzADApplication { [PsCustomObject] 
         @{
             ObjectId = "b68bcf9f-9ec6-47b6-bcc4-8efa9a0c497d"
             DisplayName = "dfc-foo-bar-app"
@@ -35,7 +35,7 @@ Describe "Add-AzureAdApiPermissionsToApp unit tests" -Tag "Unit" {
 
         .\Add-AzureAdApiPermissionsToApp @CmdletParameters
 
-        Should -Invoke -CommandName Get-AzureRmADApplication -Exactly 1 -Scope It
-        Should -Invoke -CommandName Set-AzureRmADApplication -Exactly 1 -Scope It -ParameterFilter { $ObjectId -eq "b68bcf9f-9ec6-47b6-bcc4-8efa9a0c497d" -and $RequiredResourceAccess }
+        Should -Invoke -CommandName Get-AzADApplication -Exactly 1 -Scope It
+        Should -Invoke -CommandName Set-AzADApplication -Exactly 1 -Scope It -ParameterFilter { $ObjectId -eq "b68bcf9f-9ec6-47b6-bcc4-8efa9a0c497d" -and $RequiredResourceAccess }
     }
 }

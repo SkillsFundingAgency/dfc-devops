@@ -2,7 +2,6 @@ parameters:
   AzureSubscription: ''
   TestName: ''
   TestType: ''  # One of 'Acceptance', 'Quality', "Unit"
-  ResultsFileSuffix: ''
   CodeCoveragePercentage: 80
 
 jobs:
@@ -14,15 +13,15 @@ jobs:
     inputs:
       SourceFolder: '$(System.DefaultWorkingDirectory)/Tests'
       Contents: |
-        **/TEST-${{ parameters.ResultsFileSuffix }}.xml
-        **/CODECOVERAGE-${{ parameters.ResultsFileSuffix }}.xml
+        **/TEST-*.xml
+        **/CODECOVERAGE-*.xml
 
   - task: AzurePowerShell@5
     displayName: 'AzurePowershell: Invoke-${{ parameters.TestType }}Tests.ps1'
     inputs:
       azureSubscription: '${{ parameters.AzureSubscription }}'
       ScriptPath: '$(System.DefaultWorkingDirectory)/Tests/Invoke-${{ parameters.TestType }}Tests.ps1'
-      azurePowerShellVersion: LatestVersion
+      azurePowerShellVersion: 6.6.0
       pwsh: true
 
   - task: PublishTestResults@2
@@ -30,15 +29,15 @@ jobs:
     condition: always()
     inputs:
       testResultsFormat: NUnit
-      testResultsFiles: '**/TEST-${{ parameters.ResultsFileSuffix }}.xml'
+      testResultsFiles: '**/TEST-*.xml'
       mergeTestResults: true
-      testRunTitle: '${{ parameters.ResultsFileSuffix }} - Test Results'
+      testRunTitle: 'Test Results'
 
   - ${{ if eq(parameters.TestType, 'Unit') }}:
     - task: PublishCodeCoverageResults@1
       displayName: 'Publish Code Coverage'
       inputs:
-        summaryFileLocation: '**/CODECOVERAGE-${{ parameters.ResultsFileSuffix }}.xml'
+        summaryFileLocation: '**/CODECOVERAGE-*.xml'
 
     - task: PowerShell@2
       displayName: 'PowerShell Script: Out-TestResults'

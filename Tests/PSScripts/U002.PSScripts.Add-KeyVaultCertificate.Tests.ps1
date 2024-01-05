@@ -3,7 +3,7 @@ Push-Location -Path $PSScriptRoot\..\..\PSScripts\
 Describe "Add-KeyVaultCertificate unit tests" -Tag "Unit" {
 
     It "Should open a pfx file and understand the contents" {
-        Mock Set-AzureKeyVaultSecret
+        Mock Set-AzKeyVaultSecret
 
         $kvname   = "dfc-foo-kv"
         $secname  = "foocert"
@@ -11,7 +11,7 @@ Describe "Add-KeyVaultCertificate unit tests" -Tag "Unit" {
 
         .\Add-KeyVaultCertificate -keyVaultName $kvname -secretName $secname -pfxFilePath "$PSScriptRoot\testcert.pfx" -pfxPassword 'myPa$$w0rd'
 
-        Should -Invoke -CommandName Set-AzureKeyVaultSecret -Exactly 1 -ParameterFilter { $VaultName -eq $kvname -and $Name -eq $secname -and $ContentType -eq 'application/x-pkcs12' -and $Expires -eq $certdate } -Scope It
+        Should -Invoke -CommandName Set-AzKeyVaultSecret -Exactly 1 -ParameterFilter { $VaultName -eq $kvname -and $Name -eq $secname -and $ContentType -eq 'application/x-pkcs12' -and $Expires -eq $certdate } -Scope It
     }
 
 }

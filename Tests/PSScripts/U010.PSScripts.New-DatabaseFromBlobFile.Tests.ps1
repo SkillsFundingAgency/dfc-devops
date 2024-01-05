@@ -1,8 +1,18 @@
 Push-Location -Path $PSScriptRoot\..\..\PSScripts\
 
+# solves CommandNotFoundException
+function New-AzSqlDatabaseImport {}
+function Get-AzSqlDatabaseImportExportStatus {}
+function Set-AzSqlDatabase {}
+function Get-AzSqlDatabase {}
+
 Describe "New-DatabaseFromBlobFile unit tests" -Tag "Unit" {
 
     BeforeAll {
+        Mock New-AzSqlDatabaseImport { return ConvertFrom-Json '{ "OperationStatusLink": "https://management.azure.com/subscriptions/blah/guid?apiversion=1-2-3" }' }
+        Mock Get-AzSqlDatabaseImportExportStatus { return ConvertFrom-Json '{ "Status": "Succeeded", "StatusMessage": "" }' }
+        Mock Set-AzSqlDatabase
+        Mock Get-AzSqlDatabase
 
         $params = @{
             ResourceGroupName = "dfc-foo-bar-rg"
@@ -13,24 +23,10 @@ Describe "New-DatabaseFromBlobFile unit tests" -Tag "Unit" {
             StorageAccountKey = "not-a-real-key"
             StorageUrl        = "https://dfcfoobarstr.blob.core.windows.net/backup/db.bacpac"
         }
-
-        # solves CommandNotFoundException
-        function New-AzSqlDatabaseImport {}
-        function Get-AzSqlDatabaseImportExportStatus {}
-        function Set-AzSqlDatabase {}
-        function Get-AzSqlDatabase {}
-
-
-        Mock New-AzSqlDatabaseImport { return ConvertFrom-Json '{ "OperationStatusLink": "https://management.azure.com/subscriptions/blah/guid?apiversion=1-2-3" }' }
-        Mock Get-AzSqlDatabaseImportExportStatus { return ConvertFrom-Json '{ "Status": "Succeeded", "StatusMessage": "" }' }
-        Mock Set-AzSqlDatabase
-        Mock Get-AzSqlDatabase
-
-
-
     }
+
     It "Should create a database" {
-        .\New-DatabaseFromBlobFile @params
+        .\New-DatabaseFromBlobFile @params -Verbose
 
         Should -Invoke -CommandName New-AzSqlDatabaseImport -Exactly 1 -Scope It
         Should -Invoke -CommandName Get-AzSqlDatabaseImportExportStatus -Exactly 1 -Scope It
@@ -41,7 +37,7 @@ Describe "New-DatabaseFromBlobFile unit tests" -Tag "Unit" {
     It "Should add database to elastic pool if one is specified" {
         $params['ElasticPool'] = "dfc-foo-bar-epl"
 
-        .\New-DatabaseFromBlobFile @params
+        .\New-DatabaseFromBlobFile @params -Verbose
 
         Should -Invoke -CommandName New-AzSqlDatabaseImport -Exactly 1 -Scope It
         Should -Invoke -CommandName Get-AzSqlDatabaseImportExportStatus -Exactly 1 -Scope It

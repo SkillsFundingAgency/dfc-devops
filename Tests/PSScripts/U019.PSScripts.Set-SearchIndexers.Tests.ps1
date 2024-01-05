@@ -2,19 +2,20 @@ Push-Location -Path $PSScriptRoot\..\..\PSScripts\
 Import-Module $PSScriptRoot\..\..\PSModules\AzureApiFunctions
 
 # solves CommandNotFoundException
-function Get-AzureRmResource {}
-function Invoke-AzureRmResourceAction {}
+function Get-AzResource {}
+function Invoke-AzResourceAction {}
 
-Describe "Set-SearchDatasources unit tests" -Tag "Unit" {
+Describe "Set-SearchIndexers unit tests" -Tag "Unit" {
 
     BeforeEach {
-        Mock Get-AzureRmResource {
+
+        Mock Get-AzResource {
             return @{
                 ResourceId = "12345678-1234"
             }
         }
 
-        Mock Invoke-AzureRmResourceAction {
+        Mock Invoke-AzResourceAction {
             return @{
                 PrimaryKey = "12345678=="
             }
@@ -25,9 +26,9 @@ Describe "Set-SearchDatasources unit tests" -Tag "Unit" {
         $SampleDatasource = @'
 [ {
     "name" : "mock",
-    "type" : "documentdb",
     "description": "mock datasource",
-    "credentials" : { "connectionString": "mock" }
+    "dataSourceName": "mock-datasource",
+    "targetIndexName": "mock"
 } ]
 '@
 
@@ -35,20 +36,20 @@ Describe "Set-SearchDatasources unit tests" -Tag "Unit" {
             SearchName        = 'mock'
             ResourceGroupName = "dfc-foo-bar-rg"
         }
-
     }
+
     # This test will write to the error stream
-    It "Ensure Set-SearchDatasources throws an error if the JSON is invalid" {
+    It "Ensure Set-SearchIndexers throws an error if the JSON is invalid" {
 
-        $DefaultParams['IndexConfigurationString'] = '{ "invalid: "json" }' # missing quote after invalid
+        $DefaultParams['IndexConfigurationString'] = '{ "invalid": json" }' # missing quote before json value
 
-        { .\Set-SearchDatasources @DefaultParams } | Should -Throw
+        { .\Set-SearchIndexers @DefaultParams } | Should -Throw
 
         $DefaultParams.Remove('IndexConfigurationString') # clean up
     }
 
 
-    It "Ensure Set-SearchDatasources only calls ApiReqest once (GET only) if datasource exists" {
+    It "Ensure Set-SearchIndexers only calls ApiReqest once (GET only) if datasource exists" {
 
         # Pass in a valid JSON for the rest of the tests
         $DefaultParams['IndexConfigurationString'] = $SampleDatasource
@@ -58,16 +59,16 @@ Describe "Set-SearchDatasources unit tests" -Tag "Unit" {
             return $SampleDatasource | ConvertFrom-Json
         }
         
-        .\Set-SearchDatasources @DefaultParams
+        .\Set-SearchIndexers @DefaultParams
 
-        Should -Invoke -CommandName Get-AzureRmResource -Scope It -Exactly 1
-        Should -Invoke -CommandName Invoke-AzureRmResourceAction -Scope It -Exactly 1
+        Should -Invoke -CommandName Get-AzResource -Scope It -Exactly 1
+        Should -Invoke -CommandName Invoke-AzResourceAction -Scope It -Exactly 1
         Should -Invoke -CommandName ApiRequest -Scope It -ParameterFilter { $Method -eq 'GET' } -Exactly 1
         Should -Invoke -CommandName ApiRequest -Scope It -ParameterFilter { $Method -eq 'POST' } -Exactly 0
 
     }
 
-    It "Ensure Set-SearchDatasources calls ApiReqest twice (1x GET, 1x POST) if datasource does not exist" {
+    It "Ensure Set-SearchIndexers calls ApiReqest twice (1x GET, 1x POST) if datasource does not exist" {
 
         # Pass in a valid JSON for the rest of the tests
         $DefaultParams['IndexConfigurationString'] = $SampleDatasource
@@ -77,21 +78,25 @@ Describe "Set-SearchDatasources unit tests" -Tag "Unit" {
             throw
         }
         
-        .\Set-SearchDatasources @DefaultParams
+        .\Set-SearchIndexers @DefaultParams
 
-        Should -Invoke -CommandName Get-AzureRmResource -Scope It -Exactly 1
-        Should -Invoke -CommandName Invoke-AzureRmResourceAction -Scope It -Exactly 1
+        Should -Invoke -CommandName Get-AzResource -Scope It -Exactly 1
+        Should -Invoke -CommandName Invoke-AzResourceAction -Scope It -Exactly 1
         Should -Invoke -CommandName ApiRequest -Scope It -ParameterFilter { $Method -eq 'GET' } -Exactly 1
         Should -Invoke -CommandName ApiRequest -Scope It -ParameterFilter { $Method -eq 'POST' } -Exactly 1
 
     }
 
     
-    It "Ensure Set-SearchDatasources can read the JSON from a file" {
+    It "Ensure Set-SearchIndexers can read the JSON from a file" {
+
+        # Pass in a valid JSON for the rest of the tests
+        $DefaultParams['IndexConfigurationString'] = $SampleDatasource
 
         # Change default params to read from file
+        $DefaultParams.Remove('IndexConfigurationString') # clean up
         $DefaultParams['IndexFilePath'] = "$TestDrive\Mock.json"
-
+            
         Set-Content -Path $DefaultParams.IndexFilePath -Value $SampleDatasource
 
         # GET will throw a 404 if not found
@@ -99,10 +104,10 @@ Describe "Set-SearchDatasources unit tests" -Tag "Unit" {
             throw
         }
                 
-        .\Set-SearchDatasources @DefaultParams
+        .\Set-SearchIndexers @DefaultParams
         
-        Should -Invoke -CommandName Get-AzureRmResource -Scope It -Exactly 1
-        Should -Invoke -CommandName Invoke-AzureRmResourceAction -Scope It -Exactly 1
+        Should -Invoke -CommandName Get-AzResource -Scope It -Exactly 1
+        Should -Invoke -CommandName Invoke-AzResourceAction -Scope It -Exactly 1
         Should -Invoke -CommandName ApiRequest -Scope It -ParameterFilter { $Method -eq 'GET' } -Exactly 1
         Should -Invoke -CommandName ApiRequest -Scope It -ParameterFilter { $Method -eq 'POST' } -Exactly 1
         

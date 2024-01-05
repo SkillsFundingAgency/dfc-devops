@@ -1,12 +1,12 @@
 Push-Location -Path $PSScriptRoot\..\..\PSScripts\
 
 # solves CommandNotFoundException
-function Get-AzureRmWebApp {}
+function Get-AzWebApp {}
 
 Describe "Get-AppServiceAppSetting unit tests" -Tag "Unit" {
 
     BeforeAll {
-        Mock Get-AzureRmWebApp {
+        Mock Get-AzWebApp {
             $mockapp = '{ "SiteConfig": { "AppSettings": [ { "name": "foo", "value": "bar"}, { "name": "this", "value": "that" } ] } }'
             return ConvertFrom-Json $mockapp
         }

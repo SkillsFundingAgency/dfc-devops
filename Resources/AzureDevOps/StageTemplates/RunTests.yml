@@ -21,14 +21,6 @@ stages:
     - template: ../JobTemplates/RunIndividualTest.yml
       parameters:
         AzureSubscription: '${{ parameters.AzureSubscription }}'
-        TestName: 'RunPowershell5UnitTests'
+        TestName: 'RunScriptUnitTests'
         TestType: 'Unit'
-        ResultsFileSuffix: 'powershell'
         CodeCoveragePercentage: ${{ parameters.CodeCoveragePercentage }}
-
-    - template: ../JobTemplates/RunIndividualTest.yml
-      parameters:
-        TestName: 'RunPowershellCoreUnitTests'
-        TestType: 'Unit'
-        ResultsFileSuffix: 'pwsh'
-        CodeCoveragePercentage: ${{ parameters.CoreCodeCoveragePercentage }}

@@ -1,14 +1,14 @@
 Push-Location -Path $PSScriptRoot\..\..\PSScripts\
 
 # solves CommandNotFoundException
-function Get-AzureRmSqlDatabase {}
-function Set-AzureRmSqlDatabase {}
+function Get-AzSqlDatabase {}
+function Set-AzSqlDatabase {}
 
 Describe "Switch-SqlDatabases unit tests" -Tag "Unit" {
 
     BeforeAll {
-        Mock Set-AzureRmSqlDatabase
-        Mock Get-AzureRmSqlDatabase {
+        Mock Set-AzSqlDatabase
+        Mock Get-AzSqlDatabase {
             $mock = '{ "ResourceGroupName": "dfc-foo-bar-rg", "ServerName": "dfc-foo-bar-sql", "DatabaseName": "dfc-foo-bar-db", "Location": "westeurope" }'
             if ($global:NumDatabaseExists -gt 0) {
                 $global:NumDatabaseExists -= 1
@@ -21,8 +21,8 @@ Describe "Switch-SqlDatabases unit tests" -Tag "Unit" {
 
         .\Switch-SqlDatabases -ResourceGroupName dfc-foo-bar-rg -SQLServerName dfc-foo-bar-sql -ExistingDatabaseName foobar-db -ReplacementDatabaseName foobar-new
 
-        Should -Invoke -CommandName Get-AzureRmSqlDatabase -Exactly 1 -Scope It
-        Should -Invoke -CommandName Set-AzureRmSqlDatabase -Exactly 1 -Scope It
+        Should -Invoke -CommandName Get-AzSqlDatabase -Exactly 1 -Scope It
+        Should -Invoke -CommandName Set-AzSqlDatabase -Exactly 1 -Scope It
 
     }
 
@@ -32,8 +32,8 @@ Describe "Switch-SqlDatabases unit tests" -Tag "Unit" {
 
         .\Switch-SqlDatabases -ResourceGroupName dfc-foo-bar-rg -SQLServerName dfc-foo-bar-sql -ExistingDatabaseName foobar-db -ReplacementDatabaseName foobar-new
 
-        Should -Invoke -CommandName Get-AzureRmSqlDatabase -Exactly 2 -Scope It
-        Should -Invoke -CommandName Set-AzureRmSqlDatabase -Exactly 2 -Scope It
+        Should -Invoke -CommandName Get-AzSqlDatabase -Exactly 2 -Scope It
+        Should -Invoke -CommandName Set-AzSqlDatabase -Exactly 2 -Scope It
 
     }
 
@@ -43,8 +43,8 @@ Describe "Switch-SqlDatabases unit tests" -Tag "Unit" {
 
         .\Switch-SqlDatabases -ResourceGroupName dfc-foo-bar-rg -SQLServerName dfc-foo-bar-sql -ExistingDatabaseName foobar-db -ReplacementDatabaseName foobar-new
 
-        Should -Invoke -CommandName Get-AzureRmSqlDatabase -Exactly 4 -Scope It
-        Should -Invoke -CommandName Set-AzureRmSqlDatabase -Exactly 2 -Scope It
+        Should -Invoke -CommandName Get-AzSqlDatabase -Exactly 4 -Scope It
+        Should -Invoke -CommandName Set-AzSqlDatabase -Exactly 2 -Scope It
 
     }
 

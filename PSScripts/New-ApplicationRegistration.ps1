@@ -26,6 +26,9 @@ The Service Principal that the connection authenticates with will need the follo
 - Azure Active Directory Graph Application Directory.ReadWrite.All
 - Azure Active Directory Graph Application Application.ReadWrite.OwnedBy
 
+This test/script requires Az 6.6.0 to run.
+This is because AZ 7 ONWARDS switched the *AzAd* cmdlets to use MSGraph instead of AzureAD
+
 #>
 [CmdletBinding(DefaultParametersetName='None', SupportsShouldProcess = $true, ConfirmImpact = 'Low')]
 param(
