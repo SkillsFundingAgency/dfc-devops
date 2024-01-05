@@ -37,8 +37,8 @@ param(
     [string]$CosmosDbConfigurationFilePath
 )
 
-$MinCosmosDBModuleVersion = "http://2.1.9.88"
-$MaxCosmosDBModuleVersion = "http://2.1.15.239"
+$MinCosmosDBModuleVersion = "2.1.9.88"
+$MaxCosmosDBModuleVersion = "2.1.15.239"
 $CosmosDBModuleVersion = Get-Module CosmosDB | Where-Object { ([System.Version] $_.Version.ToString() -ge [System.Version] $MinCosmosDBModuleVersion) -and ([System.Version] $_.Version.ToString() -le [System.Version] $MaxCosmosDBModuleVersion) }
 if ($CosmosDBModuleVersion) {
     Write-Verbose "Cosmos DB module $($CosmosDBModuleVersion.Version.ToString()) installed"
