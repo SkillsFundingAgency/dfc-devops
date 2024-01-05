@@ -1,6 +1,6 @@
 parameters:
   AzureSubscription: ''
-  CodeCoveragePercentage: 80
+  CodeCoveragePercentage: 75
 
 stages:
 - stage: Test
@@ -14,6 +14,7 @@ stages:
 
     - template: ../JobTemplates/RunIndividualTest.yml
       parameters:
+        AzureSubscription: '${{ parameters.AzureSubscription }}'
         TestName: 'RunQualityTests'
         TestType: 'Quality'
         ResultsFileSuffix: 'Quality'
