@@ -1,5 +1,4 @@
 parameters:
-  RequiresAzurePowershell: false
   AzureSubscription: ''
   TestName: ''
   TestType: ''  # One of 'Acceptance', 'Quality', "Unit"
@@ -18,23 +17,13 @@ jobs:
         **/TEST-${{ parameters.ResultsFileSuffix }}.xml
         **/CODECOVERAGE-${{ parameters.ResultsFileSuffix }}.xml
 
-  - ${{ if eq(parameters.RequiresAzurePowershell, true) }}:
-    - task: AzurePowerShell@5
-      displayName: 'AzurePowershell: Invoke-${{ parameters.TestType }}Tests.ps1'
-      inputs:
-        azureSubscription: '${{ parameters.AzureSubscription }}'
-        ScriptPath: '$(System.DefaultWorkingDirectory)/Tests/Invoke-${{ parameters.TestType }}Tests.ps1'
-        azurePowerShellVersion: LatestVersion
-        pwsh: true
-
-  - ${{ if eq(parameters.RequiresAzurePowershell, false) }}:
-    - task: Powershell@2
-      displayName: 'PowerShell Script: Invoke-${{ parameters.TestType }}Tests.ps1'
-      continueOnError: true
-      inputs:
-        targetType: filePath
-        filePath: '$(System.DefaultWorkingDirectory)/Tests/Invoke-${{ parameters.TestType }}Tests.ps1'
-        pwsh: true
+  - task: AzurePowerShell@5
+    displayName: 'AzurePowershell: Invoke-${{ parameters.TestType }}Tests.ps1'
+    inputs:
+      azureSubscription: '${{ parameters.AzureSubscription }}'
+      ScriptPath: '$(System.DefaultWorkingDirectory)/Tests/Invoke-${{ parameters.TestType }}Tests.ps1'
+      azurePowerShellVersion: LatestVersion
+      pwsh: true
 
   - task: PublishTestResults@2
     displayName: 'Publish Test Results'
