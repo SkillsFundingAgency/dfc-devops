@@ -9,7 +9,7 @@ Describe "Storage Account Deployment Tests" -Tag "Acceptance" {
   Context "When a storage account deployed with just name" {
     BeforeAll {
       $TemplateParameters = @{
-        storageAccountName = "dfcfoobarstr"
+        storageAccountName = "dfcfoobar787str"
       }
       $TestTemplateParams = @{
         ResourceGroupName       = $ResourceGroupName

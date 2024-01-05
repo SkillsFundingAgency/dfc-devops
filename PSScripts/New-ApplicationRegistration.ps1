@@ -26,6 +26,9 @@ The Service Principal that the connection authenticates with will need the follo
 - Azure Active Directory Graph Application Directory.ReadWrite.All
 - Azure Active Directory Graph Application Application.ReadWrite.OwnedBy
 
+This test/script requires Az 6.6.0 to run.
+This is because AZ 7 ONWARDS switched the *AzAd* cmdlets to use MSGraph instead of AzureAD
+
 #>
 [CmdletBinding(DefaultParametersetName='None', SupportsShouldProcess = $true, ConfirmImpact = 'Low')]
 param(
@@ -87,10 +90,15 @@ if(!$AdServicePrincipal) {
         }
 
         try {
-
             Write-Verbose "Registering service principal ..."
-            $AdServicePrincipal = New-AzADServicePrincipal -DisplayName $AppRegistrationName -PasswordCredential $SecurePassword -EndDate $([DateTime]::new(2299, 12, 31)) -ErrorAction Stop -SkipAssignment
 
+            $credentials = [Microsoft.Azure.PowerShell.Cmdlets.Resources.MSGraph.Models.ApiV10.MicrosoftGraphPasswordCredential] @{
+                StartDate=[DateTime]::UtcNow
+                EndDate=[DateTime]::UtcNow.AddYears(1)
+                SecretText=$Password
+            }
+
+            $AdServicePrincipal = New-AzADServicePrincipal -DisplayName $AppRegistrationName -PasswordCredential @($credentials) -ErrorAction Stop
         }
         catch {
 

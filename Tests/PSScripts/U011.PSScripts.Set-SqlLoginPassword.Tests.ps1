@@ -21,19 +21,19 @@ Describe "Set-SqlLoginPassword unit tests" -Tag "Unit" {
     
         # solves CommandNotFoundException
         function Invoke-Sqlcmd {}
-        function Get-AzureRmSqlServer {}
-        function Get-AzureRmSqlDatabase {}
+        function Get-AzSqlServer {}
+        function Get-AzSqlDatabase {}
     
         $SQLScript = "$TestDrive\Mock.sql"
     
         Mock Invoke-Sqlcmd
-        Mock Get-AzureRmSqlServer {
+        Mock Get-AzSqlServer {
             $mock = '{ "ResourceGroupName": "dfc-foo-bar-rg", "ServerName": "dfc-foo-bar-sql", "FullyQualifiedDomainName": "dfc-foo-bar-sql.database.windows.net" }'
             return ConvertFrom-Json $mock
         }
     
-        # mock Get-AzureRmSqlDatabase returns offline
-        Mock Get-AzureRmSqlDatabase {
+        # mock Get-AzSqlDatabase returns offline
+        Mock Get-AzSqlDatabase {
             $offlinemock = '{ "ResourceGroupName": "dfc-foo-bar-rg", "ServerName": "dfc-foo-bar-sql", "DatabaseName": "dfc-foo-bar-db", "Status": "Offline" }'
             return ConvertFrom-Json $offlinemock
         }
@@ -49,8 +49,8 @@ Describe "Set-SqlLoginPassword unit tests" -Tag "Unit" {
 
     It "Should issue a single Invoke-Sqlcmd when just reseting password" {
 
-        # mock Get-AzureRmSqlDatabase returns online
-        Mock Get-AzureRmSqlDatabase {
+        # mock Get-AzSqlDatabase returns online
+        Mock Get-AzSqlDatabase {
             $onlinemock = '{ "ResourceGroupName": "dfc-foo-bar-rg", "ServerName": "dfc-foo-bar-sql", "DatabaseName": "dfc-foo-bar-db", "Status": "Online" }'
             return ConvertFrom-Json $onlinemock
         }
@@ -66,8 +66,8 @@ Describe "Set-SqlLoginPassword unit tests" -Tag "Unit" {
 
     It "Should error if optional SQL script passed but does not exist" {
 
-        # mock Get-AzureRmSqlDatabase returns online
-        Mock Get-AzureRmSqlDatabase {
+        # mock Get-AzSqlDatabase returns online
+        Mock Get-AzSqlDatabase {
             $onlinemock = '{ "ResourceGroupName": "dfc-foo-bar-rg", "ServerName": "dfc-foo-bar-sql", "DatabaseName": "dfc-foo-bar-db", "Status": "Online" }'
             return ConvertFrom-Json $onlinemock
         }
@@ -84,8 +84,8 @@ Describe "Set-SqlLoginPassword unit tests" -Tag "Unit" {
 
     It "Should run Invoke-Sqlcmd with inputfile when valid script is passed" {
 
-        # mock Get-AzureRmSqlDatabase returns online
-        Mock Get-AzureRmSqlDatabase {
+        # mock Get-AzSqlDatabase returns online
+        Mock Get-AzSqlDatabase {
             $onlinemock = '{ "ResourceGroupName": "dfc-foo-bar-rg", "ServerName": "dfc-foo-bar-sql", "DatabaseName": "dfc-foo-bar-db", "Status": "Online" }'
             return ConvertFrom-Json $onlinemock
         }

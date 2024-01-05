@@ -4,16 +4,16 @@ Describe "Import-ApimSwaggerApiDefinition unit tests" -Tag "Unit" {
 
     It "Should run with AzureRM cmdlets if a URL is supplied but not create a file" {
 
-        Mock New-AzureRmApiManagementContext -MockWith { return @{} }
+        Mock New-AzApiManagementContext -MockWith { return @{} }
         Mock Invoke-RestMethod
         Mock Set-Content
-        Mock Get-AzureRmApiManagementApi { [PsCustomObject]
+        Mock Get-AzApiManagementApi { [PsCustomObject]
             @{
                 ApiId = "bar"
                 Path = "bar"
             }
         }
-        Mock Import-AzureRmApiManagementApi
+        Mock Import-AzApiManagementApi
 
         $CmdletParameters = @{
            ApimResourceGroup = "dfc-foo-bar-rg"
@@ -26,13 +26,12 @@ Describe "Import-ApimSwaggerApiDefinition unit tests" -Tag "Unit" {
 
         Should -Invoke -CommandName Invoke-RestMethod -Exactly 0 -Scope It
         Should -Invoke -CommandName Set-Content -Exactly 0 -Scope It
-        Should -Invoke -CommandName Get-AzureRmApiManagementApi -Exactly 1 -Scope It
-        Should -Invoke -CommandName Import-AzureRmApiManagementApi -Exactly 1 -Scope It
+        Should -Invoke -CommandName Get-AzApiManagementApi -Exactly 1 -Scope It
+        Should -Invoke -CommandName Import-AzApiManagementApi -Exactly 1 -Scope It
 
     }
 
-    # Unable to test Az cmdlets alongside AzureRm.  After ZDT deployments are implemented across all projects this script will no longer require the AzureRm code blocks
-    It "Should run with AZ cmdlets if a URL is supplied and UseAzModule is set to `$true but not create a file" -Tag "DontRun" {
+    It "Should run with AZ cmdlets if a URL is supplied and UseAzModule is set to `$true but not create a file" -Tag "Unit" {
 
         Mock Invoke-RestMethod
         Mock Set-Content

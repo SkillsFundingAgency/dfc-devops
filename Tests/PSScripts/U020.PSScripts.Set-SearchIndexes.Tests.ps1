@@ -2,19 +2,19 @@ Push-Location -Path $PSScriptRoot\..\..\PSScripts\
 Import-Module $PSScriptRoot\..\..\PSModules\AzureApiFunctions
 
 # solves CommandNotFoundException
-function Get-AzureRmResource {}
-function Invoke-AzureRmResourceAction {}
+function Get-AzResource {}
+function Invoke-AzResourceAction {}
 
 Describe "Set-SearchIndexes unit tests" -Tag "Unit" {
 
     BeforeEach {
-        Mock Get-AzureRmResource {
+        Mock Get-AzResource {
             return @{
                 ResourceId = "12345678-1234"
             }
         }
 
-        Mock Invoke-AzureRmResourceAction {
+        Mock Invoke-AzResourceAction {
             return @{
                 PrimaryKey = "12345678=="
             }
@@ -62,8 +62,8 @@ Describe "Set-SearchIndexes unit tests" -Tag "Unit" {
         
         .\Set-SearchIndexes @DefaultParams
 
-        Should -Invoke -CommandName Get-AzureRmResource -Scope It -Exactly 1
-        Should -Invoke -CommandName Invoke-AzureRmResourceAction -Scope It -Exactly 1
+        Should -Invoke -CommandName Get-AzResource -Scope It -Exactly 1
+        Should -Invoke -CommandName Invoke-AzResourceAction -Scope It -Exactly 1
         Should -Invoke -CommandName ApiRequest -Scope It -ParameterFilter { $Method -eq 'GET' } -Exactly 1
         Should -Invoke -CommandName ApiRequest -Scope It -ParameterFilter { $Method -eq 'POST' } -Exactly 0
         Should -Invoke -CommandName ApiRequest -Scope It -ParameterFilter { $Method -eq 'PUT' } -Exactly 0
@@ -82,8 +82,8 @@ Describe "Set-SearchIndexes unit tests" -Tag "Unit" {
         
         .\Set-SearchIndexes @DefaultParams
 
-        Should -Invoke -CommandName Get-AzureRmResource -Scope It -Exactly 1
-        Should -Invoke -CommandName Invoke-AzureRmResourceAction -Scope It -Exactly 1
+        Should -Invoke -CommandName Get-AzResource -Scope It -Exactly 1
+        Should -Invoke -CommandName Invoke-AzResourceAction -Scope It -Exactly 1
         Should -Invoke -CommandName ApiRequest -Scope It -ParameterFilter { $Method -eq 'GET' } -Exactly 1
         Should -Invoke -CommandName ApiRequest -Scope It -ParameterFilter { $Method -eq 'POST' } -Exactly 1
         Should -Invoke -CommandName ApiRequest -Scope It -ParameterFilter { $Method -eq 'PUT' } -Exactly 0
@@ -114,8 +114,8 @@ Describe "Set-SearchIndexes unit tests" -Tag "Unit" {
         $DefaultParams['IndexConfigurationString'] = $ModifiedIndexDetails
         .\Set-SearchIndexes @DefaultParams
 
-        Should -Invoke -CommandName Get-AzureRmResource -Scope It -Exactly 1
-        Should -Invoke -CommandName Invoke-AzureRmResourceAction -Scope It -Exactly 1
+        Should -Invoke -CommandName Get-AzResource -Scope It -Exactly 1
+        Should -Invoke -CommandName Invoke-AzResourceAction -Scope It -Exactly 1
         Should -Invoke -CommandName ApiRequest -Scope It -ParameterFilter { $Method -eq 'GET' } -Exactly 1
         Should -Invoke -CommandName ApiRequest -Scope It -ParameterFilter { $Method -eq 'POST' } -Exactly 0
         Should -Invoke -CommandName ApiRequest -Scope It -ParameterFilter { $Method -eq 'PUT' } -Exactly 1
@@ -144,8 +144,8 @@ Describe "Set-SearchIndexes unit tests" -Tag "Unit" {
                 
         .\Set-SearchIndexes @DefaultParams
         
-        Should -Invoke -CommandName Get-AzureRmResource -Scope It -Exactly 1
-        Should -Invoke -CommandName Invoke-AzureRmResourceAction -Scope It -Exactly 1
+        Should -Invoke -CommandName Get-AzResource -Scope It -Exactly 1
+        Should -Invoke -CommandName Invoke-AzResourceAction -Scope It -Exactly 1
         Should -Invoke -CommandName ApiRequest -Scope It -ParameterFilter { $Method -eq 'GET' } -Exactly 1
         Should -Invoke -CommandName ApiRequest -Scope It -ParameterFilter { $Method -eq 'POST' } -Exactly 1
         

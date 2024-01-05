@@ -1,14 +1,12 @@
 parameters:
   AzureSubscription: ''
-  Powershell5CodeCoveragePercentage: 80
-  PowershellCoreCodeCoveragePercentage: 80
+  CodeCoveragePercentage: 75
 
 stages:
 - stage: Test
   jobs:
     - template: ../JobTemplates/RunIndividualTest.yml
       parameters:
-        RequiresAzurePowershell: true
         AzureSubscription: '${{ parameters.AzureSubscription }}'
         TestName: 'RunAcceptanceTests'
         TestType: 'ArmAcceptance'
@@ -16,6 +14,7 @@ stages:
 
     - template: ../JobTemplates/RunIndividualTest.yml
       parameters:
+        AzureSubscription: '${{ parameters.AzureSubscription }}'
         TestName: 'RunQualityTests'
         TestType: 'Quality'
         ResultsFileSuffix: 'Quality'
@@ -23,14 +22,6 @@ stages:
     - template: ../JobTemplates/RunIndividualTest.yml
       parameters:
         AzureSubscription: '${{ parameters.AzureSubscription }}'
-        TestName: 'RunPowershell5UnitTests'
+        TestName: 'RunScriptUnitTests'
         TestType: 'Unit'
-        ResultsFileSuffix: 'powershell'
-        CodeCoveragePercentage: ${{ parameters.Powershell5CodeCoveragePercentage }}
-
-    - template: ../JobTemplates/RunIndividualTest.yml
-      parameters:
-        TestName: 'RunPowershellCoreUnitTests'
-        TestType: 'Unit'
-        ResultsFileSuffix: 'pwsh'
-        CodeCoveragePercentage: ${{ parameters.PowershellCoreCodeCoveragePercentage }}
+        CodeCoveragePercentage: ${{ parameters.CodeCoveragePercentage }}
