@@ -14,7 +14,7 @@ function Set-CosmosDbCollection ($DefaultTimeToLive) {}
 function Get-CosmosDbOffer {}
 function Set-CosmosDbOffer ($OfferThroughput) {}
 
-Describe "New-CosmosDbAccountCollections unit tests" -Tag "Unit,DoNotRun" {
+Describe "New-CosmosDbAccountCollections unit tests" -Tag "Unit" {
 
     BeforeAll {
 

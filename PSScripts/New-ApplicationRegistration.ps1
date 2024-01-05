@@ -90,10 +90,15 @@ if(!$AdServicePrincipal) {
         }
 
         try {
-
             Write-Verbose "Registering service principal ..."
-            $AdServicePrincipal = New-AzADServicePrincipal -DisplayName $AppRegistrationName -PasswordCredential $SecurePassword -EndDate $([DateTime]::new(2299, 12, 31)) -ErrorAction Stop -SkipAssignment
 
+            $credentials = [Microsoft.Azure.PowerShell.Cmdlets.Resources.MSGraph.Models.ApiV10.MicrosoftGraphPasswordCredential] @{
+                StartDate=[DateTime]::UtcNow
+                EndDate=[DateTime]::UtcNow.AddYears(1)
+                SecretText=$Password
+            }
+
+            $AdServicePrincipal = New-AzADServicePrincipal -DisplayName $AppRegistrationName -PasswordCredential @($credentials) -ErrorAction Stop
         }
         catch {
 

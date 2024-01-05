@@ -21,7 +21,6 @@ jobs:
     inputs:
       azureSubscription: '${{ parameters.AzureSubscription }}'
       ScriptPath: '$(System.DefaultWorkingDirectory)/Tests/Invoke-${{ parameters.TestType }}Tests.ps1'
-      azurePowerShellVersion: 6.6.0
       pwsh: true
 
   - task: PublishTestResults@2

@@ -31,8 +31,7 @@ Describe "Import-ApimSwaggerApiDefinition unit tests" -Tag "Unit" {
 
     }
 
-    # Unable to test Az cmdlets alongside AzureRm.  After ZDT deployments are implemented across all projects this script will no longer require the AzureRm code blocks
-    It "Should run with AZ cmdlets if a URL is supplied and UseAzModule is set to `$true but not create a file" -Tag "DontRun" {
+    It "Should run with AZ cmdlets if a URL is supplied and UseAzModule is set to `$true but not create a file" -Tag "Unit" {
 
         Mock Invoke-RestMethod
         Mock Set-Content
