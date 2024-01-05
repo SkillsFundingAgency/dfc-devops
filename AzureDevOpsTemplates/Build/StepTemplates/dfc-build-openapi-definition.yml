@@ -1,0 +1,10 @@
+parameters:
+  OpenApiDefinitionDirectory: ''
+  SolutionBaseName: ''
+
+steps: 
+- task: PublishPipelineArtifact@1
+  displayName: Publish Pipeline Artifact
+  inputs:
+    targetPath: ${{ parameters.OpenApiDefinitionDirectory }}
+    artifactName: ${{ parameters.SolutionBaseName }}.Resources.OpenApiDefinitionDirectory
