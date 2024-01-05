@@ -30,6 +30,7 @@ stages:
 
     - template: ../JobTemplates/RunIndividualTest.yml
       parameters:
+        RequiresAzurePowershell: true
         TestName: 'RunPowershellCoreUnitTests'
         TestType: 'Unit'
         ResultsFileSuffix: 'pwsh'

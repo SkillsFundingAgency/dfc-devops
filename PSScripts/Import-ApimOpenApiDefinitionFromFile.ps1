@@ -17,6 +17,9 @@ The name of the API to update
 .PARAMETER OpenApiSpecificationFile
 The path to save the openapi specification file to update the APIM instance with.
 
+.PARAMETER ApiPath
+The end of the full url for where the API is hosted on APIM
+
 .EXAMPLE
 Import-ApimOpenApiDefinitionFromFile -ApimResourceGroup dfc-foo-bar-rg -InstanceName dfc-foo-bar-apim -ApiName bar -OpenApiSpecificationFile some-file.yaml -Verbose
 
