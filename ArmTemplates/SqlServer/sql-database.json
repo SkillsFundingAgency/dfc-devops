@@ -39,8 +39,31 @@
                 "ElasticPool",
                 "Basic",
                 "Standard",
-                "Premium"
+                "Premium",
+                "GeneralPurposeServerless",
+                "GeneralPurpose"
             ]
+        },
+        "databaseCapacity": {
+            "type": "int",
+            "defaultValue": 0,
+            "metadata": {
+                "description": "The maximum number of vCores to allocate to the database when in GeneralPurpose and GeneralPurposeServerless SKUs "
+            }
+        },
+        "databaseMinCapacity": {
+            "type": "string",
+            "defaultValue": "0.5",
+            "metadata": {
+                "description": "The minumum number of vCores to allocate to the database when in GeneralPurpose and GeneralPurposeServerless SKUs "
+            }
+        },
+        "databaseAutoPauseDelay": {
+            "type": "int",
+            "defaultValue": -1,
+            "metadata": {
+                "description": "The time delay (in minutes) before the database is automatically paused when in GeneralPurpose and GeneralPurposeServerless SKUs "
+            }
         },
         "dataMaskingExemptPrincipals": {
             "type": "string",
@@ -89,7 +112,21 @@
     },
     "variables": {
         "deployToElasticPool": "[greater(length(parameters('elasticPoolName')), 0)]",
+        "deployVCoreModel": "[or(equals(parameters('databaseTier'), 'GeneralPurposeServerless'), equals(parameters('databaseTier'), 'GeneralPurpose'))]",
         "databaseSettings": {
+            "generalPurpose": {
+                "sku": {
+                    "name": "[concat(if(equals(parameters('databaseTier'), 'GeneralPurposeServerless'), 'GP_S_Gen5', 'GP_Gen5'))]",
+                    "tier": "GeneralPurpose",
+                    "size": "Gen5",
+                    "capacity": "[parameters('databaseCapacity')]"
+                },
+                "properties": {
+                    "autoPauseDelay": "[parameters('databaseAutoPauseDelay')]",
+                    "minCapacity": "[parameters('databaseMinCapacity')]",
+                    "maxSizeBytes": "[parameters('databaseSizeBytes')]"
+                }
+            },
             "nonElasticPool": {
                 "sku": {
                     "name": "[variables('databaseSkuName')]",
@@ -128,7 +165,7 @@
             "type": "Microsoft.Sql/servers/databases",
             "apiVersion": "2017-10-01-preview",
             "location": "[resourceGroup().location]",
-            "sku": "[if(variables('deployToElasticPool'), variables('databaseSettings').elasticPool.sku, variables('databaseSettings').nonElasticPool.sku)]",
+            "sku": "[if(variables('deployToElasticPool'), variables('databaseSettings').elasticPool.sku, if(variables('deployVCoreModel'), variables('databaseSettings').generalPurpose.sku, variables('databaseSettings').nonElasticPool.sku))]",
             "properties": "[if(variables('deployToElasticPool'), variables('databaseSettings').elasticPool.properties, variables('databaseSettings').nonElasticPool.properties)]",
             "resources": [
                 {
