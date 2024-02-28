@@ -99,6 +99,9 @@
                     "type": "slots",
                     "apiVersion": "2018-11-01",
                     "location": "[resourceGroup().location]",
+                    "Identity": {
+                        "type": "SystemAssigned"
+                    },
                     "properties": {
                         "clientAffinityEnabled": "[parameters('clientAffinity')]",
                         "siteConfig": {
