@@ -33,7 +33,7 @@ steps:
     ResourceGroupName: '${{ parameters.FunctionResourceGroup }}'
     SourceSlot: staging
 
-- task: AzurePowerShell@4
+- task: AzurePowerShell@5
   displayName: 'Import Swagger Doc'
   inputs:
     azureSubscription: '${{ parameters.AzureSubscription }}'
@@ -42,7 +42,7 @@ steps:
     ScriptArguments: '-ApimResourceGroup ${{ parameters.ApimResourceGroup }} -InstanceName ${{ parameters.ApimInstanceName }} -ApiName ${{ parameters.ApiName }} -SwaggerSpecificationUrl ${{ parameters.SwaggerSpecificationUrl }} -UseAzModule $true -Verbose'
     azurePowerShellVersion: LatestVersion
 
-- task: AzurePowerShell@4
+- task: AzurePowerShell@5
   condition: ne( '${{ parameters.ApimLoggerName }}', '')
   displayName: 'Azure PowerShell script: Set-ApimProductAndLogger'
   inputs:

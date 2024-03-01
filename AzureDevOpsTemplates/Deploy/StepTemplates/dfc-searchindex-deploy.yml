@@ -7,7 +7,7 @@ parameters:
   Location: 'West Europe'
 
 steps:
-- task: AzurePowerShell@3
+- task: AzurePowerShell@5
   displayName: 'Create Search Indexes'
   condition: and(succeeded(), ne(variables.IndexFile, ''))
   inputs:
