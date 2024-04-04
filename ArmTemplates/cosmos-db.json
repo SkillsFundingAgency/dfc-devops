@@ -47,7 +47,23 @@
             "metadata": {
                 "description": "Set this to false to remove access to CosmosDB from resources in Azure Data Centres"
             }
+        },
+        "isVirtualNetworkFilterEnabled": {
+            "type": "string",
+            "defaultValue": "false",
+            "metadata": {
+                "description": "Set this to true to only allow access from specified vnets"
+                }
+        },
+        "subnetIds": {
+            "type": "array",
+            "defaultValue": []
+        },
+        "subnetIdsPrefix": {
+            "type": "string",
+            "defaultValue": ""
         }
+
     },
     "variables": {
         "capabilityName": "[if(equals(parameters('cosmosApiType'), 'Cassandra'), 'EnableCassandra', if(equals(parameters('cosmosApiType'), 'Gremlin'), 'EnableGremlin', if(equals(parameters('cosmosApiType'), 'Table'), 'EnableTable', '')))]",
@@ -70,7 +86,7 @@
                 },
                 "capabilities": "[if(equals(variables('capabilityName'),''), variables('emptyCapabilities'), variables('enabledCapabilities'))]",
                 "databaseAccountOfferType": "Standard",
-                "ipRangeFilter": "[concat('104.42.195.92,40.76.54.131,52.176.6.30,52.169.50.45,52.187.184.26,', if(parameters('allowConnectionsFromAzureDataCenters'), '0.0.0.0,', ''), parameters('additionalIpAddresses'))]"
+                "ipRangeFilter": "[concat('104.42.195.92,40.76.54.131,52.176.6.30,52.169.50.45,52.187.184.26', if(parameters('allowConnectionsFromAzureDataCenters'), '0.0.0.0,', ''), parameters('additionalIpAddresses'))]"
             },
             "WithoutIpFilter": {
                 "locations": [
@@ -84,17 +100,56 @@
                 },
                 "capabilities": "[if(equals(variables('capabilityName'),''), variables('emptyCapabilities'), variables('enabledCapabilities'))]",
                 "databaseAccountOfferType": "Standard"
+            },
+            "WithVirtualNetworkFilter": {
+                "locations": [
+                    {
+                        "locationName": "[resourceGroup().location]",
+                        "failoverPriority": 0
+                    }
+                ],
+                "consistencyPolicy": {
+                    "defaultConsistencyLevel": "[parameters('defaultConsistencyLevel')]"
+                },
+                "capabilities": "[if(equals(variables('capabilityName'),''), variables('emptyCapabilities'), variables('enabledCapabilities'))]",
+                "databaseAccountOfferType": "Standard",
+                "isVirtualNetworkFilterEnabled": "[bool(parameters('isVirtualNetworkFilterEnabled'))]",
+                "copy": [
+                    {
+                        "name": "virtualNetworkRules",
+                        "count": "[length(parameters('subnetIds'))]",
+                        "input": {
+                            "id": "[concat(parameters('subnetIdsPrefix'), parameters('subnetIds')[copyIndex('virtualNetworkRules')])]",
+                            "ignoreMissingVNetServiceEndpoint": false
+                        }
+
+                    }
+                ]
             }
+
         }
     },
     "resources": [
         {
             "name": "[parameters('cosmosDbName')]",
             "type": "Microsoft.DocumentDB/databaseAccounts",
+            "condition": "[equals(parameters('isVirtualNetworkFilterEnabled'), 'false')]",
             "apiVersion": "2015-04-08",
             "location": "[resourceGroup().location]",
             "kind": "[if(equals(parameters('cosmosApiType'), 'MongoDB'), 'MongoDB', 'GlobalDocumentDB')]",
             "properties": "[if(equals(parameters('additionalIpAddresses'), ''), variables('cosmosResourceProperties').WithoutIpFilter, variables('cosmosResourceProperties').WithIpFilter)]",
+            "tags": {
+                "defaultExperience": "[if(equals(parameters('cosmosApiType'),'SQL'), 'DocumentDB', parameters('cosmosApiType'))]"
+            }
+        },
+        {
+            "name": "[parameters('cosmosDbName')]",
+            "type": "Microsoft.DocumentDB/databaseAccounts",
+            "condition": "[equals(parameters('isVirtualNetworkFilterEnabled'), 'true')]",
+            "apiVersion": "2015-04-08",
+            "location": "[resourceGroup().location]",
+            "kind": "[if(equals(parameters('cosmosApiType'), 'MongoDB'), 'MongoDB', 'GlobalDocumentDB')]",
+            "properties": "[if(equals(parameters('additionalIpAddresses'), ''), variables('cosmosResourceProperties').WithoutIpFilter, variables('cosmosResourceProperties').WithVirtualNetworkFilter)]",
             "tags": {
                 "defaultExperience": "[if(equals(parameters('cosmosApiType'),'SQL'), 'DocumentDB', parameters('cosmosApiType'))]"
             }
