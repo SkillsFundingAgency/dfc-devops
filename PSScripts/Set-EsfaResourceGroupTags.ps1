@@ -52,6 +52,8 @@ $Tags = @{
     'Feature' = $ServiceOffering
 }
 
+Import-Module Az.Resources
+
 Write-Verbose -Message "Attempting to retrieve existing resource group $ResourceGroupName"
 $ResourceGroup = Get-AzResourceGroup -Name $ResourceGroupName -ErrorAction SilentlyContinue
 
