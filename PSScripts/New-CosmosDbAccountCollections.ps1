@@ -75,22 +75,29 @@ function CreateIncludedPathIndex ($IndexPaths) {
 }
 
 # get existing Cosmos DB account (call changes from AzureRM v5 to v6)
-$AzureRmVersion = Get-Module AzureRM -ListAvailable | Sort-Object { $_.Version.Major } -Descending | Select-Object -First 1
-Write-Verbose "Azure RM Version $AzureRmVersion"
-if ($AzureRmVersion.Version.Major -gt 5) {
-    $GetCosmosDbAccountParameters = @{
-        Name              = $CosmosDbAccountName
-        ResourceGroupName = $ResourceGroupName
-        ExpandProperties  = $true
-        ResourceType      = "Microsoft.DocumentDB/databaseAccounts"
-    }
-}
-else {
-    $GetCosmosDbAccountParameters = @{
-        ResourceType      = "Microsoft.DocumentDb/databaseAccounts"
-        ResourceGroupName = $ResourceGroupName
-        Name      = $CosmosDbAccountName
-    }
+# $AzureRmVersion = Get-Module AzureRM -ListAvailable | Sort-Object { $_.Version.Major } -Descending | Select-Object -First 1
+# Write-Verbose "Azure RM Version $AzureRmVersion"
+# if ($AzureRmVersion.Version.Major -gt 5) {
+#     $GetCosmosDbAccountParameters = @{
+#         Name              = $CosmosDbAccountName
+#         ResourceGroupName = $ResourceGroupName
+#         ExpandProperties  = $true
+#         ResourceType      = "Microsoft.DocumentDB/databaseAccounts"
+#     }
+# }
+# else {
+#     $GetCosmosDbAccountParameters = @{
+#         ResourceType      = "Microsoft.DocumentDb/databaseAccounts"
+#         ResourceGroupName = $ResourceGroupName
+#         Name      = $CosmosDbAccountName
+#     }
+# }
+
+$GetCosmosDbAccountParameters = @{
+    Name              = $CosmosDbAccountName
+    ResourceGroupName = $ResourceGroupName
+    ExpandProperties  = $true
+    ResourceType      = "Microsoft.DocumentDB/databaseAccounts"
 }
 
 $ExistingAccount = Get-AzResource @GetCosmosDbAccountParameters
