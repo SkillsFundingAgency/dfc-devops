@@ -135,12 +135,12 @@
     "outputs": {
         "identityPrincipalId": {
             "type": "string",
-            "value": "[reference(parameters('appServiceName'), '2024-03-01', 'Full').identity.principalId]"
+            "value": "[reference(parameters('appServiceName'), '2023-12-01', 'Full').identity.principalId]"
         },
         "stagingIdentityPrincipalId": {
             "condition": "[parameters('deployStagingSlot')]",
             "type": "string",
-            "value": "[reference('staging', '2024-03-01', 'Full').identity.principalId]"
+            "value": "[reference('staging', '2023-12-01', 'Full').identity.principalId]"
         }
     }
 }
