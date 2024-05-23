@@ -1,0 +1,46 @@
+{
+    "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "oiwName": {
+            "type": "string",
+            "metadata": {
+                "description": "Name of the workspace"
+            }
+        },
+        "oiwSku": {
+            "type": "string",
+            "allowedValues": [
+                "Free",
+                "Standard",
+                "Premium",
+                "PerNode",
+                "PerGB2018",
+                "Standalone"
+            ],
+            "defaultValue": "PerGB2018",
+            "metadata": {
+                "description": "Sku"
+            }
+        }
+    },
+    "resources": [
+        {
+            "name": "[parameters('oiwName')]",
+            "type": "Microsoft.OperationalInsights/workspaces",
+            "apiVersion": "2015-11-01-preview",
+            "location": "[resourceGroup().location]",
+            "properties": {
+                "sku": {
+                    "name": "[parameters('oiwSku')]"
+                }
+            }
+        }
+    ],
+    "outputs": {
+        "WorkspaceId": {
+            "type": "string",
+            "value": "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('oiwName'))]"
+        }
+    }
+}
