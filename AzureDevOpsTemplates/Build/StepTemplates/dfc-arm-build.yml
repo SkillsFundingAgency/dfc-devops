@@ -21,7 +21,7 @@ steps:
     targetType: 'inline'
     script: Invoke-WebRequest -Uri ${{ parameters.TestArmTemplateScriptUrl }} -OutFile ${{ parameters.TestArmTemplateScriptFilePath }}
 
-- task: AzurePowerShell@3
+- task: AzurePowerShell@5
   displayName: 'Test Arm Template'
   inputs:
     azureSubscription: ${{ parameters.AzureSubscription }}
@@ -29,7 +29,7 @@ steps:
     scriptPath: ${{ parameters.TestArmTemplateScriptFilePath }}
     scriptArguments: -ParameterFile '${{ parameters.ArmTemplateRoot }}\test-parameters.json' -TemplateFile '${{ parameters.ArmTemplateRoot }}\template.json' -Verbose
     azurePowerShellVersion: LatestVersion
-    
+
 - task: PublishPipelineArtifact@0
   displayName: Publish Pipeline Artifact
   inputs:
