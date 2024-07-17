@@ -4,6 +4,7 @@ parameters:
   BuildPlatform: 'any cpu'
   BuildConfiguration: 'release'
   RunTests: true
+  GitVersionVersion: '5.3.x'
 
 steps:
  - task: gittools.gitversion.gitversion-task.GitVersion@5
@@ -11,7 +12,7 @@ steps:
    inputs:
      useConfigFile: true
      configFilePath: GitVersion.yml
-     versionSpec: '5.3.x'
+     versionSpec: ${{ parameters.GitVersionVersion }}
 
  - task: NuGetToolInstaller@0
    displayName: 'Use NuGet'

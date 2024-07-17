@@ -5,6 +5,7 @@ parameters:
   BuildConfiguration: 'release'
   DotNetCoreVersion: ''
   GitVersionConfigFilePath: Resources/AzureDevOps/GitVersion.yml
+  GitVersionVersion: '5.3.x'
   IncludePreviewVersions: false
   PublishWebApp: 'false'
   TestSuffix: Tests
@@ -23,7 +24,7 @@ steps:
    inputs:
      useConfigFile: true
      configFilePath: ${{ parameters.GitVersionConfigFilePath }}
-     versionSpec: '5.3.x'
+     versionSpec: ${{ parameters.GitVersionVersion }}
 
  - task: DotNetCoreCLI@2
    displayName: 'restore nuget packages'
