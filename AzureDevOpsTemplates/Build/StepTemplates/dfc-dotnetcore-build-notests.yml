@@ -15,7 +15,7 @@ steps:
    inputs:
      version: ${{ parameters.DotNetCoreVersion }}
      IncludePreviewVersions: ${{ parameters.IncludePreviewVersions }}
-     installationPath: $(Agent.TempDirectory)/dotnet
+     installationPath: $(Agent.ToolsDirectory)/dotnet
  
  - task: UseGitVersion@5
    displayName: GitVersion
