@@ -5,6 +5,7 @@ parameters:
   BuildConfiguration: 'release'
   DotNetCoreVersion: ''
   GitVersionConfigFilePath: Resources/AzureDevOps/GitVersion.yml
+  GitVersionVersion: '5.3.x'
   IncludePreviewVersions: false
   PublishWebApp: 'false'
   TestSuffix: ''
@@ -33,14 +34,14 @@ steps:
     inputs:
       version: ${{ parameters.DotNetCoreVersion }}
       IncludePreviewVersions: ${{ parameters.IncludePreviewVersions }}
-      installationPath: $(Agent.TempDirectory)/dotnet
+      installationPath: $(Agent.ToolsDirectory)/dotnet
 
   - task: UseGitVersion@5
     displayName: GitVersion
     inputs:
       useConfigFile: true
       configFilePath: ${{ parameters.GitVersionConfigFilePath }}
-      versionSpec: '5.3.x'
+      versionSpec: '${{ parameters.GitVersionVersion }}
 
   - task: SonarCloudPrepare@1
     displayName: 'Prepare analysis on SonarCloud'
