@@ -3,8 +3,19 @@ parameters:
   BuildPlatform: 'any cpu'
   BuildConfiguration: 'release'
   GitVersionVersion: '5.3.x'
+  IncludePreviewVersions: false
+  DotNetCoreVersion: ''
+  NugetVersion: '5.x'
 
 steps:
+ - task: UseDotNet@2
+   displayName: 'Use .NET Core sdk ${{ parameters.DotNetCoreVersion }}'
+   condition: ne('', '${{ parameters.DotNetCoreVersion }}')
+   inputs:
+     version: ${{ parameters.DotNetCoreVersion }}
+     IncludePreviewVersions: ${{ parameters.IncludePreviewVersions }}
+     installationPath: $(Agent.ToolsDirectory)/dotnet
+
  - task: gittools.gitversion.gitversion-task.GitVersion@5
    displayName: GitVersion
    inputs:
@@ -12,18 +23,14 @@ steps:
      configFilePath: GitVersion.yml
      versionSpec: ${{ parameters.GitVersionVersion }}
 
- - task: NuGetToolInstaller@0
-   displayName: 'Use NuGet'
+ - task: DotNetCoreCLI@2
+   displayName: 'restore nuget packages'
    inputs:
-     versionSpec: '5.x'
-
- - task: NuGetCommand@2
-   displayName: 'NuGet restore ${{ parameters.SolutionBaseName }}.sln'
-   inputs:
-     restoreSolution: '${{ parameters.SolutionBaseName }}.sln'
+     command: 'restore'
+     projects: '**\*.csproj'
      feedsToUse: 'select'
      vstsFeed: 'NationalCareersService'
-
+     
  - task: DotNetCoreCLI@2
    displayName: 'dotnet build'
    inputs:
