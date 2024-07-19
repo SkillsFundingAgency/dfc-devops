@@ -5,7 +5,6 @@ parameters:
   GitVersionVersion: '5.3.x'
   IncludePreviewVersions: false
   DotNetCoreVersion: ''
-  NugetVersion: '5.x'
 
 steps:
  - task: UseDotNet@2
@@ -30,7 +29,7 @@ steps:
      projects: '**\*.csproj'
      feedsToUse: 'select'
      vstsFeed: 'NationalCareersService'
-     
+
  - task: DotNetCoreCLI@2
    displayName: 'dotnet build'
    inputs:
