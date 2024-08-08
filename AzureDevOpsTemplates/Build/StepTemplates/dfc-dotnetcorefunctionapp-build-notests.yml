@@ -15,12 +15,12 @@ steps:
      IncludePreviewVersions: ${{ parameters.IncludePreviewVersions }}
      installationPath: $(Agent.ToolsDirectory)/dotnet
 
- - task: gittools.gitversion.gitversion-task.GitVersion@5
-   displayName: GitVersion
-   inputs:
-     useConfigFile: true
-     configFilePath: GitVersion.yml
-     versionSpec: ${{ parameters.GitVersionVersion }}
+#  - task: gittools.gitversion.gitversion-task.GitVersion@5
+#    displayName: GitVersion
+#    inputs:
+#      useConfigFile: true
+#      configFilePath: GitVersion.yml
+#      versionSpec: ${{ parameters.GitVersionVersion }}
 
  - task: DotNetCoreCLI@2
    displayName: 'restore nuget packages'
