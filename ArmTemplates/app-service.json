@@ -64,6 +64,10 @@
         "clientAffinity": {
             "type": "bool",
             "defaultValue": false
+        },
+        "netVersion": {
+            "type": "string",
+            "defaultValue": "v6.0"
         }
     },
     "variables": {
@@ -88,6 +92,7 @@
                     "appSettings": "[parameters('appServiceAppSettings')]",
                     "connectionStrings": "[parameters('appServiceConnectionStrings')]",
                     "phpVersion": "off",
+                    "netFrameworkVersion": "[parameters('netVersion')]",
                     "minTlsVersion": "1.2"
                 },
                 "httpsOnly": true
