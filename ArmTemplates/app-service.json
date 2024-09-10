@@ -110,9 +110,12 @@
                     "properties": {
                         "clientAffinityEnabled": "[parameters('clientAffinity')]",
                         "siteConfig": {
+                            "alwaysOn": true,
                             "appSettings": "[parameters('appServiceAppSettings')]",
                             "connectionStrings": "[parameters('appServiceConnectionStrings')]",
-                            "phpVersion": "off"
+                            "phpVersion": "off",
+                            "netFrameworkVersion": "[parameters('netVersion')]",
+                            "minTlsVersion": "1.2"
                         }
                     },
                     "dependsOn": [
