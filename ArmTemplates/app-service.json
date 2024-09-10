@@ -78,7 +78,7 @@
         {
             "name": "[parameters('appServiceName')]",
             "type": "Microsoft.Web/sites",
-            "apiVersion": "2018-11-01",
+            "apiVersion": "2022-09-01",
             "kind": "[parameters('appServiceType')]",
             "location": "[resourceGroup().location]",
             "Identity": {
@@ -102,7 +102,7 @@
                     "condition": "[parameters('deployStagingSlot')]",
                     "name": "staging",
                     "type": "slots",
-                    "apiVersion": "2018-11-01",
+                    "apiVersion": "2022-09-01",
                     "location": "[resourceGroup().location]",
                     "Identity": {
                         "type": "SystemAssigned"
@@ -110,9 +110,12 @@
                     "properties": {
                         "clientAffinityEnabled": "[parameters('clientAffinity')]",
                         "siteConfig": {
+                            "alwaysOn": true,
                             "appSettings": "[parameters('appServiceAppSettings')]",
                             "connectionStrings": "[parameters('appServiceConnectionStrings')]",
-                            "phpVersion": "off"
+                            "phpVersion": "off",
+                            "netFrameworkVersion": "[parameters('netVersion')]",
+                            "minTlsVersion": "1.2"
                         }
                     },
                     "dependsOn": [
