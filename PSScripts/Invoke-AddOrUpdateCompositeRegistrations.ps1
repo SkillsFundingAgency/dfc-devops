@@ -40,6 +40,10 @@ param(
     [string] $RegistrationFile
 )
 
+# Set TLS to TLS 1.2 as that's the minimum Azure now supports. 
+[System.Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType]::Tls12;
+
+
 Import-Module ../PSModules/CompositeRegistrationFunctions -Force
 
 $content = Get-Content -Path $RegistrationFile -Raw
