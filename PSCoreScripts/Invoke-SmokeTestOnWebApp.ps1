@@ -53,6 +53,9 @@ param(
     [int] $AttemptsBeforeFailure=5
 )
 
+# Set TLS to TLS 1.2 as that's the minimum Azure now supports.
+[System.Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType]::Tls12;
+
 function Invoke-SingleSmokeTest
 {
     param(
