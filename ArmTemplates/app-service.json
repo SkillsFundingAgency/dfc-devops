@@ -68,6 +68,13 @@
         "netVersion": {
             "type": "string",
             "defaultValue": "v6.0"
+        },
+        "healthCheckPath": {
+            "type": "string",
+            "defaultValue": "",
+            "metadata": {
+                "description": "Sets up Azure App Service health check (https://learn.microsoft.com/en-us/azure/app-service/monitor-instances-health-check?tabs=dotnet).  Defaults to an empty string (disabled)"
+            }
         }
     },
     "variables": {
@@ -93,7 +100,8 @@
                     "connectionStrings": "[parameters('appServiceConnectionStrings')]",
                     "phpVersion": "off",
                     "netFrameworkVersion": "[parameters('netVersion')]",
-                    "minTlsVersion": "1.2"
+                    "minTlsVersion": "1.2",
+                    "healthCheckPath": "[parameters('healthCheckPath')]"
                 },
                 "httpsOnly": true
             },
@@ -115,7 +123,8 @@
                             "connectionStrings": "[parameters('appServiceConnectionStrings')]",
                             "phpVersion": "off",
                             "netFrameworkVersion": "[parameters('netVersion')]",
-                            "minTlsVersion": "1.2"
+                            "minTlsVersion": "1.2",
+                            "healthCheckPath": "[parameters('healthCheckPath')]"
                         }
                     },
                     "dependsOn": [
