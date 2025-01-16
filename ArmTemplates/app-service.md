@@ -81,3 +81,7 @@ Defaults to not enabled (stateless).
 
 If ARR Affinity is enabled the server will place a cookie on responses that causes a user to always hit the same instance within their session.
 This has a load balancing penalty (existing clients cannot be balanced away from an instance running hot) so is disabled by default.
+
+healthCheckPath: (optional) string
+
+Sets up Azure App Service health checks when defined to something other than an empty string.

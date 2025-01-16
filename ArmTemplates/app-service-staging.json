@@ -60,6 +60,13 @@
         "clientAffinity": {
             "type": "bool",
             "defaultValue": false
+        },
+        "healthCheckPath": {
+            "type": "string",
+            "defaultValue": "",
+            "metadata": {
+                "description": "Sets up Azure App Service health check (https://learn.microsoft.com/en-us/azure/app-service/monitor-instances-health-check?tabs=dotnet).  Defaults to an empty string (disabled)"
+            }
         }
     },
     "variables": {
@@ -70,7 +77,7 @@
         {
             "name": "[parameters('appServiceName')]",
             "type": "Microsoft.Web/sites",
-            "apiVersion": "2018-11-01",
+            "apiVersion": "2019-08-01",
             "kind": "[parameters('appServiceType')]",
             "location": "[resourceGroup().location]",
             "Identity": {
@@ -82,7 +89,8 @@
                 "siteConfig": {
                     "alwaysOn": true,
                     "phpVersion": "off",
-                    "minTlsVersion": "1.2"
+                    "minTlsVersion": "1.2",
+                    "healthCheckPath": "[parameters('healthCheckPath')]"
                 },
                 "httpsOnly": true
             },
@@ -90,14 +98,16 @@
                 {
                     "name": "staging",
                     "type": "slots",
-                    "apiVersion": "2018-11-01",
+                    "apiVersion": "2019-08-01",
                     "location": "[resourceGroup().location]",
                     "properties": {
                         "clientAffinityEnabled": "[parameters('clientAffinity')]",
                         "siteConfig": {
                             "appSettings": "[parameters('appServiceAppSettings')]",
                             "connectionStrings": "[parameters('appServiceConnectionStrings')]",
-                            "phpVersion": "off"
+                            "phpVersion": "off",
+                            "minTlsVersion": "1.2",
+                            "healthCheckPath": "[parameters('healthCheckPath')]"
                         }
                     },
                     "dependsOn": [
