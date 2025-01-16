@@ -85,3 +85,9 @@ This has a load balancing penalty (existing clients cannot be balanced away from
 healthCheckPath: (optional) string
 
 Sets up Azure App Service health checks when defined to something other than an empty string.
+
+appServiceSlotAppSettings: (optional) array
+A list of app settings to set on the staging slot. If not specified, defaults to the app settings for the production slot
+
+appServiceSlotConnectionStrings: (optional) array
+A list of connection strings to set on the staging slot. If not specified, defaults to the app settings for the production slot

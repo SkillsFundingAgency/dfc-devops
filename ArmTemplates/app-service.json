@@ -75,6 +75,20 @@
             "metadata": {
                 "description": "Sets up Azure App Service health check (https://learn.microsoft.com/en-us/azure/app-service/monitor-instances-health-check?tabs=dotnet).  Defaults to an empty string (disabled)"
             }
+        },
+        "appServiceSlotAppSettings": {
+            "type": "array",
+            "defaultValue": "[parameters('appServiceAppSettings')]",
+            "metadata": {
+                "description": "Array of app settings to be created on the staging slot"
+            }
+        },
+        "appServiceSlotConnectionStrings": {
+            "type": "array",
+            "defaultValue": "[parameters('appServiceConnectionStrings')]",
+            "metadata": {
+                "description": "Array of connection strings to be created on the staging slot"
+            }
         }
     },
     "variables": {
@@ -119,8 +133,8 @@
                         "clientAffinityEnabled": "[parameters('clientAffinity')]",
                         "siteConfig": {
                             "alwaysOn": true,
-                            "appSettings": "[parameters('appServiceAppSettings')]",
-                            "connectionStrings": "[parameters('appServiceConnectionStrings')]",
+                            "appSettings": "[parameters('appServiceSlotAppSettings')]",
+                            "connectionStrings": "[parameters('appServiceSlotConnectionStrings')]",
                             "phpVersion": "off",
                             "netFrameworkVersion": "[parameters('netVersion')]",
                             "minTlsVersion": "1.2",
