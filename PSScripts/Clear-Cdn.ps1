@@ -37,5 +37,5 @@ param (
 )
 
 Write-Verbose "Purging $EndpointName of all content from $Path"
-Clear-AzCdnEndpointContent -EndpointName $EndpointName -ProfileName $CdnName -ResourceGroupName $ResourceGroupName -ContentPath $Path
+Clear-AzFrontDoorCdnEndpointContent -EndpointName $EndpointName -ProfileName $CdnName -ResourceGroupName $ResourceGroupName -ContentPath $Path
 
