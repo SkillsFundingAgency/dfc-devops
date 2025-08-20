@@ -67,6 +67,13 @@
                 "description": "The edition component of the sku (defaultValues to Standard)"
             }
         },
+        "elasticPoolEditionName": {
+            "type": "string",
+            "defaultValue": "StandardPool",
+            "metadata": {
+                "description": "The edition name of the sku (defaultValues to StandardPool)"
+            }
+        },
         "elasticPoolTotalDTU": {
             "type": "int",
             "defaultValue": 100,
@@ -83,9 +90,9 @@
         },
         "elasticPoolStorage": {
             "type": "int",
-            "defaultValue": 51200,
+            "defaultValue": 214748364800,
             "metadata": {
-                "description": "Storage limit for the database elastic pool in MB"
+                "description": "Storage limit for the database elastic pool in Bytes"
             }
         }
     },
@@ -143,7 +150,7 @@
                 {
                     "name": "activeDirectory",
                     "type": "administrators",
-                    "apiVersion": "2014-04-01",
+                    "apiVersion": "2023-08-01",
                     "location": "[resourceGroup().location]",
                     "dependsOn": [
                         "[concat('Microsoft.Sql/servers/', parameters('sqlServerName'))]",
@@ -160,18 +167,23 @@
                 {
                     "name": "[variables('elasticPoolName')]",
                     "type": "Microsoft.Sql/servers/elasticPools",
-                    "apiVersion": "2014-04-01",
+                    "apiVersion": "2023-08-01",
                     "location": "[resourceGroup().location]",
                     "condition": "[not(equals(parameters('elasticPoolName'), ''))]",
                     "dependsOn": [
                         "[concat('Microsoft.Sql/servers/', parameters('sqlServerName'))]"
                     ],
+                    "sku": {
+                        "name": "[parameters('elasticPoolEditionName')]",
+                        "tier": "[parameters('elasticPoolEdition')]",
+                        "capacity": "[parameters('elasticPoolTotalDTU')]"
+                    },
                     "properties": {
-                        "edition": "[parameters('elasticPoolEdition')]",
-                        "dtu": "[parameters('elasticPoolTotalDTU')]",
-                        "databaseDtuMin": "[parameters('elasticPoolMinDTU')]",
-                        "databaseDtuMax": "[parameters('elasticPoolTotalDTU')]",
-                        "storageMB": "[parameters('elasticPoolStorage')]",
+                        "maxSizeBytes": "[parameters('elasticPoolStorage')]",
+                        "perDatabaseSettings": {
+                            "minCapacity": "[parameters('elasticPoolMinDTU')]",
+                            "maxCapacity": "[parameters('elasticPoolTotalDTU')]"
+                        },
                         "zoneRedundant": false
                     }
                 }        
