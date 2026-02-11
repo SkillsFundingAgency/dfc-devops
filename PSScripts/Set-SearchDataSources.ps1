@@ -79,7 +79,7 @@ foreach ($DataSource in $DataSourceConfiguration) {
     catch {
         # index does not exist
         Write-Host "Creating datasource $($DataSource.name)"
-        ApiRequest -Method POST -Url $Url -ApiKey $SearchResourceKeys.PrimaryKey -Body $DataSource
+        ApiRequest -Method PUT -Url $Url -ApiKey $SearchResourceKeys.PrimaryKey -Body $DataSource
         continue
     }
 }

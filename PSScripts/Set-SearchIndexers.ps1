@@ -77,7 +77,7 @@ foreach ($Indexer in $IndexerConfiguration) {
     catch {
         # index does not exist
         Write-Host "Creating indexer $($Indexer.name)"
-        ApiRequest -Method POST -Url $Url -ApiKey $SearchResourceKeys.PrimaryKey -Body $Indexer
+        ApiRequest -Method PUT -Url $Url -ApiKey $SearchResourceKeys.PrimaryKey -Body $Indexer
         continue
     }
 }

@@ -77,7 +77,7 @@ foreach ($Index in $IndexConfiguration) {
     catch {
         # index does not exist
         Write-Host "Creating index $($Index.name)"
-        ApiRequest -Method POST -Url $Url -ApiKey $SearchResourceKeys.PrimaryKey -Body $Index
+        ApiRequest -Method PUT -Url $Url -ApiKey $SearchResourceKeys.PrimaryKey -Body $Index
         continue
     }
 
