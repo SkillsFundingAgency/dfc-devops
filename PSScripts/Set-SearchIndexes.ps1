@@ -74,12 +74,12 @@ foreach ($Index in $IndexConfiguration) {
     Write-Host "Url Request - $($Url)"
     Write-Host "Primary Key - $($SearchResourceKeys.PrimaryKey)"
     try {
-        $ExistingIndex = ApiRequest -Method GET -Url "$Url/$($Index.name)" -ApiKey $SearchResourceKeys.PrimaryKey
+        $ExistingIndex = ApiRequest -Method GET -Url "$Url/$($Index.name)" -ApiKey $SearchResourceKeys.PrimaryKey -ApiVersion $SearchParams.ApiVersion
     }
     catch {
         # index does not exist
         Write-Host "Creating index $($Index.name)"
-        ApiRequest -Method POST -Url $Url -ApiKey $SearchResourceKeys.PrimaryKey -Body $Index
+        ApiRequest -Method POST -Url $Url -ApiKey $SearchResourceKeys.PrimaryKey -Body $Index -ApiVersion $SearchParams.ApiVersion
         continue
     }
 

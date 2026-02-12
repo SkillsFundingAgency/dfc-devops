@@ -76,12 +76,12 @@ foreach ($DataSource in $DataSourceConfiguration) {
     Write-Host "Primary Key - $($SearchResourceKeys.PrimaryKey)"
     try {
         Write-Verbose "Checking if datasource $($DataSource.name) exists"
-        ApiRequest -Method GET -Url "$Url/$($DataSource.name)" -ApiKey $SearchResourceKeys.PrimaryKey
+        ApiRequest -Method GET -Url "$Url/$($DataSource.name)" -ApiKey $SearchResourceKeys.PrimaryKey -ApiVersion $SearchParams.ApiVersion
     }
     catch {
         # index does not exist
         Write-Host "Creating datasource $($DataSource.name)"
-        ApiRequest -Method POST -Url $Url -ApiKey $SearchResourceKeys.PrimaryKey -Body $DataSource
+        ApiRequest -Method POST -Url $Url -ApiKey $SearchResourceKeys.PrimaryKey -Body $DataSource -ApiVersion $SearchParams.ApiVersion
         continue
     }
 }

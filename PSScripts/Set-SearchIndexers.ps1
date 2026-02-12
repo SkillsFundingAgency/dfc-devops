@@ -74,12 +74,12 @@ foreach ($Indexer in $IndexerConfiguration) {
     Write-Host "Url Request - $($Url)"
      Write-Host "Primary Key - $($SearchResourceKeys.PrimaryKey)"
     try {
-        ApiRequest -Method GET -Url "$Url/$($Indexer.name)" -ApiKey $SearchResourceKeys.PrimaryKey
+        ApiRequest -Method GET -Url "$Url/$($Indexer.name)" -ApiKey $SearchResourceKeys.PrimaryKey -ApiVersion $SearchParams.ApiVersion
     }
     catch {
         # index does not exist
         Write-Host "Creating indexer $($Indexer.name)"
-        ApiRequest -Method POST -Url $Url -ApiKey $SearchResourceKeys.PrimaryKey -Body $Indexer
+        ApiRequest -Method POST -Url $Url -ApiKey $SearchResourceKeys.PrimaryKey -Body $Indexer -ApiVersion $SearchParams.ApiVersion
         continue
     }
 }
