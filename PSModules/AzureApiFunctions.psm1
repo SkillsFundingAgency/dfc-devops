@@ -45,6 +45,8 @@ ApiRequest -Url "https://api.example.com/endpoint" -ApiKey fookey
         "api-key"      = $ApiKey
     }
     $FullUrl = "$($Url)?api-version=$ApiVersion"
+
+    Write-Host "Invoking $Method request to $FullUrl" 
     
     if ($Body) {
         $JsonBody = $Body | ConvertTo-Json -Depth 10
