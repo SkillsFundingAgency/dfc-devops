@@ -72,6 +72,8 @@ $SearchParams = @{
 $SearchResourceKeys = Invoke-AzResourceAction @SearchParams
 
 foreach ($DataSource in $DataSourceConfiguration) {
+    Write-Host "Url Request - $($Url)"
+    Write-Host "Primary Key - $($SearchResourceKeys.PrimaryKey)"
     try {
         Write-Verbose "Checking if datasource $($DataSource.name) exists"
         ApiRequest -Method GET -Url "$Url/$($DataSource.name)" -ApiKey $SearchResourceKeys.PrimaryKey

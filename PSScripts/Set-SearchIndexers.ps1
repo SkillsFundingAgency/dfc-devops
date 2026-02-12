@@ -71,6 +71,8 @@ $SearchParams = @{
 $SearchResourceKeys = Invoke-AzResourceAction @SearchParams
 
 foreach ($Indexer in $IndexerConfiguration) {
+    Write-Host "Url Request - $($Url)"
+     Write-Host "Primary Key - $($SearchResourceKeys.PrimaryKey)"
     try {
         ApiRequest -Method GET -Url "$Url/$($Indexer.name)" -ApiKey $SearchResourceKeys.PrimaryKey
     }
