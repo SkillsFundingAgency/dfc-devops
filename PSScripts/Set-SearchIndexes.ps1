@@ -74,6 +74,7 @@ foreach ($Index in $IndexConfiguration) {
     Write-Host "Url Request - $($Url)"
     Write-Host "Primary Key - $($SearchResourceKeys.PrimaryKey)"
     try {
+         Write-Host "Try to get existing index $($Index.name)"
         $ExistingIndex = ApiRequest -Method GET -Url "$Url/$($Index.name)" -ApiKey $SearchResourceKeys.PrimaryKey -ApiVersion $SearchParams.ApiVersion
     }
     catch {
