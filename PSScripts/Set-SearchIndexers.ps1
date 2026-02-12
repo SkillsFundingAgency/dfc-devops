@@ -56,7 +56,7 @@ $SearchParams = @{
     ResourceType      = "Microsoft.Search/searchServices"
     ResourceGroupName = $ResourceGroupName
     ResourceName      = $SearchName
-    ApiVersion        = '2025-09-01'
+    ApiVersion        = '2025-05-01'
 }
 $SearchResource = Get-AzResource @SearchParams
 
@@ -65,7 +65,7 @@ $Url = "https://$($SearchResource.name).search.windows.net/indexers"
 $SearchParams = @{
     Action     = 'listAdminKeys'
     ResourceId = $SearchResource.ResourceId
-    ApiVersion = '2025-09-01'
+    ApiVersion = '2025-05-01'
     Force      = $true
 }
 $SearchResourceKeys = Invoke-AzResourceAction @SearchParams
