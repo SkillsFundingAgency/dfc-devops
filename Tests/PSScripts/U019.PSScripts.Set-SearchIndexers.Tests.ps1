@@ -64,11 +64,11 @@ Describe "Set-SearchIndexers unit tests" -Tag "Unit" {
         Should -Invoke -CommandName Get-AzResource -Scope It -Exactly 1
         Should -Invoke -CommandName Invoke-AzResourceAction -Scope It -Exactly 1
         Should -Invoke -CommandName ApiRequest -Scope It -ParameterFilter { $Method -eq 'GET' } -Exactly 1
-        Should -Invoke -CommandName ApiRequest -Scope It -ParameterFilter { $Method -eq 'PUT' } -Exactly 0
+        Should -Invoke -CommandName ApiRequest -Scope It -ParameterFilter { $Method -eq 'POST' } -Exactly 0
 
     }
 
-    It "Ensure Set-SearchIndexers calls ApiReqest twice (1x GET, 1x PUT) if datasource does not exist" {
+    It "Ensure Set-SearchIndexers calls ApiReqest twice (1x GET, 1x POST) if datasource does not exist" {
 
         # Pass in a valid JSON for the rest of the tests
         $DefaultParams['IndexConfigurationString'] = $SampleDatasource
@@ -83,7 +83,7 @@ Describe "Set-SearchIndexers unit tests" -Tag "Unit" {
         Should -Invoke -CommandName Get-AzResource -Scope It -Exactly 1
         Should -Invoke -CommandName Invoke-AzResourceAction -Scope It -Exactly 1
         Should -Invoke -CommandName ApiRequest -Scope It -ParameterFilter { $Method -eq 'GET' } -Exactly 1
-        Should -Invoke -CommandName ApiRequest -Scope It -ParameterFilter { $Method -eq 'PUT' } -Exactly 1
+        Should -Invoke -CommandName ApiRequest -Scope It -ParameterFilter { $Method -eq 'POST' } -Exactly 1
 
     }
 

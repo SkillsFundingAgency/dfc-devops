@@ -56,7 +56,7 @@ $SearchParams = @{
     ResourceType      = "Microsoft.Search/searchServices"
     ResourceGroupName = $ResourceGroupName
     ResourceName      = $SearchName
-    ApiVersion        = '2015-08-19'
+    ApiVersion        = '2025-05-01'
 }
 $SearchResource = Get-AzResource @SearchParams
 
@@ -65,7 +65,7 @@ $Url = "https://$($SearchResource.name).search.windows.net/indexes"
 $SearchParams = @{
     Action     = 'listAdminKeys'
     ResourceId = $SearchResource.ResourceId
-    ApiVersion = '2015-08-19'
+    ApiVersion = '2025-05-01'
     Force      = $true
 }
 $SearchResourceKeys = Invoke-AzResourceAction @SearchParams
@@ -77,7 +77,7 @@ foreach ($Index in $IndexConfiguration) {
     catch {
         # index does not exist
         Write-Host "Creating index $($Index.name)"
-        ApiRequest -Method PUT -Url $Url -ApiKey $SearchResourceKeys.PrimaryKey -Body $Index
+        ApiRequest -Method POST -Url $Url -ApiKey $SearchResourceKeys.PrimaryKey -Body $Index
         continue
     }
 
