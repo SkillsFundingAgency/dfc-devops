@@ -56,7 +56,7 @@ $SearchParams = @{
     ResourceType      = "Microsoft.Search/searchServices"
     ResourceGroupName = $ResourceGroupName
     ResourceName      = $SearchName
-    ApiVersion        = '2025-09-01'
+    ApiVersion        = '2025-05-01'
 }
 $SearchResource = Get-AzResource @SearchParams
 

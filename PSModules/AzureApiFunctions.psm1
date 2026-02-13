@@ -38,8 +38,6 @@ Optional hash to send as the body
 ApiRequest -Url "https://api.example.com/endpoint" -ApiKey fookey
 #>
 
-    Write-Host "API version $ApiVersion"
-    
     $ApiHeaders = @{
         "Content-Type" = "application/json"
         "api-key"      = $ApiKey
@@ -51,12 +49,14 @@ ApiRequest -Url "https://api.example.com/endpoint" -ApiKey fookey
     if ($Body) {
         $JsonBody = $Body | ConvertTo-Json -Depth 10
         Write-Host "Body - $JsonBody"
-        $WebResponse = Invoke-WebRequest -Uri $FullUrl -Method $Method -Headers $ApiHeaders -Body $JsonBody -UseBasicParsing
+        $WebResponse = Invoke-WebRequest -Uri $FullUrl -Method $Method -Headers $ApiHeaders -Body $JsonBody -UseBasicParsing        
     }
     else {
         $WebResponse = Invoke-WebRequest -Uri $FullUrl -Method $Method -Headers $ApiHeaders -UseBasicParsing
     }
     
+    Write-Host "Response Received $($WebResponse.StatusCode)"
+
     if ($WebResponse.StatusCode -eq 200) {
         return $WebResponse.Content | ConvertFrom-Json  # Depth is only supported in PowerShell 6, consider this if you find deep nested documents to be missing values
     }

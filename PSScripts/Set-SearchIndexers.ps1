@@ -56,7 +56,7 @@ $SearchParams = @{
     ResourceType      = "Microsoft.Search/searchServices"
     ResourceGroupName = $ResourceGroupName
     ResourceName      = $SearchName
-    ApiVersion        = '2025-05-01'
+    ApiVersion        = '2025-09-01'
 }
 $SearchResource = Get-AzResource @SearchParams
 
@@ -71,15 +71,20 @@ $SearchParams = @{
 $SearchResourceKeys = Invoke-AzResourceAction @SearchParams
 
 foreach ($Indexer in $IndexerConfiguration) {
+    
+    $apiVersion = '2025-09-01'
+
     Write-Host "Url Request - $($Url)"
-     Write-Host "Primary Key - $($SearchResourceKeys.PrimaryKey)"
+    Write-Host "Primary Key - $($SearchResourceKeys.PrimaryKey)"
+    
     try {
-        ApiRequest -Method GET -Url "$Url/$($Indexer.name)" -ApiKey $SearchResourceKeys.PrimaryKey -ApiVersion $SearchParams.ApiVersion
+        Write-Host "Try to get existing indexer $($Indexer.name)"
+        ApiRequest -Method GET -Url "$Url/$($Indexer.name)" -ApiKey $SearchResourceKeys.PrimaryKey -ApiVersion $apiVersion
     }
     catch {
         # index does not exist
         Write-Host "Creating indexer $($Indexer.name)"
-        ApiRequest -Method POST -Url $Url -ApiKey $SearchResourceKeys.PrimaryKey -Body $Indexer -ApiVersion $SearchParams.ApiVersion
+        ApiRequest -Method POST -Url $Url -ApiKey $SearchResourceKeys.PrimaryKey -Body $Indexer -ApiVersion $apiVersion
         continue
     }
 }
