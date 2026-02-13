@@ -71,16 +71,18 @@ $SearchParams = @{
 $SearchResourceKeys = Invoke-AzResourceAction @SearchParams
 
 foreach ($Index in $IndexConfiguration) {
+    $apiVersion = '2025-09-01'
+
     Write-Host "Url Request - $($Url)"
     Write-Host "Primary Key - $($SearchResourceKeys.PrimaryKey)"
     try {
          Write-Host "Try to get existing index $($Index.name)"
-        $ExistingIndex = ApiRequest -Method GET -Url "$Url/$($Index.name)" -ApiKey $SearchResourceKeys.PrimaryKey -ApiVersion $SearchParams.ApiVersion
+        $ExistingIndex = ApiRequest -Method GET -Url "$Url/$($Index.name)" -ApiKey $SearchResourceKeys.PrimaryKey -ApiVersion $apiVersion
     }
     catch {
         # index does not exist
         Write-Host "Creating index $($Index.name)"
-        ApiRequest -Method POST -Url $Url -ApiKey $SearchResourceKeys.PrimaryKey -Body $Index -ApiVersion $SearchParams.ApiVersion
+        ApiRequest -Method POST -Url $Url -ApiKey $SearchResourceKeys.PrimaryKey -Body $Index -ApiVersion $apiVersion
         continue
     }
 
@@ -119,7 +121,7 @@ foreach ($Index in $IndexConfiguration) {
         $UpdatedIndex = @{
             fields = $UpdatedFields
         }
-        ApiRequest -Method PUT -Url "$Url/$($Index.name)" -ApiKey $SearchResourceKeys.PrimaryKey -Body $UpdatedIndex
+        ApiRequest -Method PUT -Url "$Url/$($Index.name)" -ApiKey $SearchResourceKeys.PrimaryKey -Body $UpdatedIndex -ApiVersion $apiVersion
     }
 
 }
