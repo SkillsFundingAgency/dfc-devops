@@ -73,8 +73,6 @@ $SearchResourceKeys = Invoke-AzResourceAction @SearchParams
 foreach ($Index in $IndexConfiguration) {
     $apiVersion = '2025-09-01'
 
-    Write-Host "Url Request - $($Url)"
-    Write-Host "Primary Key - $($SearchResourceKeys.PrimaryKey)"
     try {
          Write-Host "Try to get existing index $($Index.name)"
         $ExistingIndex = ApiRequest -Method GET -Url "$Url/$($Index.name)" -ApiKey $SearchResourceKeys.PrimaryKey -ApiVersion $apiVersion

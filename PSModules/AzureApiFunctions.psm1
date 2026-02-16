@@ -48,7 +48,7 @@ ApiRequest -Url "https://api.example.com/endpoint" -ApiKey fookey
     
     if ($Body) {
         $JsonBody = $Body | ConvertTo-Json -Depth 10
-        Write-Host "Body - $JsonBody"
+
         $WebResponse = Invoke-WebRequest -Uri $FullUrl -Method $Method -Headers $ApiHeaders -Body $JsonBody -UseBasicParsing        
     }
     else {

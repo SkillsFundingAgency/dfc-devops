@@ -74,10 +74,7 @@ $SearchResourceKeys = Invoke-AzResourceAction @SearchParams
 foreach ($DataSource in $DataSourceConfiguration) {
 
     $apiVersion = '2025-09-01'
-
-    Write-Host "Url Request - $($Url)"
-    Write-Host "Primary Key - $($SearchResourceKeys.PrimaryKey)"
-    
+        
     try {
         Write-Host "Checking if datasource $($DataSource.name) exists"
         ApiRequest -Method GET -Url "$Url/$($DataSource.name)" -ApiKey $SearchResourceKeys.PrimaryKey -ApiVersion $apiVersion
