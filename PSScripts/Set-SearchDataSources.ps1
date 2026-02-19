@@ -57,7 +57,7 @@ $SearchParams = @{
     ResourceType      = "Microsoft.Search/searchServices"
     ResourceGroupName = $ResourceGroupName
     ResourceName      = $SearchName
-    ApiVersion        = '2015-08-19'
+    ApiVersion        = '2025-09-01'
 }
 $SearchResource = Get-AzResource @SearchParams
 
@@ -66,20 +66,23 @@ $Url = "https://$($SearchResource.name).search.windows.net/datasources"
 $SearchParams = @{
     Action     = 'listAdminKeys'
     ResourceId = $SearchResource.ResourceId
-    ApiVersion = '2015-08-19'
+    ApiVersion = '2025-05-01'
     Force      = $true
 }
 $SearchResourceKeys = Invoke-AzResourceAction @SearchParams
 
 foreach ($DataSource in $DataSourceConfiguration) {
+
+    $apiVersion = '2025-09-01'
+        
     try {
-        Write-Verbose "Checking if datasource $($DataSource.name) exists"
-        ApiRequest -Method GET -Url "$Url/$($DataSource.name)" -ApiKey $SearchResourceKeys.PrimaryKey
+        Write-Host "Checking if datasource $($DataSource.name) exists"
+        ApiRequest -Method GET -Url "$Url/$($DataSource.name)" -ApiKey $SearchResourceKeys.PrimaryKey -ApiVersion $apiVersion
     }
     catch {
         # index does not exist
         Write-Host "Creating datasource $($DataSource.name)"
-        ApiRequest -Method POST -Url $Url -ApiKey $SearchResourceKeys.PrimaryKey -Body $DataSource
+        ApiRequest -Method POST -Url $Url -ApiKey $SearchResourceKeys.PrimaryKey -Body $DataSource -ApiVersion $apiVersion
         continue
     }
 }

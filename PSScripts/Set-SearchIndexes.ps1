@@ -56,7 +56,7 @@ $SearchParams = @{
     ResourceType      = "Microsoft.Search/searchServices"
     ResourceGroupName = $ResourceGroupName
     ResourceName      = $SearchName
-    ApiVersion        = '2015-08-19'
+    ApiVersion        = '2025-09-01'
 }
 $SearchResource = Get-AzResource @SearchParams
 
@@ -65,19 +65,22 @@ $Url = "https://$($SearchResource.name).search.windows.net/indexes"
 $SearchParams = @{
     Action     = 'listAdminKeys'
     ResourceId = $SearchResource.ResourceId
-    ApiVersion = '2015-08-19'
+    ApiVersion = '2025-05-01'
     Force      = $true
 }
 $SearchResourceKeys = Invoke-AzResourceAction @SearchParams
 
 foreach ($Index in $IndexConfiguration) {
+    $apiVersion = '2025-09-01'
+
     try {
-        $ExistingIndex = ApiRequest -Method GET -Url "$Url/$($Index.name)" -ApiKey $SearchResourceKeys.PrimaryKey
+         Write-Host "Try to get existing index $($Index.name)"
+        $ExistingIndex = ApiRequest -Method GET -Url "$Url/$($Index.name)" -ApiKey $SearchResourceKeys.PrimaryKey -ApiVersion $apiVersion
     }
     catch {
         # index does not exist
         Write-Host "Creating index $($Index.name)"
-        ApiRequest -Method POST -Url $Url -ApiKey $SearchResourceKeys.PrimaryKey -Body $Index
+        ApiRequest -Method POST -Url $Url -ApiKey $SearchResourceKeys.PrimaryKey -Body $Index -ApiVersion $apiVersion
         continue
     }
 
@@ -116,7 +119,7 @@ foreach ($Index in $IndexConfiguration) {
         $UpdatedIndex = @{
             fields = $UpdatedFields
         }
-        ApiRequest -Method PUT -Url "$Url/$($Index.name)" -ApiKey $SearchResourceKeys.PrimaryKey -Body $UpdatedIndex
+        ApiRequest -Method PUT -Url "$Url/$($Index.name)" -ApiKey $SearchResourceKeys.PrimaryKey -Body $UpdatedIndex -ApiVersion $apiVersion
     }
 
 }

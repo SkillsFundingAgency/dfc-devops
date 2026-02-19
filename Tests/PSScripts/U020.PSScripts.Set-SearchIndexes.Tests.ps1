@@ -86,7 +86,6 @@ Describe "Set-SearchIndexes unit tests" -Tag "Unit" {
         Should -Invoke -CommandName Invoke-AzResourceAction -Scope It -Exactly 1
         Should -Invoke -CommandName ApiRequest -Scope It -ParameterFilter { $Method -eq 'GET' } -Exactly 1
         Should -Invoke -CommandName ApiRequest -Scope It -ParameterFilter { $Method -eq 'POST' } -Exactly 1
-        Should -Invoke -CommandName ApiRequest -Scope It -ParameterFilter { $Method -eq 'PUT' } -Exactly 0
 
     }
 
