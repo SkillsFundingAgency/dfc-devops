@@ -5,6 +5,7 @@ parameters:
   GitVersionVersion: '5.3.x'
   IncludePreviewVersions: false
   DotNetCoreVersion: ''
+  GitVersionConfigFilePath: Resources/AzureDevOps/GitVersion.yml
 
 steps:
  - task: UseDotNet@2
@@ -19,7 +20,7 @@ steps:
    displayName: GitVersion
    inputs:
      useConfigFile: true
-     configFilePath: GitVersion.yml
+     configFilePath: ${{ parameters.GitVersionConfigFilePath }}
      versionSpec: ${{ parameters.GitVersionVersion }}
 
  - task: DotNetCoreCLI@2
