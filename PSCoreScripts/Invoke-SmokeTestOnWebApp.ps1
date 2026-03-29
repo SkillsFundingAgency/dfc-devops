@@ -100,6 +100,7 @@ function Get-SmokeTestUrl {
 
 
 $attemptCount = 0
+$rebooted = $false
 
 $siteUrl = Get-SmokeTestUrl -AppName $AppName `
     -ResourceGroup $ResourceGroup `
@@ -115,7 +116,18 @@ do {
 
     if(-not $wasSuccessful) {
         if($attemptCount -ge $AttemptsBeforeFailure) {
-            throw "Smoke test exhausted all retry attempts and is still not responding"
+            if (-not $rebooted) {
+                Write-Verbose "Initial smoke tests failed restart web app"
+                Restart-AzWebApp -Name $AppName -ResourceGroupName $ResourceGroup
+                $rebooted = $true
+                Write-Verbose "Resetting attemptCount to 0 after restart"
+                $attemptCount = 0
+                Write-Verbose "Sleeping for 60 secs post restart"
+                Start-Sleep -Seconds 60
+            } else {
+                throw "Smoke test exhausted all retry attempts and is still not responding"
+            }
+            
         }
 
         Write-Verbose "Smoke test was not successful, sleeping before retrying."
