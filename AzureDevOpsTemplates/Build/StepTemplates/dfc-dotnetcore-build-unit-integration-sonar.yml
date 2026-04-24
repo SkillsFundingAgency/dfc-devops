@@ -43,7 +43,7 @@ steps:
       configFilePath: ${{ parameters.GitVersionConfigFilePath }}
       versionSpec: '${{ parameters.GitVersionVersion }}
 
-  - task: SonarCloudPrepare@4
+  - task: SonarCloudPrepare@3
     displayName: 'Prepare analysis on SonarCloud'
     condition: and(succeeded(), variables['ShouldRunSonarCloud'], 'True')
     inputs:
@@ -104,7 +104,7 @@ steps:
       projects: '${{ parameters.SolutionBaseName }}*${{ parameters.IntegrationTestSuffix }}\${{ parameters.SolutionBaseName }}*${{ parameters.IntegrationTestSuffix }}.csproj'
       arguments: '--configuration ${{ parameters.BuildConfiguration }} --collect "Code coverage"'
  
-  - task: SonarCloudAnalyze@4
+  - task: SonarCloudAnalyze@3
     displayName: 'Run Code Analysis'
     condition: and(succeeded(), variables['ShouldRunSonarCloud'], 'True')
 
