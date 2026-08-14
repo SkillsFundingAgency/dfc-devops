@@ -7,7 +7,7 @@ parameters:
   GitVersionVersion: '5.3.x'
 
 steps:
- - task: gittools.gitversion.gitversion-task.GitVersion@5
+ - task: UseGitVersion@5
    displayName: GitVersion
    inputs:
      useConfigFile: true
@@ -18,6 +18,11 @@ steps:
    displayName: 'Use NuGet'
    inputs:
      versionSpec: '5.x'
+
+ - task: UseDotNet@2
+   displayName: 'Use .NET SDK 8'
+   inputs:
+     version: '8.0.x'
 
  - task: NuGetCommand@2
    displayName: 'NuGet restore ${{ parameters.SolutionBaseName }}.sln'
@@ -39,11 +44,11 @@ steps:
    displayName: 'Copy Files to: $(build.artifactstagingdirectory)/UnitTests'
    inputs:
      sourceFolder: '$(System.DefaultWorkingDirectory)'
-     contents: '**\bin\Release\**'
+     contents: '**\bin\${{ parameters.BuildConfiguration }}\**'
      targetFolder: '$(build.artifactstagingdirectory)/UnitTests'
 
  - task: VSTest@2
-   condition: ${{ parameters.RunTests }}
+   condition: and(succeeded(), eq('${{ parameters.RunTests }}', 'true'))
    displayName: 'VsTest - testAssemblies'
    inputs:
      testSelector: 'testAssemblies'
