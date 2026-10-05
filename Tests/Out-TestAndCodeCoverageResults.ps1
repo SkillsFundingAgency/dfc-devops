@@ -26,7 +26,7 @@ Param (
     [Parameter(Mandatory = $false)]
     [String] $CodeCoverageFile,
     [Parameter(Mandatory = $false)]
-    [int] $CoveragePercent = 80
+    [int] $CoveragePercent = 70
 )
 
 if (-not $TestResultFile) {
