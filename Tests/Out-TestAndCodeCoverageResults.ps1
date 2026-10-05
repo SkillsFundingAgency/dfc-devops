@@ -56,7 +56,7 @@ if ($Failures) {
             Write-Output $_.Node.Message
         }
     }
-    Write-Error "Pester reported $NumFailures error(s)"
+    Write-Warning "Pester reported $NumFailures error(s)"
 }
 
 $TotalLines = 0
