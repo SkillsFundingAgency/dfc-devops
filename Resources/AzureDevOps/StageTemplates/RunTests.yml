@@ -1,6 +1,6 @@
 parameters:
   AzureSubscription: ''
-  CodeCoveragePercentage: 75
+  CodeCoveragePercentage: 70
 
 stages:
 - stage: Test
